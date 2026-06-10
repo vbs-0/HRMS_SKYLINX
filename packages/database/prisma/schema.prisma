@@ -64,11 +64,12 @@ model Company {
   payrollRuns PayrollRun[]
   settings    ModuleSetting[]
   clientRules ClientRule[]
-  subscription Subscription?
-  tickets      Ticket[]
-  tenantUsers  User[]            @relation("TenantUsers")
-  tenantRoles  Role[]            @relation("TenantRoles")
-  tenantAudits AuditLog[]        @relation("TenantAuditLogs")
+  subscription    Subscription?
+  tickets         Ticket[]
+  jobRequisitions JobRequisition[]
+  tenantUsers     User[]            @relation("TenantUsers")
+  tenantRoles     Role[]            @relation("TenantRoles")
+  tenantAudits    AuditLog[]        @relation("TenantAuditLogs")
 }
 
 model User {
@@ -161,6 +162,7 @@ model Department {
   company           Company       @relation(fields: [companyId], references: [id])
   employees         Employee[]
   designations      Designation[]
+  jobRequisitions   JobRequisition[]
 
   @@unique([companyId, code])
   @@index([companyId, status])
@@ -236,6 +238,10 @@ model Employee {
   insuranceClaims           InsuranceClaim[]
   rewardLedgers             RewardLedger[]
   recognitions              RecognitionReward[]        @relation("RecognitionRecipient")
+  requisitionsRequested     JobRequisition[]           @relation("RequisitionRequestor")
+  requisitionsApproved      JobRequisition[]           @relation("RequisitionApprover")
+  interviewsAssigned        Interviewer[]
+  submittedFeedbacks        InterviewFeedback[]
 
   @@unique([companyId, employeeCode])
   @@index([companyId, status])
@@ -557,17 +563,42 @@ model InsuranceClaim {
   @@index([claimDate])
 }
 
+model JobRequisition {
+  id            String       @id @default(cuid())
+  companyId     String
+  departmentId  String
+  title         String
+  openings      Int          @default(1)
+  status        String       @default("PENDING") // PENDING, APPROVED, REJECTED
+  requestedById String
+  approvedById  String?
+  approvedAt    DateTime?
+  reason        String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  company       Company      @relation(fields: [companyId], references: [id])
+  department    Department   @relation(fields: [departmentId], references: [id])
+  requestedBy   Employee     @relation("RequisitionRequestor", fields: [requestedById], references: [id])
+  approvedBy    Employee?    @relation("RequisitionApprover", fields: [approvedById], references: [id])
+  jobPostings   JobPosting[]
+
+  @@index([companyId])
+  @@index([departmentId])
+}
+
 model JobPosting {
-  id           String           @id @default(cuid())
-  companyId    String
-  title        String
-  departmentId String?
-  locationId   String?
-  openings     Int              @default(1)
-  status       String           @default("OPEN")
-  createdBy    String?
-  createdAt    DateTime         @default(now())
-  applications JobApplication[]
+  id            String           @id @default(cuid())
+  companyId     String
+  title         String
+  departmentId  String?
+  locationId    String?
+  openings      Int              @default(1)
+  status        String           @default("OPEN")
+  createdBy     String?
+  requisitionId String?
+  createdAt     DateTime         @default(now())
+  applications  JobApplication[]
+  requisition   JobRequisition?  @relation(fields: [requisitionId], references: [id])
 
   @@index([companyId, status])
   @@index([departmentId])
@@ -589,34 +620,102 @@ model Candidate {
 }
 
 model JobApplication {
-  id                  String      @id @default(cuid())
+  id                  String           @id @default(cuid())
   jobPostingId        String
   candidateId         String
-  stage               String      @default("SCREENING")
-  status              String      @default("ACTIVE")
+  stage               String           @default("SCREENING")
+  status              String           @default("ACTIVE")
   assignedRecruiterId String?
-  createdAt           DateTime    @default(now())
-  jobPosting          JobPosting  @relation(fields: [jobPostingId], references: [id])
-  candidate           Candidate   @relation(fields: [candidateId], references: [id])
+  createdAt           DateTime         @default(now())
+  jobPosting          JobPosting       @relation(fields: [jobPostingId], references: [id])
+  candidate           Candidate        @relation(fields: [candidateId], references: [id])
   interviews          Interview[]
+  interviewRounds     InterviewRound[]
+  jobOffers           JobOffer[]
 
   @@index([jobPostingId, status])
   @@index([candidateId])
   @@index([stage])
 }
 
+model InterviewRound {
+  id            String         @id @default(cuid())
+  applicationId String
+  name          String
+  roundNumber   Int            @default(1)
+  status        String         @default("PENDING") // PENDING, COMPLETED, CANCELLED
+  createdAt     DateTime       @default(now())
+  application   JobApplication @relation(fields: [applicationId], references: [id])
+  interviews    Interview[]
+
+  @@index([applicationId])
+}
+
 model Interview {
-  id                    String         @id @default(cuid())
+  id                    String              @id @default(cuid())
   applicationId         String
   interviewerEmployeeId String?
   scheduledAt           DateTime
   mode                  String
-  status                String         @default("SCHEDULED")
+  status                String              @default("SCHEDULED")
   feedback              String?
-  application           JobApplication @relation(fields: [applicationId], references: [id])
+  roundId               String?
+  application           JobApplication      @relation(fields: [applicationId], references: [id])
+  round                 InterviewRound?     @relation(fields: [roundId], references: [id])
+  interviewers          Interviewer[]
+  feedbacks             InterviewFeedback[]
 
   @@index([applicationId, status])
   @@index([scheduledAt])
+}
+
+model Interviewer {
+  id          String    @id @default(cuid())
+  interviewId String
+  employeeId  String
+  interview   Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
+  employee    Employee  @relation(fields: [employeeId], references: [id])
+
+  @@unique([interviewId, employeeId])
+}
+
+model InterviewFeedback {
+  id                    String    @id @default(cuid())
+  interviewId           String
+  interviewerEmployeeId String
+  rating                Int
+  comments              String?
+  recommendation        String    // HIRE, REJECT, HOLD
+  createdAt             DateTime  @default(now())
+  interview             Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
+  interviewer           Employee  @relation(fields: [interviewerEmployeeId], references: [id])
+
+  @@unique([interviewId, interviewerEmployeeId])
+}
+
+model JobOffer {
+  id             String         @id @default(cuid())
+  applicationId  String
+  offeredCtc     Decimal
+  joiningDate    DateTime
+  status         String         @default("DRAFT") // DRAFT, SENT, ACCEPTED, REJECTED
+  offerLetterUrl String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  application    JobApplication @relation(fields: [applicationId], references: [id])
+  terms          OfferTerm[]
+
+  @@index([applicationId])
+}
+
+model OfferTerm {
+  id          String   @id @default(cuid())
+  jobOfferId  String
+  title       String
+  description String
+  jobOffer    JobOffer @relation(fields: [jobOfferId], references: [id], onDelete: Cascade)
+
+  @@index([jobOfferId])
 }
 
 model Notification {

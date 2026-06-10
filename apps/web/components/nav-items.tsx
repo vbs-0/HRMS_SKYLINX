@@ -39,6 +39,7 @@ export const nav: Array<{ href: Route; label: string; icon: LucideIcon; group?: 
   { href: "/assets", label: "Assets", icon: BriefcaseBusiness },
   { href: "/performance", label: "PMS", icon: Target },
   { href: "/employees", label: "Directory", icon: Users },
+  { href: "/recruitment" as any, label: "Recruitment", icon: BriefcaseBusiness },
   { href: "/documents", label: "Documents", icon: FileCheck2 },
   { href: "/cards", label: "ID & Visiting Card", icon: IdCard },
   { href: "/attendance", label: "Attendance", icon: Fingerprint },

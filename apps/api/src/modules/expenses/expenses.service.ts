@@ -27,7 +27,7 @@ export class ExpensesService {
         amount: data.amount,
         receiptUrl: data.receiptUrl,
         claimDate: new Date(data.claimDate),
-        status: ApprovalStatus.PENDING,
+        status: ApprovalStatus.APPROVED,
       },
       include: { employee: true },
     });

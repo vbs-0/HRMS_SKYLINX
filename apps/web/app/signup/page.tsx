@@ -170,7 +170,7 @@ export default function SignupPage() {
                           ? "Upto 5 users, web check-ins and core records."
                           : tier === "Standard"
                           ? "Upto 25 users, payroll runs, statutory filings and support."
-                          : "Enterprise scale, custom limits, ATS, rewards and SaaS controls."}
+                          : "Enterprise scale, custom limits, rewards and SaaS controls."}
                       </span>
                     </div>
                     <div className="text-right">

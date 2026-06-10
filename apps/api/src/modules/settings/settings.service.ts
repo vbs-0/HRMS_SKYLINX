@@ -1,10 +1,10 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { Prisma } from "@prisma/client";
+import { TenantContext } from "../../common/tenant-context";
 import { response } from "../../common/crud-response";
 import { PrismaService } from "../../prisma/prisma.service";
 import { UpdateClientRulesDto, UpdateCompanyDto, UpdateModuleDto } from "./dto/settings.dto";
 
-const DEFAULT_COMPANY_ID = "company_skylinx";
 const MODULES = [
   "employees",
   "documents",
@@ -17,9 +17,7 @@ const MODULES = [
   "compliance",
   "expenses",
   "insurance",
-  "integrations",
   "approvals",
-  "lifecycle",
   "assets",
   "performance",
   "notifications",
@@ -30,13 +28,12 @@ const MODULES = [
   "saas",
   "security",
   "settings",
-  "ats",
 ];
 
 const DEFAULT_RULES: Required<UpdateClientRulesDto> = {
   branding: {
-    platformBrand: "SKYLINX PeopleOS",
-    clientDisplayName: "SKYLINX Global Solutions",
+    platformBrand: "PeopleOS",
+    clientDisplayName: "My Company",
     logoDataUrl: "",
     linkedinUrl: "",
     facebookUrl: "",
@@ -67,6 +64,31 @@ const DEFAULT_RULES: Required<UpdateClientRulesDto> = {
     professionalTaxEnabled: true,
     tdsEnabled: true,
     payrollLockDay: 28,
+    // PF Rates (%)
+    pfEmployeeRate: 12.0,
+    pfEmployerRate: 12.0,
+    pfWageCeiling: 15000,
+    // ESI Rates (%)
+    esiEmployeeRate: 0.75,
+    esiEmployerRate: 3.25,
+    esiWageCeiling: 21000,
+    // Professional Tax slabs (JSON array: [{upto: number, monthly: number}])
+    ptSlabs: [
+      { upto: 10000, monthly: 0 },
+      { upto: 15000, monthly: 110 },
+      { upto: 20000, monthly: 130 },
+      { upto: 999999, monthly: 200 },
+    ],
+    // TDS/Income Tax slabs (JSON array: [{from: number, upto: number, rate: number}])
+    tdsSlabs: [
+      { from: 0, upto: 250000, rate: 0 },
+      { from: 250001, upto: 500000, rate: 5 },
+      { from: 500001, upto: 750000, rate: 10 },
+      { from: 750001, upto: 1000000, rate: 15 },
+      { from: 1000001, upto: 1250000, rate: 20 },
+      { from: 1250001, upto: 1500000, rate: 25 },
+      { from: 1500001, upto: 999999999, rate: 30 },
+    ],
   },
   approvals: {
     expenseApproval: "Manager then HR",
@@ -85,14 +107,22 @@ const DEFAULT_RULES: Required<UpdateClientRulesDto> = {
 export class SettingsService {
   constructor(private readonly prisma: PrismaService) {}
 
+  private getTenantIdOrThrow(): string {
+    const tenantId = TenantContext.getTenantId();
+    if (!tenantId) throw new UnauthorizedException("No tenant context found");
+    return tenantId;
+  }
+
   async company() {
-    const company = await this.prisma.company.findUnique({ where: { id: DEFAULT_COMPANY_ID } });
+    const tenantId = this.getTenantIdOrThrow();
+    const company = await this.prisma.company.findUnique({ where: { id: tenantId } });
     return response("settings", "company", company);
   }
 
   async updateCompany(data: UpdateCompanyDto) {
+    const tenantId = this.getTenantIdOrThrow();
     const company = await this.prisma.company.update({
-      where: { id: DEFAULT_COMPANY_ID },
+      where: { id: tenantId },
       data,
     });
     await this.audit("company.update", "company", company.id, company);
@@ -100,21 +130,23 @@ export class SettingsService {
   }
 
   async modules() {
+    const tenantId = this.getTenantIdOrThrow();
     const existing = await this.prisma.moduleSetting.findMany({
-      where: { companyId: DEFAULT_COMPANY_ID },
+      where: { companyId: tenantId },
       orderBy: { module: "asc" },
     });
     const byModule = new Map(existing.map((setting) => [setting.module, setting]));
-    const modules = MODULES.map((module) => byModule.get(module) || { companyId: DEFAULT_COMPANY_ID, module, enabled: true, settingsJson: null });
+    const modules = MODULES.map((module) => byModule.get(module) || { companyId: tenantId, module, enabled: true, settingsJson: null });
     return response("settings", "modules", modules);
   }
 
   async updateModule(module: string, data: UpdateModuleDto) {
+    const tenantId = this.getTenantIdOrThrow();
     const settingsJson = data.settingsJson ? JSON.parse(JSON.stringify(data.settingsJson)) as Prisma.InputJsonValue : undefined;
     const setting = await this.prisma.moduleSetting.upsert({
-      where: { companyId_module: { companyId: DEFAULT_COMPANY_ID, module } },
+      where: { companyId_module: { companyId: tenantId, module } },
       update: { enabled: data.enabled, settingsJson },
-      create: { companyId: DEFAULT_COMPANY_ID, module, enabled: data.enabled, settingsJson },
+      create: { companyId: tenantId, module, enabled: data.enabled, settingsJson },
     });
     await this.audit("module.update", "module_setting", setting.id, setting);
     return response("settings", "module.update", setting);
@@ -126,8 +158,16 @@ export class SettingsService {
   }
 
   async publicProfile() {
+    const tenantId = TenantContext.getTenantId();
+    if (!tenantId) {
+      // Return safe defaults for unauthenticated requests
+      return response("settings", "publicProfile", {
+        company: null,
+        branding: DEFAULT_RULES.branding,
+      });
+    }
     const [company, rules] = await Promise.all([
-      this.prisma.company.findUnique({ where: { id: DEFAULT_COMPANY_ID } }),
+      this.prisma.company.findUnique({ where: { id: tenantId } }),
       this.mergedRules(),
     ]);
     return response("settings", "publicProfile", {
@@ -136,25 +176,28 @@ export class SettingsService {
     });
   }
 
+  /** Returns merged rules: DEFAULT_RULES overridden by any tenant-specific ClientRule rows */
   private async mergedRules() {
+    const tenantId = this.getTenantIdOrThrow();
     const rules = await this.prisma.clientRule.findMany({
-      where: { companyId: DEFAULT_COMPANY_ID, status: "ACTIVE" },
+      where: { companyId: tenantId, status: "ACTIVE" },
       orderBy: [{ category: "asc" }, { key: "asc" }],
     });
-    const merged = { ...DEFAULT_RULES };
+    const merged: Record<string, Record<string, unknown>> = JSON.parse(JSON.stringify(DEFAULT_RULES));
     for (const rule of rules) {
       const category = rule.category as keyof UpdateClientRulesDto;
       if (category in merged) {
         merged[category] = {
           ...merged[category],
           [rule.key]: rule.valueJson,
-        } as Record<string, unknown>;
+        };
       }
     }
     return merged;
   }
 
   async updateRules(data: UpdateClientRulesDto) {
+    const tenantId = this.getTenantIdOrThrow();
     const categories = Object.entries(data).filter(([, value]) => value && typeof value === "object");
     const saved = await this.prisma.$transaction(async (tx) => {
       const updates = [];
@@ -162,9 +205,9 @@ export class SettingsService {
         for (const [key, value] of Object.entries(values as Record<string, unknown>)) {
           updates.push(
             await tx.clientRule.upsert({
-              where: { companyId_category_key: { companyId: DEFAULT_COMPANY_ID, category, key } },
+              where: { companyId_category_key: { companyId: tenantId, category, key } },
               update: { valueJson: this.toJson(value), status: "ACTIVE" },
-              create: { companyId: DEFAULT_COMPANY_ID, category, key, valueJson: this.toJson(value), status: "ACTIVE" },
+              create: { companyId: tenantId, category, key, valueJson: this.toJson(value), status: "ACTIVE" },
             }),
           );
         }
@@ -175,7 +218,7 @@ export class SettingsService {
           module: "settings",
           action: "clientRules.update",
           entityType: "client_rules",
-          entityId: DEFAULT_COMPANY_ID,
+          entityId: tenantId,
           newValueJson: this.toJson(data),
         },
       });
@@ -187,9 +230,11 @@ export class SettingsService {
   }
 
   async logs() {
+    const tenantId = this.getTenantIdOrThrow();
     const logs = await this.prisma.auditLog.findMany({
       where: {
-        module: { in: ["settings", "auth", "employees", "attendance", "leave", "payroll", "expenses", "insurance", "ats"] },
+        tenantId: tenantId,
+        module: { in: ["settings", "auth", "employees", "attendance", "leave", "payroll", "expenses", "insurance"] },
       },
       include: {
         actor: {
@@ -202,13 +247,21 @@ export class SettingsService {
     return response("settings", "logs", logs);
   }
 
+  /** Returns the active merged payroll rules for use by payroll calculations */
+  async getPayrollRules(): Promise<Record<string, unknown>> {
+    const merged = await this.mergedRules();
+    return merged["payroll"] as Record<string, unknown>;
+  }
+
   private async audit(action: string, entityType: string, entityId: string, data: unknown) {
+    const tenantId = TenantContext.getTenantId();
     await this.prisma.auditLog.create({
       data: {
         module: "settings",
         action,
         entityType,
         entityId,
+        tenantId: tenantId,
         newValueJson: JSON.parse(JSON.stringify(data)),
       },
     });

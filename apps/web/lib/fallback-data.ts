@@ -160,8 +160,6 @@ export const fallbackModuleSettings = [
   "payroll",
   "expenses",
   "insurance",
-  "integrations",
-  "lifecycle",
   "assets",
   "performance",
   "approvals",
@@ -173,7 +171,6 @@ export const fallbackModuleSettings = [
   "rewards",
   "reports",
   "security",
-  "ats",
 ].map((module) => ({ module, enabled: true }));
 
 export const fallbackAuditLogs = [
@@ -266,7 +263,7 @@ export const fallbackSaas = {
       modules: 30,
       status: "AVAILABLE",
       accessLevel: "Enterprise access",
-      features: ["Everything in Standard", "ATS", "Rewards", "Analytics", "Compliance", "Security", "SaaS controls"],
+      features: ["Everything in Standard", "Rewards", "Analytics", "Compliance", "Security", "SaaS controls"],
     },
   ],
   planMatrix: [
@@ -378,7 +375,6 @@ export const fallbackApprovals = {
     { module: "expenses", count: 1 },
     { module: "insurance", count: 1 },
     { module: "payroll", count: 1 },
-    { module: "ats", count: 1 },
   ],
   items: [
     { id: "leave_1003", type: "Leave", module: "leave", requester: "Kabir Sethi", title: "Casual Leave", amount: 2, status: "PENDING", createdAt: "2026-05-25T00:00:00.000Z" },
@@ -387,25 +383,7 @@ export const fallbackApprovals = {
   ],
 };
 
-export const fallbackLifecycle = {
-  onboardingTotal: 4,
-  onboardingCompleted: 1,
-  exitTotal: 0,
-  documentsCollected: 1,
-  checklist: [
-    { name: "Offer Letter", completed: 4, total: 4 },
-    { name: "Documents", completed: 2, total: 4 },
-    { name: "Interview", completed: 4, total: 4 },
-    { name: "Joining", completed: 1, total: 4 },
-  ],
-  onboardingRows: [
-    { id: "emp_1001", name: "Aarav Mehta", role: "HR Manager", stage: "JOINED", checklist: { offerLetter: true, documents: true, interview: true, joining: true } },
-    { id: "emp_1002", name: "Priya Nair", role: "Payroll Specialist", stage: "ACCOUNT_PENDING", checklist: { offerLetter: true, documents: false, interview: true, joining: false } },
-    { id: "cand_neha", name: "Neha Sharma", role: "Backend Engineer", stage: "INTERVIEW", checklist: { offerLetter: false, documents: true, interview: true, joining: false } },
-  ],
-  exitRows: [],
-  logs: [],
-};
+
 
 export const fallbackAssets = {
   total: 8,

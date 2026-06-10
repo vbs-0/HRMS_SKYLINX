@@ -19,7 +19,6 @@ export const modules = [
   { name: "Insurance Management", phase: "V2", status: "Planned" },
   { name: "ID & Visiting Card", phase: "V2", status: "Planned" },
   { name: "Internal Social Feed", phase: "V2", status: "Planned" },
-  { name: "Recruitment ATS", phase: "V2", status: "Planned" },
   { name: "Rewards & Benefits", phase: "V3", status: "Planned" },
   { name: "Advanced Analytics", phase: "V3", status: "Planned" },
 ];

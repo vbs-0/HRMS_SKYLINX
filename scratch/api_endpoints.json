@@ -1,0 +1,854 @@
+{
+  "analytics": {
+    "prefix": "analytics",
+    "file": "analytics.controller.ts",
+    "endpoints": [
+      {
+        "method": "Get",
+        "route": "/analytics",
+        "handler": "summary",
+        "permission": "None"
+      }
+    ]
+  },
+  "approvals": {
+    "prefix": "approvals",
+    "file": "approvals.controller.ts",
+    "endpoints": [
+      {
+        "method": "Get",
+        "route": "/approvals",
+        "handler": "summary",
+        "permission": "None"
+      },
+      {
+        "method": "Post",
+        "route": "/approvals/:module/:id/decision",
+        "handler": "decide",
+        "permission": "approvals.read"
+      }
+    ]
+  },
+  "assets": {
+    "prefix": "assets",
+    "file": "assets.controller.ts",
+    "endpoints": [
+      {
+        "method": "Get",
+        "route": "/assets",
+        "handler": "summary",
+        "permission": "None"
+      },
+      {
+        "method": "Post",
+        "route": "/assets/:assetTag/assign",
+        "handler": "assign",
+        "permission": "assets.read"
+      },
+      {
+        "method": "Post",
+        "route": "/assets/:assetTag/return",
+        "handler": "returnAsset",
+        "permission": "assets.configure"
+      }
+    ]
+  },
+  "attendance": {
+    "prefix": "attendance",
+    "file": "attendance.controller.ts",
+    "endpoints": [
+      {
+        "method": "Get",
+        "route": "/attendance/logs",
+        "handler": "logs",
+        "permission": "None"
+      },
+      {
+        "method": "Post",
+        "route": "/attendance/check-in",
+        "handler": "checkIn",
+        "permission": "attendance.read"
+      },
+      {
+        "method": "Post",
+        "route": "/attendance/check-out",
+        "handler": "checkOut",
+        "permission": "attendance.create"
+      },
+      {
+        "method": "Get",
+        "route": "/attendance/shifts",
+        "handler": "shifts",
+        "permission": "attendance.create"
+      },
+      {
+        "method": "Get",
+        "route": "/attendance/regularizations",
+        "handler": "regularizations",
+        "permission": "attendance.read"
+      },
+      {
+        "method": "Post",
+        "route": "/attendance/regularizations",
+        "handler": "regularize",
+        "permission": "attendance.read"
+      },
+      {
+        "method": "Patch",
+        "route": "/attendance/regularizations/:id/approve",
+        "handler": "approveRegularization",
+        "permission": "attendance.update"
+      },
+      {
+        "method": "Post",
+        "route": "/attendance/overtime",
+        "handler": "overtime",
+        "permission": "attendance.approve"
+      }
+    ]
+  },
+  "auth": {
+    "prefix": "auth",
+    "file": "auth.controller.ts",
+    "endpoints": [
+      {
+        "method": "Post",
+        "route": "/auth/login",
+        "handler": "login",
+        "permission": "None"
+      },
+      {
+        "method": "Post",
+        "route": "/auth/otp/request",
+        "handler": "requestOtp",
+        "permission": "None"
+      },
+      {
+        "method": "Post",
+        "route": "/auth/otp/verify",
+        "handler": "verifyOtp",
+        "permission": "None"
+      },
+      {
+        "method": "Post",
+        "route": "/auth/forgot-password",
+        "handler": "forgotPassword",
+        "permission": "None"
+      },
+      {
+        "method": "Get",
+        "route": "/auth/me",
+        "handler": "me",
+        "permission": "None"
+      }
+    ]
+  },
+  "compliance": {
+    "prefix": "compliance",
+    "file": "compliance.controller.ts",
+    "endpoints": [
+      {
+        "method": "Get",
+        "route": "/compliance",
+        "handler": "summary",
+        "permission": "None"
+      },
+      {
+        "method": "Post",
+        "route": "/compliance/export/:type",
+        "handler": "export",
+        "permission": "compliance.read"
+      }
+    ]
+  },
+  "dashboard": {
+    "prefix": "dashboard",
+    "file": "dashboard.controller.ts",
+    "endpoints": [
+      {
+        "method": "Get",
+        "route": "/dashboard/admin",
+        "handler": "admin",
+        "permission": "None"
+      },
+      {
+        "method": "Get",
+        "route": "/dashboard/manager",
+        "handler": "manager",
+        "permission": "reports.read"
+      },
+      {
+        "method": "Get",
+        "route": "/dashboard/employee",
+        "handler": "employee",
+        "permission": "attendance.read"
+      },
+      {
+        "method": "Get",
+        "route": "/dashboard/super-admin",
+        "handler": "superAdmin",
+        "permission": "employees.read"
+      }
+    ]
+  },
+  "employees": {
+    "prefix": "employees",
+    "file": "employees.controller.ts",
+    "endpoints": [
+      {
+        "method": "Get",
+        "route": "/employees",
+        "handler": "list",
+        "permission": "None"
+      },
+      {
+        "method": "Get",
+        "route": "/employees/documents",
+        "handler": "documents",
+        "permission": "employees.read"
+      },
+      {
+        "method": "Post",
+        "route": "/employees",
+        "handler": "create",
+        "permission": "employees.read"
+      },
+      {
+        "method": "Post",
+        "route": "/employees/bulk-upload",
+        "handler": "bulkUpload",
+        "permission": "employees.create"
+      },
+      {
+        "method": "Get",
+        "route": "/employees/:id",
+        "handler": "detail",
+        "permission": "employees.create"
+      },
+      {
+        "method": "Patch",
+        "route": "/employees/:id",
+        "handler": "update",
+        "permission": "employees.read"
+      },
+      {
+        "method": "Post",
+        "route": "/employees/:id/documents/upload",
+        "handler": "FileInterceptor",
+        "permission": "employees.update"
+      },
+      {
+        "method": "Post",
+        "route": "/employees/:id/documents",
+        "handler": "uploadDocument",
+        "permission": "employees.update"
+      },
+      {
+        "method": "Patch",
+        "route": "/employees/:id/documents/:documentId/verify",
+        "handler": "verifyDocument",
+        "permission": "employees.update"
+      }
+    ]
+  },
+  "expenses": {
+    "prefix": "expenses",
+    "file": "expenses.controller.ts",
+    "endpoints": [
+      {
+        "method": "Get",
+        "route": "/expenses",
+        "handler": "list",
+        "permission": "None"
+      },
+      {
+        "method": "Post",
+        "route": "/expenses",
+        "handler": "create",
+        "permission": "expenses.read"
+      },
+      {
+        "method": "Patch",
+        "route": "/expenses/:id/manager-approve",
+        "handler": "managerApprove",
+        "permission": "expenses.create"
+      },
+      {
+        "method": "Patch",
+        "route": "/expenses/:id/hr-approve",
+        "handler": "hrApprove",
+        "permission": "expenses.approve"
+      },
+      {
+        "method": "Patch",
+        "route": "/expenses/:id/reject",
+        "handler": "reject",
+        "permission": "expenses.approve"
+      },
+      {
+        "method": "Patch",
+        "route": "/expenses/:id/reimburse",
+        "handler": "reimburse",
+        "permission": "expenses.approve"
+      }
+    ]
+  },
+  "health": {
+    "prefix": "health",
+    "file": "health.controller.ts",
+    "endpoints": [
+      {
+        "method": "Get",
+        "route": "/health",
+        "handler": "check",
+        "permission": "None"
+      }
+    ]
+  },
+  "holidays": {
+    "prefix": "holidays",
+    "file": "holidays.controller.ts",
+    "endpoints": [
+      {
+        "method": "Get",
+        "route": "/holidays",
+        "handler": "list",
+        "permission": "None"
+      },
+      {
+        "method": "Post",
+        "route": "/holidays",
+        "handler": "create",
+        "permission": "holidays.read"
+      },
+      {
+        "method": "Patch",
+        "route": "/holidays/:id/status",
+        "handler": "updateStatus",
+        "permission": "holidays.create"
+      }
+    ]
+  },
+  "insurance": {
+    "prefix": "insurance",
+    "file": "insurance.controller.ts",
+    "endpoints": [
+      {
+        "method": "Get",
+        "route": "/insurance/policies",
+        "handler": "policies",
+        "permission": "None"
+      },
+      {
+        "method": "Get",
+        "route": "/insurance/dependents",
+        "handler": "dependents",
+        "permission": "insurance.read"
+      },
+      {
+        "method": "Get",
+        "route": "/insurance/claims",
+        "handler": "claims",
+        "permission": "insurance.read"
+      },
+      {
+        "method": "Post",
+        "route": "/insurance/policies",
+        "handler": "createPolicy",
+        "permission": "insurance.read"
+      },
+      {
+        "method": "Post",
+        "route": "/insurance/dependents",
+        "handler": "addDependent",
+        "permission": "insurance.create"
+      },
+      {
+        "method": "Post",
+        "route": "/insurance/claims",
+        "handler": "createClaim",
+        "permission": "insurance.create"
+      },
+      {
+        "method": "Patch",
+        "route": "/insurance/claims/:id/approve",
+        "handler": "approveClaim",
+        "permission": "insurance.create"
+      },
+      {
+        "method": "Patch",
+        "route": "/insurance/claims/:id/reject",
+        "handler": "rejectClaim",
+        "permission": "insurance.approve"
+      }
+    ]
+  },
+  "leave": {
+    "prefix": "leave",
+    "file": "leave.controller.ts",
+    "endpoints": [
+      {
+        "method": "Get",
+        "route": "/leave/types",
+        "handler": "types",
+        "permission": "None"
+      },
+      {
+        "method": "Patch",
+        "route": "/leave/types/:id",
+        "handler": "updateType",
+        "permission": "leave.read"
+      },
+      {
+        "method": "Post",
+        "route": "/leave/types",
+        "handler": "createType",
+        "permission": "leave.configure"
+      },
+      {
+        "method": "Get",
+        "route": "/leave/assignments",
+        "handler": "getAssignments",
+        "permission": "leave.configure"
+      },
+      {
+        "method": "Post",
+        "route": "/leave/assignments",
+        "handler": "assignRules",
+        "permission": "leave.read"
+      },
+      {
+        "method": "Post",
+        "route": "/leave/assignments/delete",
+        "handler": "unassignRules",
+        "permission": "leave.configure"
+      },
+      {
+        "method": "Get",
+        "route": "/leave/balances",
+        "handler": "balances",
+        "permission": "leave.configure"
+      },
+      {
+        "method": "Get",
+        "route": "/leave/requests",
+        "handler": "requests",
+        "permission": "leave.read"
+      },
+      {
+        "method": "Post",
+        "route": "/leave/requests",
+        "handler": "request",
+        "permission": "leave.read"
+      },
+      {
+        "method": "Patch",
+        "route": "/leave/requests/:id/approve",
+        "handler": "approve",
+        "permission": "leave.create"
+      },
+      {
+        "method": "Patch",
+        "route": "/leave/requests/:id/reject",
+        "handler": "reject",
+        "permission": "leave.approve"
+      }
+    ]
+  },
+  "notifications": {
+    "prefix": "notifications",
+    "file": "notifications.controller.ts",
+    "endpoints": [
+      {
+        "method": "Get",
+        "route": "/notifications",
+        "handler": "list",
+        "permission": "None"
+      },
+      {
+        "method": "Get",
+        "route": "/notifications/recipients",
+        "handler": "recipients",
+        "permission": "notifications.read"
+      },
+      {
+        "method": "Post",
+        "route": "/notifications",
+        "handler": "create",
+        "permission": "notifications.read"
+      },
+      {
+        "method": "Patch",
+        "route": "/notifications/:id/sent",
+        "handler": "markSent",
+        "permission": "notifications.create"
+      }
+    ]
+  },
+  "organization": {
+    "prefix": "organization",
+    "file": "organization.controller.ts",
+    "endpoints": [
+      {
+        "method": "Get",
+        "route": "/organization/chart",
+        "handler": "chart",
+        "permission": "None"
+      },
+      {
+        "method": "Patch",
+        "route": "/organization/employees/:id/manager",
+        "handler": "updateManager",
+        "permission": "organization.read"
+      }
+    ]
+  },
+  "payroll": {
+    "prefix": "payroll",
+    "file": "payroll.controller.ts",
+    "endpoints": [
+      {
+        "method": "Get",
+        "route": "/payroll/salary-structures",
+        "handler": "salaryStructures",
+        "permission": "None"
+      },
+      {
+        "method": "Post",
+        "route": "/payroll/salary-structures",
+        "handler": "createSalaryStructure",
+        "permission": "payroll.read"
+      },
+      {
+        "method": "Get",
+        "route": "/payroll/runs",
+        "handler": "runs",
+        "permission": "payroll.configure"
+      },
+      {
+        "method": "Post",
+        "route": "/payroll/runs",
+        "handler": "createRun",
+        "permission": "payroll.read"
+      },
+      {
+        "method": "Post",
+        "route": "/payroll/runs/:id/calculate",
+        "handler": "calculate",
+        "permission": "payroll.create"
+      },
+      {
+        "method": "Post",
+        "route": "/payroll/runs/:id/lock",
+        "handler": "lock",
+        "permission": "payroll.update"
+      },
+      {
+        "method": "Get",
+        "route": "/payroll/runs/:id/payslips",
+        "handler": "payslips",
+        "permission": "payroll.approve"
+      },
+      {
+        "method": "Post",
+        "route": "/payroll/runs/:id/bank-export",
+        "handler": "bankExport",
+        "permission": "payroll.read"
+      }
+    ]
+  },
+  "performance": {
+    "prefix": "performance",
+    "file": "performance.controller.ts",
+    "endpoints": [
+      {
+        "method": "Get",
+        "route": "/performance",
+        "handler": "summary",
+        "permission": "None"
+      },
+      {
+        "method": "Post",
+        "route": "/performance/cycle",
+        "handler": "launchCycle",
+        "permission": "performance.read"
+      }
+    ]
+  },
+  "reports": {
+    "prefix": "reports",
+    "file": "reports.controller.ts",
+    "endpoints": [
+      {
+        "method": "Get",
+        "route": "/reports/employees",
+        "handler": "employees",
+        "permission": "None"
+      },
+      {
+        "method": "Get",
+        "route": "/reports/attendance",
+        "handler": "attendance",
+        "permission": "reports.read"
+      },
+      {
+        "method": "Get",
+        "route": "/reports/leave",
+        "handler": "leave",
+        "permission": "reports.read"
+      },
+      {
+        "method": "Get",
+        "route": "/reports/payroll",
+        "handler": "payroll",
+        "permission": "reports.read"
+      },
+      {
+        "method": "Get",
+        "route": "/reports/expenses",
+        "handler": "expenses",
+        "permission": "reports.read"
+      },
+      {
+        "method": "Get",
+        "route": "/reports/compliance",
+        "handler": "compliance",
+        "permission": "reports.read"
+      },
+      {
+        "method": "Post",
+        "route": "/reports/export",
+        "handler": "export",
+        "permission": "reports.read"
+      }
+    ]
+  },
+  "rewards": {
+    "prefix": "rewards",
+    "file": "rewards.controller.ts",
+    "endpoints": [
+      {
+        "method": "Get",
+        "route": "/rewards",
+        "handler": "summary",
+        "permission": "None"
+      },
+      {
+        "method": "Post",
+        "route": "/rewards/vouchers",
+        "handler": "createVoucher",
+        "permission": "rewards.read"
+      },
+      {
+        "method": "Post",
+        "route": "/rewards/benefits",
+        "handler": "createBenefit",
+        "permission": "rewards.create"
+      },
+      {
+        "method": "Post",
+        "route": "/rewards/points",
+        "handler": "awardPoints",
+        "permission": "rewards.create"
+      },
+      {
+        "method": "Post",
+        "route": "/rewards/recognitions",
+        "handler": "recognize",
+        "permission": "rewards.create"
+      }
+    ]
+  },
+  "saas": {
+    "prefix": "saas",
+    "file": "saas.controller.ts",
+    "endpoints": [
+      {
+        "method": "Post",
+        "route": "/saas/signup",
+        "handler": "signup",
+        "permission": "None"
+      },
+      {
+        "method": "Get",
+        "route": "/saas",
+        "handler": "summary",
+        "permission": "None"
+      },
+      {
+        "method": "Get",
+        "route": "/saas/logs",
+        "handler": "logs",
+        "permission": "saas.read"
+      },
+      {
+        "method": "Patch",
+        "route": "/saas/companies/:id/status",
+        "handler": "updateCompanyStatus",
+        "permission": "saas.read"
+      },
+      {
+        "method": "Post",
+        "route": "/saas/invoice",
+        "handler": "createInvoice",
+        "permission": "saas.configure"
+      },
+      {
+        "method": "Post",
+        "route": "/saas/license-refresh",
+        "handler": "refreshLicense",
+        "permission": "saas.configure"
+      },
+      {
+        "method": "Post",
+        "route": "/saas/select-plan",
+        "handler": "selectPlan",
+        "permission": "saas.configure"
+      }
+    ]
+  },
+  "security": {
+    "prefix": "",
+    "file": "security.controller.ts",
+    "endpoints": [
+      {
+        "method": "Get",
+        "route": "/audit-logs",
+        "handler": "auditLogs",
+        "permission": "None"
+      },
+      {
+        "method": "Get",
+        "route": "/notifications",
+        "handler": "notifications",
+        "permission": "settings.configure"
+      }
+    ]
+  },
+  "settings": {
+    "prefix": "settings",
+    "file": "settings.controller.ts",
+    "endpoints": [
+      {
+        "method": "Get",
+        "route": "/settings/public-profile",
+        "handler": "publicProfile",
+        "permission": "None"
+      },
+      {
+        "method": "Get",
+        "route": "/settings/company",
+        "handler": "company",
+        "permission": "None"
+      },
+      {
+        "method": "Patch",
+        "route": "/settings/company",
+        "handler": "updateCompany",
+        "permission": "settings.configure"
+      },
+      {
+        "method": "Get",
+        "route": "/settings/modules",
+        "handler": "modules",
+        "permission": "settings.configure"
+      },
+      {
+        "method": "Patch",
+        "route": "/settings/modules/:module",
+        "handler": "updateModule",
+        "permission": "settings.configure"
+      },
+      {
+        "method": "Get",
+        "route": "/settings/rules",
+        "handler": "rules",
+        "permission": "settings.configure"
+      },
+      {
+        "method": "Patch",
+        "route": "/settings/rules",
+        "handler": "updateRules",
+        "permission": "settings.configure"
+      },
+      {
+        "method": "Get",
+        "route": "/settings/logs",
+        "handler": "logs",
+        "permission": "settings.configure"
+      }
+    ]
+  },
+  "social": {
+    "prefix": "social",
+    "file": "social.controller.ts",
+    "endpoints": [
+      {
+        "method": "Get",
+        "route": "/social/feed",
+        "handler": "feed",
+        "permission": "None"
+      },
+      {
+        "method": "Post",
+        "route": "/social/posts",
+        "handler": "createPost",
+        "permission": "social.read"
+      },
+      {
+        "method": "Post",
+        "route": "/social/posts/:id/like",
+        "handler": "like",
+        "permission": "social.create"
+      },
+      {
+        "method": "Delete",
+        "route": "/social/posts/:id/like",
+        "handler": "unlike",
+        "permission": "social.create"
+      },
+      {
+        "method": "Post",
+        "route": "/social/posts/:id/comments",
+        "handler": "comment",
+        "permission": "social.create"
+      }
+    ]
+  },
+  "tickets": {
+    "prefix": "tickets",
+    "file": "tickets.controller.ts",
+    "endpoints": [
+      {
+        "method": "Post",
+        "route": "/tickets",
+        "handler": "create",
+        "permission": "None"
+      },
+      {
+        "method": "Get",
+        "route": "/tickets",
+        "handler": "findAll",
+        "permission": "None"
+      },
+      {
+        "method": "Get",
+        "route": "/tickets/:id",
+        "handler": "findOne",
+        "permission": "None"
+      },
+      {
+        "method": "Post",
+        "route": "/tickets/:id/comments",
+        "handler": "addComment",
+        "permission": "None"
+      },
+      {
+        "method": "Patch",
+        "route": "/tickets/:id/status",
+        "handler": "updateStatus",
+        "permission": "None"
+      }
+    ]
+  }
+}

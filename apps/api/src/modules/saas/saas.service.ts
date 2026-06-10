@@ -56,7 +56,7 @@ export class SaasService {
         modules: 30,
         status: selectedPlan === "Pro" ? "ACTIVE" : "AVAILABLE",
         accessLevel: "Enterprise access",
-        features: ["Everything in Standard", "ATS", "Rewards", "Analytics", "Compliance", "Security", "SaaS controls"],
+        features: ["Everything in Standard", "Rewards", "Analytics", "Compliance", "Security", "SaaS controls"],
       },
     ];
     const planMatrix = [
@@ -412,7 +412,7 @@ export class SaasService {
       ? ["directory", "documents", "attendance", "leave"]
       : data.planName === "Standard"
       ? ["directory", "documents", "attendance", "leave", "payroll", "expenses", "insurance"]
-      : ["directory", "documents", "attendance", "leave", "payroll", "expenses", "insurance", "ats", "rewards", "analytics"];
+      : ["directory", "documents", "attendance", "leave", "payroll", "expenses", "insurance", "rewards", "analytics"];
 
     for (const mod of modulesToEnable) {
       await this.prisma.moduleSetting.create({
@@ -451,7 +451,7 @@ export class SaasService {
     const planDetails = [
       { name: "Basic", monthlyPrice: 0, annualPrice: 0, employeeLimit: 5, features: ["No hidden charges", "No credit card required", "Employee directory", "Documents", "Web attendance", "Leave basics", "Holiday calendar", "Email support"] },
       { name: "Standard", monthlyPrice: 1749, annualPrice: 17490, employeeLimit: 25, features: ["Everything in Basic", "Payroll", "Expenses", "Insurance", "ID & visiting cards", "Organization chart", "Notifications", "Phone support"] },
-      { name: "Pro", monthlyPrice: 3750, annualPrice: 37500, employeeLimit: 250, features: ["Everything in Standard", "ATS", "Rewards", "Analytics", "Compliance", "Security", "SaaS controls"] }
+      { name: "Pro", monthlyPrice: 3750, annualPrice: 37500, employeeLimit: 250, features: ["Everything in Standard", "Rewards", "Analytics", "Compliance", "Security", "SaaS controls"] }
     ];
 
     for (const p of planDetails) {

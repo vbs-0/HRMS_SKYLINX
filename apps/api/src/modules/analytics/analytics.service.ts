@@ -7,7 +7,7 @@ export class AnalyticsService {
   constructor(private readonly prisma: PrismaService) {}
 
   async summary() {
-    const [employees, attendanceLogs, leaveRequests, payslips, expenses, jobs, candidates] = await Promise.all([
+    const [employees, attendanceLogs, leaveRequests, payslips, expenses] = await Promise.all([
       this.prisma.employee.findMany({
         include: {
           department: true,
@@ -19,8 +19,6 @@ export class AnalyticsService {
       this.prisma.leaveRequest.findMany(),
       this.prisma.payslip.findMany(),
       this.prisma.expense.findMany(),
-      this.prisma.jobPosting.findMany({ include: { applications: true } }),
-      this.prisma.candidate.findMany(),
     ]);
 
     const activeEmployees = employees.filter((employee) => employee.status === "ACTIVE");
@@ -29,8 +27,7 @@ export class AnalyticsService {
     const approvedLeaves = leaveRequests.filter((leave) => leave.status === "APPROVED").length;
     const leaveApprovalRate = leaveRequests.length ? Math.round((approvedLeaves / leaveRequests.length) * 100) : 0;
     const payrollNet = payslips.reduce((sum, payslip) => sum + Number(payslip.netPay), 0);
-    const pendingExpenses = expenses.filter((expense) => expense.status === "PENDING").length;
-    const openJobs = jobs.filter((job) => job.status === "OPEN").length;
+
 
     const departmentMap = new Map<string, number>();
     for (const employee of activeEmployees) {
@@ -54,16 +51,13 @@ export class AnalyticsService {
         leaveApprovalRate,
         monthlyPayroll,
         payrollNet,
-        pendingExpenses,
-        openJobs,
-        candidates: candidates.length,
+        pendingExpenses: expenses.filter((expense) => expense.status === "PENDING").length,
         annualCtc,
       },
       insights: [
         { title: "Workforce Strength", value: `${activeEmployees.length} active`, note: `${departmentMap.size} departments covered`, status: "STABLE" },
         { title: "Attendance Health", value: `${attendanceRate}%`, note: `${attendanceLogs.length} attendance logs analysed`, status: attendanceRate >= 85 ? "GOOD" : "REVIEW" },
         { title: "Payroll Load", value: `INR ${monthlyPayroll.toLocaleString("en-IN")}`, note: `${payslips.length} payslips in current sample`, status: "TRACKING" },
-        { title: "Hiring Pipeline", value: `${candidates.length} candidates`, note: `${openJobs} open jobs`, status: openJobs ? "ACTIVE" : "LOW" },
       ],
       departmentBreakdown: Array.from(departmentMap.entries()).map(([department, count]) => ({ department, count })),
       locationBreakdown: Array.from(locationMap.entries()).map(([location, count]) => ({ location, count })),
@@ -71,13 +65,11 @@ export class AnalyticsService {
         { label: "Headcount", value: activeEmployees.length },
         { label: "Attendance", value: attendanceRate },
         { label: "Leave", value: leaveApprovalRate },
-        { label: "Hiring", value: candidates.length },
-        { label: "Expenses", value: pendingExpenses },
+        { label: "Expenses", value: expenses.filter((expense) => expense.status === "PENDING").length },
       ],
       risks: [
-        { name: "Pending Expenses", count: pendingExpenses, status: pendingExpenses > 0 ? "REVIEW" : "GOOD" },
+        { name: "Pending Expenses", count: expenses.filter((expense) => expense.status === "PENDING").length, status: expenses.filter((expense) => expense.status === "PENDING").length > 0 ? "REVIEW" : "GOOD" },
         { name: "Leave Approval", count: leaveRequests.length - approvedLeaves, status: leaveRequests.length - approvedLeaves > 0 ? "REVIEW" : "GOOD" },
-        { name: "Open Hiring", count: openJobs, status: openJobs > 0 ? "ACTIVE" : "LOW" },
       ],
     });
   }

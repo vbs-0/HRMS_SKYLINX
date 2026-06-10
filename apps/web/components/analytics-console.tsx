@@ -40,18 +40,17 @@ export function AnalyticsConsole() {
 
   return (
     <div className="grid gap-5">
-      <div className="grid grid-cols-4 gap-3 max-xl:grid-cols-2 max-md:grid-cols-1">
+      <div className="grid grid-cols-3 gap-3 max-xl:grid-cols-2 max-md:grid-cols-1">
         <MetricCard label="Headcount" value={String(data.metrics.headcount)} note="Active employees" />
         <MetricCard label="Attendance Rate" value={`${data.metrics.attendanceRate}%`} note="Presence health" />
         <MetricCard label="Payroll Net" value={money(data.metrics.payrollNet)} note="Current payout" />
-        <MetricCard label="Hiring Pipeline" value={String(data.metrics.candidates)} note={`${data.metrics.openJobs} open jobs`} />
       </div>
 
       <Card>
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className="text-lg font-semibold">Executive Insights</h2>
-            <p className="mt-1 text-sm text-muted">Workforce, attendance, payroll, expenses and hiring signals.</p>
+            <p className="mt-1 text-sm text-muted">Workforce, attendance, payroll and expenses signals.</p>
           </div>
           <StatusPill>Live HRMS Data</StatusPill>
         </div>
@@ -106,7 +105,7 @@ export function AnalyticsConsole() {
         </Card>
       </div>
 
-      <div className="grid grid-cols-3 gap-5 max-xl:grid-cols-1">
+      <div className="grid grid-cols-2 gap-5 max-xl:grid-cols-1">
         <Card>
           <div className="mb-3 flex items-center gap-2"><Users className="h-5 w-5 text-brand" /><h2 className="text-lg font-semibold">Workforce</h2></div>
           <div className="text-3xl font-semibold">{data.metrics.headcount}</div>
@@ -116,11 +115,6 @@ export function AnalyticsConsole() {
           <div className="mb-3 flex items-center gap-2"><BadgeIndianRupee className="h-5 w-5 text-brand" /><h2 className="text-lg font-semibold">Payroll</h2></div>
           <div className="text-3xl font-semibold">{money(data.metrics.monthlyPayroll)}</div>
           <div className="mt-1 text-sm text-muted">{money(data.metrics.payrollNet)} net payable</div>
-        </Card>
-        <Card>
-          <div className="mb-3 flex items-center gap-2"><BriefcaseBusiness className="h-5 w-5 text-brand" /><h2 className="text-lg font-semibold">Hiring</h2></div>
-          <div className="text-3xl font-semibold">{data.metrics.openJobs}</div>
-          <div className="mt-1 text-sm text-muted">{data.metrics.candidates} candidates in ATS</div>
         </Card>
       </div>
 

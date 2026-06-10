@@ -17,15 +17,12 @@ import { PayrollModule } from "./payroll/payroll.module";
 import { ExpensesModule } from "./expenses/expenses.module";
 import { HolidaysModule } from "./holidays/holidays.module";
 import { InsuranceModule } from "./insurance/insurance.module";
-import { IntegrationsModule } from "./integrations/integrations.module";
-import { LifecycleModule } from "./lifecycle/lifecycle.module";
 import { NotificationsModule } from "./notifications/notifications.module";
 import { OrganizationModule } from "./organization/organization.module";
 import { PerformanceModule } from "./performance/performance.module";
 import { ReportsModule } from "./reports/reports.module";
 import { RewardsModule } from "./rewards/rewards.module";
 import { SaasModule } from "./saas/saas.module";
-import { AtsModule } from "./ats/ats.module";
 import { SettingsModule } from "./settings/settings.module";
 import { SecurityModule } from "./security/security.module";
 import { SocialModule } from "./social/social.module";
@@ -54,15 +51,12 @@ import { PermissionsGuard } from "../common/auth/permissions.guard";
     ExpensesModule,
     HolidaysModule,
     InsuranceModule,
-    IntegrationsModule,
-    LifecycleModule,
     NotificationsModule,
     OrganizationModule,
     PerformanceModule,
     ReportsModule,
     RewardsModule,
     SaasModule,
-    AtsModule,
     SettingsModule,
     SecurityModule,
     SocialModule,

@@ -65,7 +65,7 @@ async function main() {
     ),
   );
 
-  const permissions = ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "integrations", "lifecycle", "assets", "performance", "mobile", "backup", "testing", "analytics", "saas", "approvals", "notifications", "organization", "reports", "rewards", "settings", "social", "ats", "compliance"].flatMap((module) =>
+  const permissions = ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "assets", "performance", "mobile", "backup", "testing", "analytics", "saas", "approvals", "notifications", "organization", "reports", "rewards", "settings", "social", "compliance"].flatMap((module) =>
     ["create", "read", "update", "delete", "approve", "export", "configure"].map((action) => ({ module, action })),
   );
 
@@ -80,21 +80,18 @@ async function main() {
   const hrPermissions = await prisma.permission.findMany({
     where: {
       OR: [
-        { module: { in: ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "integrations", "lifecycle", "assets", "performance", "mobile", "backup", "testing", "analytics", "saas", "approvals", "notifications", "organization", "reports", "rewards", "social", "ats", "compliance"] }, action: "read" },
-        { module: { in: ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "notifications", "rewards", "social", "ats"] }, action: "create" },
-        { module: { in: ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "notifications", "organization", "ats"] }, action: "update" },
+        { module: { in: ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "assets", "performance", "mobile", "backup", "testing", "analytics", "saas", "approvals", "notifications", "organization", "reports", "rewards", "social", "compliance"] }, action: "read" },
+        { module: { in: ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "notifications", "rewards", "social"] }, action: "create" },
+        { module: { in: ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "notifications", "organization"] }, action: "update" },
         { module: { in: ["leave", "attendance", "expenses", "insurance"] }, action: "approve" },
         { module: "approvals", action: "approve" },
         { module: "employees", action: "approve" },
         { module: "payroll", action: "approve" },
-        { module: "ats", action: "approve" },
         { module: "payroll", action: "configure" },
         { module: "mobile", action: "configure" },
         { module: "backup", action: "configure" },
         { module: "testing", action: "configure" },
         { module: "saas", action: "configure" },
-        { module: "integrations", action: "configure" },
-        { module: "lifecycle", action: "configure" },
         { module: "assets", action: "configure" },
         { module: "performance", action: "configure" },
         { module: "settings", action: "configure" },
@@ -265,8 +262,6 @@ async function main() {
     "payroll",
     "expenses",
     "insurance",
-    "integrations",
-    "lifecycle",
     "assets",
     "performance",
     "approvals",
@@ -281,7 +276,6 @@ async function main() {
     "compliance",
     "reports",
     "security",
-    "ats",
   ]) {
     await prisma.moduleSetting.upsert({
       where: { companyId_module: { companyId: company.id, module } },
@@ -509,45 +503,7 @@ async function main() {
     },
   });
 
-  const backendJob = await prisma.jobPosting.create({
-    data: {
-      companyId: company.id,
-      title: "Backend Engineer",
-      departmentId: engineeringDept.id,
-      locationId: locations[1].id,
-      openings: 2,
-      status: "OPEN",
-    },
-  });
 
-  const candidate = await prisma.candidate.create({
-    data: {
-      fullName: "Neha Sharma",
-      email: "neha.sharma@example.com",
-      phone: "+91 98888 12000",
-      resumeUrl: "https://storage.skylinx.local/ats/resumes/neha-sharma.pdf",
-      source: "LinkedIn",
-      currentStage: "INTERVIEW",
-      applications: {
-        create: {
-          jobPostingId: backendJob.id,
-          stage: "INTERVIEW",
-          status: "ACTIVE",
-        },
-      },
-    },
-    include: { applications: true },
-  });
-
-  await prisma.interview.create({
-    data: {
-      applicationId: candidate.applications[0].id,
-      interviewerEmployeeId: "emp_1003",
-      scheduledAt: new Date("2026-05-28T11:00:00+05:30"),
-      mode: "VIDEO",
-      status: "SCHEDULED",
-    },
-  });
 
   await prisma.notification.create({
     data: {

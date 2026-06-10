@@ -1,6 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { response } from "../../common/crud-response";
 import { PrismaService } from "../../prisma/prisma.service";
+import { TenantContext } from "../../common/tenant-context";
 
 @Injectable()
 export class ReportsService {
@@ -37,7 +38,9 @@ export class ReportsService {
   }
 
   private async employeeReport() {
+    const tenantId = TenantContext.getTenantId();
     const employees = await this.prisma.employee.findMany({
+      where: tenantId ? { companyId: tenantId } : {},
       include: { department: true, designation: true, location: true },
       orderBy: { employeeCode: "asc" },
     });
@@ -56,7 +59,9 @@ export class ReportsService {
   }
 
   private async attendanceReport() {
+    const tenantId = TenantContext.getTenantId();
     const logs = await this.prisma.attendanceLog.findMany({
+      where: tenantId ? { employee: { companyId: tenantId } } : {},
       include: { employee: true, shift: true },
       orderBy: { date: "desc" },
       take: 100,
@@ -79,7 +84,9 @@ export class ReportsService {
   }
 
   private async leaveReport() {
+    const tenantId = TenantContext.getTenantId();
     const requests = await this.prisma.leaveRequest.findMany({
+      where: tenantId ? { employee: { companyId: tenantId } } : {},
       include: { employee: true, leaveType: true },
       orderBy: { createdAt: "desc" },
     });
@@ -100,7 +107,9 @@ export class ReportsService {
   }
 
   private async payrollReport() {
+    const tenantId = TenantContext.getTenantId();
     const payslips = await this.prisma.payslip.findMany({
+      where: tenantId ? { employee: { companyId: tenantId } } : {},
       include: { employee: true, payrollRun: true },
       orderBy: [{ payrollRun: { year: "desc" } }, { payrollRun: { month: "desc" } }],
     });
@@ -126,7 +135,9 @@ export class ReportsService {
   }
 
   private async expenseReport() {
+    const tenantId = TenantContext.getTenantId();
     const expenses = await this.prisma.expense.findMany({
+      where: tenantId ? { employee: { companyId: tenantId } } : {},
       include: { employee: true },
       orderBy: { claimDate: "desc" },
     });
@@ -146,8 +157,15 @@ export class ReportsService {
   }
 
   private async complianceReport() {
-    const salaryStructures = await this.prisma.salaryStructure.findMany({ include: { employee: true } });
-    const payrollRuns = await this.prisma.payrollRun.findMany({ orderBy: [{ year: "desc" }, { month: "desc" }] });
+    const tenantId = TenantContext.getTenantId();
+    const salaryStructures = await this.prisma.salaryStructure.findMany({
+      where: tenantId ? { employee: { companyId: tenantId } } : {},
+      include: { employee: true },
+    });
+    const payrollRuns = await this.prisma.payrollRun.findMany({
+      where: tenantId ? { companyId: tenantId } : {},
+      orderBy: [{ year: "desc" }, { month: "desc" }],
+    });
     return {
       type: "compliance",
       totalEmployees: salaryStructures.length,

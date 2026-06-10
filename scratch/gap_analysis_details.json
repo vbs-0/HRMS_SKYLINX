@@ -1,0 +1,2363 @@
+{
+  "summary": {
+    "totalPrismaModels": 52,
+    "totalRefHrDoctypes": 118,
+    "totalRefPayrollDoctypes": 43,
+    "totalWhitelistedApis": 213,
+    "totalApiModules": 25
+  },
+  "prismaModels": [
+    "Company",
+    "User",
+    "Role",
+    "Permission",
+    "UserRole",
+    "RolePermission",
+    "OtpToken",
+    "Department",
+    "Designation",
+    "Location",
+    "Employee",
+    "EmployeeDocument",
+    "EmployeeBankDetail",
+    "Shift",
+    "AttendanceRule",
+    "AttendanceLog",
+    "AttendanceRegularization",
+    "OvertimeRequest",
+    "LeaveType",
+    "LeaveBalance",
+    "LeaveRequest",
+    "SalaryStructure",
+    "PayrollRun",
+    "Payslip",
+    "PayrollComponent",
+    "Holiday",
+    "Expense",
+    "EmployeeInsurance",
+    "InsuranceDependent",
+    "InsuranceClaim",
+    "JobPosting",
+    "Candidate",
+    "JobApplication",
+    "Interview",
+    "Notification",
+    "SocialPost",
+    "SocialLike",
+    "SocialComment",
+    "RewardVoucher",
+    "RewardLedger",
+    "RecognitionReward",
+    "BenefitItem",
+    "AuditLog",
+    "ModuleSetting",
+    "ClientRule",
+    "Plan",
+    "Subscription",
+    "Payment",
+    "Ticket",
+    "TicketComment",
+    "ErrorLog",
+    "SystemLog"
+  ],
+  "hrMapping": [
+    {
+      "doctype": "appointment_letter",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "appointment_letter_content",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "appointment_letter_template",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "appraisal",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "appraisal_cycle",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "appraisal_goal",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "appraisal_kra",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "appraisal_template",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "appraisal_template_goal",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "appraisee",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "attendance",
+      "prismaModel": "AttendanceLog",
+      "implemented": true
+    },
+    {
+      "doctype": "attendance_request",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "compensatory_leave_request",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "daily_work_summary",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "daily_work_summary_group",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "daily_work_summary_group_user",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "department_approver",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "designation_skill",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "earned_leave_schedule",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_advance",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_attendance_tool",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_boarding_activity",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_checkin",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_feedback_criteria",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_feedback_rating",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_grade",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_grievance",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_health_insurance",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_onboarding",
+      "prismaModel": "Employee",
+      "implemented": true
+    },
+    {
+      "doctype": "employee_onboarding_template",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_performance_feedback",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_promotion",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_property_history",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_referral",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_separation",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_separation_template",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_skill",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_skill_map",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_training",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_transfer",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employment_type",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "exit_interview",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "expected_skill_set",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "expense_claim",
+      "prismaModel": "Expense",
+      "implemented": true
+    },
+    {
+      "doctype": "expense_claim_account",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "expense_claim_advance",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "expense_claim_detail",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "expense_claim_type",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "expense_taxes_and_charges",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "full_and_final_asset",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "full_and_final_outstanding_statement",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "full_and_final_statement",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "goal",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "grievance_type",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "holiday_list_assignment",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "hr_settings",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "identification_document_type",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "interest",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "interview",
+      "prismaModel": "Interview",
+      "implemented": true
+    },
+    {
+      "doctype": "interviewer",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "interview_detail",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "interview_feedback",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "interview_round",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "interview_type",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "job_applicant",
+      "prismaModel": "Candidate",
+      "implemented": true
+    },
+    {
+      "doctype": "job_applicant_source",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "job_offer",
+      "prismaModel": "JobApplication",
+      "implemented": true
+    },
+    {
+      "doctype": "job_offer_term",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "job_offer_term_template",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "job_opening",
+      "prismaModel": "JobPosting",
+      "implemented": true
+    },
+    {
+      "doctype": "job_opening_template",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "job_requisition",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "kra",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "leave_adjustment",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "leave_allocation",
+      "prismaModel": "LeaveBalance",
+      "implemented": true
+    },
+    {
+      "doctype": "leave_application",
+      "prismaModel": "LeaveRequest",
+      "implemented": true
+    },
+    {
+      "doctype": "leave_block_list",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "leave_block_list_allow",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "leave_block_list_date",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "leave_control_panel",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "leave_encashment",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "leave_ledger_entry",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "leave_period",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "leave_policy",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "leave_policy_assignment",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "leave_policy_detail",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "leave_type",
+      "prismaModel": "LeaveType",
+      "implemented": true
+    },
+    {
+      "doctype": "offer_term",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "overtime_details",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "overtime_salary_component",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "overtime_slip",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "overtime_type",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "purpose_of_travel",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "pwa_notification",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "shift_assignment",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "shift_assignment_tool",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "shift_location",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "shift_request",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "shift_schedule",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "shift_schedule_assignment",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "shift_type",
+      "prismaModel": "Shift",
+      "implemented": true
+    },
+    {
+      "doctype": "skill",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "skill_assessment",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "staffing_plan",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "staffing_plan_detail",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "training_event",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "training_event_employee",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "training_feedback",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "training_program",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "training_result",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "training_result_employee",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "travel_itinerary",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "travel_request",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "travel_request_costing",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "upload_attendance",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "vehicle_log",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "vehicle_service",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "vehicle_service_item",
+      "prismaModel": null,
+      "implemented": false
+    }
+  ],
+  "payrollMapping": [
+    {
+      "doctype": "additional_salary",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "arrear",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "bulk_salary_structure_assignment",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_benefit_application",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_benefit_application_detail",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_benefit_claim",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_benefit_detail",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_benefit_ledger",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_cost_center",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_incentive",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_other_income",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_tax_exemption_category",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_tax_exemption_declaration",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_tax_exemption_declaration_category",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_tax_exemption_proof_submission",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_tax_exemption_proof_submission_detail",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "employee_tax_exemption_sub_category",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "gratuity",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "gratuity_applicable_component",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "gratuity_rule",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "gratuity_rule_slab",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "income_tax_slab",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "income_tax_slab_other_charges",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "payroll_correction",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "payroll_correction_child",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "payroll_employee_detail",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "payroll_entry",
+      "prismaModel": "PayrollRun",
+      "implemented": true
+    },
+    {
+      "doctype": "payroll_period",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "payroll_period_date",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "payroll_settings",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "retention_bonus",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "salary_component",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "salary_component_account",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "salary_detail",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "salary_slip",
+      "prismaModel": "Payslip",
+      "implemented": true
+    },
+    {
+      "doctype": "salary_slip_leave",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "salary_slip_loan",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "salary_slip_timesheet",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "salary_structure",
+      "prismaModel": "SalaryStructure",
+      "implemented": true
+    },
+    {
+      "doctype": "salary_structure_assignment",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "salary_withholding",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "salary_withholding_cycle",
+      "prismaModel": null,
+      "implemented": false
+    },
+    {
+      "doctype": "taxable_salary_slab",
+      "prismaModel": null,
+      "implemented": false
+    }
+  ],
+  "missingHrDoctypes": [
+    "appointment_letter",
+    "appointment_letter_content",
+    "appointment_letter_template",
+    "appraisal",
+    "appraisal_cycle",
+    "appraisal_goal",
+    "appraisal_kra",
+    "appraisal_template",
+    "appraisal_template_goal",
+    "appraisee",
+    "attendance_request",
+    "compensatory_leave_request",
+    "daily_work_summary",
+    "daily_work_summary_group",
+    "daily_work_summary_group_user",
+    "department_approver",
+    "designation_skill",
+    "earned_leave_schedule",
+    "employee_advance",
+    "employee_attendance_tool",
+    "employee_boarding_activity",
+    "employee_checkin",
+    "employee_feedback_criteria",
+    "employee_feedback_rating",
+    "employee_grade",
+    "employee_grievance",
+    "employee_health_insurance",
+    "employee_onboarding_template",
+    "employee_performance_feedback",
+    "employee_promotion",
+    "employee_property_history",
+    "employee_referral",
+    "employee_separation",
+    "employee_separation_template",
+    "employee_skill",
+    "employee_skill_map",
+    "employee_training",
+    "employee_transfer",
+    "employment_type",
+    "exit_interview",
+    "expected_skill_set",
+    "expense_claim_account",
+    "expense_claim_advance",
+    "expense_claim_detail",
+    "expense_claim_type",
+    "expense_taxes_and_charges",
+    "full_and_final_asset",
+    "full_and_final_outstanding_statement",
+    "full_and_final_statement",
+    "goal",
+    "grievance_type",
+    "holiday_list_assignment",
+    "hr_settings",
+    "identification_document_type",
+    "interest",
+    "interviewer",
+    "interview_detail",
+    "interview_feedback",
+    "interview_round",
+    "interview_type",
+    "job_applicant_source",
+    "job_offer_term",
+    "job_offer_term_template",
+    "job_opening_template",
+    "job_requisition",
+    "kra",
+    "leave_adjustment",
+    "leave_block_list",
+    "leave_block_list_allow",
+    "leave_block_list_date",
+    "leave_control_panel",
+    "leave_encashment",
+    "leave_ledger_entry",
+    "leave_period",
+    "leave_policy",
+    "leave_policy_assignment",
+    "leave_policy_detail",
+    "offer_term",
+    "overtime_details",
+    "overtime_salary_component",
+    "overtime_slip",
+    "overtime_type",
+    "purpose_of_travel",
+    "pwa_notification",
+    "shift_assignment",
+    "shift_assignment_tool",
+    "shift_location",
+    "shift_request",
+    "shift_schedule",
+    "shift_schedule_assignment",
+    "skill",
+    "skill_assessment",
+    "staffing_plan",
+    "staffing_plan_detail",
+    "training_event",
+    "training_event_employee",
+    "training_feedback",
+    "training_program",
+    "training_result",
+    "training_result_employee",
+    "travel_itinerary",
+    "travel_request",
+    "travel_request_costing",
+    "upload_attendance",
+    "vehicle_log",
+    "vehicle_service",
+    "vehicle_service_item"
+  ],
+  "implementedHrDoctypes": [
+    {
+      "doctype": "attendance",
+      "model": "AttendanceLog"
+    },
+    {
+      "doctype": "employee_onboarding",
+      "model": "Employee"
+    },
+    {
+      "doctype": "expense_claim",
+      "model": "Expense"
+    },
+    {
+      "doctype": "interview",
+      "model": "Interview"
+    },
+    {
+      "doctype": "job_applicant",
+      "model": "Candidate"
+    },
+    {
+      "doctype": "job_offer",
+      "model": "JobApplication"
+    },
+    {
+      "doctype": "job_opening",
+      "model": "JobPosting"
+    },
+    {
+      "doctype": "leave_allocation",
+      "model": "LeaveBalance"
+    },
+    {
+      "doctype": "leave_application",
+      "model": "LeaveRequest"
+    },
+    {
+      "doctype": "leave_type",
+      "model": "LeaveType"
+    },
+    {
+      "doctype": "shift_type",
+      "model": "Shift"
+    }
+  ],
+  "missingPayrollDoctypes": [
+    "additional_salary",
+    "arrear",
+    "bulk_salary_structure_assignment",
+    "employee_benefit_application",
+    "employee_benefit_application_detail",
+    "employee_benefit_claim",
+    "employee_benefit_detail",
+    "employee_benefit_ledger",
+    "employee_cost_center",
+    "employee_incentive",
+    "employee_other_income",
+    "employee_tax_exemption_category",
+    "employee_tax_exemption_declaration",
+    "employee_tax_exemption_declaration_category",
+    "employee_tax_exemption_proof_submission",
+    "employee_tax_exemption_proof_submission_detail",
+    "employee_tax_exemption_sub_category",
+    "gratuity",
+    "gratuity_applicable_component",
+    "gratuity_rule",
+    "gratuity_rule_slab",
+    "income_tax_slab",
+    "income_tax_slab_other_charges",
+    "payroll_correction",
+    "payroll_correction_child",
+    "payroll_employee_detail",
+    "payroll_period",
+    "payroll_period_date",
+    "payroll_settings",
+    "retention_bonus",
+    "salary_component",
+    "salary_component_account",
+    "salary_detail",
+    "salary_slip_leave",
+    "salary_slip_loan",
+    "salary_slip_timesheet",
+    "salary_structure_assignment",
+    "salary_withholding",
+    "salary_withholding_cycle",
+    "taxable_salary_slab"
+  ],
+  "implementedPayrollDoctypes": [
+    {
+      "doctype": "payroll_entry",
+      "model": "PayrollRun"
+    },
+    {
+      "doctype": "salary_slip",
+      "model": "Payslip"
+    },
+    {
+      "doctype": "salary_structure",
+      "model": "SalaryStructure"
+    }
+  ],
+  "whitelistedFns": [
+    {
+      "file": "hrms\\api\\oauth.py",
+      "line": 4,
+      "name": "oauth_providers",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\roster.py",
+      "line": 45,
+      "name": "def get_default_company() -> str:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\roster.py",
+      "line": 50,
+      "name": "def get_events(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\roster.py",
+      "line": 70,
+      "name": "get_schedule_from_assignment",
+      "signature": "shift_schedule_assignment: str"
+    },
+    {
+      "file": "hrms\\api\\roster.py",
+      "line": 80,
+      "name": "def create_shift_schedule_assignment(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\roster.py",
+      "line": 115,
+      "name": "def delete_shift_schedule_assignment(shift_schedule_assignment: str) -> None:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\roster.py",
+      "line": 132,
+      "name": "def swap_shift(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\roster.py",
+      "line": 178,
+      "name": "def break_shift(assignment: str | ShiftAssignment, date: str) -> None:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\roster.py",
+      "line": 211,
+      "name": "def insert_shift(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\system_settings.py",
+      "line": 4,
+      "name": "get_user_pass_login_disabled",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 30,
+      "name": "def get_current_user_info() -> dict:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 41,
+      "name": "def get_current_employee_info() -> dict:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 62,
+      "name": "def get_all_employees() -> list[dict]:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 89,
+      "name": "def get_hr_settings() -> dict:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 100,
+      "name": "def get_unread_notifications_count() -> int:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 108,
+      "name": "def mark_all_notifications_as_read() -> None:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 119,
+      "name": "def are_push_notifications_enabled() -> bool:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 129,
+      "name": "def get_attendance_calendar_events(from_date: str, to_date: str) -> dict[str, str]:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 168,
+      "name": "def get_shift_requests(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 207,
+      "name": "def get_attendance_requests(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 275,
+      "name": "def get_shift_request_approvers(employee: str) -> str | list[str]:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 308,
+      "name": "def get_shifts() -> list[dict[str, str]]:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 335,
+      "name": "def get_leave_applications(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 380,
+      "name": "def get_leave_balance_map() -> dict[str, dict[str, float]]:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 408,
+      "name": "def get_holidays_for_employee(employee: str) -> list[dict]:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 430,
+      "name": "def get_leave_approval_details(employee: str) -> dict:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 491,
+      "name": "def get_leave_types(employee: str, date: str) -> list:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 505,
+      "name": "def get_expense_claims(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 549,
+      "name": "def get_expense_claim_summary() -> dict:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 597,
+      "name": "def get_expense_type_description(expense_type: str) -> str:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 602,
+      "name": "def get_expense_claim_types() -> list[dict]:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 609,
+      "name": "def get_expense_approval_details(employee: str) -> dict:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 641,
+      "name": "def get_employee_advance_balance() -> list[dict]:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 672,
+      "name": "def get_company_currencies() -> dict:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 693,
+      "name": "def get_currency_symbols() -> dict:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 702,
+      "name": "def get_company_cost_center_and_expense_account(company: str) -> dict:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 710,
+      "name": "def get_doctype_fields(doctype: str) -> list[dict]:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 720,
+      "name": "def get_doctype_states(doctype: str) -> dict:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 727,
+      "name": "get_attachments",
+      "signature": "dt: str, dn: str"
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 736,
+      "name": "def upload_base64_file(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 780,
+      "name": "delete_attachment",
+      "signature": "filename: str"
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 785,
+      "name": "def _download_pdf(doctype: str, docname: str) -> str:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 805,
+      "name": "def get_workflow(doctype: str) -> dict:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\api\\__init__.py",
+      "line": 835,
+      "name": "def get_permitted_fields_for_write(doctype: str) -> list[str]:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\controllers\\employee_boarding_controller.py",
+      "line": 158,
+      "name": "get_onboarding_details",
+      "signature": "parent: str, parenttype: str"
+    },
+    {
+      "file": "hrms\\hr\\dashboard_chart_source\\employees_by_age\\employees_by_age.py",
+      "line": 13,
+      "name": "def get_data(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\dashboard_chart_source\\hiring_vs_attrition_count\\hiring_vs_attrition_count.py",
+      "line": 13,
+      "name": "def get_data(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\appointment_letter\\appointment_letter.py",
+      "line": 13,
+      "name": "def get_appointment_letter_details(template: str) -> list:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\appraisal\\appraisal.py",
+      "line": 76,
+      "name": "set_appraisal_template",
+      "signature": "self"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\appraisal\\appraisal.py",
+      "line": 95,
+      "name": "set_kras_and_rating_criteria",
+      "signature": "self"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\appraisal\\appraisal.py",
+      "line": 212,
+      "name": "def add_feedback(self, feedback: str, feedback_ratings: list) -> Document:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\appraisal\\appraisal.py",
+      "line": 271,
+      "name": "def get_feedback_history(employee: str, appraisal: str) -> dict:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\appraisal\\appraisal.py",
+      "line": 324,
+      "name": "def get_kras_for_employee(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\appraisal_cycle\\appraisal_cycle.py",
+      "line": 37,
+      "name": "set_employees",
+      "signature": "self"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\appraisal_cycle\\appraisal_cycle.py",
+      "line": 106,
+      "name": "create_appraisals",
+      "signature": "self"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\appraisal_cycle\\appraisal_cycle.py",
+      "line": 145,
+      "name": "complete_cycle",
+      "signature": "self"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\appraisal_cycle\\appraisal_cycle.py",
+      "line": 210,
+      "name": "def get_appraisal_cycle_summary(cycle_name: str) -> dict:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\appraisal_cycle\\appraisal_cycle.py",
+      "line": 251,
+      "name": "def get_employees_without_feedback(cycle_name: str | None = None) -> int:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\attendance\\attendance.py",
+      "line": 256,
+      "name": "def get_events(start: date | str, end: date | str, filters: str | list | None = None) -> list[dict]:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\attendance\\attendance.py",
+      "line": 346,
+      "name": "mark_bulk_attendance",
+      "signature": "data: str | dict"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\attendance\\attendance.py",
+      "line": 399,
+      "name": "def get_unmarked_days(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\attendance\\attendance.py",
+      "line": 441,
+      "name": "def get_employee_shift(employee: str, for_date: str | date | None = None) -> str | None:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\attendance_request\\attendance_request.py",
+      "line": 288,
+      "name": "def get_attendance_warnings(self) -> list:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\department_approver\\department_approver.py",
+      "line": 15,
+      "name": "get_approvers",
+      "signature": "doctype: str, txt: str, searchfield: str, start: int, page_len: int, filters: dict"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\employee_advance\\employee_advance.py",
+      "line": 253,
+      "name": "def create_return_through_additional_salary(doc: str | dict | Document) -> Document:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\employee_advance\\employee_advance.py",
+      "line": 272,
+      "name": "def make_return_entry(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\employee_attendance_tool\\employee_attendance_tool.py",
+      "line": 62,
+      "name": "def get_employees(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\employee_attendance_tool\\employee_attendance_tool.py",
+      "line": 169,
+      "name": "def mark_employee_attendance(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\employee_checkin\\employee_checkin.py",
+      "line": 61,
+      "name": "set_geolocation",
+      "signature": "self"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\employee_checkin\\employee_checkin.py",
+      "line": 65,
+      "name": "fetch_shift",
+      "signature": "self"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\employee_checkin\\employee_checkin.py",
+      "line": 133,
+      "name": "def add_log_based_on_employee_field(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\employee_checkin\\employee_checkin.py",
+      "line": 189,
+      "name": "def bulk_fetch_shift(checkins: list[str] | str) -> None:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\employee_onboarding\\employee_onboarding.py",
+      "line": 62,
+      "name": "mark_onboarding_as_completed",
+      "signature": "self"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\employee_onboarding\\employee_onboarding.py",
+      "line": 71,
+      "name": "def make_employee(source_name: str, target_doc: str | Document | None = None) -> Document:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\employee_performance_feedback\\employee_performance_feedback.py",
+      "line": 63,
+      "name": "set_feedback_criteria",
+      "signature": "self"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\employee_referral\\employee_referral.py",
+      "line": 49,
+      "name": "def create_job_applicant(source_name: str, target_doc: str | Document | None = None) -> Document:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\employee_referral\\employee_referral.py",
+      "line": 82,
+      "name": "def create_additional_salary(employee_referral: str) -> Document:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\exit_interview\\exit_interview.py",
+      "line": 63,
+      "name": "def send_exit_questionnaire(interviews: str | list) -> None:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\expense_claim\\expense_claim.py",
+      "line": 459,
+      "name": "calculate_taxes",
+      "signature": "self"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\expense_claim\\expense_claim.py",
+      "line": 596,
+      "name": "def get_expense_claim_account_and_cost_center(expense_claim_type: str, company: str) -> dict:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\expense_claim\\expense_claim.py",
+      "line": 604,
+      "name": "def get_expense_claim_account(expense_claim_type: str, company: str) -> dict:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\expense_claim\\expense_claim.py",
+      "line": 620,
+      "name": "get_advances",
+      "signature": "expense_claim: str | dict | Document, advance_id: str | None = None"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\expense_claim\\expense_claim.py",
+      "line": 658,
+      "name": "def get_expense_claim(employee_advance: str | dict) -> Document:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\expense_claim\\expense_claim.py",
+      "line": 800,
+      "name": "def make_expense_claim_for_delivery_trip(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\expense_claim\\expense_claim.py",
+      "line": 814,
+      "name": "def get_allocation_amount(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\full_and_final_statement\\full_and_final_statement.py",
+      "line": 75,
+      "name": "get_outstanding_statements",
+      "signature": "self"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\full_and_final_statement\\full_and_final_statement.py",
+      "line": 204,
+      "name": "create_journal_entry",
+      "signature": "self"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\full_and_final_statement\\full_and_final_statement.py",
+      "line": 277,
+      "name": "def get_account_and_amount(ref_doctype: str, ref_document: str, company: str) -> list | None:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\goal\\goal.py",
+      "line": 137,
+      "name": "def get_children(doctype: str, parent: str, is_root: bool = False, **filters) -> list[dict]:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\goal\\goal.py",
+      "line": 199,
+      "name": "def update_progress(progress: float, goal: str) -> None:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\goal\\goal.py",
+      "line": 209,
+      "name": "def update_status(status: str, goals: str | list) -> None:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\goal\\goal.py",
+      "line": 227,
+      "name": "add_tree_node",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\hr_settings\\hr_settings.py",
+      "line": 93,
+      "name": "set_proceed_with_frequency_change",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\interview\\interview.py",
+      "line": 110,
+      "name": "def reschedule_interview(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\interview\\interview.py",
+      "line": 157,
+      "name": "def get_interviewers(interview_type: str) -> list[dict]:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\interview\\interview.py",
+      "line": 178,
+      "name": "def get_feedback(interview: str) -> list[dict]:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\interview\\interview.py",
+      "line": 203,
+      "name": "def get_skill_wise_average_rating(interview: str) -> list[dict]:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\interview\\interview.py",
+      "line": 221,
+      "name": "update_job_applicant_status",
+      "signature": "status: str, job_applicant: str"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\interview\\interview.py",
+      "line": 341,
+      "name": "def get_expected_skill_set(interview_type: str) -> list[dict]:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\interview\\interview.py",
+      "line": 348,
+      "name": "create_interview_feedback",
+      "signature": "data: str | dict, interview_name: str, interviewer: str, job_applicant: str"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\interview\\interview.py",
+      "line": 380,
+      "name": "def get_interviewer_list(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\interview\\interview.py",
+      "line": 404,
+      "name": "get_events",
+      "signature": "start: str, end: str, filters: str | None = None"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\interview_feedback\\interview_feedback.py",
+      "line": 103,
+      "name": "def get_applicable_interviewers(interview: str) -> list[str]:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\interview_round\\interview_round.py",
+      "line": 15,
+      "name": "def create_interview(interview_round: str) -> Document:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\interview_type\\interview_type.py",
+      "line": 15,
+      "name": "create_interview",
+      "signature": "docname: str"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\job_applicant\\job_applicant.py",
+      "line": 88,
+      "name": "def create_interview(job_applicant: str, interview_type: str) -> Document:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\job_applicant\\job_applicant.py",
+      "line": 115,
+      "name": "def get_interview_details(job_applicant: str) -> dict:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\job_applicant\\job_applicant.py",
+      "line": 137,
+      "name": "def get_applicant_to_hire_percentage() -> dict:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\job_offer\\job_offer.py",
+      "line": 90,
+      "name": "make_employee",
+      "signature": "source_name: str, target_doc: str | Document | None = None"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\job_offer\\job_offer.py",
+      "line": 112,
+      "name": "get_offer_acceptance_rate",
+      "signature": "company: str | None = None, department: str | None = None"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\job_opening_template\\job_opening_template.py",
+      "line": 13,
+      "name": "def create_job_opening_from_template(source: str | Document) -> Document:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\job_requisition\\job_requisition.py",
+      "line": 19,
+      "name": "check_duplicate_job_requisition",
+      "signature": "self"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\job_requisition\\job_requisition.py",
+      "line": 32,
+      "name": "def associate_job_opening(self, job_opening: str) -> None:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\job_requisition\\job_requisition.py",
+      "line": 45,
+      "name": "def make_job_opening(source_name: str, target_doc: str | Document | None = None) -> Document:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\job_requisition\\job_requisition.py",
+      "line": 73,
+      "name": "def get_avg_time_to_fill(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\leave_adjustment\\leave_adjustment.py",
+      "line": 102,
+      "name": "def get_leave_allocation_for_posting_date(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\leave_adjustment\\leave_adjustment.py",
+      "line": 122,
+      "name": "def get_allocated_leave_types(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\leave_allocation\\leave_allocation.py",
+      "line": 231,
+      "name": "set_total_leaves_allocated",
+      "signature": "self"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\leave_allocation\\leave_allocation.py",
+      "line": 319,
+      "name": "allocate_leaves_manually",
+      "signature": "self, new_leaves: str | float, from_date: str | datetime.date | None = None"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\leave_allocation\\leave_allocation.py",
+      "line": 374,
+      "name": "get_monthly_earned_leave",
+      "signature": "self"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\leave_allocation\\leave_allocation.py",
+      "line": 398,
+      "name": "def create_leave_adjustment(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\leave_allocation\\leave_allocation.py",
+      "line": 420,
+      "name": "def retry_failed_allocations(self, failed_allocations: list) -> None:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\leave_allocation\\leave_allocation.py",
+      "line": 581,
+      "name": "expire_carried_forward_allocation",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\leave_application\\leave_application.py",
+      "line": 902,
+      "name": "def get_number_of_leave_days(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\leave_application\\leave_application.py",
+      "line": 930,
+      "name": "def get_leave_details(employee: str, date: str | datetime.date, for_salary_slip: bool = False) -> dict:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\leave_application\\leave_application.py",
+      "line": 971,
+      "name": "def get_leave_balance_on(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\leave_application\\leave_application.py",
+      "line": 1281,
+      "name": "def get_holidays(employee: str, from_date: str | datetime.date, to_date: str | datetime.date) -> int:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\leave_application\\leave_application.py",
+      "line": 1293,
+      "name": "def get_events(start: str, end: str, filters: str | None = None) -> list[dict]:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\leave_application\\leave_application.py",
+      "line": 1414,
+      "name": "def get_mandatory_approval(doctype: str) -> str | int | bool:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\leave_application\\leave_application.py",
+      "line": 1470,
+      "name": "def get_leave_approver(employee: str) -> str:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\leave_application\\leave_application.py",
+      "line": 1488,
+      "name": "def get_leave_approver_and_mandatory(employee: str) -> dict:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\leave_block_list\\leave_block_list.py",
+      "line": 22,
+      "name": "def set_weekly_off_dates(self, start_date: str, end_date: str, days: list, reason: str) -> None:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\leave_control_panel\\leave_control_panel.py",
+      "line": 30,
+      "name": "allocate_leave",
+      "signature": "self, employees: list"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\leave_control_panel\\leave_control_panel.py",
+      "line": 122,
+      "name": "def get_employees(self, advanced_filters: list) -> list:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\leave_control_panel\\leave_control_panel.py",
+      "line": 174,
+      "name": "get_latest_leave_period",
+      "signature": "self"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\leave_encashment\\leave_encashment.py",
+      "line": 78,
+      "name": "get_leave_details_for_encashment",
+      "signature": "self"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\leave_ledger_entry\\leave_ledger_entry.py",
+      "line": 198,
+      "name": "expire_allocation",
+      "signature": "allocation: str | Document | frappe._dict, expiry_date: datetime.date | None = None"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\leave_policy_assignment\\leave_policy_assignment.py",
+      "line": 416,
+      "name": "def create_assignment_for_multiple_employees(employees: str | list[str], data: str | dict) -> list[str]:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\leave_policy_assignment\\leave_policy_assignment.py",
+      "line": 446,
+      "name": "def create_assignment(employee: str, data: frappe._dict) -> Document:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\overtime_slip\\overtime_slip.py",
+      "line": 78,
+      "name": "get_frequency_and_dates",
+      "signature": "self"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\overtime_slip\\overtime_slip.py",
+      "line": 97,
+      "name": "get_emp_and_overtime_details",
+      "signature": "self"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\shift_assignment\\shift_assignment.py",
+      "line": 165,
+      "name": "get_events",
+      "signature": "start: str | date, end: str | date, filters: list | None = None"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\shift_assignment_tool\\shift_assignment_tool.py",
+      "line": 19,
+      "name": "def get_employees(self, advanced_filters: list | None = None) -> list:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\shift_assignment_tool\\shift_assignment_tool.py",
+      "line": 178,
+      "name": "bulk_assign",
+      "signature": "self, employees: list"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\shift_assignment_tool\\shift_assignment_tool.py",
+      "line": 256,
+      "name": "bulk_process_shift_requests",
+      "signature": "self, shift_requests: list, status: str"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\shift_location\\shift_location.py",
+      "line": 14,
+      "name": "set_geolocation",
+      "signature": "self"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\shift_type\\shift_type.py",
+      "line": 110,
+      "name": "def process_auto_attendance(self, is_manually_triggered: int | bool = False) -> None | str:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\staffing_plan\\staffing_plan.py",
+      "line": 173,
+      "name": "def set_job_requisitions(self, job_reqs: list[str]) -> Document:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\staffing_plan\\staffing_plan.py",
+      "line": 198,
+      "name": "def get_designation_counts(designation: str, company: str, job_opening: str | None = None) -> dict | bool:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\staffing_plan\\staffing_plan.py",
+      "line": 219,
+      "name": "def get_active_staffing_plan_details(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\training_result\\training_result.py",
+      "line": 32,
+      "name": "get_employees",
+      "signature": "training_event: str"
+    },
+    {
+      "file": "hrms\\hr\\doctype\\upload_attendance\\upload_attendance.py",
+      "line": 22,
+      "name": "get_template",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\upload_attendance\\upload_attendance.py",
+      "line": 163,
+      "name": "upload",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\doctype\\vehicle_log\\vehicle_log.py",
+      "line": 32,
+      "name": "def make_expense_claim(docname: str) -> dict:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\page\\organizational_chart\\organizational_chart.py",
+      "line": 5,
+      "name": "get_children",
+      "signature": "parent: str | None = None, company: str | None = None, exclude_node: str | None = None"
+    },
+    {
+      "file": "hrms\\hr\\page\\team_updates\\team_updates.py",
+      "line": 6,
+      "name": "get_data",
+      "signature": "start: int = 0"
+    },
+    {
+      "file": "hrms\\hr\\report\\monthly_attendance_sheet\\monthly_attendance_sheet.py",
+      "line": 742,
+      "name": "def get_attendance_years() -> str:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\utils.py",
+      "line": 165,
+      "name": "get_employee_field_property",
+      "signature": "employee: str, fieldname: str"
+    },
+    {
+      "file": "hrms\\hr\\utils.py",
+      "line": 311,
+      "name": "get_leave_period",
+      "signature": "from_date: str | datetime.date, to_date: str | datetime.date, company: str"
+    },
+    {
+      "file": "hrms\\hr\\utils.py",
+      "line": 500,
+      "name": "def get_monthly_earned_leave(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\hr\\utils.py",
+      "line": 977,
+      "name": "set_geolocation_from_coordinates",
+      "signature": "doc: Document"
+    },
+    {
+      "file": "hrms\\overrides\\employee_master.py",
+      "line": 120,
+      "name": "def get_timeline_data(doctype: str, name: str) -> dict:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\overrides\\employee_master.py",
+      "line": 149,
+      "name": "get_retirement_date",
+      "signature": "date_of_birth: str | None = None"
+    },
+    {
+      "file": "hrms\\overrides\\employee_payment_entry.py",
+      "line": 75,
+      "name": "def get_payment_entry_for_employee(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\overrides\\employee_payment_entry.py",
+      "line": 231,
+      "name": "def get_payment_reference_details(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\overrides\\employee_payment_entry.py",
+      "line": 247,
+      "name": "def get_reference_details_for_employee(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\overrides\\employee_payment_entry.py",
+      "line": 322,
+      "name": "set_exchange_rate_in_advance",
+      "signature": "doc: Document, method: None = None"
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\bulk_salary_structure_assignment\\bulk_salary_structure_assignment.py",
+      "line": 19,
+      "name": "def get_employees(self, advanced_filters: list) -> list:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\bulk_salary_structure_assignment\\bulk_salary_structure_assignment.py",
+      "line": 63,
+      "name": "def bulk_assign_structure(self, employees: list) -> None:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\employee_benefit_application\\employee_benefit_application.py",
+      "line": 61,
+      "name": "def set_benefit_components_and_currency(self) -> None:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\employee_benefit_claim\\employee_benefit_claim.py",
+      "line": 94,
+      "name": "def get_benefit_details(self) -> None:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\employee_benefit_claim\\employee_benefit_claim.py",
+      "line": 168,
+      "name": "def get_benefit_components(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\employee_tax_exemption_declaration\\employee_tax_exemption_declaration.py",
+      "line": 60,
+      "name": "def make_proof_submission(source_name: str, target_doc: str | Document | None = None) -> Document:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\gratuity\\gratuity.py",
+      "line": 138,
+      "name": "def calculate_work_experience_and_amount(self) -> dict:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\payroll_correction\\payroll_correction.py",
+      "line": 56,
+      "name": "def fetch_salary_slip_details(self) -> dict[str, list] | None:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\payroll_entry\\payroll_entry.py",
+      "line": 225,
+      "name": "def fill_employee_details(self) -> list[dict] | None:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\payroll_entry\\payroll_entry.py",
+      "line": 264,
+      "name": "def create_salary_slips(self) -> None:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\payroll_entry\\payroll_entry.py",
+      "line": 327,
+      "name": "def submit_salary_slips(self) -> None:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\payroll_entry\\payroll_entry.py",
+      "line": 892,
+      "name": "def has_bank_entries(self) -> dict[str, bool]:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\payroll_entry\\payroll_entry.py",
+      "line": 916,
+      "name": "def make_bank_entry(self, for_withheld_salaries: bool = False) -> Document | None:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\payroll_entry\\payroll_entry.py",
+      "line": 1126,
+      "name": "def get_employees_with_unmarked_attendance(self) -> list[dict] | None:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\payroll_entry\\payroll_entry.py",
+      "line": 1227,
+      "name": "def create_overtime_slips(self) -> None:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\payroll_entry\\payroll_entry.py",
+      "line": 1264,
+      "name": "def submit_overtime_slips(self) -> None:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\payroll_entry\\payroll_entry.py",
+      "line": 1288,
+      "name": "def get_unsubmitted_overtime_slips(self, limit: int | None = None) -> list[str]:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\payroll_entry\\payroll_entry.py",
+      "line": 1301,
+      "name": "def get_overtime_slip_details(self) -> list[bool]:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\payroll_entry\\payroll_entry.py",
+      "line": 1449,
+      "name": "def get_start_end_dates(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\payroll_entry\\payroll_entry.py",
+      "line": 1492,
+      "name": "def get_end_date(start_date: str | datetime.date, frequency: str) -> dict:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\payroll_entry\\payroll_entry.py",
+      "line": 1684,
+      "name": "def get_payroll_entries_for_jv(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\payroll_entry\\payroll_entry.py",
+      "line": 1742,
+      "name": "def employee_query(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\salary_component\\salary_component.py",
+      "line": 99,
+      "name": "def get_structures_to_be_updated(self) -> list[str]:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\salary_component\\salary_component.py",
+      "line": 112,
+      "name": "def update_salary_structures(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\salary_slip\\salary_slip.py",
+      "line": 354,
+      "name": "def get_emp_and_working_day_details(self) -> None:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\salary_slip\\salary_slip.py",
+      "line": 2237,
+      "name": "def process_salary_based_on_working_days(self) -> None:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\salary_slip\\salary_slip.py",
+      "line": 2242,
+      "name": "def set_totals(self) -> None:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\salary_slip\\salary_slip.py",
+      "line": 2593,
+      "name": "def make_salary_slip_from_timesheet(source_name: str, target_doc: str | Document | None = None) -> Document:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\salary_slip\\salary_slip.py",
+      "line": 2713,
+      "name": "def enqueue_email_salary_slips(names: list | str) -> None:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\salary_structure\\salary_structure.py",
+      "line": 172,
+      "name": "def assign_salary_structure(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\salary_structure\\salary_structure.py",
+      "line": 334,
+      "name": "def make_salary_slip(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\salary_structure\\salary_structure.py",
+      "line": 381,
+      "name": "def get_employees(salary_structure: str) -> list[str]:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\salary_structure\\salary_structure.py",
+      "line": 399,
+      "name": "def get_salary_component(",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\salary_structure_assignment\\salary_structure_assignment.py",
+      "line": 150,
+      "name": "def set_payroll_cost_centers(self) -> None:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\salary_structure_assignment\\salary_structure_assignment.py",
+      "line": 204,
+      "name": "def are_opening_entries_required(self) -> bool:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\salary_structure_assignment\\salary_structure_assignment.py",
+      "line": 236,
+      "name": "def get_employee_currency(employee: str) -> str:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\salary_withholding\\salary_withholding.py",
+      "line": 62,
+      "name": "def set_withholding_cycles_and_to_date(self) -> None:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\doctype\\salary_withholding\\salary_withholding.py",
+      "line": 104,
+      "name": "def get_payroll_frequency(employee: str, posting_date: str | date) -> str | None:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\report\\provident_fund_deductions\\provident_fund_deductions.py",
+      "line": 183,
+      "name": "def get_years() -> str:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\payroll\\utils.py",
+      "line": 29,
+      "name": "def get_payroll_settings_for_payment_days() -> dict:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\subscription_utils.py",
+      "line": 30,
+      "name": "def get_add_on_details(plan: str) -> dict[str, int]:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\subscription_utils.py",
+      "line": 66,
+      "name": "subscription_updated",
+      "signature": "app: str, plan: str"
+    },
+    {
+      "file": "hrms\\utils\\custom_method_for_charts.py",
+      "line": 10,
+      "name": "get_upcoming_holidays",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\utils\\hierarchy_chart.py",
+      "line": 9,
+      "name": "get_all_nodes",
+      "signature": "method: str, company: str"
+    },
+    {
+      "file": "hrms\\utils\\__init__.py",
+      "line": 11,
+      "name": "def get_country(fields: list | None = None) -> dict:",
+      "signature": ""
+    },
+    {
+      "file": "hrms\\www\\hrms.py",
+      "line": 17,
+      "name": "get_context_for_dev",
+      "signature": ""
+    }
+  ]
+}

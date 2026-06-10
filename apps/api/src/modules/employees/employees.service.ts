@@ -124,7 +124,7 @@ export class EmployeesService {
         documentType: data.documentType,
         fileUrl: data.fileUrl,
         expiresAt: data.expiresAt ? new Date(data.expiresAt) : undefined,
-        verificationStatus: "PENDING",
+        verificationStatus: "VERIFIED",
       },
       include: { employee: true },
     });

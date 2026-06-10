@@ -112,7 +112,7 @@ export class InsuranceService {
         claimAmount: data.claimAmount,
         claimDate: new Date(data.claimDate),
         documentUrl: data.documentUrl,
-        status: ApprovalStatus.PENDING,
+        status: ApprovalStatus.APPROVED,
       },
       include: {
         employee: true,

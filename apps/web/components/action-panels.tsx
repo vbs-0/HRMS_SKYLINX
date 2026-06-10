@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { apiFetch } from "../lib/client-api";
-import { useAtsApplicationOptions, useAtsJobOptions, useEmployeeOptions, useInsurancePolicyOptions, useLeaveTypeOptions, usePayrollRunOptions } from "../lib/options";
+import { useEmployeeOptions, useInsurancePolicyOptions, useLeaveTypeOptions, usePayrollRunOptions } from "../lib/options";
 import { requestDataRefresh } from "../lib/refresh-events";
 
 function Result({ message, error }: { message: string; error: string }) {
@@ -72,22 +72,45 @@ export function DocumentUploadPanel() {
     event.preventDefault();
     setMessage("");
     setError("");
-    const form = new FormData(event.currentTarget);
-    const employeeId = String(form.get("employeeId"));
-    const expiresAt = String(form.get("expiresAt"));
+    const currentForm = event.currentTarget;
+    const formData = new FormData(currentForm);
+    const employeeId = String(formData.get("employeeId"));
+    const expiresAt = String(formData.get("expiresAt"));
+    const documentType = String(formData.get("documentType"));
+    const file = formData.get("file");
+
+    if (!file || (file instanceof File && file.size === 0)) {
+      setError("Please select a file to upload.");
+      return;
+    }
+
+    const uploadForm = new FormData();
+    uploadForm.append("file", file);
 
     try {
+      setMessage("Uploading document file...");
+      const uploadRes = await apiFetch<{ fileUrl: string }>(`/employees/${employeeId}/documents/upload`, {
+        method: "POST",
+        body: uploadForm,
+      });
+
+      if (!uploadRes.data?.fileUrl) {
+        throw new Error("Failed to retrieve uploaded file URL.");
+      }
+
+      setMessage("Saving document metadata...");
       await apiFetch(`/employees/${employeeId}/documents`, {
         method: "POST",
         body: JSON.stringify({
-          documentType: String(form.get("documentType")),
-          fileUrl: String(form.get("fileUrl")),
+          documentType,
+          fileUrl: uploadRes.data.fileUrl,
           expiresAt: expiresAt || undefined,
         }),
       });
-      setMessage("Document submitted for verification.");
+
+      setMessage("Document submitted successfully.");
       requestDataRefresh("documents");
-      event.currentTarget.reset();
+      currentForm.reset();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Document upload failed");
     }
@@ -107,7 +130,7 @@ export function DocumentUploadPanel() {
         <option value="Experience Letter">Experience Letter</option>
         <option value="Bank Proof">Bank Proof</option>
       </select>
-      <input className={inputClass()} name="fileUrl" placeholder="Secure file URL" required type="url" />
+      <input className={inputClass()} name="file" required type="file" />
       <input className={inputClass()} name="expiresAt" type="date" />
       <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white">Add Document</button>
       <div className="col-span-full"><Result message={message} error={error} /></div>
@@ -557,113 +580,7 @@ export function RewardsActionPanel() {
   );
 }
 
-export function AtsActionPanel() {
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
-  const { options: jobs, setOptions: setJobs } = useAtsJobOptions();
-  const { options: applications, setOptions: setApplications } = useAtsApplicationOptions();
 
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setMessage("");
-    setError("");
-    const form = new FormData(event.currentTarget);
-    const action = String(form.get("action"));
-
-    try {
-      if (action === "job") {
-        const body = await apiFetch<{ id: string; title: string; status: string }>("/ats/jobs", {
-          method: "POST",
-          body: JSON.stringify({
-            companyId: "company_skylinx",
-            title: String(form.get("title")),
-            openings: Number(form.get("openings")) || 1,
-          }),
-        });
-        if (body.data?.id) {
-          setJobs((current) => [
-            { label: `${body.data!.title} - ${body.data!.status}`, value: body.data!.id },
-            ...current.filter((item) => item.value !== body.data!.id),
-          ]);
-        }
-        setMessage("Job posted.");
-      }
-      if (action === "candidate") {
-        const body = await apiFetch<{ fullName: string; applications: Array<{ id: string; stage: string; jobPosting?: { title: string } }> }>("/ats/candidates", {
-          method: "POST",
-          body: JSON.stringify({
-            fullName: String(form.get("fullName")),
-            email: String(form.get("email")),
-            phone: String(form.get("phone")) || undefined,
-            resumeUrl: String(form.get("resumeUrl")) || undefined,
-            source: String(form.get("source")) || undefined,
-            jobPostingId: String(form.get("jobPostingId")) || undefined,
-          }),
-        });
-        const application = body.data?.applications[0];
-        if (application?.id) {
-          setApplications((current) => [
-            { label: `${body.data!.fullName} - ${application.jobPosting?.title || "Application"} (${application.stage})`, value: application.id },
-            ...current.filter((item) => item.value !== application.id),
-          ]);
-        }
-        setMessage("Candidate added.");
-      }
-      if (action === "interview") {
-        await apiFetch("/ats/interviews", {
-          method: "POST",
-          body: JSON.stringify({
-            applicationId: String(form.get("applicationId")),
-            scheduledAt: String(form.get("scheduledAt")),
-            mode: String(form.get("mode")) || "VIDEO",
-          }),
-        });
-        setMessage("Interview scheduled.");
-      }
-      if (action === "offer") {
-        await apiFetch("/ats/offers", {
-          method: "POST",
-          body: JSON.stringify({ applicationId: String(form.get("applicationId")) }),
-        });
-        setMessage("Offer workflow started.");
-      }
-      requestDataRefresh("ats");
-      event.currentTarget.reset();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "ATS action failed");
-    }
-  }
-
-  return (
-    <form className="mb-5 grid grid-cols-4 gap-3 rounded-lg border border-[#dce2eb] bg-white p-4 shadow-sm max-xl:grid-cols-2 max-md:grid-cols-1" onSubmit={submit}>
-      <select className={inputClass()} name="action" required>
-        <option value="job">Post Job</option>
-        <option value="candidate">Add Candidate</option>
-        <option value="interview">Schedule Interview</option>
-        <option value="offer">Create Offer</option>
-      </select>
-      <input className={inputClass()} name="title" placeholder="Job Title" />
-      <input className={inputClass()} name="openings" placeholder="Openings" type="number" />
-      <select className={inputClass()} name="jobPostingId">
-        <option value="">Select job for candidate</option>
-        {jobs.map((job) => <option key={job.value} value={job.value}>{job.label}</option>)}
-      </select>
-      <input className={inputClass()} name="fullName" placeholder="Candidate Name" />
-      <input className={inputClass()} name="email" placeholder="Candidate Email" type="email" />
-      <input className={inputClass()} name="phone" placeholder="Phone" />
-      <input className={inputClass()} name="resumeUrl" placeholder="Resume URL" type="url" />
-      <input className={inputClass()} name="source" placeholder="Source" />
-      <select className={inputClass()} name="applicationId">
-        <option value="">Select application for interview/offer</option>
-        {applications.map((application) => <option key={application.value} value={application.value}>{application.label}</option>)}
-      </select>
-      <input className={inputClass()} name="scheduledAt" type="datetime-local" />
-      <input className={inputClass()} name="mode" placeholder="Interview Mode" />
-      <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white">Save ATS</button>
-      <div className="col-span-full"><Result message={message} error={error} /></div>
-    </form>
-  );
-}
 
 export function AttendanceActionPanel() {
   const [message, setMessage] = useState("");

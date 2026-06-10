@@ -108,23 +108,68 @@ export class AttendanceService {
   }
 
   async regularize(data: RegularizationDto) {
-    const regularization = await this.prisma.attendanceRegularization.create({
-      data: {
-        employeeId: data.employeeId,
-        attendanceLogId: data.attendanceLogId,
-        requestedCheckInAt: data.requestedCheckInAt ? new Date(data.requestedCheckInAt) : undefined,
-        requestedCheckOutAt: data.requestedCheckOutAt ? new Date(data.requestedCheckOutAt) : undefined,
-        reason: data.reason,
-        status: ApprovalStatus.PENDING,
-      },
-      include: {
-        employee: true,
-        attendanceLog: true,
-      },
+    const result = await this.prisma.$transaction(async (tx) => {
+      const regularization = await tx.attendanceRegularization.create({
+        data: {
+          employeeId: data.employeeId,
+          attendanceLogId: data.attendanceLogId,
+          requestedCheckInAt: data.requestedCheckInAt ? new Date(data.requestedCheckInAt) : undefined,
+          requestedCheckOutAt: data.requestedCheckOutAt ? new Date(data.requestedCheckOutAt) : undefined,
+          reason: data.reason,
+          status: ApprovalStatus.APPROVED,
+          decidedBy: data.employeeId,
+          decidedAt: new Date(),
+        },
+        include: {
+          employee: true,
+          attendanceLog: true,
+        },
+      });
+
+      let attendanceLogId = regularization.attendanceLogId;
+      if (!attendanceLogId) {
+        if (!regularization.requestedCheckInAt) {
+          throw new BadRequestException("Requested check-in is required when attendance log is missing");
+        }
+        const created = await tx.attendanceLog.upsert({
+          where: {
+            employeeId_date: {
+              employeeId: regularization.employeeId,
+              date: this.startOfDay(regularization.requestedCheckInAt),
+            },
+          },
+          update: {},
+          create: {
+            employeeId: regularization.employeeId,
+            date: this.startOfDay(regularization.requestedCheckInAt),
+            status: AttendanceStatus.PRESENT,
+            source: "REGULARIZATION",
+          },
+        });
+        attendanceLogId = created.id;
+      }
+
+      await tx.attendanceLog.update({
+        where: { id: attendanceLogId },
+        data: {
+          checkInAt: regularization.requestedCheckInAt || undefined,
+          checkOutAt: regularization.requestedCheckOutAt || undefined,
+          status: AttendanceStatus.PRESENT,
+          approvedBy: data.employeeId,
+        },
+      });
+
+      const finalReg = await tx.attendanceRegularization.update({
+        where: { id: regularization.id },
+        data: { attendanceLogId },
+        include: { employee: true, attendanceLog: true },
+      });
+
+      return finalReg;
     });
 
-    await this.audit("attendance", "regularization.create", "attendance_regularization", regularization.id, regularization);
-    return response("attendance", "regularization.create", regularization);
+    await this.audit("attendance", "regularization.create", "attendance_regularization", result.id, result);
+    return response("attendance", "regularization.create", result);
   }
 
   async approveRegularization(id: string, data: DecideAttendanceDto) {
@@ -211,7 +256,7 @@ export class AttendanceService {
         attendanceLogId: data.attendanceLogId,
         hours: data.hours,
         reason: data.reason,
-        status: ApprovalStatus.PENDING,
+        status: ApprovalStatus.APPROVED,
       },
       include: { employee: true, attendanceLog: true },
     });

@@ -4,7 +4,6 @@ import {
   fallbackAssets,
   fallbackCompliance,
   fallbackIntegrations,
-  fallbackLifecycle,
   fallbackPerformance,
   fallbackSaas,
 } from "./fallback-data";
@@ -66,16 +65,7 @@ export const emptyIntegrations: typeof fallbackIntegrations = {
   logs: [],
 };
 
-export const emptyLifecycle: typeof fallbackLifecycle = {
-  onboardingTotal: 0,
-  onboardingCompleted: 0,
-  exitTotal: 0,
-  documentsCollected: 0,
-  checklist: [],
-  onboardingRows: [],
-  exitRows: [],
-  logs: [],
-};
+
 
 export const emptyPerformance: typeof fallbackPerformance = {
   employees: 0,

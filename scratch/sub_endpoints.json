@@ -1,0 +1,230 @@
+{
+  "hrms\\api\\__init__.py": [
+    {
+      "name": "def get_current_user_info() -> dict:",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def get_current_employee_info() -> dict:",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def get_all_employees() -> list[dict]:",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def get_hr_settings() -> dict:",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def get_unread_notifications_count() -> int:",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def mark_all_notifications_as_read() -> None:",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def are_push_notifications_enabled() -> bool:",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def get_attendance_calendar_events(from_date: str, to_date: str) -> dict[str, str]:",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def get_shift_requests(",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def get_attendance_requests(",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def get_shift_request_approvers(employee: str) -> str | list[str]:",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def get_shifts() -> list[dict[str, str]]:",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def get_leave_applications(",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def get_leave_balance_map() -> dict[str, dict[str, float]]:",
+      "signature": "",
+      "purpose": "Returns a map of leave type and balance details like: { 'Casual Leave': {'allocated_leaves': 10.0, 'balance_leaves': 5.0}, 'Earned Leave': {'allocated_leaves': 3.0, 'balance_leaves': 3.0}, }"
+    },
+    {
+      "name": "def get_holidays_for_employee(employee: str) -> list[dict]:",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def get_leave_approval_details(employee: str) -> dict:",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def get_leave_types(employee: str, date: str) -> list:",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def get_expense_claims(",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def get_expense_claim_summary() -> dict:",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def get_expense_type_description(expense_type: str) -> str:",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def get_expense_claim_types() -> list[dict]:",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def get_expense_approval_details(employee: str) -> dict:",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def get_employee_advance_balance() -> list[dict]:",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def get_company_currencies() -> dict:",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def get_currency_symbols() -> dict:",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def get_company_cost_center_and_expense_account(company: str) -> dict:",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def get_doctype_fields(doctype: str) -> list[dict]:",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def get_doctype_states(doctype: str) -> dict:",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "get_attachments",
+      "signature": "dt: str, dn: str",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def upload_base64_file(",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "delete_attachment",
+      "signature": "filename: str",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def _download_pdf(doctype: str, docname: str) -> str:",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def get_workflow(doctype: str) -> dict:",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def get_permitted_fields_for_write(doctype: str) -> list[str]:",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    }
+  ],
+  "hrms\\api\\roster.py": [
+    {
+      "name": "def get_default_company() -> str:",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def get_events(",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "get_schedule_from_assignment",
+      "signature": "shift_schedule_assignment: str",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def create_shift_schedule_assignment(",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def delete_shift_schedule_assignment(shift_schedule_assignment: str) -> None:",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def swap_shift(",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def break_shift(assignment: str | ShiftAssignment, date: str) -> None:",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    },
+    {
+      "name": "def insert_shift(",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    }
+  ],
+  "hrms\\api\\oauth.py": [
+    {
+      "name": "oauth_providers",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    }
+  ],
+  "hrms\\api\\system_settings.py": [
+    {
+      "name": "get_user_pass_login_disabled",
+      "signature": "",
+      "purpose": "Custom utility endpoint"
+    }
+  ]
+}

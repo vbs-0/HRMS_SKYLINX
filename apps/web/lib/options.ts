@@ -35,20 +35,7 @@ interface ApiInsurancePolicy {
   employee: { firstName: string; lastName: string };
 }
 
-interface ApiAtsJob {
-  id: string;
-  title: string;
-  status: string;
-}
 
-interface ApiAtsCandidate {
-  fullName: string;
-  applications: Array<{
-    id: string;
-    stage: string;
-    jobPosting: { title: string };
-  }>;
-}
 
 export function useEmployeeOptions() {
   const [options, setOptions] = useState<SelectOption[]>([{ label: "Aarav Mehta - EMP-1001", value: "emp_1001" }]);
@@ -125,38 +112,4 @@ export function useInsurancePolicyOptions() {
   return { options, setOptions };
 }
 
-export function useAtsJobOptions() {
-  const [options, setOptions] = useState<SelectOption[]>([]);
 
-  useEffect(() => {
-    apiFetch<ApiAtsJob[]>("/ats/jobs")
-      .then((body) => {
-        if (!body.data?.length) return;
-        setOptions(body.data.map((job) => ({ label: `${job.title} - ${job.status}`, value: job.id })));
-      })
-      .catch(() => undefined);
-  }, []);
-
-  return { options, setOptions };
-}
-
-export function useAtsApplicationOptions() {
-  const [options, setOptions] = useState<SelectOption[]>([]);
-
-  useEffect(() => {
-    apiFetch<ApiAtsCandidate[]>("/ats/candidates")
-      .then((body) => {
-        const applications = body.data?.flatMap((candidate) =>
-          candidate.applications.map((application) => ({
-            label: `${candidate.fullName} - ${application.jobPosting.title} (${application.stage})`,
-            value: application.id,
-          })),
-        );
-        if (!applications?.length) return;
-        setOptions(applications);
-      })
-      .catch(() => undefined);
-  }, []);
-
-  return { options, setOptions };
-}

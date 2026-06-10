@@ -1,6 +1,6 @@
 "use client";
 
-import { FileDown, FileUp, KeyRound } from "lucide-react";
+import { FileDown, FileUp, KeyRound, Plus, Trash2 } from "lucide-react";
 import { FormEvent, useEffect, useState } from "react";
 import { apiFetch } from "../lib/client-api";
 import { fallbackCompanySettings, fallbackModuleSettings } from "../lib/fallback-data";
@@ -9,11 +9,32 @@ import { Card, StatusPill } from "./ui";
 
 type CompanySettings = typeof fallbackCompanySettings;
 type ModuleSetting = (typeof fallbackModuleSettings)[number];
+
+interface PtSlab { upto: number; monthly: number }
+interface TdsSlab { from: number; upto: number; rate: number }
+
+interface PayrollRules extends Record<string, unknown> {
+  salaryStructure: string;
+  pfEnabled: boolean;
+  esiEnabled: boolean;
+  professionalTaxEnabled: boolean;
+  tdsEnabled: boolean;
+  payrollLockDay: number;
+  pfEmployeeRate: number;
+  pfEmployerRate: number;
+  pfWageCeiling: number;
+  esiEmployeeRate: number;
+  esiEmployerRate: number;
+  esiWageCeiling: number;
+  ptSlabs: PtSlab[];
+  tdsSlabs: TdsSlab[];
+}
+
 interface ClientRules {
   branding: Record<string, string | number | boolean>;
   attendance: Record<string, string | number | boolean>;
   leave: Record<string, string | number | boolean>;
-  payroll: Record<string, string | number | boolean>;
+  payroll: PayrollRules;
   approvals: Record<string, string | number | boolean>;
 }
 
@@ -26,10 +47,44 @@ interface SettingsLog {
   actor?: { email: string; employee?: { firstName: string; lastName: string } | null } | null;
 }
 
+const defaultPtSlabs: PtSlab[] = [
+  { upto: 10000, monthly: 0 },
+  { upto: 15000, monthly: 110 },
+  { upto: 20000, monthly: 130 },
+  { upto: 999999, monthly: 200 },
+];
+
+const defaultTdsSlabs: TdsSlab[] = [
+  { from: 0, upto: 250000, rate: 0 },
+  { from: 250001, upto: 500000, rate: 5 },
+  { from: 500001, upto: 750000, rate: 10 },
+  { from: 750001, upto: 1000000, rate: 15 },
+  { from: 1000001, upto: 1250000, rate: 20 },
+  { from: 1250001, upto: 1500000, rate: 25 },
+  { from: 1500001, upto: 999999999, rate: 30 },
+];
+
+const defaultPayrollRules: PayrollRules = {
+  salaryStructure: "Monthly CTC",
+  pfEnabled: true,
+  esiEnabled: true,
+  professionalTaxEnabled: true,
+  tdsEnabled: true,
+  payrollLockDay: 28,
+  pfEmployeeRate: 12.0,
+  pfEmployerRate: 12.0,
+  pfWageCeiling: 15000,
+  esiEmployeeRate: 0.75,
+  esiEmployerRate: 3.25,
+  esiWageCeiling: 21000,
+  ptSlabs: defaultPtSlabs,
+  tdsSlabs: defaultTdsSlabs,
+};
+
 const defaultClientRules: ClientRules = {
   branding: {
-    platformBrand: "SKYLINX PeopleOS",
-    clientDisplayName: "SKYLINX Global Solutions",
+    platformBrand: "PeopleOS",
+    clientDisplayName: "My Company",
     showPoweredBy: true,
     primaryColor: "#078ced",
   },
@@ -49,14 +104,7 @@ const defaultClientRules: ClientRules = {
     compOffAllowed: true,
     leaveYear: "Calendar Year",
   },
-  payroll: {
-    salaryStructure: "Monthly CTC",
-    pfEnabled: true,
-    esiEnabled: true,
-    professionalTaxEnabled: true,
-    tdsEnabled: true,
-    payrollLockDay: 28,
-  },
+  payroll: defaultPayrollRules,
   approvals: {
     expenseApproval: "Manager then HR",
     documentVerification: "HR",
@@ -84,7 +132,7 @@ const planCards = [
     title: "Enterprise",
     price: "\u20B953,100/year",
     access: "All module access",
-    includes: ["ATS", "Rewards", "Compliance", "Security", "Analytics", "Integrations"],
+    includes: ["Rewards", "Compliance", "Security", "Analytics"],
   },
 ];
 
@@ -97,6 +145,11 @@ function moduleLabel(module: string) {
     .replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
+function safeArray<T>(val: unknown, fallback: T[]): T[] {
+  if (Array.isArray(val)) return val as T[];
+  return fallback;
+}
+
 export function SettingsConsole() {
   const [company, setCompany] = useState<CompanySettings>(fallbackCompanySettings);
   const [modules, setModules] = useState<ModuleSetting[]>([]);
@@ -105,6 +158,10 @@ export function SettingsConsole() {
   const [activePlan, setActivePlan] = useState<PlanName>(defaultActivePlan);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+
+  // Editable slab states (pulled from rules)
+  const [ptSlabs, setPtSlabs] = useState<PtSlab[]>(defaultPtSlabs);
+  const [tdsSlabs, setTdsSlabs] = useState<TdsSlab[]>(defaultTdsSlabs);
 
   function load() {
     apiFetch<CompanySettings>("/settings/company")
@@ -124,7 +181,14 @@ export function SettingsConsole() {
       .catch(() => undefined);
     apiFetch<ClientRules>("/settings/rules")
       .then((body) => {
-        if (body.data) setRules({ ...defaultClientRules, ...body.data });
+        if (body.data) {
+          const merged = { ...defaultClientRules, ...body.data };
+          const payroll = { ...defaultPayrollRules, ...(body.data.payroll || {}) };
+          merged.payroll = payroll;
+          setRules(merged);
+          setPtSlabs(safeArray<PtSlab>(payroll.ptSlabs, defaultPtSlabs));
+          setTdsSlabs(safeArray<TdsSlab>(payroll.tdsSlabs, defaultTdsSlabs));
+        }
       })
       .catch(() => undefined);
     apiFetch<SettingsLog[]>("/settings/logs")
@@ -140,6 +204,12 @@ export function SettingsConsole() {
     if (isPlanName(plan)) setActivePlan(plan);
     load();
   }, []);
+
+  // Apply branding colors dynamically whenever rules change
+  useEffect(() => {
+    const color = String(rules.branding.primaryColor || "#078ced");
+    document.documentElement.style.setProperty("--color-brand", color);
+  }, [rules.branding.primaryColor]);
 
   async function saveCompany(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -217,6 +287,14 @@ export function SettingsConsole() {
         professionalTaxEnabled: form.get("professionalTaxEnabled") === "on",
         tdsEnabled: form.get("tdsEnabled") === "on",
         payrollLockDay: Number(form.get("payrollLockDay")),
+        pfEmployeeRate: Number(form.get("pfEmployeeRate")),
+        pfEmployerRate: Number(form.get("pfEmployerRate")),
+        pfWageCeiling: Number(form.get("pfWageCeiling")),
+        esiEmployeeRate: Number(form.get("esiEmployeeRate")),
+        esiEmployerRate: Number(form.get("esiEmployerRate")),
+        esiWageCeiling: Number(form.get("esiWageCeiling")),
+        ptSlabs,
+        tdsSlabs,
       },
       approvals: {
         expenseApproval: String(form.get("expenseApproval")),
@@ -231,7 +309,7 @@ export function SettingsConsole() {
         body: JSON.stringify(body),
       });
       setRules(body);
-      setMessage("Client rules saved.");
+      setMessage("Client rules saved successfully.");
       load();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Client rules update failed");
@@ -242,7 +320,7 @@ export function SettingsConsole() {
     const payload = encodeURIComponent(JSON.stringify({ company, rules, modules }, null, 2));
     const anchor = document.createElement("a");
     anchor.href = `data:application/json;charset=utf-8,${payload}`;
-    anchor.download = "skylinx-client-settings.json";
+    anchor.download = "peopleos-client-settings.json";
     anchor.click();
     setMessage("Settings export downloaded.");
   }
@@ -260,87 +338,322 @@ export function SettingsConsole() {
     );
   }
 
+  // ── PT Slab helpers ──────────────────────────────────────────────────────
+  function addPtSlab() {
+    setPtSlabs((prev) => [...prev, { upto: 0, monthly: 0 }]);
+  }
+  function removePtSlab(i: number) {
+    setPtSlabs((prev) => prev.filter((_, idx) => idx !== i));
+  }
+  function updatePtSlab(i: number, field: keyof PtSlab, value: number) {
+    setPtSlabs((prev) => prev.map((s, idx) => idx === i ? { ...s, [field]: value } : s));
+  }
+
+  // ── TDS Slab helpers ─────────────────────────────────────────────────────
+  function addTdsSlab() {
+    setTdsSlabs((prev) => [...prev, { from: 0, upto: 0, rate: 0 }]);
+  }
+  function removeTdsSlab(i: number) {
+    setTdsSlabs((prev) => prev.filter((_, idx) => idx !== i));
+  }
+  function updateTdsSlab(i: number, field: keyof TdsSlab, value: number) {
+    setTdsSlabs((prev) => prev.map((s, idx) => idx === i ? { ...s, [field]: value } : s));
+  }
+
   return (
     <div className="grid gap-5">
       {message ? <div className="rounded-lg bg-[#e6f5ef] p-3 text-sm text-[#18865a]">{message}</div> : null}
       {error ? <div className="rounded-lg bg-[#fde8e6] p-3 text-sm text-[#ba3d37]">{error}</div> : null}
 
+      {/* ── Company Profile ─────────────────────────────────────────────── */}
       <Card>
         <h2 className="mb-4 text-lg font-semibold">Company Profile</h2>
         <form className="grid grid-cols-3 gap-3 max-lg:grid-cols-2 max-md:grid-cols-1" onSubmit={saveCompany}>
-          <input className="min-h-10 rounded-lg border border-[#dce2eb] px-3 text-sm" name="name" defaultValue={company.name} placeholder="Company Name" />
-          <input className="min-h-10 rounded-lg border border-[#dce2eb] px-3 text-sm" name="legalName" defaultValue={company.legalName} placeholder="Legal Name" />
-          <input className="min-h-10 rounded-lg border border-[#dce2eb] px-3 text-sm" name="logoUrl" defaultValue={company.logoUrl} placeholder="Logo URL" />
-          <input className="min-h-10 rounded-lg border border-[#dce2eb] px-3 text-sm" name="address" defaultValue={company.address || ""} placeholder="Address" />
-          <input className="min-h-10 rounded-lg border border-[#dce2eb] px-3 text-sm" name="taxId" defaultValue={company.taxId || ""} placeholder="Tax ID / GSTIN" />
-          <input className="min-h-10 rounded-lg border border-[#dce2eb] px-3 text-sm" name="workWeek" defaultValue={company.workWeek} placeholder="Work Week" />
-          <input className="min-h-10 rounded-lg border border-[#dce2eb] px-3 text-sm" name="timezone" defaultValue={company.timezone} placeholder="Timezone" />
+          <input className={inputClass()} name="name" defaultValue={company.name} placeholder="Company Name" />
+          <input className={inputClass()} name="legalName" defaultValue={company.legalName} placeholder="Legal Name" />
+          <input className={inputClass()} name="logoUrl" defaultValue={company.logoUrl} placeholder="Logo URL" />
+          <input className={inputClass()} name="address" defaultValue={company.address || ""} placeholder="Address" />
+          <input className={inputClass()} name="taxId" defaultValue={company.taxId || ""} placeholder="Tax ID / GSTIN" />
+          <input className={inputClass()} name="workWeek" defaultValue={company.workWeek} placeholder="Work Week" />
+          <input className={inputClass()} name="timezone" defaultValue={company.timezone} placeholder="Timezone" />
           <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white">Save Profile</button>
         </form>
       </Card>
 
+      {/* ── Client Rules & Branding ─────────────────────────────────────── */}
       <Card>
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 className="text-lg font-semibold">Client Rules & Branding</h2>
-            <p className="mt-1 text-sm text-muted">Configure each client company without changing SKYLINX platform code.</p>
+            <h2 className="text-lg font-semibold">Client Rules &amp; Branding</h2>
+            <p className="mt-1 text-sm text-muted">Configure each company's rules, branding, and statutory deduction rates.</p>
           </div>
           <StatusPill tone="green">Database Saved</StatusPill>
         </div>
-        <form className="grid gap-5" onSubmit={saveRules}>
-          <div>
-            <h3 className="mb-3 text-sm font-bold uppercase text-muted">Branding</h3>
-            <div className="grid grid-cols-4 gap-3 max-xl:grid-cols-2 max-md:grid-cols-1">
-              <input className={inputClass()} name="platformBrand" defaultValue={String(rules.branding.platformBrand)} placeholder="Platform Brand" />
-              <input className={inputClass()} name="clientDisplayName" defaultValue={String(rules.branding.clientDisplayName)} placeholder="Client Display Name" />
-              <input className={inputClass()} name="primaryColor" defaultValue={String(rules.branding.primaryColor)} placeholder="Primary Color" />
-              {checkbox("showPoweredBy", "Show Powered by SKYLINX", Boolean(rules.branding.showPoweredBy))}
-            </div>
-          </div>
+        <form className="grid gap-6" onSubmit={saveRules}>
 
-          <div>
-            <h3 className="mb-3 text-sm font-bold uppercase text-muted">Attendance Rules</h3>
+          {/* Branding */}
+          <section>
+            <h3 className="mb-3 text-sm font-bold uppercase text-muted">🎨 Branding &amp; White-Label</h3>
             <div className="grid grid-cols-4 gap-3 max-xl:grid-cols-2 max-md:grid-cols-1">
-              <input className={inputClass()} name="attendanceWorkWeek" defaultValue={String(rules.attendance.workWeek)} placeholder="Work Week" />
-              <input className={inputClass()} name="shiftStart" defaultValue={String(rules.attendance.shiftStart)} type="time" />
-              <input className={inputClass()} name="shiftEnd" defaultValue={String(rules.attendance.shiftEnd)} type="time" />
-              <input className={inputClass()} name="graceMinutes" defaultValue={Number(rules.attendance.graceMinutes)} min="0" type="number" />
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-muted">Platform Brand Name</label>
+                <input className={inputClass()} name="platformBrand" defaultValue={String(rules.branding.platformBrand)} placeholder="Platform Brand" />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-muted">Company Display Name</label>
+                <input className={inputClass()} name="clientDisplayName" defaultValue={String(rules.branding.clientDisplayName)} placeholder="Client Display Name" />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-muted">Primary Brand Color</label>
+                <div className="flex gap-2">
+                  <input className="h-10 w-12 cursor-pointer rounded-lg border border-[#dce2eb] p-1" name="primaryColor" defaultValue={String(rules.branding.primaryColor)} type="color" />
+                  <input className={`${inputClass()} flex-1`} defaultValue={String(rules.branding.primaryColor)} readOnly />
+                </div>
+              </div>
+              {checkbox("showPoweredBy", "Show Powered By Badge", Boolean(rules.branding.showPoweredBy))}
+            </div>
+          </section>
+
+          {/* Attendance */}
+          <section>
+            <h3 className="mb-3 text-sm font-bold uppercase text-muted">🕐 Attendance Rules</h3>
+            <div className="grid grid-cols-4 gap-3 max-xl:grid-cols-2 max-md:grid-cols-1">
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-muted">Work Week</label>
+                <input className={inputClass()} name="attendanceWorkWeek" defaultValue={String(rules.attendance.workWeek)} placeholder="Work Week" />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-muted">Shift Start</label>
+                <input className={inputClass()} name="shiftStart" defaultValue={String(rules.attendance.shiftStart)} type="time" />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-muted">Shift End</label>
+                <input className={inputClass()} name="shiftEnd" defaultValue={String(rules.attendance.shiftEnd)} type="time" />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-muted">Grace Minutes</label>
+                <input className={inputClass()} name="graceMinutes" defaultValue={Number(rules.attendance.graceMinutes)} min="0" type="number" />
+              </div>
               {checkbox("geoAttendance", "Geo Attendance", Boolean(rules.attendance.geoAttendance))}
               {checkbox("biometricRequired", "Biometric Required", Boolean(rules.attendance.biometricRequired))}
               {checkbox("overtimeEnabled", "Overtime Enabled", Boolean(rules.attendance.overtimeEnabled))}
             </div>
-          </div>
+          </section>
 
-          <div>
-            <h3 className="mb-3 text-sm font-bold uppercase text-muted">Leave Rules</h3>
+          {/* Leave */}
+          <section>
+            <h3 className="mb-3 text-sm font-bold uppercase text-muted">🗓️ Leave Rules</h3>
             <div className="grid grid-cols-4 gap-3 max-xl:grid-cols-2 max-md:grid-cols-1">
-              <input className={inputClass()} name="leaveApprovalFlow" defaultValue={String(rules.leave.approvalFlow)} placeholder="Leave Approval Flow" />
-              <input className={inputClass()} name="leaveYear" defaultValue={String(rules.leave.leaveYear)} placeholder="Leave Year" />
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-muted">Approval Flow</label>
+                <input className={inputClass()} name="leaveApprovalFlow" defaultValue={String(rules.leave.approvalFlow)} placeholder="Leave Approval Flow" />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-muted">Leave Year</label>
+                <input className={inputClass()} name="leaveYear" defaultValue={String(rules.leave.leaveYear)} placeholder="Leave Year" />
+              </div>
               {checkbox("sandwichLeave", "Sandwich Leave", Boolean(rules.leave.sandwichLeave))}
               {checkbox("carryForward", "Carry Forward", Boolean(rules.leave.carryForward))}
               {checkbox("compOffAllowed", "Comp-Off Allowed", Boolean(rules.leave.compOffAllowed))}
             </div>
-          </div>
+          </section>
 
-          <div>
-            <h3 className="mb-3 text-sm font-bold uppercase text-muted">Payroll & Approval Rules</h3>
+          {/* Payroll General */}
+          <section>
+            <h3 className="mb-3 text-sm font-bold uppercase text-muted">💰 Payroll Configuration</h3>
             <div className="grid grid-cols-4 gap-3 max-xl:grid-cols-2 max-md:grid-cols-1">
-              <input className={inputClass()} name="salaryStructure" defaultValue={String(rules.payroll.salaryStructure)} placeholder="Salary Structure" />
-              <input className={inputClass()} name="payrollLockDay" defaultValue={Number(rules.payroll.payrollLockDay)} min="1" max="31" type="number" />
-              <input className={inputClass()} name="expenseApproval" defaultValue={String(rules.approvals.expenseApproval)} placeholder="Expense Approval" />
-              <input className={inputClass()} name="documentVerification" defaultValue={String(rules.approvals.documentVerification)} placeholder="Document Verification" />
-              <input className={inputClass()} name="payrollApproval" defaultValue={String(rules.approvals.payrollApproval)} placeholder="Payroll Approval" />
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-muted">Salary Structure</label>
+                <input className={inputClass()} name="salaryStructure" defaultValue={String(rules.payroll.salaryStructure)} placeholder="Salary Structure" />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-muted">Payroll Lock Day</label>
+                <input className={inputClass()} name="payrollLockDay" defaultValue={Number(rules.payroll.payrollLockDay)} min="1" max="31" type="number" />
+              </div>
               {checkbox("pfEnabled", "PF Enabled", Boolean(rules.payroll.pfEnabled))}
               {checkbox("esiEnabled", "ESI Enabled", Boolean(rules.payroll.esiEnabled))}
               {checkbox("professionalTaxEnabled", "Professional Tax", Boolean(rules.payroll.professionalTaxEnabled))}
               {checkbox("tdsEnabled", "TDS Enabled", Boolean(rules.payroll.tdsEnabled))}
             </div>
-          </div>
+          </section>
 
-          <button className="min-h-10 w-fit rounded-lg bg-brand px-4 text-sm font-semibold text-white">Save Client Rules</button>
+          {/* PF & ESI Rates */}
+          <section>
+            <h3 className="mb-3 text-sm font-bold uppercase text-muted">📋 PF &amp; ESI Rates</h3>
+            <div className="grid grid-cols-3 gap-4 max-lg:grid-cols-2 max-md:grid-cols-1">
+              <div className="rounded-xl border border-[#dce2eb] bg-[#f8fafc] p-4">
+                <div className="mb-3 text-xs font-bold uppercase text-muted">Provident Fund (PF)</div>
+                <div className="grid gap-3">
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs text-muted">Employee Contribution (%)</label>
+                    <input className={inputClass()} name="pfEmployeeRate" defaultValue={rules.payroll.pfEmployeeRate} min="0" max="100" step="0.01" type="number" />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs text-muted">Employer Contribution (%)</label>
+                    <input className={inputClass()} name="pfEmployerRate" defaultValue={rules.payroll.pfEmployerRate} min="0" max="100" step="0.01" type="number" />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs text-muted">Wage Ceiling (₹)</label>
+                    <input className={inputClass()} name="pfWageCeiling" defaultValue={rules.payroll.pfWageCeiling} min="0" type="number" />
+                  </div>
+                </div>
+              </div>
+              <div className="rounded-xl border border-[#dce2eb] bg-[#f8fafc] p-4">
+                <div className="mb-3 text-xs font-bold uppercase text-muted">ESI (Employee State Insurance)</div>
+                <div className="grid gap-3">
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs text-muted">Employee Contribution (%)</label>
+                    <input className={inputClass()} name="esiEmployeeRate" defaultValue={rules.payroll.esiEmployeeRate} min="0" max="100" step="0.01" type="number" />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs text-muted">Employer Contribution (%)</label>
+                    <input className={inputClass()} name="esiEmployerRate" defaultValue={rules.payroll.esiEmployerRate} min="0" max="100" step="0.01" type="number" />
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs text-muted">Wage Ceiling (₹)</label>
+                    <input className={inputClass()} name="esiWageCeiling" defaultValue={rules.payroll.esiWageCeiling} min="0" type="number" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Professional Tax Slabs */}
+          <section>
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <h3 className="text-sm font-bold uppercase text-muted">🏛️ Professional Tax Slabs</h3>
+              <button className="flex items-center gap-1.5 rounded-lg border border-[#dce2eb] px-3 py-1.5 text-xs font-semibold" onClick={addPtSlab} type="button">
+                <Plus className="h-3.5 w-3.5" /> Add Slab
+              </button>
+            </div>
+            <div className="overflow-auto rounded-xl border border-[#dce2eb]">
+              <table className="w-full min-w-[400px] text-sm">
+                <thead className="bg-[#f8fafc] text-xs uppercase text-muted">
+                  <tr>
+                    <th className="border-b border-[#dce2eb] p-3 text-left">Monthly Gross Upto (₹)</th>
+                    <th className="border-b border-[#dce2eb] p-3 text-left">Monthly PT (₹)</th>
+                    <th className="border-b border-[#dce2eb] p-3 w-12"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {ptSlabs.map((slab, i) => (
+                    <tr key={i}>
+                      <td className="border-b border-[#dce2eb] p-2">
+                        <input
+                          className="min-h-9 w-full rounded-lg border border-[#dce2eb] px-3 text-sm"
+                          value={slab.upto}
+                          min="0"
+                          type="number"
+                          onChange={(e) => updatePtSlab(i, "upto", Number(e.target.value))}
+                        />
+                      </td>
+                      <td className="border-b border-[#dce2eb] p-2">
+                        <input
+                          className="min-h-9 w-full rounded-lg border border-[#dce2eb] px-3 text-sm"
+                          value={slab.monthly}
+                          min="0"
+                          type="number"
+                          onChange={(e) => updatePtSlab(i, "monthly", Number(e.target.value))}
+                        />
+                      </td>
+                      <td className="border-b border-[#dce2eb] p-2 text-center">
+                        <button className="rounded p-1 text-[#ba3d37] hover:bg-[#fde8e6]" onClick={() => removePtSlab(i)} type="button">
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          {/* TDS / Income Tax Slabs */}
+          <section>
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <h3 className="text-sm font-bold uppercase text-muted">📊 TDS / Income Tax Slabs</h3>
+              <button className="flex items-center gap-1.5 rounded-lg border border-[#dce2eb] px-3 py-1.5 text-xs font-semibold" onClick={addTdsSlab} type="button">
+                <Plus className="h-3.5 w-3.5" /> Add Slab
+              </button>
+            </div>
+            <div className="overflow-auto rounded-xl border border-[#dce2eb]">
+              <table className="w-full min-w-[520px] text-sm">
+                <thead className="bg-[#f8fafc] text-xs uppercase text-muted">
+                  <tr>
+                    <th className="border-b border-[#dce2eb] p-3 text-left">From (₹)</th>
+                    <th className="border-b border-[#dce2eb] p-3 text-left">Upto (₹)</th>
+                    <th className="border-b border-[#dce2eb] p-3 text-left">Rate (%)</th>
+                    <th className="border-b border-[#dce2eb] p-3 w-12"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {tdsSlabs.map((slab, i) => (
+                    <tr key={i}>
+                      <td className="border-b border-[#dce2eb] p-2">
+                        <input
+                          className="min-h-9 w-full rounded-lg border border-[#dce2eb] px-3 text-sm"
+                          value={slab.from}
+                          min="0"
+                          type="number"
+                          onChange={(e) => updateTdsSlab(i, "from", Number(e.target.value))}
+                        />
+                      </td>
+                      <td className="border-b border-[#dce2eb] p-2">
+                        <input
+                          className="min-h-9 w-full rounded-lg border border-[#dce2eb] px-3 text-sm"
+                          value={slab.upto}
+                          min="0"
+                          type="number"
+                          onChange={(e) => updateTdsSlab(i, "upto", Number(e.target.value))}
+                        />
+                      </td>
+                      <td className="border-b border-[#dce2eb] p-2">
+                        <input
+                          className="min-h-9 w-full rounded-lg border border-[#dce2eb] px-3 text-sm"
+                          value={slab.rate}
+                          min="0"
+                          max="100"
+                          step="0.5"
+                          type="number"
+                          onChange={(e) => updateTdsSlab(i, "rate", Number(e.target.value))}
+                        />
+                      </td>
+                      <td className="border-b border-[#dce2eb] p-2 text-center">
+                        <button className="rounded p-1 text-[#ba3d37] hover:bg-[#fde8e6]" onClick={() => removeTdsSlab(i)} type="button">
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          {/* Approvals */}
+          <section>
+            <h3 className="mb-3 text-sm font-bold uppercase text-muted">✅ Approvals Routing</h3>
+            <div className="grid grid-cols-3 gap-3 max-md:grid-cols-1">
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-muted">Expense Approval</label>
+                <input className={inputClass()} name="expenseApproval" defaultValue={String(rules.approvals.expenseApproval)} placeholder="Expense Approval" />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-muted">Document Verification</label>
+                <input className={inputClass()} name="documentVerification" defaultValue={String(rules.approvals.documentVerification)} placeholder="Document Verification" />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-muted">Payroll Approval</label>
+                <input className={inputClass()} name="payrollApproval" defaultValue={String(rules.approvals.payrollApproval)} placeholder="Payroll Approval" />
+              </div>
+            </div>
+          </section>
+
+          <button className="min-h-10 w-fit rounded-lg bg-brand px-6 text-sm font-semibold text-white">💾 Save All Rules</button>
         </form>
       </Card>
 
+      {/* ── Plan Access ─────────────────────────────────────────────────── */}
       <Card>
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div>
@@ -376,6 +689,7 @@ export function SettingsConsole() {
         </div>
       </Card>
 
+      {/* ── Module Controls ─────────────────────────────────────────────── */}
       <Card>
         <h2 className="mb-4 text-lg font-semibold">Module Controls</h2>
         <div className="grid grid-cols-4 gap-3 max-xl:grid-cols-3 max-lg:grid-cols-2 max-md:grid-cols-1">
@@ -408,10 +722,11 @@ export function SettingsConsole() {
         </div>
       </Card>
 
+      {/* ── Audit Logs ──────────────────────────────────────────────────── */}
       <Card>
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h2 className="text-lg font-semibold">Settings & Activity Logs</h2>
+            <h2 className="text-lg font-semibold">Settings &amp; Activity Logs</h2>
             <p className="mt-1 text-sm text-muted">Client administrators can review configuration and workflow changes.</p>
           </div>
           <button className="rounded-lg border border-[#dce2eb] px-4 py-2 text-sm font-semibold" onClick={load} type="button">Refresh Logs</button>
@@ -442,6 +757,7 @@ export function SettingsConsole() {
         </div>
       </Card>
 
+      {/* ── Utility Cards ───────────────────────────────────────────────── */}
       <div className="grid grid-cols-4 gap-3 max-xl:grid-cols-2 max-md:grid-cols-1">
         {[
           { title: "Data Import", note: "Use Employee Directory bulk upload for employee CSV import", icon: FileUp, action: "Open Employees", href: "/employees" },

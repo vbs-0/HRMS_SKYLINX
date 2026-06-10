@@ -133,7 +133,7 @@ export class PayrollService {
             grossPay,
             deductions,
             netPay,
-            status: ApprovalStatus.DRAFT,
+            status: ApprovalStatus.APPROVED,
           },
           create: {
             payrollRunId: run.id,
@@ -141,7 +141,7 @@ export class PayrollService {
             grossPay,
             deductions,
             netPay,
-            status: ApprovalStatus.DRAFT,
+            status: ApprovalStatus.APPROVED,
           },
         });
 
@@ -158,14 +158,31 @@ export class PayrollService {
             ...(expensePayout > 0 ? [{ payslipId: payslip.id, type: "EARNING", name: "Expense Payout", amount: expensePayout }] : []),
           ],
         });
+
+        await tx.expense.updateMany({
+          where: {
+            employeeId: employee.id,
+            status: ApprovalStatus.APPROVED,
+            claimDate: {
+              gte: startDate,
+              lte: endDate,
+            },
+          },
+          data: {
+            status: ApprovalStatus.PAID,
+            reimbursedAt: new Date(),
+          },
+        });
+
         payslips.push(payslip);
       }
 
       const updatedRun = await tx.payrollRun.update({
         where: { id: run.id },
         data: {
-          status: ApprovalStatus.PENDING,
+          status: ApprovalStatus.APPROVED,
           processedAt: new Date(),
+          lockedAt: new Date(),
         },
       });
 

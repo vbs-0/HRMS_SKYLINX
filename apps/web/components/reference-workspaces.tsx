@@ -222,7 +222,7 @@ export function DocumentsVerificationWorkspace() {
       {[
         ["Identity", "Aadhaar, PAN, passport", "Secure upload"],
         ["Education", "Certificates and marksheets", "HR verification"],
-        ["Employment", "Offer, experience, joining", "Lifecycle linked"],
+        ["Employment", "Offer, experience, joining", "Direct upload"],
         ["Bank", "Account proof and cancelled cheque", "Payroll secure"],
       ].map(([title, note, status]) => (
         <div className="rounded-lg border border-[#dce2eb] bg-white p-5 shadow-sm" key={title}>
@@ -412,18 +412,7 @@ export function RecruitmentWorkflowWorkspace() {
   );
 }
 
-export function LifecycleWorkflowWorkspace() {
-  return (
-    <section className="mb-5 grid grid-cols-2 gap-5 max-lg:grid-cols-1">
-      <MiniCard title="Joining Workflow">
-        <FieldGrid rows={[["Offer Accepted", "Candidate"], ["Documents", "Collection"], ["Employee Code", "Generated"], ["Probation", "Tracked"]]} />
-      </MiniCard>
-      <MiniCard title="Exit Workflow">
-        <FieldGrid rows={[["Resignation", "Submitted"], ["Clearance", "Department checks"], ["Assets", "Return flow"], ["Final Settlement", "Payroll linked"]]} />
-      </MiniCard>
-    </section>
-  );
-}
+
 
 export function ComplianceWorkflowWorkspace() {
   return (
@@ -513,12 +502,11 @@ export function SecurityAdminWorkflowWorkspace() {
 
 export function AnalyticsWorkflowWorkspace() {
   return (
-    <section className="mb-5 grid grid-cols-4 gap-4 max-xl:grid-cols-2 max-sm:grid-cols-1">
+    <section className="mb-5 grid grid-cols-3 gap-4 max-xl:grid-cols-2 max-sm:grid-cols-1">
       {[
         ["Workforce", "Headcount, department and location"],
         ["Attendance", "Presence, late and exception trends"],
         ["Payroll", "Gross, net, deductions and statutory"],
-        ["Hiring", "ATS pipeline and joining readiness"],
       ].map(([title, note]) => (
         <div className="rounded-lg border border-[#dce2eb] bg-white p-5 shadow-sm" key={title}>
           <Target className="h-8 w-8 text-brand" />

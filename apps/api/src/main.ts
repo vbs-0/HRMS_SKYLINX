@@ -1,5 +1,8 @@
 import "reflect-metadata";
 import helmet from "helmet";
+import * as express from "express";
+import * as path from "path";
+import * as fs from "fs";
 import { json, urlencoded } from "express";
 import { ValidationPipe } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
@@ -19,6 +22,14 @@ async function bootstrap() {
   app.use(json({ limit: "50mb" }));
   app.use(urlencoded({ limit: "50mb", extended: true }));
   app.enableCors({ origin: true, credentials: true });
+
+  // Serve static files from apps/api/uploads
+  const uploadsDir = path.join(process.cwd(), "uploads");
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  }
+  app.use("/uploads", express.static(uploadsDir));
+
   app.setGlobalPrefix("api/v1");
   app.useGlobalPipes(
     new ValidationPipe({

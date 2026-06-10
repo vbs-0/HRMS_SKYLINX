@@ -93,6 +93,35 @@ export function ApprovalsConsole() {
     }
   }
 
+  async function handleBulkApprove() {
+    const pendingItems = filteredItems.filter(item => ["PENDING", "DRAFT", "ACTIVE"].includes(item.status.toUpperCase()));
+    if (!pendingItems.length) {
+      setError("No pending items available for bulk approval.");
+      return;
+    }
+
+    setLoading(true);
+    setMessage("");
+    setError("");
+    try {
+      await Promise.all(
+        pendingItems.map(item =>
+          apiFetch(`/approvals/${item.module}/${item.id}/decision`, {
+            method: "POST",
+            body: JSON.stringify({ decision: "approve" }),
+          })
+        )
+      );
+      setMessage(`Successfully approved ${pendingItems.length} request(s).`);
+      load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Bulk approval failed.");
+      load();
+    } finally {
+      setLoading(false);
+    }
+  }
+
   // Get status class/tone for UI
   function toneFor(status: string) {
     if (["APPROVED", "PAH", "PAID", "OFFERED"].includes(status)) return "green";
@@ -251,27 +280,7 @@ export function ApprovalsConsole() {
             </div>
           </div>
         );
-      case "ats":
-        return (
-          <div className="grid gap-3 text-sm border-t pt-4">
-            <div className="flex justify-between">
-              <span className="text-slate-500 font-medium">Candidate Profile:</span>
-              <span className="font-semibold text-slate-800">{item.requester}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-500 font-medium">Applied Position:</span>
-              <span className="font-semibold text-slate-800">{item.title}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-slate-500 font-medium">Evaluation Stage:</span>
-              <span className="font-semibold text-slate-800">Technical Round Completed (Shortlisted)</span>
-            </div>
-            <div className="bg-[#f8fafc] p-3 rounded-lg border border-slate-100 mt-2">
-              <div className="text-xs text-slate-400 uppercase font-bold">Panel Evaluation Summary</div>
-              <p className="text-xs text-slate-700 font-medium mt-1">"Demonstrated strong fundamentals in full-stack architecture. Recommended for job offer creation."</p>
-            </div>
-          </div>
-        );
+
       default:
         return <div className="text-xs text-muted">No further metadata available.</div>;
     }
@@ -282,12 +291,12 @@ export function ApprovalsConsole() {
       <ReferenceModuleHeader
         eyebrow="Approvals"
         title="Approvals Queue"
-        summary="Audit, review, and decide on leave requests, attendance logs, expenses, insurance claims, payroll runs, and ATS candidates."
+        summary="Audit, review, and decide on leave requests, attendance logs, expenses, insurance claims, and payroll runs."
         tabs={["Pending", "Approved", "Rejected", "Escalated"]}
         activeTab={activeTab}
         onTabChange={setActiveTab}
         actions={[
-          { label: "Approve Bulk", icon: CheckSquare, tone: "primary", href: "#" },
+          { label: "Approve Bulk", icon: CheckSquare, tone: "primary", onClick: handleBulkApprove },
           { label: "Settings", icon: Filter, href: "#" },
         ]}
         stats={[
@@ -342,18 +351,13 @@ export function ApprovalsConsole() {
           )}
         </div>
 
-        <div className="grid grid-cols-6 gap-3 max-xl:grid-cols-3 max-md:grid-cols-2">
+        <div className="flex flex-wrap gap-3">
           {[
             { module: "leave", count: data.items.filter(i => i.module === "leave" && ["PENDING", "DRAFT"].includes(i.status.toUpperCase())).length, label: "Leaves" },
-            { module: "attendance", count: data.items.filter(i => i.module === "attendance" && ["PENDING", "DRAFT"].includes(i.status.toUpperCase())).length, label: "Attendance" },
-            { module: "expenses", count: data.items.filter(i => i.module === "expenses" && ["PENDING", "DRAFT"].includes(i.status.toUpperCase())).length, label: "Expenses" },
-            { module: "insurance", count: data.items.filter(i => i.module === "insurance" && ["PENDING", "DRAFT"].includes(i.status.toUpperCase())).length, label: "Insurance Claims" },
-            { module: "payroll", count: data.items.filter(i => i.module === "payroll" && ["PENDING", "DRAFT"].includes(i.status.toUpperCase())).length, label: "Payroll Runs" },
-            { module: "ats", count: data.items.filter(i => i.module === "ats" && ["PENDING", "DRAFT", "ACTIVE"].includes(i.status.toUpperCase())).length, label: "Job Applications" },
           ].map((m) => (
             <div
               key={m.module}
-              className={`rounded-xl border p-4 cursor-pointer transition-all ${
+              className={`rounded-xl border p-4 cursor-pointer transition-all min-w-[200px] ${
                 selectedModule === m.module
                   ? "border-brand bg-brand-50/15 shadow-sm ring-1 ring-brand"
                   : "border-[#e8edf4] bg-white hover:bg-slate-50/70"

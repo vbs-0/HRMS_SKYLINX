@@ -9,7 +9,29 @@ export class HolidaysService {
   constructor(private readonly prisma: PrismaService) {}
 
   async list() {
+    const userId = TenantContext.getUserId();
+    let whereClause: any = {};
+
+    if (userId) {
+      const user = await this.prisma.user.findUnique({
+        where: { id: userId },
+        include: {
+          roles: { include: { role: true } },
+          employee: true,
+        },
+      });
+
+      const isEmployeeOnly = user?.roles.every(r => r.role.name === 'EMPLOYEE');
+      if (isEmployeeOnly && user?.employee?.locationId) {
+        whereClause.OR = [
+          { locationId: null },
+          { locationId: user.employee.locationId }
+        ];
+      }
+    }
+
     const holidays = await this.prisma.holiday.findMany({
+      where: whereClause,
       include: {
         company: true,
         location: true,

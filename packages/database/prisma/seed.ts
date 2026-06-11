@@ -307,6 +307,7 @@ async function main() {
     ["surveys", "read"],
     ["tickets", "read"],
     ["tickets", "create"],
+    ["holidays", "read"],
   ];
   for (const [roleId, specs] of [
     ["role_manager", managerPermissionSpecs],

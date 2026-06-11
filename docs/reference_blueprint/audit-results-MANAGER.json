@@ -1,16 +1,16 @@
 [
   {
     "route": "/dashboard",
-    "status": "PASS",
-    "note": "",
+    "status": "WARN",
+    "note": "console errors: Failed to load resource: net::ERR_CONNECTION_REFUSED;",
     "buttons": 5,
     "inputs": 1,
     "screenshot": "MANAGER_DEEP/01_dashboard.png"
   },
   {
     "route": "/employees",
-    "status": "PASS",
-    "note": "",
+    "status": "WARN",
+    "note": "console errors: Failed to load resource: net::ERR_CONNECTION_REFUSED;",
     "buttons": 16,
     "inputs": 5,
     "screenshot": "MANAGER_DEEP/02_employees.png"

@@ -400,9 +400,9 @@ export function HolidayConsole() {
                       <div
                         key={h.id}
                         className={`p-1 px-1.5 rounded text-[9px] font-bold truncate leading-tight mt-1 ${badgeColor}`}
-                        title={`${h.name} (${h.type})`}
+                        title={`${h.name} (${h.type}${h.location ? ` - ${h.location.name}` : ''})`}
                       >
-                        {h.name}
+                        {h.name} {h.location ? `(${h.location.name})` : ''}
                       </div>
                     );
                   })}

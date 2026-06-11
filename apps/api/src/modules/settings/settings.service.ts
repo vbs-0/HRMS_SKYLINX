@@ -101,6 +101,11 @@ const DEFAULT_RULES: Required<UpdateClientRulesDto> = {
     manager: ["dashboard", "employees", "attendance", "leave", "approvals", "reports"],
     employee: ["dashboard", "attendance", "leave", "documents", "cards"],
   },
+  support: {
+    slaHighHours: 24,
+    slaMediumHours: 48,
+    slaLowHours: 72,
+  },
 };
 
 @Injectable()

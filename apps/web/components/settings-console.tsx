@@ -38,6 +38,7 @@ interface ClientRules {
   leave: Record<string, string | number | boolean>;
   payroll: PayrollRules;
   approvals: Record<string, string | number | boolean>;
+  support: Record<string, string | number | boolean>;
 }
 
 interface SettingsLog {
@@ -111,6 +112,11 @@ const defaultClientRules: ClientRules = {
     expenseApproval: "Manager then HR",
     documentVerification: "HR",
     payrollApproval: "HR Admin",
+  },
+  support: {
+    slaHighHours: 24,
+    slaMediumHours: 48,
+    slaLowHours: 72,
   },
 };
 
@@ -425,6 +431,11 @@ export function SettingsConsole() {
         expenseApproval: String(form.get("expenseApproval")),
         documentVerification: String(form.get("documentVerification")),
         payrollApproval: String(form.get("payrollApproval")),
+      },
+      support: {
+        slaHighHours: Number(form.get("slaHighHours")),
+        slaMediumHours: Number(form.get("slaMediumHours")),
+        slaLowHours: Number(form.get("slaLowHours")),
       },
     };
 
@@ -770,6 +781,25 @@ export function SettingsConsole() {
               <div className="flex flex-col gap-1">
                 <label className="text-xs font-semibold text-muted">Payroll Approval</label>
                 <input className={inputClass()} name="payrollApproval" defaultValue={String(rules.approvals.payrollApproval)} placeholder="Payroll Approval" />
+              </div>
+            </div>
+          </section>
+
+          {/* Support SLAs */}
+          <section>
+            <h3 className="mb-3 text-sm font-bold uppercase text-muted">🎧 Support SLAs (Hours)</h3>
+            <div className="grid grid-cols-3 gap-3 max-md:grid-cols-1">
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-muted">High Priority SLA (Hours)</label>
+                <input type="number" className={inputClass()} name="slaHighHours" defaultValue={Number(rules.support?.slaHighHours || 24)} placeholder="24" />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-muted">Medium Priority SLA (Hours)</label>
+                <input type="number" className={inputClass()} name="slaMediumHours" defaultValue={Number(rules.support?.slaMediumHours || 48)} placeholder="48" />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-muted">Low Priority SLA (Hours)</label>
+                <input type="number" className={inputClass()} name="slaLowHours" defaultValue={Number(rules.support?.slaLowHours || 72)} placeholder="72" />
               </div>
             </div>
           </section>

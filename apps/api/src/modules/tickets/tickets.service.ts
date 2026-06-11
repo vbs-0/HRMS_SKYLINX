@@ -5,6 +5,7 @@ import { AuthenticatedUser } from "../../common/auth/auth.types";
 import { CreateTicketDto } from "./dto/create-ticket.dto";
 import { CreateCommentDto } from "./dto/create-comment.dto";
 import { response } from "../../common/crud-response";
+import { SettingsService } from "../settings/settings.service";
 
 @Injectable()
 export class TicketsService {
@@ -13,6 +14,7 @@ export class TicketsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly mail: MailService,
+    private readonly settingsService: SettingsService,
   ) {}
 
   async create(user: AuthenticatedUser, dto: CreateTicketDto) {
@@ -24,6 +26,21 @@ export class TicketsService {
     const ticketNumber = `TKT-${Math.floor(100000 + Math.random() * 900000)}`;
 
     const queue = dto.queue || "HR Helpdesk";
+    const priority = dto.priority || "Medium";
+
+    const rulesRes = await this.settingsService.rules();
+    const rules = rulesRes.data as any;
+    const supportRules = rules.support || { slaHighHours: 24, slaMediumHours: 48, slaLowHours: 72 };
+
+    // Calculate SLA Deadline based on priority
+    const slaDeadline = new Date();
+    if (priority === "High") {
+      slaDeadline.setHours(slaDeadline.getHours() + (Number(supportRules.slaHighHours) || 24));
+    } else if (priority === "Medium") {
+      slaDeadline.setHours(slaDeadline.getHours() + (Number(supportRules.slaMediumHours) || 48));
+    } else {
+      slaDeadline.setHours(slaDeadline.getHours() + (Number(supportRules.slaLowHours) || 72));
+    }
 
     const ticket = await this.prisma.ticket.create({
       data: {
@@ -32,8 +49,9 @@ export class TicketsService {
         subject: dto.subject,
         description: dto.description,
         queue,
-        priority: dto.priority || "Medium",
+        priority,
         status: "Open",
+        slaDeadline,
       },
     });
 

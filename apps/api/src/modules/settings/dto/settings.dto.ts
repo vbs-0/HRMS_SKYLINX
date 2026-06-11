@@ -63,4 +63,8 @@ export class UpdateClientRulesDto {
   @IsOptional()
   @IsObject()
   permissions?: Record<string, unknown>;
+
+  @IsOptional()
+  @IsObject()
+  support?: Record<string, unknown>;
 }

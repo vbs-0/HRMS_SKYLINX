@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useState, useEffect } from "react";
 import { apiFetch } from "../lib/client-api";
@@ -121,6 +121,8 @@ export function SupportConsole() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("All");
 
+  const [supportQueues, setSupportQueues] = useState(queues);
+
   // State for tickets list
   const [tickets, setTickets] = useState<Ticket[]>([]);
   const [expandedTicketId, setExpandedTicketId] = useState<string | null>(null);
@@ -185,6 +187,25 @@ export function SupportConsole() {
 
   useEffect(() => {
     fetchTickets();
+    apiFetch<any>("/settings/rules")
+      .then((res) => {
+        if (res?.data?.support) {
+          const supportRules = res.data.support;
+          setSupportQueues(prev => prev.map(q => {
+            if (q.title === "HR Helpdesk" && supportRules.slaMediumHours) {
+              return { ...q, sla: `${supportRules.slaMediumHours}h` };
+            }
+            if (q.title === "Payroll Support" && supportRules.slaHighHours) {
+              return { ...q, sla: `${supportRules.slaHighHours}h` };
+            }
+            if (q.title === "Technical Support" && supportRules.slaLowHours) {
+              return { ...q, sla: `${supportRules.slaLowHours}h` };
+            }
+            return q;
+          }));
+        }
+      })
+      .catch((err) => console.warn("Error fetching settings rules:", err));
   }, []);
 
   const handleCreateTicket = (e: React.FormEvent) => {
@@ -311,7 +332,7 @@ export function SupportConsole() {
   };
 
   const getFilteredQueues = () => {
-    return queues.filter(q =>
+    return supportQueues.filter(q =>
       q.title.toLowerCase().includes(search.toLowerCase()) ||
       q.note.toLowerCase().includes(search.toLowerCase())
     );
@@ -329,7 +350,7 @@ export function SupportConsole() {
 
   const supportReport = [
     "Queue,Status,SLA",
-    ...queues.map(q => `${q.title},${q.status},${q.sla}`),
+    ...supportQueues.map(q => `${q.title},${q.status},${q.sla}`),
   ].join("%0A");
 
   // Status Colors for Ticket status badges

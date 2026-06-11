@@ -14,3 +14,14 @@ export function setAccessToken(token: string) {
 export function clearAccessToken() {
   window.localStorage.removeItem(ACCESS_TOKEN_KEY);
 }
+
+export function getCurrentCompanyId(): string {
+  const token = getAccessToken();
+  if (!token) return "company_skylinx";
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return payload.tenantId || "company_skylinx";
+  } catch {
+    return "company_skylinx";
+  }
+}

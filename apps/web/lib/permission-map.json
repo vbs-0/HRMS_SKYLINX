@@ -432,6 +432,14 @@
     "permission": "surveys.read"
   },
   {
+    "pattern": "^/tickets/[^/]+$",
+    "permission": "tickets.read"
+  },
+  {
+    "pattern": "^/tickets$",
+    "permission": "tickets.read"
+  },
+  {
     "pattern": "^/training/events$",
     "permission": "training.read"
   },

@@ -1001,6 +1001,7 @@ model Ticket {
   priority     String          @default("Medium")
   status       String          @default("Open")
   assignedTo   String?
+  slaDeadline  DateTime?
   createdAt    DateTime        @default(now())
   updatedAt    DateTime        @updatedAt
   company      Company         @relation(fields: [tenantId], references: [id], onDelete: Cascade)

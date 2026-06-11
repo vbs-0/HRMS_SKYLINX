@@ -165,7 +165,7 @@ export function EmployeesConsole() {
       })
       .catch(() => undefined);
 
-    return onDataRefresh("organization", () => {
+    return onDataRefresh("employees", () => {
       loadDropdowns();
     });
   }, []);

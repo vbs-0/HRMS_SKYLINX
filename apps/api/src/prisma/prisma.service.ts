@@ -7,7 +7,8 @@ class PrismaFieldsHelper {
     "Department", "Designation", "Location", "Employee", "Shift", "AttendanceRule",
     "LeaveType", "PayrollRun", "Holiday", "JobPosting", "ModuleSetting", "ClientRule",
     "GratuityRule", "AppraisalCycle", "AppraisalTemplate", "Appraisal", "RetentionBonus",
-    "SalaryWithholding", "CompanyPolicy", "Announcement", "CustomFieldDefinition", "CompanyAsset"
+    "SalaryWithholding", "CompanyPolicy", "Announcement", "CustomFieldDefinition", "CompanyAsset",
+    "LeavePolicy", "LeaveBlockList", "EmployeeGrade", "EmploymentType", "LetterTemplate", "StaffingPlan"
   ]);
 
   private static tenantModels = new Set([
@@ -70,19 +71,16 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
               params.args.where[field] = tenantId;
             }
 
-            // 3. Intercept create operations
+            // 3. Intercept create operations — tenant context always wins over
+            // any client-supplied companyId/tenantId to guarantee isolation.
             if (params.action === "create") {
               params.args.data = params.args.data || {};
-              if (params.args.data[field] === undefined) {
-                params.args.data[field] = tenantId;
-              }
+              params.args.data[field] = tenantId;
             } else if (params.action === "createMany") {
               params.args.data = params.args.data || [];
               if (Array.isArray(params.args.data)) {
                 for (const item of params.args.data) {
-                  if (item[field] === undefined) {
-                    item[field] = tenantId;
-                  }
+                  item[field] = tenantId;
                 }
               }
             }

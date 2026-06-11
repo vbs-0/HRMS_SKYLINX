@@ -1,7 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
+﻿import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
 import { ApprovalStatus } from "@prisma/client";
 import { response } from "../../common/crud-response";
 import { PrismaService } from "../../prisma/prisma.service";
+import { TenantContext } from "../../common/tenant-context";
 import {
   CreateRequisitionDto,
   DecideRequisitionDto,
@@ -557,6 +558,7 @@ export class RecruitmentService {
   }
 
   async listStaffingPlans(companyId: string) {
+    companyId = TenantContext.getTenantId() || companyId;
     const plans = await this.prisma.staffingPlan.findMany({
       where: { companyId },
       include: {
@@ -643,3 +645,5 @@ export class RecruitmentService {
     return response("recruitment", "referral.decide", result);
   }
 }
+
+

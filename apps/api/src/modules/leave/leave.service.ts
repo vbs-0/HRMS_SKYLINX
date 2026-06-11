@@ -1,14 +1,20 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
+﻿import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { ApprovalStatus, LeaveLedgerEntryType } from "@prisma/client";
 import { AuthenticatedUser } from "../../common/auth/auth.types";
 import { response } from "../../common/crud-response";
 import { PrismaService } from "../../prisma/prisma.service";
+import { TenantContext } from "../../common/tenant-context";
 import { CreateLeaveRequestDto } from "./dto/create-leave-request.dto";
 import { DecideLeaveRequestDto } from "./dto/decide-leave-request.dto";
 
 @Injectable()
 export class LeaveService {
   constructor(private readonly prisma: PrismaService) {}
+
+  /** Active tenant from request context; demo default only as a last resort. */
+  private tenantId(): string {
+    return TenantContext.getTenantId() || "company_skylinx";
+  }
 
   async types() {
     // Ensure all 5 standard leave types exist
@@ -21,9 +27,9 @@ export class LeaveService {
     ];
     for (const dt of defaultTypes) {
       await this.prisma.leaveType.upsert({
-        where: { companyId_code: { companyId: "company_skylinx", code: dt.code } },
+        where: { companyId_code: { companyId: this.tenantId(), code: dt.code } },
         update: {},
-        create: { companyId: "company_skylinx", name: dt.name, code: dt.code, annualQuota: dt.annualQuota },
+        create: { companyId: this.tenantId(), name: dt.name, code: dt.code, annualQuota: dt.annualQuota },
       });
     }
 
@@ -32,7 +38,7 @@ export class LeaveService {
     });
 
     const rules = await this.prisma.clientRule.findMany({
-      where: { companyId: "company_skylinx", category: "leave_type_settings" },
+      where: { companyId: this.tenantId(), category: "leave_type_settings" },
     });
     const rulesMap = new Map(rules.map((r) => [r.key, r.valueJson]));
 
@@ -107,7 +113,7 @@ export class LeaveService {
       const existingRule = await this.prisma.clientRule.findUnique({
         where: {
           companyId_category_key: {
-            companyId: "company_skylinx",
+            companyId: this.tenantId(),
             category: "leave_type_settings",
             key: id,
           },
@@ -119,14 +125,14 @@ export class LeaveService {
       await this.prisma.clientRule.upsert({
         where: {
           companyId_category_key: {
-            companyId: "company_skylinx",
+            companyId: this.tenantId(),
             category: "leave_type_settings",
             key: id,
           },
         },
         update: { valueJson: newValue },
         create: {
-          companyId: "company_skylinx",
+          companyId: this.tenantId(),
           category: "leave_type_settings",
           key: id,
           valueJson: newValue,
@@ -141,13 +147,13 @@ export class LeaveService {
     const code = data.code ? data.code.toUpperCase() : `CUST_${Date.now().toString().slice(-4)}`;
     
     const existing = await this.prisma.leaveType.findFirst({
-      where: { companyId: "company_skylinx", code },
+      where: { companyId: this.tenantId(), code },
     });
     if (existing) throw new BadRequestException(`Leave type with code ${code} already exists`);
 
     const newType = await this.prisma.leaveType.create({
       data: {
-        companyId: "company_skylinx",
+        companyId: this.tenantId(),
         name: data.name || "Custom Leave",
         code,
         annualQuota: data.annualQuota !== undefined ? Number(data.annualQuota) : 30,
@@ -179,7 +185,7 @@ export class LeaveService {
 
     await this.prisma.clientRule.create({
       data: {
-        companyId: "company_skylinx",
+        companyId: this.tenantId(),
         category: "leave_type_settings",
         key: newType.id,
         valueJson: extraSettings,
@@ -611,6 +617,7 @@ export class LeaveService {
   }
 
   async listBlockLists(companyId: string) {
+    companyId = TenantContext.getTenantId() || companyId;
     const lists = await this.prisma.leaveBlockList.findMany({
       where: { companyId },
       include: { dates: true },
@@ -651,6 +658,7 @@ export class LeaveService {
   }
 
   async listPolicies(companyId: string) {
+    companyId = TenantContext.getTenantId() || companyId;
     const policies = await this.prisma.leavePolicy.findMany({
       where: { companyId },
       include: { assignments: { include: { employee: true } } },
@@ -675,6 +683,7 @@ export class LeaveService {
   }
 
   async listPolicyAssignments(companyId: string) {
+    companyId = TenantContext.getTenantId() || companyId;
     const assignments = await this.prisma.leavePolicyAssignment.findMany({
       where: {
         employee: { companyId },
@@ -1062,4 +1071,6 @@ export class LeaveService {
     return response("leave", "compOffConversion.decide", result);
   }
 }
+
+
 

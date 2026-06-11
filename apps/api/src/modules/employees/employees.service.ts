@@ -1,5 +1,6 @@
-import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
+﻿import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
+import { TenantContext } from "../../common/tenant-context";
 import { response } from "../../common/crud-response";
 import { CreateEmployeeDto } from "./dto/create-employee.dto";
 import { UpdateEmployeeDto } from "./dto/update-employee.dto";
@@ -430,6 +431,7 @@ export class EmployeesService {
   }
 
   async listGrades(companyId: string) {
+    companyId = TenantContext.getTenantId() || companyId;
     const grades = await this.prisma.employeeGrade.findMany({
       where: { companyId },
       orderBy: { name: "asc" },
@@ -448,6 +450,7 @@ export class EmployeesService {
   }
 
   async listEmploymentTypes(companyId: string) {
+    companyId = TenantContext.getTenantId() || companyId;
     const types = await this.prisma.employmentType.findMany({
       where: { companyId },
       orderBy: { name: "asc" },
@@ -681,6 +684,7 @@ export class EmployeesService {
   }
 
   async listLetterTemplates(companyId: string) {
+    companyId = TenantContext.getTenantId() || companyId;
     const list = await this.prisma.letterTemplate.findMany({
       where: { companyId },
       orderBy: { title: "asc" },
@@ -750,3 +754,5 @@ export class EmployeesService {
     return response("employees", "loan.decide", updated);
   }
 }
+
+

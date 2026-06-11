@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { apiFetch } from "../lib/client-api";
@@ -98,7 +98,7 @@ export function RosterConsole() {
         if (res.data) setAssignments(res.data);
       }),
     ])
-      .catch((err) => console.error(err))
+      .catch((err) => console.warn(err))
       .finally(() => setLoading(false));
   }
 
@@ -502,3 +502,4 @@ export function RosterConsole() {
     </div>
   );
 }
+

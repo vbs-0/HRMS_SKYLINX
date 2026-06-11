@@ -1,16 +1,16 @@
 [
   {
     "route": "/dashboard",
-    "status": "WARN",
-    "note": "console errors: Failed to load resource: the server responded with a status of 403 (Forbidden);",
+    "status": "PASS",
+    "note": "",
     "buttons": 5,
     "inputs": 1,
     "screenshot": "MANAGER_DEEP/01_dashboard.png"
   },
   {
     "route": "/employees",
-    "status": "WARN",
-    "note": "console errors: Failed to load resource: the server responded with a status of 403 (Forbidden);",
+    "status": "PASS",
+    "note": "",
     "buttons": 16,
     "inputs": 5,
     "screenshot": "MANAGER_DEEP/02_employees.png"
@@ -33,56 +33,56 @@
   },
   {
     "route": "/payroll",
-    "status": "WARN",
-    "note": "console errors: Failed to load resource: the server responded with a status of 403 (Forbidden);",
-    "buttons": 21,
+    "status": "PASS",
+    "note": "",
+    "buttons": 20,
     "inputs": 5,
     "screenshot": "MANAGER_DEEP/05_payroll.png"
   },
   {
     "route": "/expenses",
-    "status": "WARN",
-    "note": "console errors: Failed to load resource: the server responded with a status of 403 (Forbidden);",
+    "status": "PASS",
+    "note": "",
     "buttons": 14,
     "inputs": 4,
     "screenshot": "MANAGER_DEEP/06_expenses.png"
   },
   {
     "route": "/holidays",
-    "status": "WARN",
-    "note": "console errors: Failed to load resource: the server responded with a status of 403 (Forbidden);",
+    "status": "PASS",
+    "note": "",
     "buttons": 15,
     "inputs": 4,
     "screenshot": "MANAGER_DEEP/07_holidays.png"
   },
   {
     "route": "/insurance",
-    "status": "WARN",
-    "note": "console errors: Failed to load resource: the server responded with a status of 403 (Forbidden);",
+    "status": "PASS",
+    "note": "",
     "buttons": 15,
     "inputs": 4,
     "screenshot": "MANAGER_DEEP/08_insurance.png"
   },
   {
     "route": "/recruitment",
-    "status": "WARN",
-    "note": "console errors: Failed to load resource: the server responded with a status of 403 (Forbidden);",
+    "status": "PASS",
+    "note": "",
     "buttons": 15,
     "inputs": 5,
     "screenshot": "MANAGER_DEEP/09_recruitment.png"
   },
   {
     "route": "/training",
-    "status": "WARN",
-    "note": "console errors: Failed to load resource: the server responded with a status of 403 (Forbidden);",
+    "status": "PASS",
+    "note": "",
     "buttons": 11,
     "inputs": 9,
     "screenshot": "MANAGER_DEEP/10_training.png"
   },
   {
     "route": "/travel",
-    "status": "WARN",
-    "note": "console errors: Failed to load resource: the server responded with a status of 403 (Forbidden);",
+    "status": "PASS",
+    "note": "",
     "buttons": 11,
     "inputs": 9,
     "screenshot": "MANAGER_DEEP/11_travel.png"
@@ -97,73 +97,73 @@
   },
   {
     "route": "/approvals",
-    "status": "WARN",
-    "note": "console errors: Failed to load resource: the server responded with a status of 403 (Forbidden);",
+    "status": "PASS",
+    "note": "",
     "buttons": 10,
     "inputs": 5,
     "screenshot": "MANAGER_DEEP/13_approvals.png"
   },
   {
     "route": "/organization",
-    "status": "WARN",
-    "note": "console errors: Failed to load resource: the server responded with a status of 403 (Forbidden) | Failed to load organization chart Error: Missing required permission\n    at apiFetch (webpack-internal:///(app-pages-browser)/./lib/client-api.ts:53:15);",
-    "buttons": 10,
+    "status": "PASS",
+    "note": "",
+    "buttons": 8,
     "inputs": 1,
     "screenshot": "MANAGER_DEEP/14_organization.png"
   },
   {
     "route": "/analytics",
-    "status": "WARN",
-    "note": "console errors: Failed to load resource: the server responded with a status of 403 (Forbidden);",
+    "status": "PASS",
+    "note": "",
     "buttons": 10,
     "inputs": 4,
     "screenshot": "MANAGER_DEEP/15_analytics.png"
   },
   {
     "route": "/reports",
-    "status": "WARN",
-    "note": "console errors: Failed to load resource: the server responded with a status of 403 (Forbidden);",
+    "status": "PASS",
+    "note": "",
     "buttons": 16,
     "inputs": 7,
     "screenshot": "MANAGER_DEEP/16_reports.png"
   },
   {
     "route": "/rewards",
-    "status": "WARN",
-    "note": "console errors: Failed to load resource: the server responded with a status of 403 (Forbidden);",
+    "status": "PASS",
+    "note": "",
     "buttons": 14,
     "inputs": 14,
     "screenshot": "MANAGER_DEEP/17_rewards.png"
   },
   {
     "route": "/social",
-    "status": "WARN",
-    "note": "console errors: Failed to load resource: the server responded with a status of 403 (Forbidden);",
+    "status": "PASS",
+    "note": "",
     "buttons": 13,
     "inputs": 8,
     "screenshot": "MANAGER_DEEP/18_social.png"
   },
   {
     "route": "/notifications",
-    "status": "WARN",
-    "note": "console errors: Failed to load resource: the server responded with a status of 403 (Forbidden);",
+    "status": "PASS",
+    "note": "",
     "buttons": 11,
     "inputs": 4,
     "screenshot": "MANAGER_DEEP/19_notifications.png"
   },
   {
     "route": "/compliance",
-    "status": "WARN",
-    "note": "console errors: Failed to load resource: the server responded with a status of 403 (Forbidden);",
+    "status": "PASS",
+    "note": "",
     "buttons": 16,
     "inputs": 4,
     "screenshot": "MANAGER_DEEP/20_compliance.png"
   },
   {
     "route": "/assets",
-    "status": "WARN",
-    "note": "console errors: Failed to load resource: the server responded with a status of 403 (Forbidden) | Failed to load assets inventory: Error: Missing required permission\n    at apiFetch (webpack-internal:///(app-pages-browser)/./lib/client-api.ts:53:15);",
-    "buttons": 19,
+    "status": "PASS",
+    "note": "",
+    "buttons": 17,
     "inputs": 7,
     "screenshot": "MANAGER_DEEP/21_assets.png"
   },
@@ -193,40 +193,40 @@
   },
   {
     "route": "/security",
-    "status": "WARN",
-    "note": "console errors: Failed to load resource: the server responded with a status of 403 (Forbidden);",
+    "status": "PASS",
+    "note": "",
     "buttons": 9,
     "inputs": 4,
     "screenshot": "MANAGER_DEEP/25_security.png"
   },
   {
     "route": "/settings",
-    "status": "WARN",
-    "note": "console errors: Failed to load resource: the server responded with a status of 403 (Forbidden);",
+    "status": "PASS",
+    "note": "",
     "buttons": 32,
     "inputs": 82,
     "screenshot": "MANAGER_DEEP/26_settings.png"
   },
   {
     "route": "/saas",
-    "status": "WARN",
-    "note": "console errors: Failed to load resource: the server responded with a status of 403 (Forbidden);",
+    "status": "PASS",
+    "note": "",
     "buttons": 15,
     "inputs": 14,
     "screenshot": "MANAGER_DEEP/27_saas.png"
   },
   {
     "route": "/saas-admin",
-    "status": "WARN",
-    "note": "console errors: Failed to load resource: the server responded with a status of 403 (Forbidden) | Failed to load saas-admin data: Error: Missing required permission\n    at apiFetch (webpack-internal:///(app-pages-browser)/./lib/client-api.ts:53:15)\n    at async loadData (webpack-internal:///(app-pages-browser)/./components/saas-admin-page-content.tsx:42:29);",
-    "buttons": 7,
+    "status": "PASS",
+    "note": "",
+    "buttons": 5,
     "inputs": 1,
     "screenshot": "MANAGER_DEEP/28_saas-admin.png"
   },
   {
     "route": "/cards",
-    "status": "WARN",
-    "note": "console errors: Failed to load resource: the server responded with a status of 403 (Forbidden);",
+    "status": "PASS",
+    "note": "",
     "buttons": 25,
     "inputs": 2,
     "screenshot": "MANAGER_DEEP/29_cards.png"
@@ -249,8 +249,8 @@
   },
   {
     "route": "/reminders",
-    "status": "WARN",
-    "note": "console errors: Failed to load resource: the server responded with a status of 403 (Forbidden);",
+    "status": "PASS",
+    "note": "",
     "buttons": 3,
     "inputs": 3,
     "screenshot": "MANAGER_DEEP/32_reminders.png"

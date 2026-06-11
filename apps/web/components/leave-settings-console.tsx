@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { Edit2, Save, X, Info } from "lucide-react";
@@ -159,7 +159,7 @@ export function LeaveSettingsConsole() {
           setAssignments(body.data);
         }
       })
-      .catch((err) => console.error("Failed to load assignments", err));
+      .catch((err) => console.warn("Failed to load assignments", err));
   }
 
   function load() {
@@ -837,7 +837,7 @@ export function LeaveSettingsConsole() {
                   onChange={(e) => setAssignSearch(e.target.value)}
                   className="min-h-10 w-full rounded-lg border border-[#cbd5e1] pl-3 pr-8 text-xs outline-none focus:border-brand"
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">🔍</span>
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">ðŸ”</span>
               </div>
 
               {/* Assign Rules Modal Trigger */}
@@ -941,7 +941,7 @@ export function LeaveSettingsConsole() {
                               className="text-blue-400 hover:text-rose-500 font-bold ml-1 text-xs leading-none"
                               title="Remove"
                             >
-                              ×
+                              Ã—
                             </button>
                           </span>
                         ))}
@@ -980,7 +980,7 @@ export function LeaveSettingsConsole() {
           <div className="bg-white rounded-xl border border-slate-200 shadow-xl w-full max-w-2xl overflow-hidden max-h-[90vh] flex flex-col">
             <div className="bg-[#1f2a44] text-white p-4 font-semibold text-sm flex justify-between items-center">
               <span>Create Custom Leave Type</span>
-              <button onClick={() => setShowAddModal(false)} className="text-white/60 hover:text-white text-lg font-bold">×</button>
+              <button onClick={() => setShowAddModal(false)} className="text-white/60 hover:text-white text-lg font-bold">Ã—</button>
             </div>
             
             <form onSubmit={handleCreateLeaveType} className="p-6 overflow-y-auto space-y-4 text-sm text-left">
@@ -1353,4 +1353,5 @@ export function LeaveSettingsConsole() {
     </div>
   );
 }
+
 

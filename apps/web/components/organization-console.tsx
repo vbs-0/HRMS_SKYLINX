@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { apiFetch } from "../lib/client-api";
@@ -54,7 +54,7 @@ export function OrganizationConsole() {
           }
         }
       })
-      .catch((err) => console.error("Failed to load organization chart", err))
+      .catch((err) => console.warn("Failed to load organization chart", err))
       .finally(() => setLoaded(false));
   }, []);
 
@@ -467,3 +467,4 @@ function EmployeeTreeNode({
     </div>
   );
 }
+

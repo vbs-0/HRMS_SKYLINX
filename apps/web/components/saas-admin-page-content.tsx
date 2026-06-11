@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { apiFetch } from "../lib/client-api";
@@ -48,7 +48,7 @@ export function SaasAdminPageContent() {
         setBillingEvents(saasRes.data.billingEvents || []);
       }
     } catch (err) {
-      console.error("Failed to load saas-admin data:", err);
+      console.warn("Failed to load saas-admin data:", err);
     } finally {
       setLoading(false);
     }
@@ -150,7 +150,7 @@ export function SaasAdminPageContent() {
               <div className="grid grid-cols-2 gap-4 max-md:grid-cols-1">
                 <MetricCard
                   label="Platform MRR / ARR"
-                  value={`₹${totalMrr.toLocaleString("en-IN")} / ₹${totalArr.toLocaleString("en-IN")}`}
+                  value={`â‚¹${totalMrr.toLocaleString("en-IN")} / â‚¹${totalArr.toLocaleString("en-IN")}`}
                   note="Consolidated subscription volume"
                 />
                 <MetricCard
@@ -180,7 +180,7 @@ export function SaasAdminPageContent() {
                     <div>
                       <div className="flex justify-between text-xs font-semibold mb-1">
                         <span>Standard (Professional)</span>
-                        <span>₹{totalMrr.toLocaleString("en-IN")}/mo volume</span>
+                        <span>â‚¹{totalMrr.toLocaleString("en-IN")}/mo volume</span>
                       </div>
                       <div className="h-2 w-full bg-[#f1f3f5] rounded-full overflow-hidden">
                         <div className="h-full bg-emerald-500" style={{ width: "65%" }} />
@@ -190,7 +190,7 @@ export function SaasAdminPageContent() {
                     <div>
                       <div className="flex justify-between text-xs font-semibold mb-1">
                         <span>Pro (Enterprise)</span>
-                        <span>₹{totalArr.toLocaleString("en-IN")}/yr projection</span>
+                        <span>â‚¹{totalArr.toLocaleString("en-IN")}/yr projection</span>
                       </div>
                       <div className="h-2 w-full bg-[#f1f3f5] rounded-full overflow-hidden">
                         <div className="h-full bg-amber-500" style={{ width: "35%" }} />
@@ -246,7 +246,7 @@ export function SaasAdminPageContent() {
                               {event.status}
                             </StatusPill>
                           </td>
-                          <td className="border-b border-[#dce2eb] p-3 font-semibold">₹{(event.amount || 0).toLocaleString("en-IN")}</td>
+                          <td className="border-b border-[#dce2eb] p-3 font-semibold">â‚¹{(event.amount || 0).toLocaleString("en-IN")}</td>
                           <td className="border-b border-[#dce2eb] p-3 text-xs text-muted">{new Date(event.createdAt).toLocaleString()}</td>
                         </tr>
                       ))}
@@ -332,3 +332,4 @@ export function SaasAdminPageContent() {
     </>
   );
 }
+

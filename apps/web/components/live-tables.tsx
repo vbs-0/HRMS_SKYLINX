@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { apiFetch } from "../lib/client-api";
@@ -1132,7 +1132,7 @@ export function LeaveTable({
         if (body.data) setRequests(body.data);
       }),
     ])
-      .catch((err) => console.error("Error loading leave data", err))
+      .catch((err) => console.warn("Error loading leave data", err))
       .finally(() => setLoaded(true));
   }
 
@@ -1343,3 +1343,4 @@ export function PayrollTable() {
     </tbody>
   );
 }
+

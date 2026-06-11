@@ -1,0 +1,458 @@
+[
+  {
+    "pattern": "^/analytics$",
+    "permission": "analytics.read"
+  },
+  {
+    "pattern": "^/announcements/[^/]+/reads$",
+    "permission": "employees.configure"
+  },
+  {
+    "pattern": "^/announcements/[^/]+$",
+    "permission": "employees.read"
+  },
+  {
+    "pattern": "^/announcements$",
+    "permission": "employees.read"
+  },
+  {
+    "pattern": "^/approvals$",
+    "permission": "approvals.read"
+  },
+  {
+    "pattern": "^/assets$",
+    "permission": "assets.read"
+  },
+  {
+    "pattern": "^/attendance/logs$",
+    "permission": "attendance.read"
+  },
+  {
+    "pattern": "^/attendance/regularizations$",
+    "permission": "attendance.read"
+  },
+  {
+    "pattern": "^/attendance/shifts/assignments$",
+    "permission": "attendance.read"
+  },
+  {
+    "pattern": "^/attendance/shifts/requests$",
+    "permission": "attendance.read"
+  },
+  {
+    "pattern": "^/attendance/shifts$",
+    "permission": "attendance.read"
+  },
+  {
+    "pattern": "^/compliance$",
+    "permission": "compliance.read"
+  },
+  {
+    "pattern": "^/dashboard/admin$",
+    "permission": "reports.read"
+  },
+  {
+    "pattern": "^/dashboard/celebrations$",
+    "permission": "employees.read"
+  },
+  {
+    "pattern": "^/dashboard/employee$",
+    "permission": "employees.read"
+  },
+  {
+    "pattern": "^/dashboard/manager$",
+    "permission": "attendance.read"
+  },
+  {
+    "pattern": "^/dashboard/super-admin$",
+    "permission": "settings.configure"
+  },
+  {
+    "pattern": "^/employees/[^/]+/exit-interview$",
+    "permission": "employees.read"
+  },
+  {
+    "pattern": "^/employees/[^/]+/ff-suggestions$",
+    "permission": "employees.read"
+  },
+  {
+    "pattern": "^/employees/[^/]+/full-and-final$",
+    "permission": "employees.read"
+  },
+  {
+    "pattern": "^/employees/[^/]+/promotions$",
+    "permission": "employees.read"
+  },
+  {
+    "pattern": "^/employees/[^/]+/transfers$",
+    "permission": "employees.read"
+  },
+  {
+    "pattern": "^/employees/[^/]+$",
+    "permission": "employees.read"
+  },
+  {
+    "pattern": "^/employees/documents$",
+    "permission": "employees.read"
+  },
+  {
+    "pattern": "^/employees/grades/[^/]+$",
+    "permission": "employees.read"
+  },
+  {
+    "pattern": "^/employees/letter-templates/list/[^/]+$",
+    "permission": "employees.read"
+  },
+  {
+    "pattern": "^/employees/loans/list/[^/]+$",
+    "permission": "employees.read"
+  },
+  {
+    "pattern": "^/employees/onboarding/templates$",
+    "permission": "employees.read"
+  },
+  {
+    "pattern": "^/employees/separation/templates$",
+    "permission": "employees.read"
+  },
+  {
+    "pattern": "^/employees/types/[^/]+$",
+    "permission": "employees.read"
+  },
+  {
+    "pattern": "^/employees$",
+    "permission": "employees.read"
+  },
+  {
+    "pattern": "^/expenses$",
+    "permission": "expenses.read"
+  },
+  {
+    "pattern": "^/grievance/[^/]+$",
+    "permission": "grievance.read"
+  },
+  {
+    "pattern": "^/grievance$",
+    "permission": "grievance.read"
+  },
+  {
+    "pattern": "^/holidays$",
+    "permission": "holidays.read"
+  },
+  {
+    "pattern": "^/insurance/claims$",
+    "permission": "insurance.read"
+  },
+  {
+    "pattern": "^/insurance/dependents$",
+    "permission": "insurance.read"
+  },
+  {
+    "pattern": "^/insurance/policies$",
+    "permission": "insurance.read"
+  },
+  {
+    "pattern": "^/leave/assignments$",
+    "permission": "leave.read"
+  },
+  {
+    "pattern": "^/leave/balances$",
+    "permission": "leave.read"
+  },
+  {
+    "pattern": "^/leave/block-lists/[^/]+$",
+    "permission": "leave.read"
+  },
+  {
+    "pattern": "^/leave/comp-off-conversions$",
+    "permission": "leave.read"
+  },
+  {
+    "pattern": "^/leave/encashments$",
+    "permission": "leave.read"
+  },
+  {
+    "pattern": "^/leave/ledger/[^/]+$",
+    "permission": "leave.read"
+  },
+  {
+    "pattern": "^/leave/policies/[^/]+$",
+    "permission": "leave.read"
+  },
+  {
+    "pattern": "^/leave/policies/assignments/[^/]+$",
+    "permission": "leave.read"
+  },
+  {
+    "pattern": "^/leave/requests$",
+    "permission": "leave.read"
+  },
+  {
+    "pattern": "^/leave/types$",
+    "permission": "leave.read"
+  },
+  {
+    "pattern": "^/notifications/recipients$",
+    "permission": "notifications.read"
+  },
+  {
+    "pattern": "^/notifications$",
+    "permission": "notifications.read"
+  },
+  {
+    "pattern": "^/organization/chart$",
+    "permission": "organization.read"
+  },
+  {
+    "pattern": "^/organization/departments$",
+    "permission": "organization.read"
+  },
+  {
+    "pattern": "^/organization/designations$",
+    "permission": "organization.read"
+  },
+  {
+    "pattern": "^/organization/locations$",
+    "permission": "organization.read"
+  },
+  {
+    "pattern": "^/payroll/additional-salary$",
+    "permission": "payroll.approve"
+  },
+  {
+    "pattern": "^/payroll/benefits/applications$",
+    "permission": "payroll.read"
+  },
+  {
+    "pattern": "^/payroll/benefits/claims$",
+    "permission": "payroll.read"
+  },
+  {
+    "pattern": "^/payroll/corrections$",
+    "permission": "payroll.approve"
+  },
+  {
+    "pattern": "^/payroll/form16/[^/]+$",
+    "permission": "payroll.read"
+  },
+  {
+    "pattern": "^/payroll/gratuity/[^/]+/calculate$",
+    "permission": "payroll.read"
+  },
+  {
+    "pattern": "^/payroll/gratuity$",
+    "permission": "payroll.approve"
+  },
+  {
+    "pattern": "^/payroll/retention-bonuses$",
+    "permission": "payroll.read"
+  },
+  {
+    "pattern": "^/payroll/runs/[^/]+/payslips$",
+    "permission": "payroll.read"
+  },
+  {
+    "pattern": "^/payroll/runs$",
+    "permission": "payroll.read"
+  },
+  {
+    "pattern": "^/payroll/salary-structures$",
+    "permission": "payroll.read"
+  },
+  {
+    "pattern": "^/payroll/tax-declarations/[^/]+$",
+    "permission": "payroll.read"
+  },
+  {
+    "pattern": "^/payroll/tax-proofs$",
+    "permission": "payroll.read"
+  },
+  {
+    "pattern": "^/payroll/tax-slabs$",
+    "permission": "payroll.read"
+  },
+  {
+    "pattern": "^/payroll/withholdings$",
+    "permission": "payroll.read"
+  },
+  {
+    "pattern": "^/performance/appraisals/[^/]+$",
+    "permission": "performance.read"
+  },
+  {
+    "pattern": "^/performance/appraisals$",
+    "permission": "performance.read"
+  },
+  {
+    "pattern": "^/performance/cycles/[^/]+$",
+    "permission": "performance.read"
+  },
+  {
+    "pattern": "^/performance/cycles$",
+    "permission": "performance.read"
+  },
+  {
+    "pattern": "^/performance/feedback/requests$",
+    "permission": "performance.read"
+  },
+  {
+    "pattern": "^/performance/templates/[^/]+$",
+    "permission": "performance.read"
+  },
+  {
+    "pattern": "^/performance/templates$",
+    "permission": "performance.read"
+  },
+  {
+    "pattern": "^/performance$",
+    "permission": "performance.read"
+  },
+  {
+    "pattern": "^/policies/[^/]+/acknowledgments$",
+    "permission": "policies.configure"
+  },
+  {
+    "pattern": "^/policies/[^/]+$",
+    "permission": "policies.read"
+  },
+  {
+    "pattern": "^/policies$",
+    "permission": "policies.read"
+  },
+  {
+    "pattern": "^/recruitment/applications/posting/[^/]+$",
+    "permission": "recruitment.read"
+  },
+  {
+    "pattern": "^/recruitment/candidates$",
+    "permission": "recruitment.read"
+  },
+  {
+    "pattern": "^/recruitment/interviews$",
+    "permission": "recruitment.read"
+  },
+  {
+    "pattern": "^/recruitment/job-offers/[^/]+$",
+    "permission": "recruitment.read"
+  },
+  {
+    "pattern": "^/recruitment/job-offers$",
+    "permission": "recruitment.read"
+  },
+  {
+    "pattern": "^/recruitment/job-postings$",
+    "permission": "recruitment.read"
+  },
+  {
+    "pattern": "^/recruitment/referrals$",
+    "permission": "recruitment.read"
+  },
+  {
+    "pattern": "^/recruitment/requisitions$",
+    "permission": "recruitment.read"
+  },
+  {
+    "pattern": "^/recruitment/staffing-plans/list/[^/]+$",
+    "permission": "recruitment.read"
+  },
+  {
+    "pattern": "^/reminders$",
+    "permission": "settings.configure"
+  },
+  {
+    "pattern": "^/reports/attendance$",
+    "permission": "reports.read"
+  },
+  {
+    "pattern": "^/reports/compliance$",
+    "permission": "reports.read"
+  },
+  {
+    "pattern": "^/reports/employees$",
+    "permission": "reports.read"
+  },
+  {
+    "pattern": "^/reports/expenses$",
+    "permission": "reports.read"
+  },
+  {
+    "pattern": "^/reports/leave$",
+    "permission": "reports.read"
+  },
+  {
+    "pattern": "^/reports/payroll$",
+    "permission": "reports.read"
+  },
+  {
+    "pattern": "^/rewards$",
+    "permission": "rewards.read"
+  },
+  {
+    "pattern": "^/saas/logs$",
+    "permission": "saas.read"
+  },
+  {
+    "pattern": "^/saas$",
+    "permission": "saas.read"
+  },
+  {
+    "pattern": "^/security/audit-logs$",
+    "permission": "settings.configure"
+  },
+  {
+    "pattern": "^/security/notifications$",
+    "permission": "settings.configure"
+  },
+  {
+    "pattern": "^/settings/company$",
+    "permission": "settings.configure"
+  },
+  {
+    "pattern": "^/settings/logs$",
+    "permission": "settings.configure"
+  },
+  {
+    "pattern": "^/settings/modules$",
+    "permission": "settings.configure"
+  },
+  {
+    "pattern": "^/social/feed$",
+    "permission": "social.read"
+  },
+  {
+    "pattern": "^/surveys/[^/]+/results$",
+    "permission": "surveys.configure"
+  },
+  {
+    "pattern": "^/surveys/[^/]+$",
+    "permission": "surveys.read"
+  },
+  {
+    "pattern": "^/surveys$",
+    "permission": "surveys.read"
+  },
+  {
+    "pattern": "^/training/events$",
+    "permission": "training.read"
+  },
+  {
+    "pattern": "^/training/programs$",
+    "permission": "training.read"
+  },
+  {
+    "pattern": "^/training/skills/gaps/[^/]+$",
+    "permission": "training.read"
+  },
+  {
+    "pattern": "^/training/skills$",
+    "permission": "training.read"
+  },
+  {
+    "pattern": "^/travel/advances$",
+    "permission": "travel.read"
+  },
+  {
+    "pattern": "^/travel/requests$",
+    "permission": "travel.read"
+  }
+]

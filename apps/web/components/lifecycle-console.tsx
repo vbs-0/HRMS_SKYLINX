@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState } from "react";
 import { apiFetch } from "../lib/client-api";
@@ -124,7 +124,7 @@ export function LifecycleConsole() {
           setFfEncashment(String(res.data.encashmentDues || 0));
         }
       })
-      .catch((err) => console.error("Failed to fetch F&F suggestions:", err));
+      .catch((err) => console.warn("Failed to fetch F&F suggestions:", err));
 
     apiFetch<any>(`/employees/${ffEmp}`)
       .then((res) => {
@@ -139,7 +139,7 @@ export function LifecycleConsole() {
           }
         }
       })
-      .catch((err) => console.error("Failed to fetch employee details for F&F:", err));
+      .catch((err) => console.warn("Failed to fetch employee details for F&F:", err));
   }, [ffEmp]);
 
   function loadData() {
@@ -465,7 +465,7 @@ export function LifecycleConsole() {
                       <div className="mt-1 pl-3 text-xs text-slate-400 list-disc grid gap-1">
                         {t.activities?.map((a: any, i: number) => (
                           <div key={i}>
-                            • <strong>{a.title}</strong> {a.assignedRole ? `(Assigned to ${a.assignedRole})` : ""}
+                            â€¢ <strong>{a.title}</strong> {a.assignedRole ? `(Assigned to ${a.assignedRole})` : ""}
                           </div>
                         ))}
                       </div>
@@ -621,7 +621,7 @@ export function LifecycleConsole() {
                       <div className="mt-1 pl-3 text-xs text-slate-400 list-disc grid gap-1">
                         {t.activities?.map((a: any, i: number) => (
                           <div key={i}>
-                            • <strong>{a.title}</strong> {a.assignedRole ? `(${a.assignedRole} review)` : ""}
+                            â€¢ <strong>{a.title}</strong> {a.assignedRole ? `(${a.assignedRole} review)` : ""}
                           </div>
                         ))}
                       </div>
@@ -1053,3 +1053,5 @@ export function LifecycleConsole() {
     </div>
   );
 }
+
+

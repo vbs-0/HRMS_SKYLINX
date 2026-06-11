@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { apiFetch } from "../lib/client-api";
@@ -180,7 +180,7 @@ export function SupportConsole() {
           setTickets(mapped);
         }
       })
-      .catch((err) => console.error("Error fetching tickets:", err));
+      .catch((err) => console.warn("Error fetching tickets:", err));
   };
 
   useEffect(() => {
@@ -438,7 +438,7 @@ export function SupportConsole() {
                           }}
                           className="text-xs font-semibold text-brand hover:underline cursor-pointer"
                         >
-                          Submit Ticket →
+                          Submit Ticket â†’
                         </button>
                       </div>
                     </div>
@@ -1007,3 +1007,4 @@ export function SupportConsole() {
     </>
   );
 }
+

@@ -147,7 +147,7 @@
     "route": "/notifications",
     "status": "PASS",
     "note": "",
-    "buttons": 13,
+    "buttons": 8,
     "inputs": 4,
     "screenshot": "HR_ADMIN_DEEP/19_notifications.png"
   },
@@ -219,7 +219,7 @@
     "route": "/saas-admin",
     "status": "PASS",
     "note": "",
-    "buttons": 4,
+    "buttons": 5,
     "inputs": 1,
     "screenshot": "HR_ADMIN_DEEP/28_saas-admin.png"
   },

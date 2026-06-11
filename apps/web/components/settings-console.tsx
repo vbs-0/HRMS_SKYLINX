@@ -7,6 +7,7 @@ import { fallbackCompanySettings, fallbackModuleSettings } from "../lib/fallback
 import { defaultActivePlan, hasPlanAccess, isPlanName, planTone, requiredPlanForModule, type PlanName } from "../lib/plan-access";
 import { Card, StatusPill } from "./ui";
 import { getAccessToken } from "../lib/session";
+import { hasPermission } from "../lib/permissions";
 
 type CompanySettings = typeof fallbackCompanySettings;
 type ModuleSetting = (typeof fallbackModuleSettings)[number];
@@ -260,7 +261,8 @@ export function SettingsConsole() {
   }
 
   /** Fetches an API endpoint silently — does NOT redirect to /login on 401 */
-  async function silentFetch<T>(path: string): Promise<T | null> {
+  async function silentFetch<T>(path: string, requires?: string): Promise<T | null> {
+    if (requires && !hasPermission(requires)) return null;
     const token = getAccessToken();
     const base = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:4000/api/v1";
     try {
@@ -288,13 +290,13 @@ export function SettingsConsole() {
     }
 
     // These endpoints require settings.configure permission — use silentFetch (no redirect on 401)
-    silentFetch<CompanySettings>("/settings/company").then((data) => {
+    silentFetch<CompanySettings>("/settings/company", "settings.configure").then((data) => {
       if (data) setCompany({ ...fallbackCompanySettings, ...data });
     });
-    silentFetch<ModuleSetting[]>("/settings/modules").then((data) => {
+    silentFetch<ModuleSetting[]>("/settings/modules", "settings.configure").then((data) => {
       if (data?.length) setModules(data.map((item) => ({ module: item.module, enabled: item.enabled })));
     });
-    silentFetch<SettingsLog[]>("/settings/logs").then((data) => {
+    silentFetch<SettingsLog[]>("/settings/logs", "settings.configure").then((data) => {
       if (data) setLogs(data);
     });
 

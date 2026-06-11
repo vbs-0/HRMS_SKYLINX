@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { BriefcaseBusiness, Check, RotateCcw, PackagePlus, UserRound, CheckCircle2, Download, Trash2, X } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -100,7 +100,7 @@ export function AssetsConsole() {
       .then((body) => {
         if (body.data) setData(body.data);
       })
-      .catch((err) => console.error("Failed to load assets inventory:", err));
+      .catch((err) => console.warn("Failed to load assets inventory:", err));
   }
 
   useEffect(() => {
@@ -753,3 +753,4 @@ export function AssetsConsole() {
     </div>
   );
 }
+

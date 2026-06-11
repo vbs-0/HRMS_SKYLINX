@@ -2,6 +2,7 @@
 
 import { getAccessToken } from "./session";
 import { clearAccessToken } from "./session";
+import { hasPermission, requiredPermissionFor, PermissionDeniedError } from "./permissions";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:4000/api/v1";
 
@@ -30,6 +31,17 @@ async function request<T>(path: string, options: RequestInit, token: string | nu
 
 export async function apiFetch<T>(path: string, options: RequestInit = {}) {
   const token = getAccessToken();
+
+  // Skip GETs the current JWT can never pass — avoids 403 network noise in the
+  // browser console for restricted roles. The API remains the source of truth.
+  const method = (options.method || "GET").toUpperCase();
+  if (method === "GET" && token) {
+    const required = requiredPermissionFor(path);
+    if (required && !hasPermission(required)) {
+      throw new PermissionDeniedError(required);
+    }
+  }
+
   const response = await request<T>(path, options, token);
   if (response.status === 401) {
     clearAccessToken();

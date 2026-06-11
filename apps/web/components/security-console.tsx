@@ -44,7 +44,7 @@ export function SecurityConsole() {
   const [notifications, setNotifications] = useState<NotificationRow[]>([]);
 
   function load() {
-    apiFetch<ApiAuditLog[]>("/audit-logs")
+    apiFetch<ApiAuditLog[]>("/security/audit-logs")
       .then((body) => {
         if (!body.data) return;
         setAuditLogs(body.data.map((log) => ({

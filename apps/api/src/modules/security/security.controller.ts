@@ -2,7 +2,7 @@ import { Controller, Get } from "@nestjs/common";
 import { RequirePermissions } from "../../common/auth/permissions.decorator";
 import { SecurityService } from "./security.service";
 
-@Controller()
+@Controller("security")
 export class SecurityController {
   constructor(private readonly securityService: SecurityService) {}
 

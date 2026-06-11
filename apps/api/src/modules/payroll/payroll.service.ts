@@ -74,17 +74,18 @@ export class PayrollService {
   }
 
   async createRun(data: CreatePayrollRunDto) {
+    const companyId = TenantContext.getTenantId() || data.companyId || "company_skylinx";
     const run = await this.prisma.payrollRun.upsert({
       where: {
         companyId_month_year: {
-          companyId: data.companyId,
+          companyId,
           month: data.month,
           year: data.year,
         },
       },
       update: {},
       create: {
-        companyId: data.companyId,
+        companyId,
         month: data.month,
         year: data.year,
         status: ApprovalStatus.DRAFT,

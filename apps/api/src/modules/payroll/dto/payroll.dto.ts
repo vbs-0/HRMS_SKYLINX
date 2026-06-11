@@ -51,8 +51,9 @@ export class CreateSalaryStructureDto {
 }
 
 export class CreatePayrollRunDto {
+  @IsOptional()
   @IsString()
-  companyId!: string;
+  companyId?: string;
 
   @IsInt()
   @Min(1)

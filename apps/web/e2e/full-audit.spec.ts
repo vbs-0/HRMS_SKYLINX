@@ -12,7 +12,7 @@ const ROUTES = [
   "/performance", "/approvals", "/organization", "/analytics", "/reports",
   "/rewards", "/social", "/notifications", "/compliance", "/assets",
   "/support", "/grievance", "/policies", "/security", "/settings", "/saas", "/saas-admin",
-  "/cards", "/documents",
+  "/cards", "/documents", "/surveys", "/reminders",
 ];
 
 const ROLES = [

@@ -100,7 +100,59 @@ export function EmployeesConsole() {
   const [grades, setGrades] = useState<any[]>([]);
   const [employmentTypes, setEmploymentTypes] = useState<any[]>([]);
 
+  const [departmentsList, setDepartmentsList] = useState<any[]>([
+    { value: "dept_finance", label: "Finance" },
+    { value: "dept_sales", label: "Sales" },
+    { value: "dept_engineering", label: "Engineering" },
+    { value: "dept_operations", label: "Operations" },
+    { value: "dept_people", label: "HR" },
+  ]);
+
+  const [designationsList, setDesignationsList] = useState<any[]>([
+    { value: "des_hr_manager", label: "HR Manager" },
+    { value: "des_payroll", label: "Payroll Specialist" },
+    { value: "des_engineer", label: "Frontend Engineer" },
+    { value: "des_sales", label: "Sales Executive" },
+    { value: "des_ops", label: "Operations Lead" },
+  ]);
+
+  const [locationsList, setLocationsList] = useState<any[]>([
+    { value: "loc_delhi", label: "Delhi" },
+    { value: "loc_hyderabad", label: "Hyderabad" },
+    { value: "loc_pune", label: "Pune" },
+    { value: "loc_bengaluru", label: "Bengaluru" },
+    { value: "loc_mumbai", label: "Mumbai" },
+  ]);
+
+  function loadDropdowns() {
+    apiFetch<any[]>("/organization/departments")
+      .then((res) => {
+        if (res.data && res.data.length > 0) {
+          setDepartmentsList(res.data.map((d: any) => ({ value: d.id, label: d.name })));
+        }
+      })
+      .catch(() => undefined);
+
+    apiFetch<any[]>("/organization/designations")
+      .then((res) => {
+        if (res.data && res.data.length > 0) {
+          setDesignationsList(res.data.map((d: any) => ({ value: d.id, label: d.title })));
+        }
+      })
+      .catch(() => undefined);
+
+    apiFetch<any[]>("/organization/locations")
+      .then((res) => {
+        if (res.data && res.data.length > 0) {
+          setLocationsList(res.data.map((l: any) => ({ value: l.id, label: `${l.name} (${l.city})` })));
+        }
+      })
+      .catch(() => undefined);
+  }
+
   useEffect(() => {
+    loadDropdowns();
+    
     apiFetch<any[]>("/employees/grades/company_skylinx")
       .then((res) => {
         if (res.data) setGrades(res.data);
@@ -112,6 +164,10 @@ export function EmployeesConsole() {
         if (res.data) setEmploymentTypes(res.data);
       })
       .catch(() => undefined);
+
+    return onDataRefresh(() => {
+      loadDropdowns();
+    });
   }, []);
 
   // Company Profile summary stats
@@ -202,7 +258,10 @@ export function EmployeesConsole() {
     setMessage("");
     setError("");
     setLoading(true);
-    const form = new FormData(e.currentTarget);
+    // Capture the form element NOW — before any async work or state changes
+    // unmount it from the DOM (setShowAddPanel(false) destroys the form).
+    const formEl = e.currentTarget;
+    const form = new FormData(formEl);
     try {
       await apiFetch("/employees", {
         method: "POST",
@@ -219,10 +278,10 @@ export function EmployeesConsole() {
           locationId: String(form.get("locationId")) || undefined,
         }),
       });
-      setMessage("Employee profile added successfully!");
+      formEl?.reset();
       setShowAddPanel(false);
+      setMessage("Employee profile added successfully!");
       requestDataRefresh("employees");
-      e.currentTarget.reset();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Creation failed");
     } finally {
@@ -297,7 +356,8 @@ export function EmployeesConsole() {
     setMessage("");
     setError("");
     setLoading(true);
-    const form = new FormData(e.currentTarget);
+    const formEl = e.currentTarget;
+    const form = new FormData(formEl);
     try {
       await apiFetch(`/employees/${myEmployeeId}/documents`, {
         method: "POST",
@@ -307,9 +367,9 @@ export function EmployeesConsole() {
           expiresAt: String(form.get("expiresAt")) || undefined,
         }),
       });
+      formEl?.reset();
       setMessage("Document submitted for verification successfully.");
       requestDataRefresh("documents");
-      e.currentTarget.reset();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed");
     } finally {
@@ -357,29 +417,7 @@ export function EmployeesConsole() {
     }
   }
 
-  const departmentsList = [
-    { value: "dept_finance", label: "Finance" },
-    { value: "dept_sales", label: "Sales" },
-    { value: "dept_engineering", label: "Engineering" },
-    { value: "dept_operations", label: "Operations" },
-    { value: "dept_people", label: "HR" },
-  ];
-
-  const designationsList = [
-    { value: "des_hr_manager", label: "HR Manager" },
-    { value: "des_payroll", label: "Payroll Specialist" },
-    { value: "des_engineer", label: "Frontend Engineer" },
-    { value: "des_sales", label: "Sales Executive" },
-    { value: "des_ops", label: "Operations Lead" },
-  ];
-
-  const locationsList = [
-    { value: "loc_delhi", label: "Delhi" },
-    { value: "loc_hyderabad", label: "Hyderabad" },
-    { value: "loc_pune", label: "Pune" },
-    { value: "loc_bengaluru", label: "Bengaluru" },
-    { value: "loc_mumbai", label: "Mumbai" },
-  ];
+  // Dropdowns loaded dynamically from API in useEffect
 
   return (
     <>

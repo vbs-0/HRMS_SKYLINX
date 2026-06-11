@@ -23,6 +23,10 @@ interface EmployeeOption {
   id: string;
   firstName: string;
   lastName: string;
+  designation?: {
+    id: string;
+    title: string;
+  };
 }
 
 interface DesignationOption {
@@ -133,21 +137,31 @@ export function TrainingConsole() {
 
   function loadAll() {
     setLoading(true);
-    // Fetch employees, designations, programs, events, skills
+    // Fetch employees, programs, events, skills — derive designations from employees
+    // (no /organization/designations endpoint exists; designations are embedded in employee records)
     Promise.all([
-      apiFetch<EmployeeOption[]>("/employees"),
-      apiFetch<DesignationOption[]>("/organization/designations"),
-      apiFetch<TrainingProgram[]>("/training/programs"),
-      apiFetch<TrainingEvent[]>("/training/events"),
-      apiFetch<Skill[]>("/training/skills"),
-    ]).then(([empRes, desRes, progRes, evtRes, skillRes]) => {
-      if (empRes.data) setEmployees(empRes.data);
-      if (desRes.data) setDesignations(desRes.data);
+      apiFetch<any[]>("/employees").catch(() => ({ data: [] as any[] })),
+      apiFetch<TrainingProgram[]>("/training/programs").catch(() => ({ data: [] as TrainingProgram[] })),
+      apiFetch<TrainingEvent[]>("/training/events").catch(() => ({ data: [] as TrainingEvent[] })),
+      apiFetch<Skill[]>("/training/skills").catch(() => ({ data: [] as Skill[] })),
+    ]).then(([empRes, progRes, evtRes, skillRes]) => {
+      const employees: EmployeeOption[] = empRes.data ?? [];
+      if (employees.length) setEmployees(employees);
+
+      // Derive unique designations from employee records
+      const desMap = new Map<string, DesignationOption>();
+      for (const emp of employees) {
+        if (emp.designation && emp.designation.id && !desMap.has(emp.designation.id)) {
+          desMap.set(emp.designation.id, { id: emp.designation.id, title: emp.designation.title });
+        }
+      }
+      setDesignations(Array.from(desMap.values()));
+
       if (progRes.data) setPrograms(progRes.data);
       if (evtRes.data) setEvents(evtRes.data);
       if (skillRes.data) setSkills(skillRes.data);
       setLoading(false);
-    });
+    }).catch(() => setLoading(false));
   }
 
   const handleProgramSubmit = async (e: React.FormEvent) => {

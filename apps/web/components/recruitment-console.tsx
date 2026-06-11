@@ -2,7 +2,7 @@
 
 import { useState, useEffect, FormEvent } from "react";
 import { apiFetch } from "../lib/client-api";
-import { requestDataRefresh } from "../lib/refresh-events";
+import { onDataRefresh, requestDataRefresh } from "../lib/refresh-events";
 import { Card, StatusPill } from "./ui";
 import { ReferenceModuleHeader } from "./reference-module";
 import { ReferenceFlowStrip } from "./reference-sections";
@@ -125,29 +125,62 @@ export function RecruitmentConsole() {
   const [showAddStaffingPlan, setShowAddStaffingPlan] = useState(false);
   const [showAddReferral, setShowAddReferral] = useState(false);
 
-  const departmentsList = [
+  const [departmentsList, setDepartmentsList] = useState<any[]>([
     { value: "dept_people", label: "HR" },
     { value: "dept_finance", label: "Finance" },
     { value: "dept_engineering", label: "Engineering" },
     { value: "dept_sales", label: "Sales" },
     { value: "dept_operations", label: "Operations" },
-  ];
+  ]);
 
-  const designationsList = [
+  const [designationsList, setDesignationsList] = useState<any[]>([
     { value: "des_hr_manager", label: "HR Manager" },
     { value: "des_payroll", label: "Payroll Specialist" },
     { value: "des_engineer", label: "Frontend Engineer" },
     { value: "des_sales", label: "Sales Executive" },
     { value: "des_ops", label: "Operations Lead" },
-  ];
+  ]);
 
-  const locationsList = [
+  const [locationsList, setLocationsList] = useState<any[]>([
     { value: "loc_mumbai", label: "Mumbai" },
     { value: "loc_bengaluru", label: "Bengaluru" },
     { value: "loc_delhi", label: "Delhi" },
     { value: "loc_hyderabad", label: "Hyderabad" },
     { value: "loc_pune", label: "Pune" },
-  ];
+  ]);
+
+  function loadOrgDropdowns() {
+    apiFetch<any[]>("/organization/departments")
+      .then((res) => {
+        if (res.data && res.data.length > 0) {
+          setDepartmentsList(res.data.map((d: any) => ({ value: d.id, label: d.name })));
+        }
+      })
+      .catch(() => undefined);
+
+    apiFetch<any[]>("/organization/designations")
+      .then((res) => {
+        if (res.data && res.data.length > 0) {
+          setDesignationsList(res.data.map((d: any) => ({ value: d.id, label: d.title })));
+        }
+      })
+      .catch(() => undefined);
+
+    apiFetch<any[]>("/organization/locations")
+      .then((res) => {
+        if (res.data && res.data.length > 0) {
+          setLocationsList(res.data.map((l: any) => ({ value: l.id, label: `${l.name} (${l.city})` })));
+        }
+      })
+      .catch(() => undefined);
+  }
+
+  useEffect(() => {
+    loadOrgDropdowns();
+    return onDataRefresh(() => {
+      loadOrgDropdowns();
+    });
+  }, []);
 
   // Load user details
   useEffect(() => {

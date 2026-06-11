@@ -116,8 +116,8 @@ export function TravelConsole() {
         body: JSON.stringify({
           employeeId: reqEmpId,
           purpose: reqPurpose,
-          startDate: reqStart,
-          endDate: reqEnd,
+          startDate: new Date(reqStart).toISOString(),
+          endDate: new Date(reqEnd).toISOString(),
           sourceCity: reqSource,
           destinationCity: reqDest,
           estimatedCost: Number(reqCost),

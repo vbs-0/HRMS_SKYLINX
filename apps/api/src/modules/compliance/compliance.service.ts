@@ -56,15 +56,50 @@ export class ComplianceService {
   }
 
   async export(type: string) {
+    const salaryStructures = await this.prisma.salaryStructure.findMany({
+      include: { employee: true },
+      where: { status: "ACTIVE" },
+    });
+
+    let payload = "";
+    if (type === "pf") {
+      // Generate PF ECR text format
+      // UAN#~#MemberName#~#GrossWages#~#EPFWages#~#EPSWages#~#EDLIWages#~#EE_Share#~#EPS_Share#~#ER_Share#~#NCPDays#~#Refunds
+      payload = salaryStructures.map(s => {
+        const uan = s.employee.uan || "000000000000";
+        const name = `${s.employee.firstName} ${s.employee.lastName}`.trim().substring(0, 50);
+        const gross = Number(s.basic) + Number(s.hra) + Number(s.allowances);
+        const epfWages = Number(s.basic);
+        const epsWages = Number(s.basic) > 15000 ? 15000 : Number(s.basic);
+        const edliWages = epsWages;
+        const eeShare = Number(s.employeePf);
+        const epsShare = Math.round(epsWages * 0.0833);
+        const erShare = eeShare - epsShare;
+        const ncpDays = 0;
+        const refunds = 0;
+        return `${uan}#~#${name}#~#${gross}#~#${epfWages}#~#${epsWages}#~#${edliWages}#~#${eeShare}#~#${epsShare}#~#${erShare}#~#${ncpDays}#~#${refunds}`;
+      }).join("\n");
+    } else if (type === "esi") {
+      // Mock CSV generation for ESI
+      // IP Number, IP Name, No of Days, Total Monthly Wages, Reason Code
+      payload = "IP_Number,IP_Name,Days,Wages,Reason_Code\n" + salaryStructures.map(s => {
+        const ip = s.employee.providentFundAccount || "0000000000"; // Assuming ESI IP
+        const name = `${s.employee.firstName} ${s.employee.lastName}`;
+        const gross = Number(s.basic) + Number(s.hra) + Number(s.allowances);
+        return `${ip},${name},30,${gross},0`;
+      }).join("\n");
+    }
+
     const audit = await this.prisma.auditLog.create({
       data: {
         module: "compliance",
-        action: "export.queue",
+        action: "export.generate",
         entityType: "compliance_report",
         entityId: `compliance_${type}_${Date.now()}`,
-        newValueJson: { type, status: "QUEUED", queuedAt: new Date().toISOString() },
+        newValueJson: { type, status: "GENERATED" },
       },
     });
-    return response("compliance", "export", { type, status: "queued", auditId: audit.id });
+
+    return response("compliance", "export", { type, payload, auditId: audit.id });
   }
 }

@@ -6,6 +6,7 @@ import { ReferenceFlowStrip } from "./reference-sections";
 import { SettingsSetupWorkspace } from "./reference-workspaces";
 import { SettingsConsole } from "./settings-console";
 import { LeaveSettingsConsole } from "./leave-settings-console";
+import { OrganizationSettingsConsole } from "./organization-settings-console";
 import { Building2, Download, SlidersHorizontal } from "lucide-react";
 
 export function SettingsTabsContainer() {
@@ -17,7 +18,7 @@ export function SettingsTabsContainer() {
         eyebrow="Admin"
         title="Company Settings"
         summary="Configure company profile, work week, departments, roles, permissions, branding, modules and import/export controls."
-        tabs={["Company Profile", "Modules", "Roles", "Attendance", "Leave", "Payroll"]}
+        tabs={["Company Profile", "Organization", "Modules", "Roles", "Attendance", "Leave", "Payroll"]}
         activeTab={activeTab}
         onTabChange={setActiveTab}
         actions={[
@@ -40,6 +41,8 @@ export function SettingsTabsContainer() {
         </>
       ) : activeTab === "Leave" ? (
         <LeaveSettingsConsole />
+      ) : activeTab === "Organization" ? (
+        <OrganizationSettingsConsole />
       ) : (
         <div className="rounded-lg border border-[#e8edf4] bg-[#f8fafc] p-10 text-center text-sm font-semibold text-muted">
           Configuration settings for {activeTab} will be integrated based on active license subscriptions.

@@ -76,7 +76,7 @@ async function main() {
     ),
   );
 
-  const permissions = ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "assets", "performance", "mobile", "backup", "testing", "analytics", "saas", "approvals", "notifications", "organization", "reports", "rewards", "settings", "social", "compliance", "recruitment", "training", "travel", "grievance", "policies"].flatMap((module) =>
+  const permissions = ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "assets", "performance", "mobile", "backup", "testing", "analytics", "saas", "approvals", "notifications", "organization", "reports", "rewards", "settings", "social", "compliance", "recruitment", "training", "travel", "grievance", "policies", "surveys"].flatMap((module) =>
     ["create", "read", "update", "delete", "approve", "export", "configure"].map((action) => ({ module, action })),
   );
 
@@ -91,9 +91,9 @@ async function main() {
   const hrPermissions = await prisma.permission.findMany({
     where: {
       OR: [
-        { module: { in: ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "assets", "performance", "mobile", "backup", "testing", "analytics", "saas", "approvals", "notifications", "organization", "reports", "rewards", "social", "compliance", "recruitment", "training", "travel", "grievance", "policies"] }, action: "read" },
-        { module: { in: ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "notifications", "rewards", "social", "recruitment", "training", "travel", "grievance", "policies"] }, action: "create" },
-        { module: { in: ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "notifications", "organization", "recruitment", "training", "travel", "grievance", "policies"] }, action: "update" },
+        { module: { in: ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "assets", "performance", "mobile", "backup", "testing", "analytics", "saas", "approvals", "notifications", "organization", "reports", "rewards", "social", "compliance", "recruitment", "training", "travel", "grievance", "policies", "surveys"] }, action: "read" },
+        { module: { in: ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "notifications", "rewards", "social", "recruitment", "training", "travel", "grievance", "policies", "surveys"] }, action: "create" },
+        { module: { in: ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "notifications", "organization", "recruitment", "training", "travel", "grievance", "policies", "surveys"] }, action: "update" },
         { module: { in: ["leave", "attendance", "expenses", "insurance", "recruitment", "grievance"] }, action: "approve" },
         { module: "approvals", action: "approve" },
         { module: "employees", action: "approve" },
@@ -106,7 +106,7 @@ async function main() {
         { module: "assets", action: "configure" },
         { module: "performance", action: "configure" },
         { module: "settings", action: "configure" },
-        { module: { in: ["leave", "employees", "recruitment", "travel", "training", "grievance", "policies"] }, action: "configure" },
+        { module: { in: ["leave", "employees", "recruitment", "travel", "training", "grievance", "policies", "surveys"] }, action: "configure" },
         { module: "payroll", action: "export" },
         { module: "reports", action: "export" },
         { module: "compliance", action: "export" },
@@ -286,6 +286,9 @@ async function main() {
     ["travel", "approve"],
     ["grievance", "read"],
     ["policies", "read"],
+    ["surveys", "read"],
+    ["surveys", "create"],
+    ["surveys", "configure"],
   ];
   const employeePermissionSpecs: Array<[string, string]> = [
     ["employees", "read"],
@@ -299,6 +302,7 @@ async function main() {
     ["grievance", "create"],
     ["grievance", "read"],
     ["policies", "read"],
+    ["surveys", "read"],
   ];
   for (const [roleId, specs] of [
     ["role_manager", managerPermissionSpecs],

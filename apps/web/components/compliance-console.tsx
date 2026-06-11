@@ -36,8 +36,22 @@ export function ComplianceConsole() {
   }, []);
 
   async function exportCompliance(type: string) {
-    await apiFetch(`/compliance/export/${type}`, { method: "POST" });
-    setMessage(`${type.toUpperCase()} compliance export queued.`);
+    try {
+      const res = await apiFetch<any>(`/compliance/export/${type}`, { method: "POST" });
+      setMessage(`${type.toUpperCase()} compliance export generated.`);
+      
+      if (res?.data?.payload) {
+        const blob = new Blob([res.data.payload], { type: "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${type}_export_${Date.now()}.${type === "esi" ? "csv" : "txt"}`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+    } catch (err) {
+      setMessage(`Failed to export ${type.toUpperCase()}`);
+    }
   }
 
   const form16Ready = data.rows.filter((row: ComplianceRow) => row.form16Status === "READY").length;

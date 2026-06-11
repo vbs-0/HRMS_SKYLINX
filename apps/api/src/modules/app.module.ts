@@ -35,6 +35,8 @@ import { GrievanceModule } from "./grievance/grievance.module";
 import { PoliciesModule } from "./policies/policies.module";
 import { AnnouncementsModule } from "./announcements/announcements.module";
 import { CustomFieldsModule } from "./custom-fields/custom-fields.module";
+import { SurveysModule } from "./surveys/surveys.module";
+import { RemindersModule } from "./reminders/reminders.module";
 import { PrismaModule } from "../prisma/prisma.module";
 import { JwtAuthGuard } from "../common/auth/jwt-auth.guard";
 import { PermissionsGuard } from "../common/auth/permissions.guard";
@@ -75,6 +77,8 @@ import { PermissionsGuard } from "../common/auth/permissions.guard";
     PoliciesModule,
     AnnouncementsModule,
     CustomFieldsModule,
+    SurveysModule,
+    RemindersModule,
   ],
   providers: [
     {

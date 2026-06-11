@@ -64,4 +64,6 @@ export const nav: Array<{ href: Route; label: string; icon: LucideIcon; group?: 
   { href: "/security", label: "Security", icon: ShieldCheck },
   { href: "/settings", label: "Settings", icon: Settings },
   { href: "/policies" as any, label: "Policies", icon: FileCheck2 },
+  { href: "/surveys" as any, label: "Surveys", icon: FileText },
+  { href: "/reminders" as any, label: "Reminders", icon: Megaphone },
 ];

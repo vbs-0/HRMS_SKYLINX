@@ -40,6 +40,7 @@ export function AppShellFrame({
   const isRoleSwitchVisible = ["leave", "attendance", "payroll", "performance"].includes(firstSegment);
 
   const [isOwner, setIsOwner] = React.useState(false);
+  const [myPermissions, setMyPermissions] = React.useState<string[] | null>(null);
   const [branding, setBranding] = React.useState<PublicProfile["branding"]>({
     platformBrand: "PeopleOS",
     clientDisplayName: "My Company",
@@ -57,6 +58,9 @@ export function AppShellFrame({
         const payload = JSON.parse(atob(token.split(".")[1]));
         if (payload && payload.email === "skylinxcode@gmail.com") {
           setIsOwner(true);
+        }
+        if (Array.isArray(payload?.permissions)) {
+          setMyPermissions(payload.permissions);
         }
       } catch (e) {
         // ignore
@@ -119,7 +123,21 @@ export function AppShellFrame({
           {nav
             .filter(({ href }) => {
               if (href === "/saas-admin") return isOwner;
-              return true;
+              // Hide modules the user has no permission for (owner sees all;
+              // until the token is decoded, show everything to avoid flicker).
+              if (isOwner || myPermissions === null) return true;
+              const ALWAYS_VISIBLE = new Set([
+                "/dashboard", "/social", "/policies", "/surveys", "/support",
+                "/grievance", "/documents", "/cards", "/holidays", "/setup",
+              ]);
+              if (ALWAYS_VISIBLE.has(href)) return true;
+              const module = moduleKeyFromHref(href);
+              // Map page hrefs to their backing permission module
+              const moduleAlias: Record<string, string> = {
+                security: "settings", "saas-admin": "saas", reminders: "notifications",
+              };
+              const key = moduleAlias[module] || module;
+              return myPermissions.some((p) => p.startsWith(`${key}.`));
             })
             .map(({ href, label, icon: Icon }) => {
             const requiredPlan = requiredPlanForModule(moduleKeyFromHref(href));

@@ -137,7 +137,7 @@ export function LeaveConsole() {
         eyebrow="Leave"
         title="Leave Dashboard"
         summary="Apply, approve, reject and audit leave requests with balances, rules, carry forward and sandwich policy views."
-        tabs={["Dashboard", "Leave Requests", "Leave Balance", "Leave Rules", "Leave Encashment", "Comp-Off Conversion"]}
+        tabs={["Dashboard", "Team Calendar", "Leave Requests", "Leave Balance", "Leave Rules", "Leave Encashment", "Comp-Off Conversion"]}
         activeTab={activeTab}
         onTabChange={setActiveTab}
         searchValue={search}
@@ -187,6 +187,10 @@ export function LeaveConsole() {
             </p>
           </div>
         </div>
+      )}
+
+      {activeTab === "Team Calendar" && (
+        <TeamLeaveCalendar requests={requests} />
       )}
 
       {activeTab === "Leave Requests" && (
@@ -691,5 +695,34 @@ function LeaveEncashmentPanel() {
         </Card>
       </div>
     </div>
+  );
+}
+
+function TeamLeaveCalendar({ requests }: { requests: any[] }) {
+  const approvedRequests = requests.filter(r => r.status === "APPROVED");
+  
+  return (
+    <Card className="p-5 border border-[#e8edf4]">
+      <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Team Leave Calendar</h3>
+      <div className="grid gap-4">
+        {!approvedRequests.length ? (
+          <div className="text-sm text-slate-500">No approved leaves to show.</div>
+        ) : (
+          <div className="grid gap-3">
+            {approvedRequests.map(r => (
+              <div key={r.id} className="flex justify-between items-center p-3 border rounded-lg bg-slate-50">
+                <div className="font-semibold text-sm">
+                  {r.employee?.firstName} {r.employee?.lastName}
+                  <span className="ml-2 font-normal text-xs text-slate-500">({r.leaveType?.name})</span>
+                </div>
+                <div className="text-xs font-bold bg-white px-2 py-1 border rounded shadow-sm">
+                  {r.fromDate?.slice(0, 10)} to {r.toDate?.slice(0, 10)}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </Card>
   );
 }

@@ -113,6 +113,26 @@ export class SettingsService {
     return tenantId;
   }
 
+  /**
+   * Resolves the active tenant ID with a DB fallback via userId —
+   * handles stale JWTs that carry tenantId=null.
+   */
+  private async resolveTenantId(): Promise<string> {
+    const tenantId = TenantContext.getTenantId();
+    if (tenantId) return tenantId;
+
+    const userId = TenantContext.getUserId();
+    if (userId) {
+      const user = await this.prisma.user.findUnique({
+        where: { id: userId },
+        select: { tenantId: true },
+      });
+      if (user?.tenantId) return user.tenantId;
+    }
+
+    throw new UnauthorizedException("No tenant context found. Please log out and log back in.");
+  }
+
   async company() {
     const tenantId = this.getTenantIdOrThrow();
     const company = await this.prisma.company.findUnique({ where: { id: tenantId } });
@@ -153,8 +173,27 @@ export class SettingsService {
   }
 
   async rules() {
-    const merged = await this.mergedRules();
-    return response("settings", "rules", merged);
+    const tenantId = await this.resolveTenantId();
+    const [company, merged, subscriptionSetting] = await Promise.all([
+      this.prisma.company.findUnique({ where: { id: tenantId } }),
+      this.mergedRules(),
+      this.prisma.moduleSetting.findUnique({
+        where: { companyId_module: { companyId: tenantId, module: "subscription" } },
+      }),
+    ]);
+
+    const activePlan =
+      subscriptionSetting?.settingsJson &&
+      typeof subscriptionSetting.settingsJson === "object" &&
+      "activePlan" in subscriptionSetting.settingsJson
+        ? (subscriptionSetting.settingsJson as { activePlan?: string }).activePlan
+        : "Standard";
+
+    return response("settings", "rules", {
+      ...merged,
+      company,
+      activePlan,
+    });
   }
 
   async publicProfile() {

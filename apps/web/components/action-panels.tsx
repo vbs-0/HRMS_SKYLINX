@@ -698,11 +698,28 @@ export function AttendanceActionPanel() {
   );
 }
 
-export function LeaveApplyPanel() {
+export function LeaveApplyPanel({ onSuccess }: { onSuccess?: () => void } = {}) {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [days, setDays] = useState("1");
   const employees = useEmployeeOptions();
   const leaveTypes = useLeaveTypeOptions();
+
+  // Auto-calculate days from the selected date range (inclusive)
+  useEffect(() => {
+    if (fromDate && toDate) {
+      const from = new Date(fromDate);
+      const to = new Date(toDate);
+      if (!isNaN(from.getTime()) && !isNaN(to.getTime())) {
+        const diffDays = Math.ceil((to.getTime() - from.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+        if (diffDays > 0) {
+          setDays(String(diffDays));
+        }
+      }
+    }
+  }, [fromDate, toDate]);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -725,6 +742,10 @@ export function LeaveApplyPanel() {
       setMessage("Leave request submitted.");
       requestDataRefresh("leave");
       currentForm.reset();
+      setFromDate("");
+      setToDate("");
+      setDays("1");
+      if (onSuccess) onSuccess();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Leave request failed");
     }
@@ -739,9 +760,9 @@ export function LeaveApplyPanel() {
         <option value="">Select leave type</option>
         {leaveTypes.map((leaveType) => <option key={leaveType.value} value={leaveType.value}>{leaveType.label}</option>)}
       </select>
-      <input className={inputClass()} name="fromDate" required type="date" />
-      <input className={inputClass()} name="toDate" required type="date" />
-      <input className={inputClass()} name="days" min="0.5" required step="0.5" type="number" />
+      <input className={inputClass()} name="fromDate" required type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
+      <input className={inputClass()} name="toDate" required type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} />
+      <input className={inputClass()} name="days" min="0.5" required step="0.5" type="number" value={days} onChange={(e) => setDays(e.target.value)} />
       <input className={inputClass()} name="reason" placeholder="Reason" required />
       <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white">Apply Leave</button>
       <p className="col-span-full text-xs text-muted">Leave types and employees load automatically after login. Fallback options remain visible if the API is offline.</p>

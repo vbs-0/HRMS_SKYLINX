@@ -1,5 +1,6 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { ApprovalStatus, LeaveLedgerEntryType } from "@prisma/client";
+import { AuthenticatedUser } from "../../common/auth/auth.types";
 import { response } from "../../common/crud-response";
 import { PrismaService } from "../../prisma/prisma.service";
 import { CreateLeaveRequestDto } from "./dto/create-leave-request.dto";
@@ -302,7 +303,7 @@ export class LeaveService {
     return response("leave", "balances", balances);
   }
 
-  async requests() {
+  async requests(user?: AuthenticatedUser) {
     const requests = await this.prisma.leaveRequest.findMany({
       include: {
         employee: true,
@@ -310,7 +311,43 @@ export class LeaveService {
       },
       orderBy: { createdAt: "desc" },
     });
+
+    if (!user || user.roles.includes("SUPER_ADMIN")) {
+      return response("leave", "requests", requests);
+    }
+
+    // HR sees only leaves applied by non-HR employees (their own go to the Admin)
+    const hrUsers = await this.prisma.userRole.findMany({
+      where: { role: { name: "HR_ADMIN" } },
+      select: { user: { select: { employeeId: true } } },
+    });
+    const hrEmployeeIds = new Set(hrUsers.map((u) => u.user?.employeeId).filter(Boolean));
+
+    if (user.roles.includes("HR_ADMIN")) {
+      const filtered = requests.filter((r) => !hrEmployeeIds.has(r.employeeId));
+      return response("leave", "requests", filtered);
+    }
+
     return response("leave", "requests", requests);
+  }
+
+  /** Leaves applied by HR can only be decided by the Admin (SUPER_ADMIN). */
+  private async assertCanDecide(applierEmployeeId: string, decidedByUserId?: string) {
+    const applierUser = await this.prisma.user.findUnique({
+      where: { employeeId: applierEmployeeId },
+      include: { roles: { include: { role: true } } },
+    });
+    const isHrApplier = applierUser?.roles.some((r) => r.role.name === "HR_ADMIN");
+    if (!isHrApplier || !decidedByUserId) return;
+
+    const deciderUser = await this.prisma.user.findUnique({
+      where: { id: decidedByUserId },
+      include: { roles: { include: { role: true } } },
+    });
+    const isDeciderSuperAdmin = deciderUser?.roles.some((r) => r.role.name === "SUPER_ADMIN");
+    if (!isDeciderSuperAdmin) {
+      throw new ForbiddenException("Leaves applied by HR can only be decided by the Admin");
+    }
   }
 
   async request(data: CreateLeaveRequestDto) {
@@ -401,6 +438,8 @@ export class LeaveService {
       throw new BadRequestException("Only pending leave requests can be approved");
     }
 
+    await this.assertCanDecide(leaveRequest.employeeId, data.decidedByUserId);
+
     const year = leaveRequest.fromDate.getFullYear();
     const result = await this.prisma.$transaction(async (tx) => {
       const balance = await tx.leaveBalance.findUnique({
@@ -475,6 +514,8 @@ export class LeaveService {
     if (leaveRequest.status !== ApprovalStatus.PENDING) {
       throw new BadRequestException("Only pending leave requests can be rejected");
     }
+
+    await this.assertCanDecide(leaveRequest.employeeId, data.decidedByUserId);
 
     const rejected = await this.prisma.leaveRequest.update({
       where: { id },

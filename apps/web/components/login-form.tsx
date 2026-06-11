@@ -28,6 +28,9 @@ export function LoginForm() {
         throw new Error(body.message || "Login failed");
       }
       setAccessToken(body.data.accessToken);
+      if (body.data.activePlan) {
+        document.cookie = `skylinx_peopleos_plan=${encodeURIComponent(body.data.activePlan)}; path=/; max-age=31536000; SameSite=Lax`;
+      }
       router.push("/dashboard");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Login failed");

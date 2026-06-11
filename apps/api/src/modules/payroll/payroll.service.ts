@@ -20,10 +20,16 @@ import {
   DecideRetentionBonusDto,
   CreateSalaryWithholdingDto,
 } from "./dto/new-features.dto";
+import { SettingsService } from "../settings/settings.service";
+
+type PtSlab = { upto: number; monthly: number };
 
 @Injectable()
 export class PayrollService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly settingsService: SettingsService,
+  ) {}
 
   async salaryStructures(user?: AuthenticatedUser) {
     const isEmployee = user && !user.permissions.includes("payroll.approve");
@@ -278,6 +284,26 @@ export class PayrollService {
       },
     });
 
+    // Statutory rates/slabs come from admin-configurable client rules (Settings → Payroll)
+    const payrollRules = await this.settingsService.getPayrollRules();
+    const num = (v: unknown, d: number) => {
+      const n = typeof v === "number" ? v : Number(v);
+      return Number.isFinite(n) ? n : d;
+    };
+    const pfEnabled = payrollRules.pfEnabled !== false;
+    const esiEnabled = payrollRules.esiEnabled !== false;
+    const ptEnabled = payrollRules.professionalTaxEnabled !== false;
+    const pfEmployeeRate = num(payrollRules.pfEmployeeRate, 12) / 100;
+    const pfEmployerRate = num(payrollRules.pfEmployerRate, 12) / 100;
+    const pfWageCeiling = num(payrollRules.pfWageCeiling, 15000);
+    const esiEmployeeRate = num(payrollRules.esiEmployeeRate, 0.75) / 100;
+    const esiEmployerRate = num(payrollRules.esiEmployerRate, 3.25) / 100;
+    const esiWageCeiling = num(payrollRules.esiWageCeiling, 21000);
+    const ptSlabs: PtSlab[] = Array.isArray(payrollRules.ptSlabs)
+      ? (payrollRules.ptSlabs as PtSlab[]).filter((s) => s && Number.isFinite(Number(s.upto)))
+          .sort((a, b) => Number(a.upto) - Number(b.upto))
+      : [];
+
     const result = await this.prisma.$transaction(async (tx) => {
       const payslips = [];
       const startDate = new Date(run.year, run.month - 1, 1);
@@ -371,11 +397,10 @@ export class PayrollService {
         const monthlyHra = this.monthly(structure.hra);
         const monthlyAllowances = this.monthly(structure.allowances);
 
-        // 4. Indian Statutory EPF Calculation (12% of Basic, optionally capped at basic of 15,000)
-        // Check if capping is active (default is true for compliance)
-        const pfBasicBasis = monthlyBasic > 15000 ? 15000 : monthlyBasic;
-        const employeePf = Math.round(pfBasicBasis * 0.12);
-        const employerPf = Math.round(pfBasicBasis * 0.12);
+        // 4. Statutory EPF — rates and wage ceiling are admin-configurable
+        const pfBasicBasis = monthlyBasic > pfWageCeiling ? pfWageCeiling : monthlyBasic;
+        const employeePf = pfEnabled ? Math.round(pfBasicBasis * pfEmployeeRate) : 0;
+        const employerPf = pfEnabled ? Math.round(pfBasicBasis * pfEmployerRate) : 0;
 
         // Fetch approved corrections
         const approvedCorrections = await tx.payrollCorrection.findMany({
@@ -405,16 +430,24 @@ export class PayrollService {
         // Gross salary before statutory deductions
         const grossSalary = monthlyBasic + monthlyHra + monthlyAllowances + additionsSum + benefitsSum + correctionAdditions;
 
-        // 5. Indian Statutory ESIC Calculation (0.75% Employee, 3.25% Employer, if Gross <= 21,000)
+        // 5. Statutory ESIC — rates and wage ceiling are admin-configurable
         let esi = 0;
         let employerEsi = 0;
-        if (grossSalary <= 21000) {
-          esi = Math.round(grossSalary * 0.0075);
-          employerEsi = Math.round(grossSalary * 0.0325);
+        if (esiEnabled && grossSalary <= esiWageCeiling) {
+          esi = Math.round(grossSalary * esiEmployeeRate);
+          employerEsi = Math.round(grossSalary * esiEmployerRate);
         }
 
-        // 6. Professional Tax (PT) Slab Calculation
-        const professionalTax = grossSalary > 15000 ? 200 : 0;
+        // 6. Professional Tax — slab table is admin-configurable
+        let professionalTax = 0;
+        if (ptEnabled) {
+          if (ptSlabs.length > 0) {
+            const slab = ptSlabs.find((s) => grossSalary <= Number(s.upto)) || ptSlabs[ptSlabs.length - 1];
+            professionalTax = num(slab?.monthly, 0);
+          } else {
+            professionalTax = grossSalary > 15000 ? 200 : 0;
+          }
+        }
 
         // 7. Income Tax (TDS) Slabs Calculation
         let tds = 0;

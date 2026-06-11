@@ -7,7 +7,7 @@ class PrismaFieldsHelper {
     "Department", "Designation", "Location", "Employee", "Shift", "AttendanceRule",
     "LeaveType", "PayrollRun", "Holiday", "JobPosting", "ModuleSetting", "ClientRule",
     "GratuityRule", "AppraisalCycle", "AppraisalTemplate", "Appraisal", "RetentionBonus",
-    "SalaryWithholding", "CompanyPolicy", "Announcement", "CustomFieldDefinition"
+    "SalaryWithholding", "CompanyPolicy", "Announcement", "CustomFieldDefinition", "CompanyAsset"
   ]);
 
   private static tenantModels = new Set([
@@ -33,8 +33,8 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
     this.$use(async (params, next) => {
       const tenantId = TenantContext.getTenantId();
 
-      // Only apply filters if tenantId is set
-      if (tenantId) {
+      // Only apply filters if tenantId is set and the user is NOT a system owner
+      if (tenantId && !TenantContext.isOwner()) {
         const modelName = params.model;
         if (modelName) {
           const field = PrismaFieldsHelper.getTenantField(modelName);

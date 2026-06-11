@@ -38,8 +38,8 @@ export class SettingsController {
     return this.settingsService.updateModule(module, body);
   }
 
+  // Any authenticated user can read rules (needed for branding/plan injection in the app shell)
   @Get("rules")
-  @RequirePermissions("settings.configure")
   rules() {
     return this.settingsService.rules();
   }

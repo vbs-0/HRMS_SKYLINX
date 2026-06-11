@@ -5,6 +5,34 @@ import { Edit2, Save, X, Info } from "lucide-react";
 import { apiFetch } from "../lib/client-api";
 import { Card, StatusPill } from "./ui";
 
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  children: React.ReactNode;
+}
+
+function Modal({ isOpen, onClose, title, children }: ModalProps) {
+  if (!isOpen) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4">
+      <div className="relative w-full max-w-lg rounded-xl border border-[#dce2eb] bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 text-left">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+          <h3 className="text-lg font-bold text-slate-900">{title}</h3>
+          <button
+            type="button"
+            className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
+            onClick={onClose}
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
+
 interface LeaveTypeSettings {
   id: string;
   name: string;
@@ -812,68 +840,13 @@ export function LeaveSettingsConsole() {
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">🔍</span>
               </div>
 
-              {/* Assign Rules Popup Trigger */}
-              <div className="relative">
-                <button
-                  onClick={() => setShowAssignPopup(!showAssignPopup)}
-                  className="inline-flex min-h-10 items-center gap-2 rounded-lg bg-brand px-4 text-xs font-bold text-white hover:bg-brand/90 transition shadow-sm"
-                >
-                  <span>Assign Rules</span>
-                </button>
-
-                {/* Popover Card dropdown */}
-                {showAssignPopup && (
-                  <div className="absolute left-0 mt-2 z-30 w-72 bg-white rounded-xl border border-slate-200 shadow-2xl p-4 space-y-4">
-                    <h4 className="text-xs font-bold uppercase text-slate-500 border-b pb-1">Select Rule</h4>
-                    <div className="max-h-48 overflow-y-auto space-y-2">
-                      {types.map((t) => (
-                        <label key={t.id} className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer select-none">
-                          <input
-                            type="checkbox"
-                            checked={selectedAssignTypes.includes(t.id)}
-                            onChange={(e) => {
-                              if (e.target.checked) {
-                                setSelectedAssignTypes([...selectedAssignTypes, t.id]);
-                              } else {
-                                setSelectedAssignTypes(selectedAssignTypes.filter(id => id !== t.id));
-                              }
-                            }}
-                            className="rounded border-[#cbd5e1] text-brand focus:ring-brand h-3.5 w-3.5"
-                          />
-                          <span>{t.name}</span>
-                        </label>
-                      ))}
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-400 uppercase">Effective Date</label>
-                      <input
-                        type="date"
-                        value={assignEffectiveDate}
-                        onChange={(e) => setAssignEffectiveDate(e.target.value)}
-                        className="w-full min-h-8 rounded border border-slate-200 px-2 text-xs focus:border-brand outline-none"
-                      />
-                    </div>
-
-                    <div className="flex gap-2 justify-end pt-2 border-t">
-                      <button
-                        type="button"
-                        onClick={() => setShowAssignPopup(false)}
-                        className="min-h-8 rounded border border-slate-200 px-3 text-[10px] font-bold hover:bg-slate-50"
-                      >
-                        CANCEL
-                      </button>
-                      <button
-                        type="button"
-                        onClick={handleAssignRules}
-                        className="min-h-8 rounded bg-brand text-white px-3 text-[10px] font-bold hover:bg-brand/90"
-                      >
-                        APPLY
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
+              {/* Assign Rules Modal Trigger */}
+              <button
+                onClick={() => setShowAssignPopup(true)}
+                className="inline-flex min-h-10 items-center gap-2 rounded-lg bg-brand px-4 text-xs font-bold text-white hover:bg-brand/90 transition shadow-sm"
+              >
+                <span>Assign Rules</span>
+              </button>
 
               {/* Bulk Delete */}
               <button
@@ -1308,6 +1281,75 @@ export function LeaveSettingsConsole() {
           </div>
         </div>
       )}
+
+      {/* Assign Rules Modal Overlay */}
+      <Modal isOpen={showAssignPopup} onClose={() => setShowAssignPopup(false)} title="Assign Leave Rules">
+        <form className="grid gap-4 text-left" onSubmit={handleAssignRules}>
+          <div>
+            <label className="mb-1 block text-xs font-bold text-[#49637f]">Selected Employees ({selectedEmpIds.length})</label>
+            <div className="max-h-24 overflow-y-auto border rounded p-2.5 bg-slate-50 text-xs font-semibold text-ink leading-relaxed">
+              {selectedEmpIds.length === 0 ? (
+                <span className="text-rose-500 font-bold">No employees selected. Select employees using the table checkboxes first.</span>
+              ) : (
+                assignments
+                  .filter((a) => selectedEmpIds.includes(a.id))
+                  .map((a) => a.name)
+                  .join(", ")
+              )}
+            </div>
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-bold text-[#49637f]">Select Leave Rules to Assign</label>
+            <div className="max-h-48 overflow-y-auto space-y-2 border rounded p-3 bg-white">
+              {types.map((t) => (
+                <label key={t.id} className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer select-none">
+                  <input
+                    type="checkbox"
+                    checked={selectedAssignTypes.includes(t.id)}
+                    onChange={(e) => {
+                      if (e.target.checked) {
+                        setSelectedAssignTypes([...selectedAssignTypes, t.id]);
+                      } else {
+                        setSelectedAssignTypes(selectedAssignTypes.filter(id => id !== t.id));
+                      }
+                    }}
+                    className="rounded border-[#cbd5e1] text-brand focus:ring-brand h-3.5 w-3.5"
+                  />
+                  <span>{t.name} ({t.code})</span>
+                </label>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="mb-1 block text-xs font-bold text-[#49637f]">Effective Date</label>
+            <input
+              type="date"
+              value={assignEffectiveDate}
+              onChange={(e) => setAssignEffectiveDate(e.target.value)}
+              className="w-full min-h-10 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm text-[#172033] outline-none"
+              required
+            />
+          </div>
+
+          <div className="flex gap-2 justify-end border-t pt-3 mt-2">
+            <button
+              type="button"
+              className="min-h-10 rounded-lg border border-[#dce2eb] bg-white px-4 text-sm font-semibold text-[#34465f]"
+              onClick={() => setShowAssignPopup(false)}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={!selectedEmpIds.length || !selectedAssignTypes.length}
+              className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white disabled:opacity-50"
+            >
+              Apply Assignment
+            </button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }

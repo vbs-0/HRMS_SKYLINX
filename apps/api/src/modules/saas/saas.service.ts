@@ -12,18 +12,34 @@ type PlanName = "Basic" | "Standard" | "Pro";
 export class SaasService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async summary() {
+  async summary(user: AuthenticatedUser) {
     await this.ensurePlansSeeded();
+    const isOwner = user.roles.includes("SUPER_ADMIN") || user.roles.includes("SYSTEM_OWNER");
+    const tenantId = user.tenantId || DEFAULT_COMPANY_ID;
+
     const [companies, employees, moduleSettings, billingLogs, subscriptionSetting] = await Promise.all([
-      this.prisma.company.findMany({ orderBy: { createdAt: "desc" } }),
-      this.prisma.employee.findMany({ where: { status: "ACTIVE" } }),
-      this.prisma.moduleSetting.findMany({ orderBy: { module: "asc" } }),
+      this.prisma.company.findMany({
+        where: isOwner ? {} : { id: tenantId },
+        orderBy: { createdAt: "desc" },
+      }),
+      this.prisma.employee.findMany({
+        where: { status: "ACTIVE", companyId: tenantId },
+      }),
+      this.prisma.moduleSetting.findMany({
+        where: { companyId: tenantId },
+        orderBy: { module: "asc" },
+      }),
       this.prisma.auditLog.findMany({
-        where: { module: "saas" },
+        where: {
+          module: "saas",
+          ...(isOwner ? {} : { tenantId }),
+        },
         orderBy: { createdAt: "desc" },
         take: 20,
       }),
-      this.prisma.moduleSetting.findUnique({ where: { companyId_module: { companyId: DEFAULT_COMPANY_ID, module: "subscription" } } }),
+      this.prisma.moduleSetting.findUnique({
+        where: { companyId_module: { companyId: tenantId, module: "subscription" } },
+      }),
     ]);
 
     const selectedPlan = this.resolveSelectedPlan(subscriptionSetting?.settingsJson);
@@ -236,7 +252,34 @@ export class SaasService {
       create: { companyId: tenantId, module: "subscription", enabled: true, settingsJson: { activePlan: planName } },
     });
 
-    // 6. Audit logging
+    // 6. Sync individual module settings according to the new plan
+    const basicModules = ["employees", "documents", "attendance", "leave", "holidays", "reports", "settings", "support"];
+    const standardModules = [...basicModules, "cards", "organization", "payroll", "expenses", "insurance", "notifications", "social", "approvals", "assets", "performance"];
+    const proModules = [...standardModules, "compliance", "security", "rewards", "analytics", "saas"];
+
+    const allowedModules = planName === "Basic"
+      ? basicModules
+      : planName === "Standard"
+      ? standardModules
+      : proModules;
+
+    await this.prisma.moduleSetting.updateMany({
+      where: {
+        companyId: tenantId,
+        module: { notIn: [...allowedModules, "subscription"] },
+      },
+      data: { enabled: false },
+    });
+
+    for (const mod of allowedModules) {
+      await this.prisma.moduleSetting.upsert({
+        where: { companyId_module: { companyId: tenantId, module: mod } },
+        update: { enabled: true },
+        create: { companyId: tenantId, module: mod, enabled: true, settingsJson: {} },
+      });
+    }
+
+    // 7. Audit logging
     await this.audit(user, "plan.select", "ACTIVE", amount || 0, planName);
 
     return response("saas", "plan.select", {

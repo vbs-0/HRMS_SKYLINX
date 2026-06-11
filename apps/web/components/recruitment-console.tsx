@@ -177,7 +177,7 @@ export function RecruitmentConsole() {
 
   useEffect(() => {
     loadOrgDropdowns();
-    return onDataRefresh(() => {
+    return onDataRefresh("organization", () => {
       loadOrgDropdowns();
     });
   }, []);

@@ -10,8 +10,36 @@ import { LeaveRulesWorkspace } from "./reference-workspaces";
 import { Card, StatusPill } from "./ui";
 import { LeaveSettingsConsole } from "./leave-settings-console";
 import { LeavePolicyPanel } from "./leave-policy-panel";
-import { CalendarPlus, Download, ListChecks, SlidersHorizontal } from "lucide-react";
+import { CalendarPlus, Download, ListChecks, SlidersHorizontal, X } from "lucide-react";
 import { apiFetch } from "../lib/client-api";
+
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  title: string;
+  children: React.ReactNode;
+}
+
+function Modal({ isOpen, onClose, title, children }: ModalProps) {
+  if (!isOpen) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4">
+      <div className="relative w-full max-w-lg rounded-xl border border-[#dce2eb] bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 text-left">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+          <h3 className="text-lg font-bold text-slate-900">{title}</h3>
+          <button
+            type="button"
+            className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
+            onClick={onClose}
+          >
+            <X className="h-5 w-5" />
+          </button>
+        </div>
+        {children}
+      </div>
+    </div>
+  );
+}
 
 export function LeaveConsole() {
   const { role } = useActiveRole();
@@ -105,12 +133,13 @@ export function LeaveConsole() {
         <ReferenceModuleHeader
           eyebrow="Admin"
           title="Leave Configurations"
-          summary="Configure company leave rules, carry forward balances, weekends policies, notice periods, and encashments."
-          tabs={["Leave Rules Policy", "Leave Policies", "Block Lists"]}
+          summary="Configure company leave rules, approve leave requests, carry forward balances, weekends policies, notice periods, and encashments."
+          tabs={["Leave Rules Policy", "Leave Approvals", "Leave Policies", "Block Lists"]}
           activeTab={activeTab}
           onTabChange={setActiveTab}
           actions={[
-            { label: "Rules", icon: SlidersHorizontal, tone: "primary" },
+            { label: "Rules", icon: SlidersHorizontal, tone: "primary", onClick: () => setActiveTab("Leave Rules Policy") },
+            { label: "Approvals", icon: ListChecks, onClick: () => setActiveTab("Leave Approvals") },
             { label: "Export", icon: Download, onClick: handleExport },
           ]}
           stats={[
@@ -121,6 +150,11 @@ export function LeaveConsole() {
         />
         <ReferenceFlowStrip module="Settings" />
         {activeTab === "Leave Rules Policy" && <LeaveSettingsConsole />}
+        {activeTab === "Leave Approvals" && (
+          <div className="grid gap-5">
+            <LeaveTable mode="requests" search={search} status={status} month={month} />
+          </div>
+        )}
         {activeTab === "Leave Policies" && <LeavePolicyPanel initialTab="policies" />}
         {activeTab === "Block Lists" && <LeavePolicyPanel initialTab="blocklists" />}
       </div>
@@ -195,10 +229,13 @@ export function LeaveConsole() {
 
       {activeTab === "Leave Requests" && (
         <div className="grid gap-5">
-          {showApplyPanel && <LeaveApplyPanel />}
           <LeaveTable mode="requests" search={search} status={status} month={month} />
         </div>
       )}
+
+      <Modal isOpen={showApplyPanel} onClose={() => setShowApplyPanel(false)} title="Apply Leave">
+        <LeaveApplyPanel onSuccess={() => setTimeout(() => { setShowApplyPanel(false); loadData(); }, 1200)} />
+      </Modal>
 
       {activeTab === "Leave Balance" && (
         <LeaveTable mode="balances" search={search} />

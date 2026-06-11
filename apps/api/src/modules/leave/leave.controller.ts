@@ -59,8 +59,8 @@ export class LeaveController {
 
   @Get("requests")
   @RequirePermissions("leave.read")
-  requests() {
-    return this.leaveService.requests();
+  requests(@CurrentUser() user: AuthenticatedUser) {
+    return this.leaveService.requests(user);
   }
 
   @Post("requests")

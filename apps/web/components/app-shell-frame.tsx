@@ -88,6 +88,17 @@ export function AppShellFrame({
           const c = body?.data?.company;
           if (c?.name) setCompanyName(c.name);
           if (c?.logoUrl) setLogoUrl(c.logoUrl);
+
+          // Keep the plan cookie in sync with the backend's active plan
+          const backendPlan = body?.data?.activePlan;
+          if (backendPlan) {
+            const match = document.cookie.match(/(?:^|; )skylinx_peopleos_plan=([^;]+)/);
+            const currentCookie = match ? decodeURIComponent(match[1]) : "";
+            if (currentCookie !== backendPlan) {
+              document.cookie = `skylinx_peopleos_plan=${encodeURIComponent(backendPlan)}; path=/; max-age=31536000; SameSite=Lax`;
+              window.location.reload();
+            }
+          }
         })
         .catch(() => undefined);
     }

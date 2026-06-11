@@ -1,4 +1,4 @@
-export const fallbackEmployees = [
+﻿export const fallbackEmployees = [
   { id: "EMP-1001", name: "Aarav Mehta", role: "HR Manager", department: "People", location: "Mumbai", status: "Active" },
   { id: "EMP-1002", name: "Priya Nair", role: "Payroll Specialist", department: "Finance", location: "Bengaluru", status: "Active" },
   { id: "EMP-1003", name: "Kabir Sethi", role: "Frontend Engineer", department: "Engineering", location: "Delhi", status: "Active" },
@@ -398,8 +398,8 @@ export const fallbackAssets = {
     { type: "Accessories", count: 2 },
   ],
   rows: [
-    { id: "asset_laptop_emp_1001", assetTag: "SKY-LAP-001", type: "Laptop", item: "HP EliteBook", assignedTo: "Aarav Mehta", department: "People", status: "ASSIGNED", condition: "GOOD" },
-    { id: "asset_id_emp_1001", assetTag: "SKY-ID-EMP-1001", type: "ID Card", item: "Employee ID Card", assignedTo: "Aarav Mehta", department: "People", status: "ASSIGNED", condition: "GOOD" },
+    { id: "asset_laptop_emp_1001", assetTag: "SKY-LAP-001", type: "Laptop", item: "HP EliteBook", assignedTo: "Aarav Mehta", employeeStatus: "ACTIVE", department: "People", status: "ASSIGNED", condition: "GOOD" },
+    { id: "asset_id_emp_1001", assetTag: "SKY-ID-EMP-1001", type: "ID Card", item: "Employee ID Card", assignedTo: "Aarav Mehta", employeeStatus: "ACTIVE", department: "People", status: "ASSIGNED", condition: "GOOD" },
   ],
   logs: [],
 };
@@ -465,3 +465,4 @@ export const fallbackAtsJobs = [
 export const fallbackAtsCandidates = [
   { id: "cand_neha", fullName: "Neha Sharma", email: "neha.sharma@example.com", phone: "+91 98888 12000", source: "LinkedIn", currentStage: "INTERVIEW", jobTitle: "Backend Engineer", applicationId: "app_neha_backend", interviews: 1 },
 ];
+

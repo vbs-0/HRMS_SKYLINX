@@ -19,8 +19,8 @@ export class SaasController {
 
   @Get()
   @RequirePermissions("saas.read")
-  summary() {
-    return this.saasService.summary();
+  summary(@CurrentUser() user: AuthenticatedUser) {
+    return this.saasService.summary(user);
   }
 
   @Get("logs")

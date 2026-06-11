@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { apiFetch } from "../lib/client-api";
@@ -85,7 +85,7 @@ export function OrganizationSettingsConsole() {
       }
       setShowAddModal(false);
       loadData();
-      requestDataRefresh();
+      requestDataRefresh("organization");
     } catch (err: any) {
       setError(err.message || "Operation failed");
     } finally {
@@ -124,7 +124,7 @@ export function OrganizationSettingsConsole() {
       }
       setEditingItem(null);
       loadData();
-      requestDataRefresh();
+      requestDataRefresh("organization");
     } catch (err: any) {
       setError(err.message || "Update failed");
     } finally {
@@ -148,7 +148,7 @@ export function OrganizationSettingsConsole() {
       await apiFetch(url, { method: "DELETE" });
       setMessage("Item deleted successfully!");
       loadData();
-      requestDataRefresh();
+      requestDataRefresh("organization");
     } catch (err: any) {
       setError(err.message || "Deletion failed. Make sure no employees are currently assigned to this entry.");
     } finally {
@@ -502,3 +502,4 @@ export function OrganizationSettingsConsole() {
     </div>
   );
 }
+

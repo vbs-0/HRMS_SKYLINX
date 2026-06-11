@@ -105,6 +105,80 @@ export function usePayrollRunOptions() {
   return { options, setOptions };
 }
 
+interface ApiDepartment {
+  id: string;
+  name: string;
+  code: string;
+}
+
+interface ApiDesignation {
+  id: string;
+  title: string;
+  departmentId: string | null;
+}
+
+interface ApiLocation {
+  id: string;
+  name: string;
+  city: string;
+}
+
+function useOrgOptions<T>(path: string, scope: string, toOption: (item: T) => SelectOption, defaults: SelectOption[]) {
+  const [options, setOptions] = useState<SelectOption[]>(defaults);
+
+  useEffect(() => {
+    function load() {
+      apiFetch<T[]>(path)
+        .then((body) => {
+          if (!body.data?.length) return;
+          setOptions(body.data.map(toOption));
+        })
+        .catch(() => undefined);
+    }
+
+    load();
+
+    const handler = (event: Event) => {
+      const custom = event as CustomEvent<{ scope: string }>;
+      if (custom.detail?.scope === scope || custom.detail?.scope === "all") {
+        load();
+      }
+    };
+    window.addEventListener("skylinx:data-refresh", handler);
+    return () => window.removeEventListener("skylinx:data-refresh", handler);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [path, scope]);
+
+  return options;
+}
+
+export function useDepartmentOptions() {
+  return useOrgOptions<ApiDepartment>(
+    "/organization/departments",
+    "organization",
+    (dept) => ({ label: dept.name, value: dept.id }),
+    [],
+  );
+}
+
+export function useDesignationOptions() {
+  return useOrgOptions<ApiDesignation>(
+    "/organization/designations",
+    "organization",
+    (desig) => ({ label: desig.title, value: desig.id }),
+    [],
+  );
+}
+
+export function useLocationOptions() {
+  return useOrgOptions<ApiLocation>(
+    "/organization/locations",
+    "organization",
+    (loc) => ({ label: loc.name, value: loc.id }),
+    [],
+  );
+}
+
 export function useInsurancePolicyOptions() {
   const [options, setOptions] = useState<SelectOption[]>([]);
 

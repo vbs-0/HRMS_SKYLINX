@@ -6,6 +6,7 @@ import { apiFetch } from "../lib/client-api";
 import { fallbackCompanySettings, fallbackModuleSettings } from "../lib/fallback-data";
 import { defaultActivePlan, hasPlanAccess, isPlanName, planTone, requiredPlanForModule, type PlanName } from "../lib/plan-access";
 import { Card, StatusPill } from "./ui";
+import { getAccessToken } from "../lib/session";
 
 type CompanySettings = typeof fallbackCompanySettings;
 type ModuleSetting = (typeof fallbackModuleSettings)[number];
@@ -158,27 +159,152 @@ export function SettingsConsole() {
   const [activePlan, setActivePlan] = useState<PlanName>(defaultActivePlan);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [isOwner, setIsOwner] = useState(false);
 
   // Editable slab states (pulled from rules)
   const [ptSlabs, setPtSlabs] = useState<PtSlab[]>(defaultPtSlabs);
   const [tdsSlabs, setTdsSlabs] = useState<TdsSlab[]>(defaultTdsSlabs);
 
+  const [departments, setDepartments] = useState<any[]>([]);
+  const [designations, setDesignations] = useState<any[]>([]);
+  const [locations, setLocations] = useState<any[]>([]);
+
+  function loadOrgStructure() {
+    apiFetch<any[]>("/organization/departments")
+      .then((body) => {
+        if (body.data) setDepartments(body.data);
+      })
+      .catch(() => undefined);
+
+    apiFetch<any[]>("/organization/designations")
+      .then((body) => {
+        if (body.data) setDesignations(body.data);
+      })
+      .catch(() => undefined);
+
+    apiFetch<any[]>("/organization/locations")
+      .then((body) => {
+        if (body.data) setLocations(body.data);
+      })
+      .catch(() => undefined);
+  }
+
+  async function handleAddDepartment(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setMessage("");
+    setError("");
+    const formEl = e.currentTarget;
+    const form = new FormData(formEl);
+    const name = String(form.get("name") || "");
+    const code = String(form.get("code") || "");
+    if (!name || !code) return;
+    try {
+      await apiFetch("/organization/departments", {
+        method: "POST",
+        body: JSON.stringify({ name, code }),
+      });
+      formEl.reset();
+      loadOrgStructure();
+      setMessage("Department added successfully!");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to add department");
+    }
+  }
+
+  async function handleAddDesignation(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setMessage("");
+    setError("");
+    const formEl = e.currentTarget;
+    const form = new FormData(formEl);
+    const title = String(form.get("title") || "");
+    const grade = String(form.get("grade") || "");
+    const departmentId = String(form.get("departmentId") || "") || null;
+    if (!title) return;
+    try {
+      await apiFetch("/organization/designations", {
+        method: "POST",
+        body: JSON.stringify({ title, grade, departmentId }),
+      });
+      formEl.reset();
+      loadOrgStructure();
+      setMessage("Designation added successfully!");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to add designation");
+    }
+  }
+
+  async function handleAddLocation(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setMessage("");
+    setError("");
+    const formEl = e.currentTarget;
+    const form = new FormData(formEl);
+    const name = String(form.get("name") || "");
+    const city = String(form.get("city") || "");
+    const state = String(form.get("state") || "");
+    const country = String(form.get("country") || "India");
+    const address = String(form.get("address") || "");
+    if (!name || !city || !state) return;
+    try {
+      await apiFetch("/organization/locations", {
+        method: "POST",
+        body: JSON.stringify({ name, city, state, country, address }),
+      });
+      formEl.reset();
+      loadOrgStructure();
+      setMessage("Location added successfully!");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to add location");
+    }
+  }
+
+  /** Fetches an API endpoint silently — does NOT redirect to /login on 401 */
+  async function silentFetch<T>(path: string): Promise<T | null> {
+    const token = getAccessToken();
+    const base = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:4000/api/v1";
+    try {
+      const res = await fetch(`${base}${path}`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      if (!res.ok) return null;
+      const json = await res.json();
+      return json?.data ?? null;
+    } catch {
+      return null;
+    }
+  }
+
   function load() {
-    apiFetch<CompanySettings>("/settings/company")
-      .then((body) => {
-        if (body.data) setCompany({ ...fallbackCompanySettings, ...body.data });
-      })
-      .catch(() => undefined);
-    apiFetch<ModuleSetting[]>("/settings/modules")
-      .then((body) => {
-        if (body.data?.length) setModules(body.data.map((item) => ({ module: item.module, enabled: item.enabled })));
-      })
-      .catch(() => undefined);
+    const token = getAccessToken();
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        const roles: string[] = payload.roles || [];
+        setIsOwner(roles.includes("SUPER_ADMIN") || roles.includes("SYSTEM_OWNER"));
+      } catch {
+        // ignore
+      }
+    }
+
+    // These endpoints require settings.configure permission — use silentFetch (no redirect on 401)
+    silentFetch<CompanySettings>("/settings/company").then((data) => {
+      if (data) setCompany({ ...fallbackCompanySettings, ...data });
+    });
+    silentFetch<ModuleSetting[]>("/settings/modules").then((data) => {
+      if (data?.length) setModules(data.map((item) => ({ module: item.module, enabled: item.enabled })));
+    });
+    silentFetch<SettingsLog[]>("/settings/logs").then((data) => {
+      if (data) setLogs(data);
+    });
+
     apiFetch<{ activePlan: string }>("/saas")
       .then((body) => {
         if (body.data?.activePlan && isPlanName(body.data.activePlan)) setActivePlan(body.data.activePlan);
       })
       .catch(() => undefined);
+
+    // Rules — accessible to any authenticated user
     apiFetch<ClientRules>("/settings/rules")
       .then((body) => {
         if (body.data) {
@@ -191,11 +317,8 @@ export function SettingsConsole() {
         }
       })
       .catch(() => undefined);
-    apiFetch<SettingsLog[]>("/settings/logs")
-      .then((body) => {
-        if (body.data) setLogs(body.data);
-      })
-      .catch(() => undefined);
+
+    loadOrgStructure();
   }
 
   useEffect(() => {
@@ -653,7 +776,135 @@ export function SettingsConsole() {
         </form>
       </Card>
 
-      {/* ── Plan Access ─────────────────────────────────────────────────── */}
+      {/* ── Organization Structure ──────────────────────────────────────── */}
+      <Card>
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold">Organization Structure</h2>
+          <p className="mt-1 text-sm text-muted">Configure departments, employee designations, and office work locations.</p>
+        </div>
+
+        <div className="grid grid-cols-3 gap-6 max-xl:grid-cols-1">
+          {/* Departments Column */}
+          <div className="rounded-xl border border-[#dce2eb] bg-white p-4">
+            <h3 className="mb-3 text-sm font-bold uppercase text-muted flex items-center gap-1.5">
+              🏢 Departments ({departments.length})
+            </h3>
+
+            <div className="mb-4 max-h-60 overflow-y-auto pr-1 flex flex-col gap-2">
+              {departments.length === 0 ? (
+                <div className="text-xs text-muted py-4 text-center">No departments created.</div>
+              ) : (
+                departments.map((dept) => (
+                  <div key={dept.id} className="flex items-center justify-between rounded-lg border border-[#f0f3f6] bg-[#f8fafc] p-2.5 hover:bg-[#f1f5f9] transition-colors duration-150">
+                    <div>
+                      <div className="text-sm font-semibold">{dept.name}</div>
+                      <div className="text-[10px] font-bold text-muted uppercase tracking-wider">{dept.code}</div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <form className="border-t border-[#f0f3f6] pt-3 flex flex-col gap-2" onSubmit={handleAddDepartment}>
+              <div className="text-xs font-semibold text-[#34465f]">Add Department</div>
+              <div className="grid grid-cols-2 gap-2">
+                <input className={inputClass()} name="name" placeholder="Name (e.g. Sales)" required />
+                <input className={inputClass()} name="code" placeholder="Code (e.g. SAL)" required />
+              </div>
+              <button className="flex min-h-9 items-center justify-center gap-1.5 rounded-lg bg-brand text-xs font-semibold text-white hover:opacity-90 transition-opacity">
+                <Plus className="h-3.5 w-3.5" /> Add Department
+              </button>
+            </form>
+          </div>
+
+          {/* Designations Column */}
+          <div className="rounded-xl border border-[#dce2eb] bg-white p-4">
+            <h3 className="mb-3 text-sm font-bold uppercase text-muted flex items-center gap-1.5">
+              💼 Designations ({designations.length})
+            </h3>
+
+            <div className="mb-4 max-h-60 overflow-y-auto pr-1 flex flex-col gap-2">
+              {designations.length === 0 ? (
+                <div className="text-xs text-muted py-4 text-center">No designations created.</div>
+              ) : (
+                designations.map((desig) => (
+                  <div key={desig.id} className="flex items-center justify-between rounded-lg border border-[#f0f3f6] bg-[#f8fafc] p-2.5 hover:bg-[#f1f5f9] transition-colors duration-150">
+                    <div>
+                      <div className="text-sm font-semibold">{desig.title}</div>
+                      <div className="flex flex-wrap gap-1.5 mt-1">
+                        {desig.department?.name && (
+                          <span className="rounded bg-[#e0f2fe] px-1.5 py-0.5 text-[10px] font-medium text-[#0369a1]">{desig.department.name}</span>
+                        )}
+                        {desig.grade && (
+                          <span className="rounded bg-[#f3f4f6] px-1.5 py-0.5 text-[10px] font-medium text-[#374151]">{desig.grade}</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <form className="border-t border-[#f0f3f6] pt-3 flex flex-col gap-2" onSubmit={handleAddDesignation}>
+              <div className="text-xs font-semibold text-[#34465f]">Add Designation</div>
+              <input className={inputClass()} name="title" placeholder="Title (e.g. Sales Executive)" required />
+              <div className="grid grid-cols-2 gap-2">
+                <input className={inputClass()} name="grade" placeholder="Grade (e.g. L2)" />
+                <select className={inputClass()} name="departmentId">
+                  <option value="">No Department</option>
+                  {departments.map((d) => (
+                    <option key={d.id} value={d.id}>{d.name}</option>
+                  ))}
+                </select>
+              </div>
+              <button className="flex min-h-9 items-center justify-center gap-1.5 rounded-lg bg-brand text-xs font-semibold text-white hover:opacity-90 transition-opacity">
+                <Plus className="h-3.5 w-3.5" /> Add Designation
+              </button>
+            </form>
+          </div>
+
+          {/* Locations Column */}
+          <div className="rounded-xl border border-[#dce2eb] bg-white p-4">
+            <h3 className="mb-3 text-sm font-bold uppercase text-muted flex items-center gap-1.5">
+              📍 Locations ({locations.length})
+            </h3>
+
+            <div className="mb-4 max-h-60 overflow-y-auto pr-1 flex flex-col gap-2">
+              {locations.length === 0 ? (
+                <div className="text-xs text-muted py-4 text-center">No locations created.</div>
+              ) : (
+                locations.map((loc) => (
+                  <div key={loc.id} className="flex items-center justify-between rounded-lg border border-[#f0f3f6] bg-[#f8fafc] p-2.5 hover:bg-[#f1f5f9] transition-colors duration-150">
+                    <div>
+                      <div className="text-sm font-semibold">{loc.name}</div>
+                      <div className="text-[10px] text-muted">{loc.city}, {loc.state}</div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <form className="border-t border-[#f0f3f6] pt-3 flex flex-col gap-2" onSubmit={handleAddLocation}>
+              <div className="text-xs font-semibold text-[#34465f]">Add Location</div>
+              <input className={inputClass()} name="name" placeholder="Name (e.g. Mumbai HQ)" required />
+              <div className="grid grid-cols-2 gap-2">
+                <input className={inputClass()} name="city" placeholder="City" required />
+                <input className={inputClass()} name="state" placeholder="State" required />
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <input className={inputClass()} name="country" defaultValue="India" placeholder="Country" required />
+                <input className={inputClass()} name="address" placeholder="Address (optional)" />
+              </div>
+              <button className="flex min-h-9 items-center justify-center gap-1.5 rounded-lg bg-brand text-xs font-semibold text-white hover:opacity-90 transition-opacity">
+                <Plus className="h-3.5 w-3.5" /> Add Location
+              </button>
+            </form>
+          </div>
+        </div>
+      </Card>
+
+      {/* ── Plan Access (owner only) ────────────────────────────────────── */}
+      {isOwner && (
       <Card>
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div>
@@ -688,8 +939,10 @@ export function SettingsConsole() {
           })}
         </div>
       </Card>
+      )}
 
-      {/* ── Module Controls ─────────────────────────────────────────────── */}
+      {/* ── Module Controls (owner only) ────────────────────────────────── */}
+      {isOwner && (
       <Card>
         <h2 className="mb-4 text-lg font-semibold">Module Controls</h2>
         <div className="grid grid-cols-4 gap-3 max-xl:grid-cols-3 max-lg:grid-cols-2 max-md:grid-cols-1">
@@ -721,6 +974,7 @@ export function SettingsConsole() {
           ))}
         </div>
       </Card>
+      )}
 
       {/* ── Audit Logs ──────────────────────────────────────────────────── */}
       <Card>
@@ -762,7 +1016,7 @@ export function SettingsConsole() {
         {[
           { title: "Data Import", note: "Use Employee Directory bulk upload for employee CSV import", icon: FileUp, action: "Open Employees", href: "/employees" },
           { title: "Data Export", note: "Download company settings and client rule JSON", icon: FileDown, action: "Download", onClick: downloadSettings },
-          { title: "License", note: "Subscription and module entitlement control", icon: KeyRound, action: "Manage Plans", href: "/saas" },
+          ...(isOwner ? [{ title: "License", note: "Subscription and module entitlement control", icon: KeyRound, action: "Manage Plans", href: "/saas" }] : []),
         ].map(({ title, note, icon: Icon, action, href, onClick }) => (
           <div className="rounded-lg border border-[#dce2eb] bg-white p-4 shadow-sm" key={title}>
             <Icon className="h-5 w-5 text-brand" />

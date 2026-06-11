@@ -85,6 +85,7 @@ model Company {
   surveys         Survey[]
   reminderRules   ReminderRule[]
   compensationCycles CompensationCycle[]
+  assets          CompanyAsset[]
 }
 
 model User {
@@ -308,6 +309,7 @@ model Employee {
   reminderLogs              ReminderLog[]
   compensationRevisions     CompensationRevision[]
   signedLetters             SignedLetter[]
+  assets                    CompanyAsset[]
 
   @@unique([companyId, employeeCode])
   @@index([companyId, status])
@@ -2048,4 +2050,22 @@ model SignedLetter {
   signedAt           DateTime @default(now())
   signatureName      String
   employee           Employee @relation(fields: [employeeId], references: [id])
+}
+
+model CompanyAsset {
+  id           String   @id @default(cuid())
+  companyId    String
+  assetTag     String   @unique
+  type         String
+  item         String
+  assignedToId String?
+  status       String   @default("AVAILABLE")
+  condition    String   @default("GOOD")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  company    Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  assignedTo Employee? @relation(fields: [assignedToId], references: [id], onDelete: SetNull)
+
+  @@index([companyId, status])
 }

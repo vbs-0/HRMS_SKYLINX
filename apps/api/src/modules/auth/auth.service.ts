@@ -60,6 +60,17 @@ export class AuthService {
       permissions: [...new Set(permissions)],
     };
 
+    const tenantId = user.tenantId || "company_skylinx";
+    const subscriptionSetting = await this.prisma.moduleSetting.findUnique({
+      where: { companyId_module: { companyId: tenantId, module: "subscription" } },
+    });
+    const activePlan =
+      subscriptionSetting?.settingsJson &&
+      typeof subscriptionSetting.settingsJson === "object" &&
+      "activePlan" in subscriptionSetting.settingsJson
+        ? (subscriptionSetting.settingsJson as { activePlan?: string }).activePlan
+        : "Standard";
+
     await this.prisma.user.update({
       where: { id: user.id },
       data: { lastLoginAt: new Date() },
@@ -83,6 +94,7 @@ export class AuthService {
       tokenType: "Bearer",
       expiresIn: 900,
       user: payload,
+      activePlan,
     });
   }
 

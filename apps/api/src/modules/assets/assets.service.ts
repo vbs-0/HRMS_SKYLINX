@@ -1,71 +1,151 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
 import { response } from "../../common/crud-response";
 import { AuthenticatedUser } from "../../common/auth/auth.types";
 import { PrismaService } from "../../prisma/prisma.service";
+import { TenantContext } from "../../common/tenant-context";
+import { CreateAssetDto } from "./dto/create-asset.dto";
+
+const DEFAULT_COMPANY_ID = "company_skylinx";
 
 @Injectable()
 export class AssetsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async summary() {
-    const [employees, auditLogs] = await Promise.all([
-      this.prisma.employee.findMany({
-        where: { status: "ACTIVE" },
-        include: { department: true, designation: true },
-        orderBy: { employeeCode: "asc" },
-      }),
-      this.prisma.auditLog.findMany({
-        where: { module: "assets" },
-        orderBy: { createdAt: "desc" },
-        take: 30,
-      }),
-    ]);
+  private getTenantId(): string {
+    return TenantContext.getTenantId() || DEFAULT_COMPANY_ID;
+  }
 
-    const assetRows = employees.flatMap((employee, index) => {
-      const owner = `${employee.firstName} ${employee.lastName}`;
-      const base = [
-        {
-          id: `asset_laptop_${employee.id}`,
-          assetTag: `SKY-LAP-${String(index + 1).padStart(3, "0")}`,
-          type: "Laptop",
-          item: index % 2 ? "Dell Latitude" : "HP EliteBook",
-          assignedTo: owner,
-          department: employee.department?.name || "-",
-          status: "ASSIGNED",
-          condition: "GOOD",
+  async summary() {
+    const tenantId = this.getTenantId();
+
+    // 1. Query assets from database
+    let assets = await this.prisma.companyAsset.findMany({
+      where: { companyId: tenantId },
+      include: {
+        assignedTo: {
+          include: { department: true },
         },
-      ];
-      if (index < 3) {
-        base.push({
-          id: `asset_id_${employee.id}`,
-          assetTag: `SKY-ID-${employee.employeeCode}`,
-          type: "ID Card",
-          item: "Employee ID Card",
-          assignedTo: owner,
-          department: employee.department?.name || "-",
-          status: "ASSIGNED",
-          condition: "GOOD",
-        });
-      }
-      return base;
+      },
+      orderBy: { assetTag: "asc" },
     });
 
+    // 2. If table is empty, auto-seed default mock assets linked to active employees
+    if (assets.length === 0) {
+      const employees = await this.prisma.employee.findMany({
+        where: { companyId: tenantId, status: "ACTIVE" },
+        include: { department: true },
+        orderBy: { employeeCode: "asc" },
+        take: 3,
+      });
+
+      if (employees.length > 0) {
+        const defaultAssets = [
+          {
+            assetTag: "SKY-LAP-001",
+            type: "Laptop",
+            item: "HP EliteBook",
+            assignedToId: employees[0].id,
+            status: "ASSIGNED",
+            condition: "GOOD",
+          },
+          {
+            assetTag: "SKY-LAP-002",
+            type: "Laptop",
+            item: "Dell Latitude",
+            assignedToId: employees[1] ? employees[1].id : employees[0].id,
+            status: "ASSIGNED",
+            condition: "GOOD",
+          },
+          {
+            assetTag: "SKY-ID-001",
+            type: "ID Card",
+            item: "Employee ID Card",
+            assignedToId: employees[0].id,
+            status: "ASSIGNED",
+            condition: "GOOD",
+          },
+          {
+            assetTag: "SKY-PHN-001",
+            type: "Phone",
+            item: "iPhone 13",
+            assignedToId: null,
+            status: "AVAILABLE",
+            condition: "GOOD",
+          },
+          {
+            assetTag: "SKY-ACC-001",
+            type: "Accessories",
+            item: "Logitech Keyboard & Mouse",
+            assignedToId: null,
+            status: "AVAILABLE",
+            condition: "GOOD",
+          },
+        ];
+
+        for (const item of defaultAssets) {
+          await this.prisma.companyAsset.create({
+            data: {
+              companyId: tenantId,
+              ...item,
+            },
+          });
+        }
+
+        // Re-query newly created assets
+        assets = await this.prisma.companyAsset.findMany({
+          where: { companyId: tenantId },
+          include: {
+            assignedTo: {
+              include: { department: true },
+            },
+          },
+          orderBy: { assetTag: "asc" },
+        });
+      }
+    }
+
+    // 3. Fetch audit logs
+    const auditLogs = await this.prisma.auditLog.findMany({
+      where: { module: "assets", tenantId },
+      orderBy: { createdAt: "desc" },
+      take: 30,
+    });
+
+    const rows = assets.map((asset) => ({
+      id: asset.id,
+      assetTag: asset.assetTag,
+      type: asset.type,
+      item: asset.item,
+      assignedTo: asset.assignedTo
+        ? `${asset.assignedTo.firstName} ${asset.assignedTo.lastName}`
+        : "-",
+      employeeStatus: asset.assignedTo?.status || null,
+      department: asset.assignedTo?.department?.name || "-",
+      status: asset.status,
+      condition: asset.condition,
+    }));
+
+    const total = assets.length;
+    const assigned = assets.filter((a) => a.status === "ASSIGNED").length;
+    const available = assets.filter((a) => a.status === "AVAILABLE" || a.status === "RETURNED").length;
     const returned = auditLogs.filter((log) => log.action === "asset.return").length;
-    const assigned = assetRows.filter((asset) => asset.status === "ASSIGNED").length;
+    const handoverPending = assets.filter((a) => a.status === "ASSIGNED" && (a.condition === "POOR" || a.assignedTo?.status === "EXITED")).length;
+
+    const categories = [
+      { type: "Laptop", count: assets.filter((a) => a.type === "Laptop").length },
+      { type: "ID Card", count: assets.filter((a) => a.type === "ID Card").length },
+      { type: "Phone", count: assets.filter((a) => a.type === "Phone").length },
+      { type: "Accessories", count: assets.filter((a) => a.type === "Accessories").length },
+    ];
 
     return response("assets", "summary", {
-      total: assetRows.length,
+      total,
       assigned,
-      available: 2,
+      available,
       returned,
-      handoverPending: employees.length - Math.min(employees.length, returned),
-      categories: [
-        { type: "Laptop", count: assetRows.filter((asset) => asset.type === "Laptop").length },
-        { type: "ID Card", count: assetRows.filter((asset) => asset.type === "ID Card").length },
-        { type: "Phone", count: 0 },
-        { type: "Accessories", count: 2 },
-      ],
-      rows: assetRows,
+      handoverPending,
+      categories,
+      rows,
       logs: auditLogs.map((log) => ({
         id: log.id,
         action: log.action,
@@ -76,18 +156,117 @@ export class AssetsService {
     });
   }
 
-  async assign(user: AuthenticatedUser, assetTag: string) {
-    return this.audit(user, "asset.assign", assetTag, "ASSIGNED");
+  async create(user: AuthenticatedUser, data: CreateAssetDto) {
+    const tenantId = this.getTenantId();
+
+    const existing = await this.prisma.companyAsset.findUnique({
+      where: { assetTag: data.assetTag },
+    });
+    if (existing) {
+      throw new BadRequestException(`Asset with tag "${data.assetTag}" already exists.`);
+    }
+
+    const asset = await this.prisma.companyAsset.create({
+      data: {
+        companyId: tenantId,
+        assetTag: data.assetTag,
+        type: data.type,
+        item: data.item,
+        status: data.status || "AVAILABLE",
+        condition: data.condition || "GOOD",
+        assignedToId: data.assignedToId || null,
+      },
+    });
+
+    await this.audit(user, "asset.create", data.assetTag, asset.status);
+
+    return response("assets", "create", asset);
   }
 
-  async returnAsset(user: AuthenticatedUser, assetTag: string) {
-    return this.audit(user, "asset.return", assetTag, "RETURNED");
+  async assign(user: AuthenticatedUser, assetTag: string, employeeId?: string) {
+    const tenantId = this.getTenantId();
+
+    const asset = await this.prisma.companyAsset.findFirst({
+      where: { assetTag, companyId: tenantId },
+    });
+    if (!asset) {
+      throw new NotFoundException(`Asset tag "${assetTag}" not found.`);
+    }
+
+    let targetEmployeeId = employeeId;
+    if (!targetEmployeeId) {
+      // Fallback: assign to the first active employee of the tenant
+      const firstEmp = await this.prisma.employee.findFirst({
+        where: { companyId: tenantId, status: "ACTIVE" },
+      });
+      if (!firstEmp) {
+        throw new BadRequestException("No active employees found to assign this asset to.");
+      }
+      targetEmployeeId = firstEmp.id;
+    }
+
+    const updated = await this.prisma.companyAsset.update({
+      where: { id: asset.id },
+      data: {
+        status: "ASSIGNED",
+        assignedToId: targetEmployeeId,
+      },
+    });
+
+    await this.audit(user, "asset.assign", assetTag, "ASSIGNED");
+
+    return response("assets", "assign", updated);
+  }
+
+  async returnAsset(user: AuthenticatedUser, assetTag: string, condition?: string) {
+    const tenantId = this.getTenantId();
+
+    const asset = await this.prisma.companyAsset.findFirst({
+      where: { assetTag, companyId: tenantId },
+    });
+    if (!asset) {
+      throw new NotFoundException(`Asset tag "${assetTag}" not found.`);
+    }
+
+    const updated = await this.prisma.companyAsset.update({
+      where: { id: asset.id },
+      data: {
+        status: "RETURNED",
+        assignedToId: null,
+        condition: condition || asset.condition,
+      },
+    });
+
+    await this.audit(user, "asset.return", assetTag, "RETURNED");
+
+    return response("assets", "return", updated);
+  }
+
+  async deleteAsset(user: AuthenticatedUser, assetTag: string) {
+    const tenantId = this.getTenantId();
+
+    const asset = await this.prisma.companyAsset.findFirst({
+      where: { assetTag, companyId: tenantId },
+    });
+    if (!asset) {
+      throw new NotFoundException(`Asset tag "${assetTag}" not found.`);
+    }
+
+    await this.prisma.companyAsset.delete({
+      where: { id: asset.id },
+    });
+
+    await this.audit(user, "asset.delete", assetTag, "DELETED");
+
+    return response("assets", "delete", { success: true, assetTag });
   }
 
   private async audit(user: AuthenticatedUser, action: string, assetTag: string, status: string) {
+    const tenantId = this.getTenantId();
     const log = await this.prisma.auditLog.create({
       data: {
         actorUserId: user.sub,
+        tenantId,
         module: "assets",
         action,
         entityType: "company_asset",
@@ -98,6 +277,6 @@ export class AssetsService {
         },
       },
     });
-    return response("assets", action, log);
+    return log;
   }
 }

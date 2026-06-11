@@ -27,7 +27,7 @@
     "route": "/leave",
     "status": "PASS",
     "note": "",
-    "buttons": 17,
+    "buttons": 18,
     "inputs": 4,
     "screenshot": "HR_ADMIN_DEEP/04_leave.png"
   },
@@ -73,9 +73,9 @@
   },
   {
     "route": "/training",
-    "status": "WARN",
-    "note": "console errors: Failed to load resource: the server responded with a status of 404 (Not Found);",
-    "buttons": 13,
+    "status": "PASS",
+    "note": "",
+    "buttons": 11,
     "inputs": 9,
     "screenshot": "HR_ADMIN_DEEP/10_training.png"
   },
@@ -131,8 +131,8 @@
     "route": "/rewards",
     "status": "PASS",
     "note": "",
-    "buttons": 9,
-    "inputs": 4,
+    "buttons": 14,
+    "inputs": 14,
     "screenshot": "HR_ADMIN_DEEP/17_rewards.png"
   },
   {
@@ -155,7 +155,7 @@
     "route": "/compliance",
     "status": "PASS",
     "note": "",
-    "buttons": 11,
+    "buttons": 16,
     "inputs": 4,
     "screenshot": "HR_ADMIN_DEEP/20_compliance.png"
   },
@@ -163,8 +163,8 @@
     "route": "/assets",
     "status": "PASS",
     "note": "",
-    "buttons": 25,
-    "inputs": 4,
+    "buttons": 27,
+    "inputs": 7,
     "screenshot": "HR_ADMIN_DEEP/21_assets.png"
   },
   {
@@ -203,8 +203,8 @@
     "route": "/settings",
     "status": "PASS",
     "note": "",
-    "buttons": 50,
-    "inputs": 72,
+    "buttons": 32,
+    "inputs": 82,
     "screenshot": "HR_ADMIN_DEEP/26_settings.png"
   },
   {
@@ -219,7 +219,7 @@
     "route": "/saas-admin",
     "status": "PASS",
     "note": "",
-    "buttons": 5,
+    "buttons": 4,
     "inputs": 1,
     "screenshot": "HR_ADMIN_DEEP/28_saas-admin.png"
   },
@@ -238,5 +238,21 @@
     "buttons": 10,
     "inputs": 8,
     "screenshot": "HR_ADMIN_DEEP/30_documents.png"
+  },
+  {
+    "route": "/surveys",
+    "status": "PASS",
+    "note": "",
+    "buttons": 1,
+    "inputs": 3,
+    "screenshot": "HR_ADMIN_DEEP/31_surveys.png"
+  },
+  {
+    "route": "/reminders",
+    "status": "PASS",
+    "note": "",
+    "buttons": 3,
+    "inputs": 3,
+    "screenshot": "HR_ADMIN_DEEP/32_reminders.png"
   }
 ]

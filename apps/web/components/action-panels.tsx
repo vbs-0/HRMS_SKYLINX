@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { apiFetch } from "../lib/client-api";
 import { useEmployeeOptions, useInsurancePolicyOptions, useLeaveTypeOptions, usePayrollRunOptions } from "../lib/options";
 import { requestDataRefresh } from "../lib/refresh-events";
+import { getCurrentCompanyId } from "../lib/session";
 
 function Result({ message, error }: { message: string; error: string }) {
   if (!message && !error) return null;
@@ -51,7 +52,7 @@ export function EmployeeCreatePanel() {
 
   return (
     <form className="mb-5 grid grid-cols-4 gap-3 rounded-lg border border-[#dce2eb] bg-white p-4 shadow-sm max-xl:grid-cols-2 max-md:grid-cols-1" onSubmit={submit}>
-      <input className={inputClass()} name="companyId" defaultValue="company_skylinx" placeholder="Company ID" />
+      <input className={inputClass()} name="companyId" defaultValue={getCurrentCompanyId()} placeholder="Company ID" />
       <input className={inputClass()} name="employeeCode" placeholder="Employee Code" required />
       <input className={inputClass()} name="firstName" placeholder="First Name" required />
       <input className={inputClass()} name="lastName" placeholder="Last Name" required />
@@ -277,7 +278,7 @@ export function HolidayCreatePanel() {
       await apiFetch("/holidays", {
         method: "POST",
         body: JSON.stringify({
-          companyId: "company_skylinx",
+          companyId: getCurrentCompanyId(),
           name: String(form.get("name")),
           date: String(form.get("date")),
           type: String(form.get("type")),
@@ -786,7 +787,7 @@ export function PayrollActionPanel() {
       const year = now.getFullYear();
       const body = await apiFetch<{ id: string }>("/payroll/runs", {
         method: "POST",
-        body: JSON.stringify({ companyId: "company_skylinx", month, year }),
+        body: JSON.stringify({ companyId: getCurrentCompanyId(), month, year }),
       });
       setRunId(body.data?.id || "");
       if (body.data?.id) {

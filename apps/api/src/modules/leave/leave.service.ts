@@ -1,15 +1,29 @@
-﻿import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { ApprovalStatus, LeaveLedgerEntryType } from "@prisma/client";
 import { AuthenticatedUser } from "../../common/auth/auth.types";
 import { response } from "../../common/crud-response";
 import { PrismaService } from "../../prisma/prisma.service";
+import { SettingsService } from "../settings/settings.service";
 import { TenantContext } from "../../common/tenant-context";
 import { CreateLeaveRequestDto } from "./dto/create-leave-request.dto";
 import { DecideLeaveRequestDto } from "./dto/decide-leave-request.dto";
 
 @Injectable()
 export class LeaveService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly settingsService: SettingsService,
+  ) {}
+
+  private async getLeaveYear(): Promise<number> {
+    const rulesRes = await this.settingsService.rules();
+    const leaveRules = (rulesRes.data as any).leave;
+    const now = new Date();
+    if (leaveRules?.leaveYear === "Financial Year") {
+      return now.getMonth() < 3 ? now.getFullYear() - 1 : now.getFullYear();
+    }
+    return now.getFullYear();
+  }
 
   /** Active tenant from request context; demo default only as a last resort. */
   private tenantId(): string {
@@ -196,11 +210,12 @@ export class LeaveService {
   }
 
   async getAssignments() {
+    const currentYear = await this.getLeaveYear();
     const employees = await this.prisma.employee.findMany({
       where: { status: "ACTIVE" },
       include: {
         leaveBalances: {
-          where: { year: 2026 },
+          where: { year: currentYear },
           include: {
             leaveType: true,
           },
@@ -228,6 +243,7 @@ export class LeaveService {
   }
 
   async assignRules(data: { employeeIds: string[]; leaveTypeIds: string[]; effectiveDate?: string }) {
+    const currentYear = await this.getLeaveYear();
     const { employeeIds, leaveTypeIds } = data;
     if (!employeeIds.length || !leaveTypeIds.length) {
       throw new BadRequestException("Employee IDs and Leave Type IDs are required");
@@ -246,14 +262,14 @@ export class LeaveService {
               employeeId_leaveTypeId_year: {
                 employeeId: empId,
                 leaveTypeId: lt.id,
-                year: 2026,
+                year: currentYear,
               },
             },
             update: {},
             create: {
               employeeId: empId,
               leaveTypeId: lt.id,
-              year: 2026,
+              year: currentYear,
               openingBalance: lt.annualQuota,
               accrued: lt.annualQuota,
               used: 0,
@@ -283,13 +299,14 @@ export class LeaveService {
   }
 
   async unassignRules(data: { employeeIds: string[]; leaveTypeIds: string[] }) {
+    const currentYear = await this.getLeaveYear();
     const { employeeIds, leaveTypeIds } = data;
     
     await this.prisma.leaveBalance.deleteMany({
       where: {
         employeeId: { in: employeeIds },
         leaveTypeId: { in: leaveTypeIds },
-        year: 2026,
+        year: currentYear,
       },
     });
 
@@ -712,6 +729,7 @@ export class LeaveService {
   }
 
   async createEncashment(data: any) {
+    const currentYear = await this.getLeaveYear();
     const structure = await this.prisma.salaryStructure.findFirst({
       where: { employeeId: data.employeeId, status: "ACTIVE" },
       orderBy: { effectiveFrom: "desc" },
@@ -725,7 +743,7 @@ export class LeaveService {
         employeeId_leaveTypeId_year: {
           employeeId: data.employeeId,
           leaveTypeId: data.leaveTypeId,
-          year: 2026,
+          year: currentYear,
         },
       },
     });
@@ -770,6 +788,7 @@ export class LeaveService {
   }
 
   async decideEncashment(id: string, data: any) {
+    const currentYear = await this.getLeaveYear();
     const encashment = await this.prisma.leaveEncashment.findUnique({
       where: { id },
       include: { leaveType: true },
@@ -785,7 +804,7 @@ export class LeaveService {
           employeeId_leaveTypeId_year: {
             employeeId: encashment.employeeId,
             leaveTypeId: encashment.leaveTypeId,
-            year: 2026,
+            year: currentYear,
           },
         },
       });
@@ -873,6 +892,7 @@ export class LeaveService {
   // Earned-Leave Accrual Engine
   // ==========================================
   async processAccruals(data: any) {
+    const currentYear = await this.getLeaveYear();
     const schedules = await this.prisma.leaveAccrualSchedule.findMany({
       include: { leaveType: true },
     });
@@ -918,7 +938,7 @@ export class LeaveService {
               employeeId_leaveTypeId_year: {
                 employeeId: employee.id,
                 leaveTypeId: schedule.leaveTypeId,
-                year: 2026,
+                year: currentYear,
               },
             },
             update: {
@@ -928,7 +948,7 @@ export class LeaveService {
             create: {
               employeeId: employee.id,
               leaveTypeId: schedule.leaveTypeId,
-              year: 2026,
+              year: currentYear,
               openingBalance: 0,
               accrued: schedule.daysPerPeriod,
               used: 0,

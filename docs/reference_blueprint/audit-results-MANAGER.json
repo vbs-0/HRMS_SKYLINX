@@ -35,7 +35,7 @@
     "route": "/payroll",
     "status": "PASS",
     "note": "",
-    "buttons": 20,
+    "buttons": 21,
     "inputs": 5,
     "screenshot": "MANAGER_DEEP/05_payroll.png"
   },
@@ -204,7 +204,7 @@
     "status": "PASS",
     "note": "",
     "buttons": 32,
-    "inputs": 82,
+    "inputs": 85,
     "screenshot": "MANAGER_DEEP/26_settings.png"
   },
   {

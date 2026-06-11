@@ -2,12 +2,16 @@ import { BadRequestException, Injectable, NotFoundException } from "@nestjs/comm
 import { ApprovalStatus, AttendanceStatus } from "@prisma/client";
 import { response } from "../../common/crud-response";
 import { PrismaService } from "../../prisma/prisma.service";
+import { SettingsService } from "../settings/settings.service";
 import { CheckInDto, CheckOutDto, DecideAttendanceDto, OvertimeDto, RegularizationDto } from "./dto/attendance.dto";
 import { AssignShiftDto, BulkAssignShiftDto, RequestShiftDto, DecideShiftRequestDto } from "./dto/roster.dto";
 
 @Injectable()
 export class AttendanceService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly settingsService: SettingsService,
+  ) {}
 
   async logs() {
     const logs = await this.prisma.attendanceLog.findMany({
@@ -38,16 +42,15 @@ export class AttendanceService {
       : await this.prisma.shift.findFirst({ where: { status: "ACTIVE" } });
     if (!shift) throw new BadRequestException("Active shift is not configured");
 
-    const rule = await this.prisma.attendanceRule.findUnique({
-      where: { companyId },
-    });
+    const rulesRes = await this.settingsService.rules();
+    const attendanceRule = (rulesRes.data as any).attendance;
 
     const shiftLocations = await this.prisma.shiftLocation.findMany({
       where: { shiftId: shift.id },
       include: { location: true },
     });
 
-    if (rule?.geoRequired && shiftLocations.length > 0) {
+    if (attendanceRule?.geoAttendance && shiftLocations.length > 0) {
       if (data.latitude === undefined || data.longitude === undefined || data.latitude === null || data.longitude === null) {
         throw new BadRequestException("GPS coordinates are required for check-in");
       }
@@ -88,7 +91,7 @@ export class AttendanceService {
       }
     }
 
-    const status = this.calculateStatus(checkInAt, shift.startTime, shift.graceMinutes);
+    const status = this.calculateStatus(checkInAt, shift.startTime || attendanceRule?.shiftStart || "09:30", shift.graceMinutes ?? attendanceRule?.graceMinutes ?? 10);
     const log = await this.prisma.attendanceLog.upsert({
       where: {
         employeeId_date: {
@@ -178,9 +181,7 @@ export class AttendanceService {
           requestedCheckInAt: data.requestedCheckInAt ? new Date(data.requestedCheckInAt) : undefined,
           requestedCheckOutAt: data.requestedCheckOutAt ? new Date(data.requestedCheckOutAt) : undefined,
           reason: data.reason,
-          status: ApprovalStatus.APPROVED,
-          decidedBy: data.employeeId,
-          decidedAt: new Date(),
+          status: ApprovalStatus.PENDING,
         },
         include: {
           employee: true,
@@ -188,46 +189,7 @@ export class AttendanceService {
         },
       });
 
-      let attendanceLogId = regularization.attendanceLogId;
-      if (!attendanceLogId) {
-        if (!regularization.requestedCheckInAt) {
-          throw new BadRequestException("Requested check-in is required when attendance log is missing");
-        }
-        const created = await tx.attendanceLog.upsert({
-          where: {
-            employeeId_date: {
-              employeeId: regularization.employeeId,
-              date: this.startOfDay(regularization.requestedCheckInAt),
-            },
-          },
-          update: {},
-          create: {
-            employeeId: regularization.employeeId,
-            date: this.startOfDay(regularization.requestedCheckInAt),
-            status: AttendanceStatus.PRESENT,
-            source: "REGULARIZATION",
-          },
-        });
-        attendanceLogId = created.id;
-      }
-
-      await tx.attendanceLog.update({
-        where: { id: attendanceLogId },
-        data: {
-          checkInAt: regularization.requestedCheckInAt || undefined,
-          checkOutAt: regularization.requestedCheckOutAt || undefined,
-          status: AttendanceStatus.PRESENT,
-          approvedBy: data.employeeId,
-        },
-      });
-
-      const finalReg = await tx.attendanceRegularization.update({
-        where: { id: regularization.id },
-        data: { attendanceLogId },
-        include: { employee: true, attendanceLog: true },
-      });
-
-      return finalReg;
+      return regularization;
     });
 
     await this.audit("attendance", "regularization.create", "attendance_regularization", result.id, result);
@@ -304,6 +266,44 @@ export class AttendanceService {
     });
 
     return response("attendance", "regularization.approve", result);
+  }
+
+  async rejectRegularization(id: string, data: DecideAttendanceDto) {
+    const regularization = await this.prisma.attendanceRegularization.findUnique({
+      where: { id },
+    });
+    if (!regularization) throw new NotFoundException("Regularization request not found");
+    if (regularization.status !== ApprovalStatus.PENDING) {
+      throw new BadRequestException("Only pending regularizations can be rejected");
+    }
+
+    const result = await this.prisma.$transaction(async (tx) => {
+      const rejected = await tx.attendanceRegularization.update({
+        where: { id },
+        data: {
+          status: ApprovalStatus.REJECTED,
+          decidedBy: data.decidedByUserId,
+          decidedAt: new Date(),
+        },
+        include: { employee: true, attendanceLog: true },
+      });
+
+      await tx.auditLog.create({
+        data: {
+          actorUserId: data.decidedByUserId,
+          module: "attendance",
+          action: "regularization.reject",
+          entityType: "attendance_regularization",
+          entityId: id,
+          oldValueJson: regularization,
+          newValueJson: rejected,
+        },
+      });
+
+      return rejected;
+    });
+
+    return response("attendance", "regularization.reject", result);
   }
 
   async overtime(data: OvertimeDto) {
@@ -490,6 +490,10 @@ export class AttendanceService {
       },
     });
 
+    const rulesRes = await this.settingsService.rules();
+    const attendanceRule = (rulesRes.data as any).attendance;
+    const workWeek = attendanceRule?.workWeek || "Monday to Friday";
+
     const processed = [];
 
     for (const emp of employeesList) {
@@ -503,7 +507,10 @@ export class AttendanceService {
       if (!log) {
         // No clock logs: check if it's a weekend or holiday
         const day = targetDate.getDay();
-        const isWeekend = day === 0; // Sunday weekend off by default
+        let isWeekend = day === 0; // Sunday weekend off by default
+        if (workWeek === "Monday to Friday" && day === 6) {
+          isWeekend = true;
+        }
 
         const holiday = await this.prisma.holiday.findFirst({
           where: {
@@ -534,7 +541,7 @@ export class AttendanceService {
         processed.push(newLog);
       } else if (log.checkInAt && log.status === AttendanceStatus.PRESENT) {
         // Check if actually late
-        const status = this.calculateStatus(log.checkInAt, shift.startTime, shift.graceMinutes);
+        const status = this.calculateStatus(log.checkInAt, shift.startTime || attendanceRule?.shiftStart || "09:30", shift.graceMinutes ?? attendanceRule?.graceMinutes ?? 10);
         if (status !== log.status) {
           const updatedLog = await this.prisma.attendanceLog.update({
             where: { id: log.id },

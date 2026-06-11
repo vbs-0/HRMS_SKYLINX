@@ -38,15 +38,18 @@ export class AttendanceController {
     return this.attendanceService.regularizations();
   }
 
-  @Post("regularizations")
-  @RequirePermissions("attendance.update")
+  @Post("regularize")
+  @RequirePermissions("attendance.create")
   regularize(@Body() body: RegularizationDto) {
     return this.attendanceService.regularize(body);
   }
 
-  @Patch("regularizations/:id/approve")
+  @Patch("regularize/:id")
   @RequirePermissions("attendance.approve")
-  approveRegularization(@Param("id") id: string, @Body() body: DecideAttendanceDto) {
+  decideRegularization(@Param("id") id: string, @Body() body: DecideAttendanceDto) {
+    if (body.action === "reject") {
+      return this.attendanceService.rejectRegularization(id, body);
+    }
     return this.attendanceService.approveRegularization(id, body);
   }
 

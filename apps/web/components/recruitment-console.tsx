@@ -3,6 +3,7 @@
 import { useState, useEffect, FormEvent } from "react";
 import { apiFetch } from "../lib/client-api";
 import { onDataRefresh, requestDataRefresh } from "../lib/refresh-events";
+import { getCurrentCompanyId } from "../lib/session";
 import { Card, StatusPill } from "./ui";
 import { ReferenceModuleHeader } from "./reference-module";
 import { ReferenceFlowStrip } from "./reference-sections";
@@ -125,29 +126,9 @@ export function RecruitmentConsole() {
   const [showAddStaffingPlan, setShowAddStaffingPlan] = useState(false);
   const [showAddReferral, setShowAddReferral] = useState(false);
 
-  const [departmentsList, setDepartmentsList] = useState<any[]>([
-    { value: "dept_people", label: "HR" },
-    { value: "dept_finance", label: "Finance" },
-    { value: "dept_engineering", label: "Engineering" },
-    { value: "dept_sales", label: "Sales" },
-    { value: "dept_operations", label: "Operations" },
-  ]);
-
-  const [designationsList, setDesignationsList] = useState<any[]>([
-    { value: "des_hr_manager", label: "HR Manager" },
-    { value: "des_payroll", label: "Payroll Specialist" },
-    { value: "des_engineer", label: "Frontend Engineer" },
-    { value: "des_sales", label: "Sales Executive" },
-    { value: "des_ops", label: "Operations Lead" },
-  ]);
-
-  const [locationsList, setLocationsList] = useState<any[]>([
-    { value: "loc_mumbai", label: "Mumbai" },
-    { value: "loc_bengaluru", label: "Bengaluru" },
-    { value: "loc_delhi", label: "Delhi" },
-    { value: "loc_hyderabad", label: "Hyderabad" },
-    { value: "loc_pune", label: "Pune" },
-  ]);
+  const [departmentsList, setDepartmentsList] = useState<any[]>([]);
+  const [designationsList, setDesignationsList] = useState<any[]>([]);
+  const [locationsList, setLocationsList] = useState<any[]>([]);
 
   function loadOrgDropdowns() {
     apiFetch<any[]>("/organization/departments")
@@ -225,7 +206,7 @@ export function RecruitmentConsole() {
         const res = await apiFetch<JobOffer[]>("/recruitment/job-offers");
         setJobOffers(res.data || []);
       } else if (activeTab === "Staffing Plans") {
-        const res = await apiFetch<any[]>("/recruitment/staffing-plans/list/company_skylinx");
+        const res = await apiFetch<any[]>(`/recruitment/staffing-plans/list/${getCurrentCompanyId()}`);
         setStaffingPlans(res.data || []);
       } else if (activeTab === "Referrals") {
         const res = await apiFetch<any[]>("/recruitment/referrals");
@@ -487,7 +468,7 @@ export function RecruitmentConsole() {
       await apiFetch("/recruitment/staffing-plans", {
         method: "POST",
         body: JSON.stringify({
-          companyId: "company_skylinx",
+          companyId: getCurrentCompanyId(),
           departmentId: String(form.get("departmentId")),
           designationId: String(form.get("designationId")),
           budgetedHeadcount: Number(form.get("budgetedHeadcount")),

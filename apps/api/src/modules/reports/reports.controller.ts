@@ -1,4 +1,4 @@
-import { Controller, Get, Post } from "@nestjs/common";
+import { Controller, Get, Post, Body } from "@nestjs/common";
 import { RequirePermissions } from "../../common/auth/permissions.decorator";
 import { ReportsService } from "./reports.service";
 
@@ -46,5 +46,11 @@ export class ReportsController {
   @RequirePermissions("reports.export")
   export() {
     return this.reportsService.export();
+  }
+
+  @Post("custom")
+  @RequirePermissions("reports.read")
+  buildCustomReport(@Body() body: any) {
+    return this.reportsService.buildCustomReport(body);
   }
 }

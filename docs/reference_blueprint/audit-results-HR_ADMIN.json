@@ -99,7 +99,7 @@
     "route": "/approvals",
     "status": "PASS",
     "note": "",
-    "buttons": 16,
+    "buttons": 19,
     "inputs": 5,
     "screenshot": "HR_ADMIN_DEEP/13_approvals.png"
   },
@@ -147,7 +147,7 @@
     "route": "/notifications",
     "status": "PASS",
     "note": "",
-    "buttons": 8,
+    "buttons": 13,
     "inputs": 4,
     "screenshot": "HR_ADMIN_DEEP/19_notifications.png"
   },
@@ -204,7 +204,7 @@
     "status": "PASS",
     "note": "",
     "buttons": 32,
-    "inputs": 82,
+    "inputs": 85,
     "screenshot": "HR_ADMIN_DEEP/26_settings.png"
   },
   {

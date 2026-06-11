@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { apiFetch } from "../lib/client-api";
 import { useEmployeeOptions } from "../lib/options";
 import { onDataRefresh, requestDataRefresh } from "../lib/refresh-events";
+import { getCurrentCompanyId } from "../lib/session";
 import { ReferenceModuleHeader } from "./reference-module";
 import { ReferenceFlowStrip } from "./reference-sections";
 import { Card } from "./ui";
@@ -215,7 +216,7 @@ export function PayrollConsole() {
       const year = parseInt(newRunYear);
       const res = await apiFetch<ApiPayrollRun>("/payroll/runs", {
         method: "POST",
-        body: JSON.stringify({ companyId: "company_skylinx", month, year }),
+        body: JSON.stringify({ companyId: getCurrentCompanyId(), month, year }),
       });
       if (res.data?.id) {
         setSelectedRunId(res.data.id);

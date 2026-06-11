@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { apiFetch } from "../lib/client-api";
+import { getCurrentCompanyId } from "../lib/session";
 import { Card } from "./ui";
 import { Info, Save, X, Calendar, UserCheck, ShieldAlert, Plus, Trash2 } from "lucide-react";
 
@@ -87,8 +88,8 @@ export function LeavePolicyPanel({ initialTab = "policies" }: LeavePolicyPanelPr
     try {
       const [empRes, polRes, blRes] = await Promise.all([
         apiFetch<EmployeeOption[]>("/employees"),
-        apiFetch<LeavePolicy[]>("/leave/policies/company_skylinx"),
-        apiFetch<BlockList[]>("/leave/block-lists/company_skylinx"),
+        apiFetch<LeavePolicy[]>(`/leave/policies/${getCurrentCompanyId()}`),
+        apiFetch<BlockList[]>(`/leave/block-lists/${getCurrentCompanyId()}`),
       ]);
 
       if (empRes.data) setEmployees(empRes.data);
@@ -111,7 +112,7 @@ export function LeavePolicyPanel({ initialTab = "policies" }: LeavePolicyPanelPr
       await apiFetch("/leave/policies", {
         method: "POST",
         body: JSON.stringify({
-          companyId: "company_skylinx",
+          companyId: getCurrentCompanyId(),
           ...policyForm,
         }),
       });
@@ -159,7 +160,7 @@ export function LeavePolicyPanel({ initialTab = "policies" }: LeavePolicyPanelPr
       await apiFetch("/leave/block-lists", {
         method: "POST",
         body: JSON.stringify({
-          companyId: "company_skylinx",
+          companyId: getCurrentCompanyId(),
           ...blockListForm,
         }),
       });

@@ -4,6 +4,7 @@ import { useState, useEffect, FormEvent } from "react";
 import { apiFetch } from "../lib/client-api";
 import { onDataRefresh, requestDataRefresh } from "../lib/refresh-events";
 import { useActiveRole } from "../lib/role";
+import { getCurrentCompanyId } from "../lib/session";
 import { EmployeesTable, DocumentsTable } from "./live-tables";
 import { ReferenceModuleHeader } from "./reference-module";
 import { ReferenceFlowStrip } from "./reference-sections";
@@ -100,29 +101,9 @@ export function EmployeesConsole() {
   const [grades, setGrades] = useState<any[]>([]);
   const [employmentTypes, setEmploymentTypes] = useState<any[]>([]);
 
-  const [departmentsList, setDepartmentsList] = useState<any[]>([
-    { value: "dept_finance", label: "Finance" },
-    { value: "dept_sales", label: "Sales" },
-    { value: "dept_engineering", label: "Engineering" },
-    { value: "dept_operations", label: "Operations" },
-    { value: "dept_people", label: "HR" },
-  ]);
-
-  const [designationsList, setDesignationsList] = useState<any[]>([
-    { value: "des_hr_manager", label: "HR Manager" },
-    { value: "des_payroll", label: "Payroll Specialist" },
-    { value: "des_engineer", label: "Frontend Engineer" },
-    { value: "des_sales", label: "Sales Executive" },
-    { value: "des_ops", label: "Operations Lead" },
-  ]);
-
-  const [locationsList, setLocationsList] = useState<any[]>([
-    { value: "loc_delhi", label: "Delhi" },
-    { value: "loc_hyderabad", label: "Hyderabad" },
-    { value: "loc_pune", label: "Pune" },
-    { value: "loc_bengaluru", label: "Bengaluru" },
-    { value: "loc_mumbai", label: "Mumbai" },
-  ]);
+  const [departmentsList, setDepartmentsList] = useState<any[]>([]);
+  const [designationsList, setDesignationsList] = useState<any[]>([]);
+  const [locationsList, setLocationsList] = useState<any[]>([]);
 
   function loadDropdowns() {
     apiFetch<any[]>("/organization/departments")
@@ -153,13 +134,13 @@ export function EmployeesConsole() {
   useEffect(() => {
     loadDropdowns();
     
-    apiFetch<any[]>("/employees/grades/company_skylinx")
+    apiFetch<any[]>(`/employees/grades/${getCurrentCompanyId()}`)
       .then((res) => {
         if (res.data) setGrades(res.data);
       })
       .catch(() => undefined);
 
-    apiFetch<any[]>("/employees/types/company_skylinx")
+    apiFetch<any[]>(`/employees/types/${getCurrentCompanyId()}`)
       .then((res) => {
         if (res.data) setEmploymentTypes(res.data);
       })
@@ -266,7 +247,7 @@ export function EmployeesConsole() {
       await apiFetch("/employees", {
         method: "POST",
         body: JSON.stringify({
-          companyId: "company_skylinx",
+          companyId: getCurrentCompanyId(),
           employeeCode: String(form.get("employeeCode")),
           firstName: String(form.get("firstName")),
           lastName: String(form.get("lastName")),
@@ -990,7 +971,7 @@ function LetterTemplatesPanel() {
   });
 
   function load() {
-    apiFetch<any[]>("/employees/letter-templates/list/company_skylinx").then((res) => {
+    apiFetch<any[]>(`/employees/letter-templates/list/${getCurrentCompanyId()}`).then((res) => {
       if (res.data) setTemplates(res.data);
     });
     apiFetch<any[]>("/employees").then((res) => {
@@ -1015,7 +996,7 @@ function LetterTemplatesPanel() {
       await apiFetch("/employees/letter-templates", {
         method: "POST",
         body: JSON.stringify({
-          companyId: "company_skylinx",
+          companyId: getCurrentCompanyId(),
           type: form.type,
           title: form.title,
           body: form.body,

@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
+import { TenantContext } from "../../common/tenant-context";
 import { response } from "../../common/crud-response";
 import { PrismaService } from "../../prisma/prisma.service";
 import { CreateHolidayDto, UpdateHolidayStatusDto } from "./dto/holiday.dto";
@@ -19,9 +20,10 @@ export class HolidaysService {
   }
 
   async create(data: CreateHolidayDto) {
+    const tenantId = TenantContext.getTenantId();
     const holiday = await this.prisma.holiday.create({
       data: {
-        companyId: data.companyId,
+        companyId: tenantId || data.companyId || "company_skylinx",
         locationId: data.locationId || undefined,
         name: data.name,
         date: new Date(data.date),
@@ -37,6 +39,7 @@ export class HolidaysService {
     await this.audit("holiday.create", holiday.id, undefined, holiday);
     return response("holidays", "holiday.create", holiday);
   }
+
 
   async updateStatus(id: string, data: UpdateHolidayStatusDto) {
     const current = await this.prisma.holiday.findUnique({ where: { id } });

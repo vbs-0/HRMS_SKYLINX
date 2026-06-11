@@ -69,6 +69,10 @@ export class RegularizationDto {
 export class DecideAttendanceDto {
   @IsOptional()
   @IsString()
+  action?: "approve" | "reject";
+
+  @IsOptional()
+  @IsString()
   decidedByUserId?: string;
 }
 

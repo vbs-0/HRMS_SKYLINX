@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { apiFetch } from "../lib/client-api";
 import { onDataRefresh, requestDataRefresh } from "../lib/refresh-events";
+import { getCurrentCompanyId } from "../lib/session";
+import { useLocationOptions } from "../lib/options";
 import { ReferenceModuleHeader } from "./reference-module";
 import { ReferenceFlowStrip } from "./reference-sections";
 import { Card, StatusPill } from "./ui";
@@ -32,6 +34,12 @@ export function HolidayConsole() {
   const [formName, setFormName] = useState("");
   const [formDate, setFormDate] = useState("");
   const [formType, setFormType] = useState("MANDATORY");
+  const [formLocationId, setFormLocationId] = useState("");
+  const locations = useLocationOptions();
+  
+  // Stubs for alert replacement
+  const [showLocationAlert, setShowLocationAlert] = useState(false);
+  const [showRulesAlert, setShowRulesAlert] = useState(false);
 
   function loadHolidays() {
     apiFetch<ApiHoliday[]>("/holidays")
@@ -62,7 +70,8 @@ export function HolidayConsole() {
       await apiFetch("/holidays", {
         method: "POST",
         body: JSON.stringify({
-          companyId: "company_skylinx",
+          companyId: getCurrentCompanyId(),
+          locationId: formLocationId || undefined,
           name: formName,
           date: formDate,
           type: formType,
@@ -72,6 +81,7 @@ export function HolidayConsole() {
       setFormName("");
       setFormDate("");
       setFormType("MANDATORY");
+      setFormLocationId("");
       setShowAddModal(false);
       loadHolidays();
       requestDataRefresh("holidays");
@@ -214,8 +224,8 @@ export function HolidayConsole() {
               setShowAddModal(true);
             },
           },
-          { label: "Locations", icon: <MapPin className="h-4 w-4" />, onClick: () => alert("Location configurations managed via settings.") },
-          { label: "Rules", icon: <SlidersHorizontal className="h-4 w-4" />, onClick: () => alert("Holiday policies are linked to attendance calculations.") },
+          { label: "Locations", icon: <MapPin className="h-4 w-4" />, onClick: () => setShowLocationAlert(true) },
+          { label: "Rules", icon: <SlidersHorizontal className="h-4 w-4" />, onClick: () => setShowRulesAlert(true) },
           { label: "Export", icon: <Download className="h-4 w-4" />, onClick: handleExportCSV },
         ]}
         stats={[
@@ -284,6 +294,20 @@ export function HolidayConsole() {
                   <option value="MANDATORY">Mandatory</option>
                   <option value="OPTIONAL">Optional</option>
                   <option value="REGIONAL">Regional</option>
+                </select>
+              </div>
+
+              <div className="flex flex-col">
+                <label className="text-xs font-bold text-slate-500 uppercase mb-1">Location (Optional)</label>
+                <select
+                  value={formLocationId}
+                  onChange={(e) => setFormLocationId(e.target.value)}
+                  className="min-h-10 rounded-lg border border-slate-200 px-3 text-sm focus:border-[#0091ff] outline-none"
+                >
+                  <option value="">All Locations</option>
+                  {locations.map((loc) => (
+                    <option key={loc.value} value={loc.value}>{loc.label}</option>
+                  ))}
                 </select>
               </div>
 
@@ -457,6 +481,32 @@ export function HolidayConsole() {
             </table>
           </div>
         </Card>
+      )}
+
+      {/* Location Alert Modal */}
+      {showLocationAlert && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-2xl">
+            <h3 className="mb-2 text-lg font-bold text-[#172033]">Location Settings</h3>
+            <p className="text-sm text-[#49637f] mb-6">Location configurations and holiday mapping are managed via the central organization settings module.</p>
+            <div className="flex justify-end">
+              <button onClick={() => setShowLocationAlert(false)} className="rounded-lg bg-[#0091ff] px-4 py-2 text-sm font-semibold text-white hover:bg-[#007cdb]">Got it</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Rules Alert Modal */}
+      {showRulesAlert && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-2xl">
+            <h3 className="mb-2 text-lg font-bold text-[#172033]">Holiday Rules</h3>
+            <p className="text-sm text-[#49637f] mb-6">Holiday policies and compensation rules are linked directly to the attendance and payroll calculation engines.</p>
+            <div className="flex justify-end">
+              <button onClick={() => setShowRulesAlert(false)} className="rounded-lg bg-[#0091ff] px-4 py-2 text-sm font-semibold text-white hover:bg-[#007cdb]">Got it</button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

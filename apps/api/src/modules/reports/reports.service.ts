@@ -37,6 +37,38 @@ export class ReportsService {
     return response("reports", "export", { format: "xlsx", status: "queued", auditId: audit.id });
   }
 
+  async buildCustomReport(body: any) {
+    const tenantId = TenantContext.getTenantId();
+    const { model, select, where, orderBy, take } = body;
+    if (!model || !(model in this.prisma)) {
+      throw new Error(`Invalid or unspecified model: ${model}`);
+    }
+    
+    // Inject tenant scope into the where clause
+    const queryWhere = where || {};
+    if (tenantId) {
+      if (model === "employee" || model === "payrollRun") {
+        queryWhere.companyId = tenantId;
+      } else {
+        queryWhere.employee = { ...queryWhere.employee, companyId: tenantId };
+      }
+    }
+
+    const data = await (this.prisma as any)[model].findMany({
+      where: queryWhere,
+      select: select || undefined,
+      orderBy: orderBy || undefined,
+      take: take || 100,
+    });
+
+    return response("reports", "custom", {
+      type: "custom",
+      total: data.length,
+      rows: data,
+    });
+  }
+
+
   private async employeeReport() {
     const tenantId = TenantContext.getTenantId();
     const employees = await this.prisma.employee.findMany({

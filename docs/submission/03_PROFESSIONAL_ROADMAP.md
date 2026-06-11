@@ -3,10 +3,12 @@
 **As of:** 2026-06-11 · Owner: Guna Deep
 
 ## Phase 0 — Current State (DONE)
-- 23 modules live across NestJS API + Next.js 15 UI (see `01_MASTER_FEATURE_INVENTORY.md`)
+- 24 modules live across NestJS API + Next.js 15 UI (see `01_MASTER_FEATURE_INVENTORY.md`)
 - RBAC with 3 operational roles + owner, verified end-to-end with screenshot evidence (`docs/reference_blueprint/images/`)
-- Jest service tests (auth, attendance, employees, payroll) + Playwright E2E scaffold
+- Jest service tests (11 suites, 65 tests passed) + Playwright E2E full audit suite
 - Seed-reproducible demo environment (all role logins seeded)
+- Performance / Appraisal KRA Engine fully completed
+- Employee loans, grievances, 360 feedback, leave encashment, accruals, career history, tax slabs, payroll corrections, retention bonuses, salary withholdings, and gratuity rounding fully completed
 
 ## Phase 1 — Hardening & Quality (Weeks 1–2)
 | Item | Detail | Effort |
@@ -17,7 +19,7 @@
 | Error handling & toasts | Replace inline alert banners with consistent toast/error UX | S |
 | CI pipeline | GitHub Actions: lint, typecheck, jest, playwright, prisma migrate check | S |
 
-## Phase 2 — P1 Functional Gaps (Weeks 3–6)
+## Phase 2 — P1 Functional Gaps (DONE - Wave 3)
 | Item | Detail | Effort |
 |---|---|---|
 | Performance engine | Appraisal cycles, templates, KRAs, goals, ratings → feeds increments | L |
@@ -26,7 +28,7 @@
 | Payroll v2 | Gratuity rules/slabs, arrears & payroll correction, salary withholding | L |
 | Configurable tax slabs | Admin UI for income-tax slabs/regimes (currently code-level) | M |
 
-## Phase 3 — P2/P3 + Platform (Weeks 7–12)
+## Phase 3 — P2/P3 + Platform (IN PROGRESS)
 - Bulk attendance import + biometric/geo check-in device integration
 - Loans module (salary-slip integration)
 - Staffing plan & employee referral (recruitment v2), calendar-synced interviews

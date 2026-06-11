@@ -45,7 +45,7 @@ Permissions are `module × action` pairs stored in `Permission`, linked via `Rol
 | recruitment | ALL | read/create/update/approve/configure | read | — |
 | training | ALL | read/create/update/configure | approve | create |
 | travel | ALL | read/create/update/configure | approve | create |
-| performance | ALL | read/configure | — | — |
+| performance | ALL | read/configure | read, approve | read |
 | approvals | ALL | read/approve | — | — |
 | organization | ALL | read/update | — | — |
 | analytics / reports | ALL | read, export | — | — |
@@ -77,7 +77,7 @@ All endpoints are prefixed `http://localhost:4000/api/v1`. Extracted from the co
 **Features:** directory, profile CRUD, bulk upload, document upload+verification, grades, employment types, onboarding/separation templates & runs, exit interviews, Full & Final settlement with asset recovery, Career History (Promotions & Transfers).
 **Workflow:** HR creates employee → assigns dept/designation/location/manager/grade → uploads documents → (exit) start separation → exit interview → F&F statement → settle assets. Career: HR initiates promotions/transfers → manager/HR approves → profile gets updated and new active salary structure is applied (revised CTC).
 **Endpoints:** `GET/POST /employees`, `POST /employees/bulk-upload`, `GET/PATCH /employees/:id`, `GET /employees/documents`, `POST /employees/:id/documents[/upload]`, `PATCH /employees/:id/documents/:documentId/verify`, `POST/GET /employees/onboarding/templates`, `POST /employees/:id/onboarding/start`, `POST/GET /employees/separation/templates`, `POST /employees/:id/separation/start`, `POST/GET /employees/:id/exit-interview`, `POST/GET /employees/:id/full-and-final`, `GET /employees/:id/ff-suggestions`, `PATCH /employees/full-and-final/assets/:assetId`, `POST /employees/grades`, `GET /employees/grades/:companyId`, `POST /employees/types`, `GET /employees/types/:companyId`, `GET/POST /employees/:id/promotions`, `POST /employees/promotions/:id/decide`, `GET/POST /employees/:id/transfers`, `POST /employees/transfers/:id/decide`
-**Models:** `Employee`, `EmployeeDocument`, `EmployeeBankDetail`, `EmployeeGrade`, `EmploymentType`, `EmployeeOnboarding*`, `EmployeeSeparation*`, `ExitInterview`, `FullAndFinalStatement`, `FullAndFinalAsset`, `EmployeePromotion`, `EmployeeTransfer`
+**Models:** `Employee`, `EmployeeDocument`, `EmployeeBankDetail`, `EmployeeGrade`, `EmploymentType`, `EmployeeOnboarding*`, `EmployeeSeparation*`, `ExitInterview`, `FullAndFinalStatement`, `FullAndFinalAsset`, `EmployeePromotion`, `EmployeeTransfer`, `LetterTemplate`
 
 ### 3.3 Attendance (`attendance`) — UI `/attendance`
 **Features:** check-in/out, logs, regularization requests + approval, overtime requests, shift types, single/bulk shift assignment, shift change requests + decisions, schedules, auto-processing.
@@ -89,13 +89,13 @@ All endpoints are prefixed `http://localhost:4000/api/v1`. Extracted from the co
 **Features:** leave types, balances, apply/approve/reject, policies + assignments, ledger entries, block lists (blackout dates), sandwich-rule validation, Leave Encashment requests, Earned-leave Accruals.
 **Workflow:** HR defines types & policies → policy assignment grants balances → employee applies (validated against balance, block-list dates, sandwich rule) → manager/HR approves → balance decremented + ledger entry. Encashment: Employee requests encashment of available leave balance → admin/manager approves → balance is decremented and additional salary is credited. Accruals: Admin runs accrual engine to process earned leaves idempotently.
 **Endpoints:** `GET/POST /leave/types`, `PATCH /leave/types/:id`, `GET/POST /leave/assignments`, `POST /leave/assignments/delete`, `GET /leave/balances`, `GET/POST /leave/requests`, `PATCH /leave/requests/:id/approve|reject`, `POST /leave/block-lists`, `GET /leave/block-lists/:companyId`, `POST /leave/block-lists/:id/dates`, `GET /leave/ledger/:employeeId`, `POST /leave/policies`, `GET /leave/policies/:companyId`, `POST /leave/policies/assign`, `GET /leave/policies/assignments/:companyId`, `GET/POST /leave/encashments`, `POST /leave/encashments/:id/decide`, `POST /leave/accruals/process`
-**Models:** `LeaveType`, `LeaveBalance`, `LeaveRequest`, `LeavePolicy`, `LeavePolicyAssignment`, `LeaveLedgerEntry`, `LeaveBlockList`, `LeaveBlockListDate`, `LeaveEncashment`, `LeaveAccrualSchedule`
+**Models:** `LeaveType`, `LeaveBalance`, `LeaveRequest`, `LeavePolicy`, `LeavePolicyAssignment`, `LeaveLedgerEntry`, `LeaveBlockList`, `LeaveBlockListDate`, `LeaveEncashment`, `LeaveAccrualSchedule`, `CompOffConversion`
 
 ### 3.5 Payroll (`payroll`) — UI `/payroll`
-**Features:** salary structures, payroll runs (create → calculate → lock), payslips, bank export, benefit applications/claims, tax exemption declarations + proof submissions with decisions, additional salary; Indian statutory components (PF/ESI/PT/TDS), Gratuity calculations, Payroll Corrections & Arrears, configurable Tax Slabs (OLD/NEW regimes).
+**Features:** salary structures, payroll runs (create → calculate → lock), payslips, bank export, benefit applications/claims, tax exemption declarations + proof submissions with decisions, additional salary; Indian statutory components (PF/ESI/PT/TDS), Gratuity calculations, Payroll Corrections & Arrears, configurable Tax Slabs (OLD/NEW regimes), Retention Bonus approvals generating AdditionalSalary earnings, and Salary Withholding (skips/zero-pays slips, release generates correction arrears).
 **Workflow:** HR defines salary structure per employee → creates monthly run → calculate (generates payslips with earnings/deductions including corrections) → review → lock → bank export file.
-**Endpoints:** `GET/POST /payroll/salary-structures`, `GET/POST /payroll/runs`, `POST /payroll/runs/:id/calculate`, `POST /payroll/runs/:id/lock`, `GET /payroll/runs/:id/payslips`, `POST /payroll/runs/:id/bank-export`, `POST /payroll/benefits/apply`, `GET /payroll/benefits/applications`, `POST /payroll/benefits/claim`, `GET /payroll/benefits/claims`, `PATCH /payroll/benefits/claims/:id/decide`, `POST /payroll/tax-declarations`, `GET /payroll/tax-declarations/:employeeId`, `POST/GET /payroll/tax-proofs`, `PATCH /payroll/tax-proofs/:id/decide`, `POST/GET /payroll/additional-salary`, `GET/POST /payroll/gratuity-rules`, `GET/POST /payroll/gratuity`, `POST /payroll/gratuity/:id/decide`, `GET/POST /payroll/corrections`, `POST /payroll/corrections/:id/decide`, `GET/POST /payroll/tax-slabs`, `PATCH /payroll/tax-slabs/:id`
-**Models:** `SalaryStructure`, `PayrollRun`, `Payslip`, `PayrollComponent`, `AdditionalSalary`, `EmployeeBenefitApplication`, `EmployeeBenefitClaim`, `EmployeeTaxExemptionDeclaration`, `EmployeeTaxExemptionProofSubmission`, `GratuityRule`, `Gratuity`, `PayrollCorrection`, `IncomeTaxSlab`
+**Endpoints:** `GET/POST /payroll/salary-structures`, `GET/POST /payroll/runs`, `POST /payroll/runs/:id/calculate`, `POST /payroll/runs/:id/lock`, `GET /payroll/runs/:id/payslips`, `POST /payroll/runs/:id/bank-export`, `POST /payroll/benefits/apply`, `GET /payroll/benefits/applications`, `POST /payroll/benefits/claim`, `GET /payroll/benefits/claims`, `PATCH /payroll/benefits/claims/:id/decide`, `POST /payroll/tax-declarations`, `GET /payroll/tax-declarations/:employeeId`, `POST/GET /payroll/tax-proofs`, `PATCH /payroll/tax-proofs/:id/decide`, `POST/GET /payroll/additional-salary`, `GET/POST /payroll/gratuity-rules`, `GET/POST /payroll/gratuity`, `POST /payroll/gratuity/:id/decide`, `GET/POST /payroll/corrections`, `POST /payroll/corrections/:id/decide`, `GET/POST /payroll/tax-slabs`, `PATCH /payroll/tax-slabs/:id`, `GET/POST /payroll/retention-bonuses`, `PATCH /payroll/retention-bonuses/:id/decide`, `GET/POST /payroll/withholdings`, `POST /payroll/withholdings/:id/release`
+**Models:** `SalaryStructure`, `PayrollRun`, `Payslip`, `PayrollComponent`, `AdditionalSalary`, `EmployeeBenefitApplication`, `EmployeeBenefitClaim`, `EmployeeTaxExemptionDeclaration`, `EmployeeTaxExemptionProofSubmission`, `GratuityRule`, `Gratuity`, `PayrollCorrection`, `IncomeTaxSlab`, `RetentionBonus`, `SalaryWithholding`, `EmployeeLoan`, `LoanRepayment`
 
 ### 3.6 Expenses (`expenses`) — UI `/expenses`
 **Features:** claims with category + receipt URL, grade-based caps (live UI warning when amount exceeds the employee's grade `maxExpenseLimit`), two-stage approval (manager → HR), reject, reimburse.
@@ -107,7 +107,7 @@ All endpoints are prefixed `http://localhost:4000/api/v1`. Extracted from the co
 **Features:** requisitions with decision flow, job postings, candidates, applications with stage moves, interviews + multi-interviewer feedback with consensus, offers with terms.
 **Workflow:** requisition → approve → posting → candidate → application → stage transitions → interviews → feedback (HIRE/HOLD/REJECT consensus) → offer.
 **Endpoints:** `POST/GET /recruitment/requisitions`, `PATCH /recruitment/requisitions/:id/decide`, `POST/GET /recruitment/job-postings`, `POST/GET /recruitment/candidates`, `POST /recruitment/applications`, `PATCH /recruitment/applications/:id/stage`, `GET /recruitment/applications/posting/:postingId`, `POST/GET /recruitment/interviews`, `POST /recruitment/interviews/:id/feedback`, `POST/GET /recruitment/job-offers`, `GET /recruitment/job-offers/:id`
-**Models:** `JobRequisition`, `JobPosting`, `Candidate`, `JobApplication`, `InterviewRound`, `Interview`, `Interviewer`, `InterviewFeedback`, `JobOffer`, `OfferTerm`
+**Models:** `JobRequisition`, `JobPosting`, `Candidate`, `JobApplication`, `InterviewRound`, `Interview`, `Interviewer`, `InterviewFeedback`, `JobOffer`, `OfferTerm`, `StaffingPlan`, `EmployeeReferral`
 
 ### 3.8 Training & Skills (`training`) — UI `/training`
 **Features:** programs, events, enrollment, feedback, results, skill catalogue, skill assessments, designation skill requirements, per-employee skill-gap analysis.
@@ -126,7 +126,10 @@ All endpoints are prefixed `http://localhost:4000/api/v1`. Extracted from the co
 Policies, dependents, claims with approve/reject. `GET/POST /insurance/policies|dependents|claims`, `PATCH /insurance/claims/:id/approve|reject` · Models: `EmployeeInsurance`, `InsuranceDependent`, `InsuranceClaim`, `BenefitItem`
 
 ### 3.12 Performance (`performance`) — UI `/performance`
-`GET /performance`, `POST /performance/cycle` (cycle scaffold; full appraisal/KRA engine is a roadmap item — see gap analysis)
+**Features:** appraisal cycles CRUD, cycle activation and completion, appraisal templates (with KRA weights validation - sum must be 100), appraisal generation for cycles (bulk or selected), employee self-rating (scoped to own record), manager rating (scoped to direct reports), HR cycle completion (which suggests promotions or additional salary adjustments based on final scores), 360-degree employee feedback requests and response submissions.
+**Workflow:** HR creates an Appraisal Template and adds KRAs with weights summing to 100 → HR creates an Appraisal Cycle and generates Appraisals for employees → Employee self-rates description/rating (1-5) on assigned template KRAs → Manager rates (1-5) direct report appraisals → HR completes cycle (final score calculated as weighted manager rating sum normalized to 5; scores above configured promotionThreshold suggest a draft promotion or salary structure revision).
+**Endpoints:** `GET /performance` · `GET/POST /performance/cycles` · `GET/PATCH/DELETE /performance/cycles/:id` · `POST /performance/cycles/:id/activate` · `POST /performance/cycles/:id/complete` · `GET/POST/PATCH/DELETE /performance/templates` · `GET/POST /performance/appraisals` · `POST /performance/appraisals/create-for-cycle` · `GET /performance/appraisals/:id` · `POST /performance/appraisals/:id/self-rate` · `POST /performance/appraisals/:id/manager-rate` · `POST /performance/appraisals/:id/complete` · `POST/GET /performance/feedback/requests` · `POST /performance/feedback/requests/:id/respond`
+**Models:** `AppraisalCycle`, `AppraisalTemplate`, `AppraisalKra`, `Appraisal`, `AppraisalGoal`, `FeedbackRequest`
 
 ### 3.13 Approvals (`approvals`) — UI `/approvals`
 Cross-module inbox. `GET /approvals`, `POST /approvals/:module/:id/decision`
@@ -159,7 +162,12 @@ Social (SkyNexus): `GET /social/feed`, `POST /social/posts`, `POST/DELETE /socia
 **Models:** `Plan`, `Subscription`, `Payment`, `ModuleSetting`, `ClientRule`, `AuditLog`, `ErrorLog`, `SystemLog`
 **Plan gating:** `PlanGate` component locks Pro-only modules (e.g. Advanced Analytics) in the UI based on active plan.
 
-### 3.22 Health (`health`)
+### 3.22 Grievance (`grievance`) — UI `/grievance`
+**Features:** grievance registration, anonymous reporting, category tagging, manager/admin assignment, resolution tracking, and investigation logs.
+**Endpoints:** `POST /grievance` · `GET /grievance` · `GET /grievance/:id` · `PATCH /grievance/:id`
+**Models:** `Grievance`
+
+### 3.23 Health (`health`)
 `GET /health` — liveness probe.
 
 ---

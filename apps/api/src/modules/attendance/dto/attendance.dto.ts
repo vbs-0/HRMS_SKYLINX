@@ -19,6 +19,10 @@ export class CheckInDto {
   @IsOptional()
   @IsNumber()
   longitude?: number;
+
+  @IsOptional()
+  @IsNumber()
+  accuracy?: number;
 }
 
 export class CheckOutDto {
@@ -36,6 +40,10 @@ export class CheckOutDto {
   @IsOptional()
   @IsNumber()
   longitude?: number;
+
+  @IsOptional()
+  @IsNumber()
+  accuracy?: number;
 }
 
 export class RegularizationDto {

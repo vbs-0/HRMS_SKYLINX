@@ -67,6 +67,12 @@ interface ApiEmployeeDetail {
 export function EmployeesConsole() {
   const [activeTab, setActiveTab] = useState("All Employees");
   const [searchQuery, setSearchQuery] = useState("");
+
+  // Pick up ?q= from the global header search
+  useEffect(() => {
+    const q = new URLSearchParams(window.location.search).get("q");
+    if (q) setSearchQuery(q);
+  }, []);
   const [showAddPanel, setShowAddPanel] = useState(false);
   const [showBulkPanel, setShowBulkPanel] = useState(false);
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(null);
@@ -381,7 +387,7 @@ export function EmployeesConsole() {
         eyebrow="Directory"
         title="Employee Directory"
         summary="Search employees, manage profiles, bulk upload records, and verify documents."
-        tabs={["All Employees", "My Profile", "Company Profile", "Verification", "Lifecycle", "Letter Templates", "Loans"]}
+        tabs={["All Employees", "My Profile", "Company Profile", "Verification", "Lifecycle", "Letter Templates", "Loans", "Custom Fields"]}
         activeTab={activeTab}
         onTabChange={(tab: string) => {
           setActiveTab(tab);
@@ -921,6 +927,10 @@ export function EmployeesConsole() {
       {activeTab === "Loans" && (
         <EmployeeLoansPanel />
       )}
+
+      {activeTab === "Custom Fields" && (
+        <CustomFieldsPanel />
+      )}
     </>
   );
 }
@@ -1125,7 +1135,7 @@ function LetterTemplatesPanel() {
             </div>
 
             {renderedLetter ? (
-              <div className="border border-dashed border-slate-350 p-8 bg-white rounded-lg min-h-[300px] shadow-inner print:border-none print:shadow-none" id="print-area">
+              <div className="print-area border border-dashed border-slate-350 p-8 bg-white rounded-lg min-h-[300px] shadow-inner print:border-none print:shadow-none" id="print-area">
                 <div className="text-center mb-6">
                   <h2 className="text-xl font-bold uppercase tracking-wider text-slate-800">Skylinx PeopleOS</h2>
                   <p className="text-[10px] text-slate-400">121 Innovation Way, Tech District, Mumbai</p>
@@ -1473,6 +1483,276 @@ function CareerHistoryPanel({ employeeId }: { employeeId: string }) {
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+// ==========================================
+// Custom Fields Panel
+// ==========================================
+function CustomFieldsPanel() {
+  const [definitions, setDefinitions] = useState<any[]>([]);
+  const [employees, setEmployees] = useState<any[]>([]);
+  const [values, setValues] = useState<Record<string, any[]>>({});
+  const [selectedEmpId, setSelectedEmpId] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  // Create field form
+  const [fieldName, setFieldName] = useState("");
+  const [fieldLabel, setFieldLabel] = useState("");
+  const [fieldType, setFieldType] = useState("TEXT");
+  const [fieldRequired, setFieldRequired] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  // Edit value
+  const [editValue, setEditValue] = useState<Record<string, string>>({});
+  const [savingValue, setSavingValue] = useState<string | null>(null);
+
+  const fetchData = () => {
+    setLoading(true);
+    Promise.all([
+      apiFetch<any[]>("/custom-fields/definitions"),
+      apiFetch<any[]>("/employees"),
+    ])
+      .then(([defs, emps]) => {
+        setDefinitions(defs.data || []);
+        setEmployees(emps.data || []);
+        if (emps.data?.[0] && !selectedEmpId) setSelectedEmpId(emps.data[0].id);
+      })
+      .catch(() => undefined)
+      .finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (!selectedEmpId) return;
+    apiFetch<any[]>(`/custom-fields/values/${selectedEmpId}`)
+      .then((res) => setValues((prev) => ({ ...prev, [selectedEmpId]: res.data || [] })))
+      .catch(() => undefined);
+  }, [selectedEmpId]);
+
+  const handleCreateField = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    setError("");
+    try {
+      await apiFetch("/custom-fields/definitions", {
+        method: "POST",
+        body: JSON.stringify({ name: fieldName, label: fieldLabel, type: fieldType, required: fieldRequired }),
+      });
+      setMessage("Custom field created!");
+      setFieldName("");
+      setFieldLabel("");
+      fetchData();
+    } catch (err: any) {
+      setError(err.message || "Failed to create custom field");
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleSaveValue = async (definitionId: string) => {
+    if (!selectedEmpId) return;
+    setSavingValue(definitionId);
+    try {
+      await apiFetch("/custom-fields/values", {
+        method: "POST",
+        body: JSON.stringify({ employeeId: selectedEmpId, definitionId, value: editValue[definitionId] ?? "" }),
+      });
+      setMessage("Field value saved!");
+      const res = await apiFetch<any[]>(`/custom-fields/values/${selectedEmpId}`);
+      setValues((prev) => ({ ...prev, [selectedEmpId]: res.data || [] }));
+    } catch (err: any) {
+      setError(err.message || "Failed to save value");
+    } finally {
+      setSavingValue(null);
+    }
+  };
+
+  const empValues = selectedEmpId ? (values[selectedEmpId] || []) : [];
+  const valueMap = Object.fromEntries(empValues.map((v: any) => [v.definitionId, v.value]));
+
+  return (
+    <div className="grid grid-cols-[1fr_1.4fr] gap-6 max-lg:grid-cols-1">
+      {/* Left: Definitions + Create */}
+      <div className="space-y-4">
+        <Card className="p-5 border border-[#e8edf4]">
+          <h3 className="text-sm font-bold text-slate-800 mb-4 border-b pb-2">Create Custom Field</h3>
+          {message && <div className="mb-3 rounded bg-[#e6f5ef] p-2 text-xs text-green-700 font-semibold">{message}</div>}
+          {error && <div className="mb-3 rounded bg-[#fde8e6] p-2 text-xs text-red-700 font-semibold">{error}</div>}
+          <form onSubmit={handleCreateField} className="grid gap-3">
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 mb-1" htmlFor="cf-name">
+                  Field Key *
+                </label>
+                <input
+                  id="cf-name"
+                  name="cf-name"
+                  required
+                  value={fieldName}
+                  onChange={(e) => setFieldName(e.target.value)}
+                  className="w-full rounded border border-slate-200 px-2 py-1.5 text-xs"
+                  placeholder="e.g. bloodGroup"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 mb-1" htmlFor="cf-label">
+                  Display Label *
+                </label>
+                <input
+                  id="cf-label"
+                  name="cf-label"
+                  required
+                  value={fieldLabel}
+                  onChange={(e) => setFieldLabel(e.target.value)}
+                  className="w-full rounded border border-slate-200 px-2 py-1.5 text-xs"
+                  placeholder="e.g. Blood Group"
+                />
+              </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3 items-center">
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 mb-1" htmlFor="cf-type">
+                  Field Type
+                </label>
+                <select
+                  id="cf-type"
+                  name="cf-type"
+                  value={fieldType}
+                  onChange={(e) => setFieldType(e.target.value)}
+                  className="w-full rounded border border-slate-200 px-2 py-1.5 text-xs"
+                >
+                  {["TEXT", "NUMBER", "DATE", "BOOLEAN", "SELECT"].map((t) => (
+                    <option key={t} value={t}>{t}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="flex items-center gap-1.5 pt-4">
+                <input
+                  type="checkbox"
+                  id="cf-required"
+                  name="cf-required"
+                  checked={fieldRequired}
+                  onChange={(e) => setFieldRequired(e.target.checked)}
+                  className="h-3.5 w-3.5"
+                />
+                <label htmlFor="cf-required" className="text-xs text-slate-600">Required</label>
+              </div>
+            </div>
+            <button
+              type="submit"
+              id="create-cf-btn"
+              disabled={saving}
+              className="rounded bg-brand py-1.5 text-xs font-bold text-white hover:bg-brand/90 transition"
+            >
+              {saving ? "Creating…" : "Create Field"}
+            </button>
+          </form>
+        </Card>
+
+        <Card className="p-4 border border-[#e8edf4]">
+          <h4 className="text-xs font-bold text-slate-600 uppercase mb-3">All Field Definitions</h4>
+          {loading ? (
+            <p className="text-xs text-slate-400">Loading…</p>
+          ) : definitions.length === 0 ? (
+            <p className="text-xs text-slate-400">No custom fields defined yet.</p>
+          ) : (
+            <div className="space-y-1.5">
+              {definitions.map((def) => (
+                <div key={def.id} className="flex items-center gap-2 text-xs rounded bg-slate-50 px-2 py-1.5">
+                  <span className="font-mono text-slate-500">{def.name}</span>
+                  <span className="text-slate-400">→</span>
+                  <span className="font-semibold text-slate-700">{def.label}</span>
+                  <span className="ml-auto text-[10px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded">{def.type}</span>
+                  {def.required && <span className="text-[10px] bg-red-100 text-red-600 px-1 py-0.5 rounded">req</span>}
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+      </div>
+
+      {/* Right: Employee Value Editor */}
+      <Card className="p-5 border border-[#e8edf4]">
+        <h3 className="text-sm font-bold text-slate-800 mb-3 border-b pb-2">Employee Custom Field Values</h3>
+        <div className="mb-4">
+          <label className="block text-xs font-semibold text-slate-500 mb-1" htmlFor="cf-emp-select">
+            Select Employee
+          </label>
+          <select
+            id="cf-emp-select"
+            name="cf-emp-select"
+            value={selectedEmpId}
+            onChange={(e) => setSelectedEmpId(e.target.value)}
+            className="w-full rounded border border-slate-200 px-3 py-2 text-sm"
+          >
+            {employees.map((emp) => (
+              <option key={emp.id} value={emp.id}>
+                {emp.firstName} {emp.lastName}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {definitions.length === 0 ? (
+          <p className="text-xs text-slate-400 text-center py-4">Create some custom fields first.</p>
+        ) : (
+          <div className="space-y-3">
+            {definitions.map((def) => {
+              const current = valueMap[def.id] ?? "";
+              const editing = editValue[def.id] ?? current;
+              return (
+                <div key={def.id} className="grid grid-cols-[1fr_auto] gap-2 items-end">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-500 mb-1">
+                      {def.label}
+                      {def.required && <span className="text-red-500 ml-0.5">*</span>}
+                      <span className="ml-1 text-[10px] text-slate-400">({def.type})</span>
+                    </label>
+                    {def.type === "BOOLEAN" ? (
+                      <select
+                        value={editing}
+                        onChange={(e) => setEditValue((prev) => ({ ...prev, [def.id]: e.target.value }))}
+                        className="w-full rounded border border-slate-200 px-2 py-1.5 text-xs"
+                        id={`cf-val-${def.id}`}
+                        name={`cf-val-${def.id}`}
+                      >
+                        <option value="">—</option>
+                        <option value="true">Yes</option>
+                        <option value="false">No</option>
+                      </select>
+                    ) : (
+                      <input
+                        type={def.type === "DATE" ? "date" : def.type === "NUMBER" ? "number" : "text"}
+                        id={`cf-val-${def.id}`}
+                        name={`cf-val-${def.id}`}
+                        value={editing}
+                        onChange={(e) => setEditValue((prev) => ({ ...prev, [def.id]: e.target.value }))}
+                        className="w-full rounded border border-slate-200 px-2 py-1.5 text-xs"
+                        placeholder={current || `Enter ${def.label}`}
+                      />
+                    )}
+                  </div>
+                  <button
+                    id={`save-cf-${def.id}`}
+                    disabled={savingValue === def.id}
+                    onClick={() => handleSaveValue(def.id)}
+                    className="rounded bg-brand px-3 py-1.5 text-xs font-bold text-white hover:bg-brand/90 transition disabled:opacity-50"
+                  >
+                    {savingValue === def.id ? "…" : "Save"}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </Card>
     </div>
   );
 }

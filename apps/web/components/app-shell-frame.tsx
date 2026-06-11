@@ -33,10 +33,11 @@ export function AppShellFrame({
   activePlan: PlanName;
 }) {
   const [open, setOpen] = React.useState(false);
+  const [globalSearch, setGlobalSearch] = React.useState("");
   const { role, toggleRole } = useActiveRole();
   const pathname = usePathname() || "";
   const firstSegment = pathname.split("/")[1] || "";
-  const isRoleSwitchVisible = ["leave", "attendance", "payroll"].includes(firstSegment);
+  const isRoleSwitchVisible = ["leave", "attendance", "payroll", "performance"].includes(firstSegment);
 
   const [isOwner, setIsOwner] = React.useState(false);
   const [branding, setBranding] = React.useState<PublicProfile["branding"]>({
@@ -154,12 +155,26 @@ export function AppShellFrame({
             />
           </Link>
           <div className="text-xl font-semibold max-xl:hidden">Hi, {displayName}!</div>
-          <div className="flex max-w-[520px] flex-1 items-center rounded-lg border border-white/35 bg-white/5">
-            <input className="min-h-11 flex-1 bg-transparent px-4 text-sm text-white placeholder:text-white/55 outline-none" placeholder="Search Employees" />
-            <button className="flex h-11 w-12 items-center justify-center rounded-r-lg bg-white text-[#1f2a44]" type="button">
+          <form
+            className="flex max-w-[520px] flex-1 items-center rounded-lg border border-white/35 bg-white/5"
+            onSubmit={(event) => {
+              event.preventDefault();
+              const term = globalSearch.trim();
+              window.location.href = term ? `/employees?q=${encodeURIComponent(term)}` : "/employees";
+            }}
+          >
+            <input
+              id="global-employee-search"
+              name="q"
+              className="min-h-11 flex-1 bg-transparent px-4 text-sm text-white placeholder:text-white/55 outline-none"
+              placeholder="Search Employees"
+              value={globalSearch}
+              onChange={(event) => setGlobalSearch(event.target.value)}
+            />
+            <button aria-label="Search employees" className="flex h-11 w-12 items-center justify-center rounded-r-lg bg-white text-[#1f2a44]" type="submit">
               <Search className="h-5 w-5" />
             </button>
-          </div>
+          </form>
           <div className="ml-auto flex items-center gap-4">
             {/* HR / Admin switch */}
             {isRoleSwitchVisible && (

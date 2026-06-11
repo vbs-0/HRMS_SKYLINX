@@ -2,11 +2,14 @@ export function Card({ children, className = "", ...props }: React.HTMLAttribute
   return <div className={`rounded-lg border border-[#dce2eb] bg-white p-5 shadow-sm ${className}`} {...props}>{children}</div>;
 }
 
-export function StatusPill({ children, tone = "green" }: { children: React.ReactNode; tone?: "green" | "yellow" | "red" }) {
+export function StatusPill({ children, tone = "green" }: { children: React.ReactNode; tone?: "green" | "yellow" | "red" | "blue" | "indigo" | "purple" }) {
   const tones = {
     green: "bg-[#e6f5ef] text-[#18865a]",
     yellow: "bg-[#fff5db] text-[#a46f00]",
     red: "bg-[#fde8e6] text-[#ba3d37]",
+    blue: "bg-[#e5f0fa] text-[#1d70b8]",
+    indigo: "bg-[#eef2ff] text-[#4f46e5]",
+    purple: "bg-[#faf5ff] text-[#7e22ce]",
   };
   return <span className={`rounded-full px-2 py-1 text-xs font-semibold ${tones[tone]}`}>{children}</span>;
 }

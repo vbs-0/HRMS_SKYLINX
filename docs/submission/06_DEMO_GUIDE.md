@@ -62,8 +62,11 @@ Resubmit with **3500** → success → approve it as manager later, or use **Man
 ### 1.6 Payroll (`/payroll`)
 - **Configurable Tax Slabs**: Go to the **Tax Slabs** tab in the Payroll console. Note the admin-editable tax slab values for both OLD and NEW tax regimes.
 - **Payroll Corrections**: Under the **Corrections** tab, add an adjustment/arrear for an employee, which dynamically gets processed in their next payslip.
-- **Create Run** for current month → **Calculate** → payslips generate with earnings/deductions (PF/ESI/PT/TDS components calculated from configured tax slabs) → open a payslip → **Lock** the run → **Bank Export**.
-- **Gratuity**: Show the auto-computed Gratuity payout under the Gratuity ledger, computed from the configured company gratuity multiplier rules.
+- **Retention Bonuses**: Under the **Retention Bonus** tab, log a retention bonus for an employee. Once approved, it automatically schedules an EARNING component for their next payslip.
+- **Salary Withholdings**: Under the **Salary Withholding** tab, apply a withholding for an employee. When you run a payroll calculate, their slip is skipped/zeroed. Clicking **Release** on a withheld record immediately generates an arrears correction for the next run.
+- **Loans**: Point out the active loan ledger integration where EMIs are transactionally deducted and update the remaining loan balance.
+- **Create Run** for current month → **Calculate** → payslips generate with earnings/deductions (PF/ESI/PT/TDS components calculated from configured tax slabs, plus any approved bonuses, arrears, or loans) → open a payslip → **Lock** the run → **Bank Export**.
+- **Gratuity**: Show the auto-computed Gratuity payout under the Gratuity ledger, computed from the configured company gratuity multiplier rules (rounding service periods of >= 6 months up).
 - Tax declarations & proofs and benefit claims panels show the compliance depth; `/compliance` has statutory dashboards + exports.
 
 ### 1.7 Recruitment (`/recruitment`)
@@ -73,20 +76,26 @@ Walk the pipeline left-to-right: **Requisition** (create + approve) → **Job Po
 - Training: create program → event → record feedback + result; **skill gap** analysis per employee.
 - Travel: create request with itinerary → decide → advance disbursement.
 
-### 1.9 Quick passes (1 min each)
+### 1.9 Performance Engine (`/performance`)
+- **Templates & KRAs**: In the **Templates** tab, create or view appraisal templates. Add KRA objectives and demonstrate the live weightage percentage check (rejects save if sum != 100%).
+- **Cycles**: In the **Cycles** tab, view appraisal cycles. Activate/complete cycles.
+- **Appraisal Ratings**: Employees submit self-ratings (1-5) in the **My Appraisal** tab. Managers rate their direct reports in the **Team Appraisals** tab.
+- **Results & Promotion Hook**: Show the final scores table (weighted rating calculation normalized to 5). Highlight the automation that suggests promotions for high performers upon HR completion.
+
+### 1.10 Quick passes (1 min each)
 `/insurance` (policy → dependent → claim approve), `/holidays` (add holiday), `/organization` (org chart, change manager), `/approvals` (cross-module inbox), `/analytics` + `/reports` (exports), `/rewards` (recognition + points), `/social` (post, like, comment — SkyNexus feed), `/notifications` (queue an alert), `/assets`, `/support` (ticket + comment), `/security` (audit logs of everything you just did).
 
-### 1.10 Lifecycle clearance & F&F
+### 1.11 Lifecycle clearance & F&F
 - Under Employee directory `/employees` -> **Lifecycle** tab.
 - Initialize exit separation. Record exit interview.
 - Open **Full & Final Settlement**. Select the exiting employee -> note that **Gratuity**, **Leave Encashment Dues**, and **Last Drawn Salary** are automatically loaded as suggestions from their respective modules to pre-fill the settlement.
 
-### 1.11 SaaS & Settings (`/saas`, `/settings`, `/setup`)
+### 1.12 SaaS & Settings (`/saas`, `/settings`, `/setup`)
 - `/saas`: plan catalogue (Basic free / Standard ₹1,749 / Pro ₹3,750), active plan **Pro**, usage meter.
 - `/settings`: company profile, **branding** (change primary color → whole UI re-themes live), module toggles, client rules (attendance/leave rules consumed by validations).
 - `/setup`: the tenant onboarding wizard.
 
-### 1.12 Logout
+### 1.13 Logout
 Top-right **Logout** → token cleared → back to `/login`.
 
 ---
@@ -126,10 +135,8 @@ Top-right **Logout** → token cleared → back to `/login`.
 | OWNER password | `password123` — change before any shared deployment | — |
 
 ## 5. What NOT to click live
-- **`/performance`** — cycle scaffold exists but the appraisal KRA engine is roadmap; don't deep-dive.
 - **Bulk upload** without a prepared CSV.
 - **`/saas-admin` company status changes** — suspending the demo company mid-demo locks you out.
-- Don't promise **loans** — documented roadmap gap.
 
 ## 6. If something breaks live
 - API down? `npm run dev -w @skylinx/api`. UI stale? Hard-refresh (Ctrl+Shift+R).

@@ -1,8 +1,10 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException, ForbiddenException } from "@nestjs/common";
 import { ApprovalStatus } from "@prisma/client";
 import { response } from "../../common/crud-response";
 import { decrypt, sanitizeBankDetail } from "../../common/crypto.util";
+import { AuthenticatedUser } from "../../common/auth/auth.types";
 import { PrismaService } from "../../prisma/prisma.service";
+import { TenantContext } from "../../common/tenant-context";
 import { CreatePayrollRunDto, CreateSalaryStructureDto } from "./dto/payroll.dto";
 import {
   CreateBenefitApplicationDto,
@@ -13,13 +15,20 @@ import {
   DecideClaimDto,
   DecideProofDto,
 } from "./dto/compliance.dto";
+import {
+  CreateRetentionBonusDto,
+  DecideRetentionBonusDto,
+  CreateSalaryWithholdingDto,
+} from "./dto/new-features.dto";
 
 @Injectable()
 export class PayrollService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async salaryStructures() {
+  async salaryStructures(user?: AuthenticatedUser) {
+    const isEmployee = user && !user.permissions.includes("payroll.approve");
     const structures = await this.prisma.salaryStructure.findMany({
+      where: isEmployee && user.employeeId ? { employeeId: user.employeeId } : undefined,
       include: { employee: true },
       orderBy: [{ effectiveFrom: "desc" }],
     });
@@ -44,11 +53,14 @@ export class PayrollService {
     return response("payroll", "salaryStructure.create", structure);
   }
 
-  async runs() {
+  async runs(user?: AuthenticatedUser) {
+    const isEmployee = user && !user.permissions.includes("payroll.approve");
     const runs = await this.prisma.payrollRun.findMany({
       include: {
         company: true,
-        payslips: true,
+        payslips: isEmployee && user.employeeId
+          ? { where: { employeeId: user.employeeId } }
+          : true,
       },
       orderBy: [{ year: "desc" }, { month: "desc" }],
     });
@@ -94,8 +106,10 @@ export class PayrollService {
     return response("payroll", "benefit.apply", app);
   }
 
-  async listBenefitApplications() {
+  async listBenefitApplications(user?: AuthenticatedUser) {
+    const isEmployee = user && !user.permissions.includes("payroll.approve");
     const items = await this.prisma.employeeBenefitApplication.findMany({
+      where: isEmployee && user.employeeId ? { employeeId: user.employeeId } : undefined,
       include: { employee: true },
       orderBy: { createdAt: "desc" },
     });
@@ -118,8 +132,10 @@ export class PayrollService {
     return response("payroll", "benefit.claim", claim);
   }
 
-  async listBenefitClaims() {
+  async listBenefitClaims(user?: AuthenticatedUser) {
+    const isEmployee = user && !user.permissions.includes("payroll.approve");
     const items = await this.prisma.employeeBenefitClaim.findMany({
+      where: isEmployee && user.employeeId ? { employeeId: user.employeeId } : undefined,
       include: { employee: true },
       orderBy: { claimDate: "desc" },
     });
@@ -167,7 +183,11 @@ export class PayrollService {
     return response("payroll", "tax.declaration_submit", declaration);
   }
 
-  async getTaxDeclaration(employeeId: string) {
+  async getTaxDeclaration(employeeId: string, user?: AuthenticatedUser) {
+    const isEmployee = user && !user.permissions.includes("payroll.approve");
+    if (isEmployee && user.employeeId && employeeId !== user.employeeId) {
+      throw new ForbiddenException("Forbidden resource");
+    }
     const dec = await this.prisma.employeeTaxExemptionDeclaration.findUnique({
       where: { employeeId },
     });
@@ -192,8 +212,10 @@ export class PayrollService {
     return response("payroll", "tax.proof_submit", proof);
   }
 
-  async listProofs() {
+  async listProofs(user?: AuthenticatedUser) {
+    const isEmployee = user && !user.permissions.includes("payroll.approve");
     const items = await this.prisma.employeeTaxExemptionProofSubmission.findMany({
+      where: isEmployee && user.employeeId ? { employeeId: user.employeeId } : undefined,
       include: { employee: true },
       orderBy: { createdAt: "desc" },
     });
@@ -487,6 +509,21 @@ export class PayrollService {
         const totalDeductions = employeePf + esi + professionalTax + tds + recoveryDeductionsSum;
         const netPay = finalGrossPay - totalDeductions;
 
+        const withholding = await tx.salaryWithholding.findFirst({
+          where: {
+            employeeId: employee.id,
+            status: "ACTIVE",
+            fromDate: { lte: endDate },
+            OR: [
+              { toDate: null },
+              { toDate: { gte: startDate } }
+            ]
+          }
+        });
+
+        const finalDeductions = withholding ? totalDeductions + netPay : totalDeductions;
+        const finalNetPay = withholding ? 0 : netPay;
+
         const payslip = await tx.payslip.upsert({
           where: {
             payrollRunId_employeeId: {
@@ -496,16 +533,16 @@ export class PayrollService {
           },
           update: {
             grossPay: finalGrossPay,
-            deductions: totalDeductions,
-            netPay,
+            deductions: finalDeductions,
+            netPay: finalNetPay,
             status: ApprovalStatus.APPROVED,
           },
           create: {
             payrollRunId: run.id,
             employeeId: employee.id,
             grossPay: finalGrossPay,
-            deductions: totalDeductions,
-            netPay,
+            deductions: finalDeductions,
+            netPay: finalNetPay,
             status: ApprovalStatus.APPROVED,
           },
         });
@@ -531,6 +568,7 @@ export class PayrollService {
               amount: c.amount,
             })),
             ...(totalLoanEmiDeduction > 0 ? [{ payslipId: payslip.id, type: "DEDUCTION", name: "Loan EMI Deduction", amount: totalLoanEmiDeduction }] : []),
+            ...(withholding ? [{ payslipId: payslip.id, type: "DEDUCTION", name: "Salary Withholding", amount: netPay }] : []),
           ],
         });
 
@@ -644,9 +682,13 @@ export class PayrollService {
     return response("payroll", "run.lock", locked);
   }
 
-  async payslips(id: string) {
+  async payslips(id: string, user?: AuthenticatedUser) {
+    const isEmployee = user && !user.permissions.includes("payroll.approve");
     const payslips = await this.prisma.payslip.findMany({
-      where: { payrollRunId: id },
+      where: {
+        payrollRunId: id,
+        employeeId: isEmployee && user.employeeId ? user.employeeId : undefined,
+      },
       include: {
         employee: {
           include: { bankDetails: true }
@@ -716,14 +758,19 @@ export class PayrollService {
   // ==========================================
   // Gratuity
   // ==========================================
-  async calculateGratuity(employeeId: string) {
+  async calculateGratuity(employeeId: string, user?: AuthenticatedUser) {
+    const isEmployee = user && !user.permissions.includes("payroll.approve");
+    if (isEmployee && user.employeeId && employeeId !== user.employeeId) {
+      throw new ForbiddenException("Forbidden resource");
+    }
     const employee = await this.prisma.employee.findUnique({
       where: { id: employeeId },
     });
     if (!employee) throw new NotFoundException("Employee not found");
 
     const yearsOfService = (Date.now() - employee.joiningDate.getTime()) / (1000 * 60 * 60 * 24 * 365.25);
-    const completedYears = Math.floor(yearsOfService);
+    const decimalPart = yearsOfService - Math.floor(yearsOfService);
+    const completedYears = decimalPart >= 0.5 ? Math.ceil(yearsOfService) : Math.floor(yearsOfService);
 
     const structure = await this.prisma.salaryStructure.findFirst({
       where: { employeeId, status: "ACTIVE" },
@@ -863,6 +910,250 @@ export class PayrollService {
     await this.audit("payroll", "correction.decide", "payroll_correction", id, updated);
     return response("payroll", "correction.decide", updated);
   }
+
+  // ==========================================
+  // Retention Bonuses
+  // ==========================================
+  async createRetentionBonus(data: CreateRetentionBonusDto) {
+    let companyId = TenantContext.getTenantId();
+    if (!companyId) {
+      const firstCompany = await this.prisma.company.findFirst();
+      companyId = firstCompany?.id || "comp_skylinx";
+    }
+    const bonus = await this.prisma.retentionBonus.create({
+      data: {
+        companyId,
+        employeeId: data.employeeId,
+        bonusAmount: data.bonusAmount,
+        bonusDate: new Date(data.bonusDate),
+        reason: data.reason,
+        status: ApprovalStatus.PENDING,
+      },
+      include: { employee: true },
+    });
+    await this.audit("payroll", "retention_bonus.create", "retention_bonus", bonus.id, bonus);
+    return response("payroll", "retention_bonus.create", bonus);
+  }
+
+  async listRetentionBonuses(user?: AuthenticatedUser) {
+    const isEmployee = user && !user.permissions.includes("payroll.approve");
+    const list = await this.prisma.retentionBonus.findMany({
+      where: isEmployee && user.employeeId ? { employeeId: user.employeeId } : undefined,
+      include: { employee: true },
+      orderBy: { bonusDate: "desc" },
+    });
+    return response("payroll", "retention_bonuses.list", list);
+  }
+
+  async decideRetentionBonus(id: string, data: DecideRetentionBonusDto) {
+    const bonus = await this.prisma.retentionBonus.findUnique({
+      where: { id },
+      include: { employee: true },
+    });
+    if (!bonus) throw new NotFoundException("Retention bonus not found");
+    if (bonus.status !== ApprovalStatus.PENDING) {
+      throw new BadRequestException("Retention bonus is already decided");
+    }
+
+    const result = await this.prisma.$transaction(async (tx) => {
+      let additionalSalaryId = bonus.additionalSalaryId;
+      if (data.status === ApprovalStatus.APPROVED) {
+        const addSal = await tx.additionalSalary.create({
+          data: {
+            employeeId: bonus.employeeId,
+            amount: bonus.bonusAmount,
+            type: "ADDITION",
+            name: `Retention Bonus - ${bonus.reason || "Scheduled Payout"}`,
+            date: bonus.bonusDate,
+          },
+        });
+        additionalSalaryId = addSal.id;
+      }
+
+      return tx.retentionBonus.update({
+        where: { id },
+        data: {
+          status: data.status,
+          additionalSalaryId,
+        },
+        include: { employee: true },
+      });
+    });
+
+    await this.audit("payroll", "retention_bonus.decide", "retention_bonus", id, result);
+    return response("payroll", "retention_bonus.decide", result);
+  }
+
+  // ==========================================
+  // Salary Withholding
+  // ==========================================
+  async createWithholding(data: CreateSalaryWithholdingDto) {
+    let companyId = TenantContext.getTenantId();
+    if (!companyId) {
+      const firstCompany = await this.prisma.company.findFirst();
+      companyId = firstCompany?.id || "comp_skylinx";
+    }
+    const withholding = await this.prisma.salaryWithholding.create({
+      data: {
+        companyId,
+        employeeId: data.employeeId,
+        fromDate: new Date(data.fromDate),
+        toDate: data.toDate ? new Date(data.toDate) : null,
+        reason: data.reason,
+        status: "ACTIVE",
+      },
+      include: { employee: true },
+    });
+    await this.audit("payroll", "withholding.create", "salary_withholding", withholding.id, withholding);
+    return response("payroll", "withholding.create", withholding);
+  }
+
+  async listWithholdings(user?: AuthenticatedUser) {
+    const isEmployee = user && !user.permissions.includes("payroll.approve");
+    const list = await this.prisma.salaryWithholding.findMany({
+      where: isEmployee && user.employeeId ? { employeeId: user.employeeId } : undefined,
+      include: { employee: true },
+      orderBy: { fromDate: "desc" },
+    });
+    return response("payroll", "withholdings.list", list);
+  }
+
+  async releaseWithholding(id: string) {
+    const withholding = await this.prisma.salaryWithholding.findUnique({
+      where: { id },
+      include: { employee: true },
+    });
+    if (!withholding) throw new NotFoundException("Salary withholding record not found");
+    if (withholding.status === "RELEASED") {
+      throw new BadRequestException("Withholding is already released");
+    }
+
+    const result = await this.prisma.$transaction(async (tx) => {
+      const updated = await tx.salaryWithholding.update({
+        where: { id },
+        data: { status: "RELEASED" },
+        include: { employee: true },
+      });
+
+      const components = await tx.payrollComponent.findMany({
+        where: {
+          name: "Salary Withholding",
+          payslip: {
+            employeeId: withholding.employeeId,
+          },
+        },
+        include: { payslip: true },
+      });
+
+      for (const comp of components) {
+        const existingCorrection = await tx.payrollCorrection.findFirst({
+          where: {
+            payslipId: comp.payslipId,
+            type: "ARREAR",
+          },
+        });
+        if (existingCorrection) continue;
+
+        await tx.payrollCorrection.create({
+          data: {
+            payslipId: comp.payslipId,
+            type: "ARREAR",
+            amount: comp.amount,
+            reason: `Release of withheld salary for run (Run ID: ${comp.payslip.payrollRunId})`,
+            status: ApprovalStatus.APPROVED,
+          },
+        });
+      }
+
+      return updated;
+    });
+
+    await this.audit("payroll", "withholding.release", "salary_withholding", id, result);
+    return response("payroll", "withholding.release", result);
+  }
+
+  async getForm16(employeeId: string, financialYear: number, user?: AuthenticatedUser) {
+    // Own-record scoping: employees can only view their own Form 16
+    const isSelf = user?.employeeId === employeeId;
+    const isHrOrAdmin = user?.roles?.some((r) => ["HR_ADMIN", "SUPER_ADMIN"].includes(r));
+    if (!isSelf && !isHrOrAdmin) {
+      throw new BadRequestException("Access denied");
+    }
+
+    const employee = await this.prisma.employee.findUnique({
+      where: { id: employeeId },
+      include: { designation: true, department: true },
+    });
+    if (!employee) throw new NotFoundException("Employee not found");
+
+    // FY: April of financialYear to March of financialYear+1  (months 4..12 of FY, then 1..3 of FY+1)
+    const fyMonths: Array<{ month: number; year: number }> = [];
+    for (let m = 4; m <= 12; m++) fyMonths.push({ month: m, year: financialYear });
+    for (let m = 1; m <= 3; m++) fyMonths.push({ month: m, year: financialYear + 1 });
+
+    // Fetch all payslips in the FY months
+    const payslips = await this.prisma.payslip.findMany({
+      where: {
+        employeeId,
+        payrollRun: {
+          OR: fyMonths.map(({ month, year }) => ({ month, year })),
+        },
+      },
+      include: { components: true },
+    });
+
+    let grossPay = 0;
+    let tdsDeducted = 0;
+
+    for (const ps of payslips) {
+      grossPay += Number(ps.grossPay || 0);
+      // TDS stored as PayrollComponent with type "TDS"
+      for (const comp of ps.components) {
+        if (comp.type === "TDS" || comp.name?.toLowerCase().includes("tds")) {
+          tdsDeducted += Number(comp.amount || 0);
+        }
+      }
+    }
+
+    // Standard deduction (New Tax Regime FY2025-26 = ₹75,000)
+    const standardDeduction = 75000;
+    const taxableIncome = Math.max(0, grossPay - standardDeduction);
+
+    // Simple slab computation (New Regime FY2025-26)
+    const computeTax = (income: number): number => {
+      if (income <= 300000) return 0;
+      if (income <= 700000) return (income - 300000) * 0.05;
+      if (income <= 1000000) return 20000 + (income - 700000) * 0.10;
+      if (income <= 1200000) return 50000 + (income - 1000000) * 0.15;
+      if (income <= 1500000) return 80000 + (income - 1200000) * 0.20;
+      return 140000 + (income - 1500000) * 0.30;
+    };
+
+    const incomeTax = computeTax(taxableIncome);
+    const surcharge = taxableIncome > 5000000 ? incomeTax * 0.10 : 0;
+    const cess = (incomeTax + surcharge) * 0.04;
+    const totalTaxLiability = Math.round(incomeTax + surcharge + cess);
+    const refundOrDue = tdsDeducted - totalTaxLiability;
+
+    return response("payroll", "form16", {
+      employeeId,
+      employeeName: `${employee.firstName} ${employee.lastName}`,
+      designation: employee.designation?.title || "",
+      financialYear: `${financialYear}-${financialYear + 1}`,
+      grossPay,
+      standardDeduction,
+      taxableIncome,
+      incomeTax: Math.round(incomeTax),
+      surcharge: Math.round(surcharge),
+      cess: Math.round(cess),
+      totalTaxLiability,
+      tdsDeducted,
+      refundOrDue,
+      regime: "NEW",
+      payslipCount: payslips.length,
+    });
+  }
+
 
   private monthly(value: unknown) {
     return Math.round((Number(value) || 0) / 12);

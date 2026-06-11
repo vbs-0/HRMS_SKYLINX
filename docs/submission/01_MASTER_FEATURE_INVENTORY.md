@@ -49,14 +49,14 @@
 | 2 | Employee Management | `employees` | `/employees`, employees-console, lifecycle-console | Directory, profile CRUD, grades, employment types, documents, bank details, onboarding/separation templates, exit interview, Full & Final settlement |
 | 3 | Attendance | `attendance` | `/attendance`, attendance-console, roster-console | Logs, rules, regularization, overtime requests, shifts, shift assignments/requests/schedules, roster planning |
 | 4 | Leave | `leave` | `/leave`, leave-console, leave-policy-panel, leave-settings-console | Leave types, balances, requests, policies & assignments, ledger entries, block lists (blackout dates), sandwich rule validation |
-| 5 | Payroll | `payroll` | `/payroll`, payroll-console, compliance-dash | Salary structures, payroll runs, payslips, components, additional salary, tax exemption declarations & proof submissions, benefit applications/claims, Indian compliance (PF/ESI/PT/TDS — see compliance docs) |
+| 5 | Payroll | `payroll` | `/payroll`, payroll-console, compliance-dash | Salary structures, payroll runs, payslips, components, additional salary, tax exemption declarations & proof submissions, benefit applications/claims, Indian compliance (PF/ESI/PT/TDS), Gratuity calculations (rounding service >= 6 months up), Retention Bonus, Salary Withholding |
 | 6 | Expenses | `expenses` | `/expenses`, expenses-console | Claims with grade-based auto-approval caps, category limits, approval flow |
 | 7 | Recruitment | `recruitment` | `/recruitment`, recruitment-console | Job requisitions, postings, candidates, applications, interview rounds/feedback, offers & offer terms |
 | 8 | Training & Skills | `training` | `/training`, training-console | Programs, events, feedback, results, skill maps, designation skills |
 | 9 | Travel Desk | `travel` | `/travel`, travel-console | Travel requests, itineraries, employee advances |
 | 10 | Holidays | `holidays` | `/holidays`, holiday-console | Holiday calendars |
 | 11 | Insurance | `insurance` | `/insurance`, insurance-console | Employee insurance, dependents, claims, benefit items |
-| 12 | Performance | `performance` | `/performance`, performance-console | Performance console (see gap analysis for appraisal-cycle depth) |
+| 12 | Performance | `performance` | `/performance`, performance-console | Appraisal cycles, templates, KRA weights, employee self-rating, manager evaluation, HR completion hooks & suggestions, 360 feedback |
 | 13 | Approvals | `approvals` | `/approvals`, approvals-console | Cross-module approval inbox |
 | 14 | Organization | `organization` | `/organization`, organization-console | Company, departments, designations, locations |
 | 15 | Analytics & Reports | `analytics`, `reports`, `dashboard` | `/analytics`, `/reports`, `/dashboard` | Live metrics, dashboards, exportable reports |

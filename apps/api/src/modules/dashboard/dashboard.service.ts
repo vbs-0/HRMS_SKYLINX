@@ -34,4 +34,62 @@ export class DashboardService {
       pendingApprovals,
     });
   }
+
+  async celebrations() {
+    const today = new Date();
+    const currentMonth = today.getMonth(); // 0 = Jan, 5 = Jun, etc.
+    const currentYear = today.getFullYear();
+
+    const employees = await this.prisma.employee.findMany({
+      where: { status: "ACTIVE" },
+      select: {
+        id: true,
+        firstName: true,
+        lastName: true,
+        dateOfBirth: true,
+        joiningDate: true,
+        designation: { select: { title: true } },
+      },
+    });
+
+    const list = [];
+    for (const emp of employees) {
+      if (emp.dateOfBirth) {
+        const dob = new Date(emp.dateOfBirth);
+        if (dob.getMonth() === currentMonth) {
+          list.push({
+            id: `${emp.id}_bday`,
+            employeeId: emp.id,
+            firstName: emp.firstName,
+            lastName: emp.lastName,
+            designation: emp.designation?.title || "Employee",
+            type: "BIRTHDAY",
+            date: dob.getDate(),
+          });
+        }
+      }
+
+      if (emp.joiningDate) {
+        const joining = new Date(emp.joiningDate);
+        if (joining.getMonth() === currentMonth) {
+          const years = currentYear - joining.getFullYear();
+          if (years >= 0) {
+            list.push({
+              id: `${emp.id}_anniv`,
+              employeeId: emp.id,
+              firstName: emp.firstName,
+              lastName: emp.lastName,
+              designation: emp.designation?.title || "Employee",
+              type: "ANNIVERSARY",
+              date: joining.getDate(),
+              years,
+            });
+          }
+        }
+      }
+    }
+
+    list.sort((a, b) => a.date - b.date);
+    return response("dashboard", "celebrations", list);
+  }
 }

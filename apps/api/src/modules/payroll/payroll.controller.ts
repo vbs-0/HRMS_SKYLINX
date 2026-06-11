@@ -20,6 +20,9 @@ import {
   CreatePayrollCorrectionDto,
   DecidePayrollCorrectionDto,
   CreateTaxSlabDto,
+  CreateRetentionBonusDto,
+  DecideRetentionBonusDto,
+  CreateSalaryWithholdingDto,
 } from "./dto/new-features.dto";
 import { Delete } from "@nestjs/common";
 
@@ -29,8 +32,8 @@ export class PayrollController {
 
   @Get("salary-structures")
   @RequirePermissions("payroll.read")
-  salaryStructures() {
-    return this.payrollService.salaryStructures();
+  salaryStructures(@CurrentUser() user: AuthenticatedUser) {
+    return this.payrollService.salaryStructures(user);
   }
 
   @Post("salary-structures")
@@ -41,8 +44,8 @@ export class PayrollController {
 
   @Get("runs")
   @RequirePermissions("payroll.read")
-  runs() {
-    return this.payrollService.runs();
+  runs(@CurrentUser() user: AuthenticatedUser) {
+    return this.payrollService.runs(user);
   }
 
   @Post("runs")
@@ -65,8 +68,8 @@ export class PayrollController {
 
   @Get("runs/:id/payslips")
   @RequirePermissions("payroll.read")
-  payslips(@Param("id") id: string) {
-    return this.payrollService.payslips(id);
+  payslips(@Param("id") id: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.payrollService.payslips(id, user);
   }
 
   @Post("runs/:id/bank-export")
@@ -86,8 +89,8 @@ export class PayrollController {
 
   @Get("benefits/applications")
   @RequirePermissions("payroll.read")
-  listBenefitApplications() {
-    return this.payrollService.listBenefitApplications();
+  listBenefitApplications(@CurrentUser() user: AuthenticatedUser) {
+    return this.payrollService.listBenefitApplications(user);
   }
 
   @Post("benefits/claim")
@@ -98,8 +101,8 @@ export class PayrollController {
 
   @Get("benefits/claims")
   @RequirePermissions("payroll.read")
-  listBenefitClaims() {
-    return this.payrollService.listBenefitClaims();
+  listBenefitClaims(@CurrentUser() user: AuthenticatedUser) {
+    return this.payrollService.listBenefitClaims(user);
   }
 
   @Patch("benefits/claims/:id/decide")
@@ -119,8 +122,8 @@ export class PayrollController {
 
   @Get("tax-declarations/:employeeId")
   @RequirePermissions("payroll.read")
-  getTaxDeclaration(@Param("employeeId") employeeId: string) {
-    return this.payrollService.getTaxDeclaration(employeeId);
+  getTaxDeclaration(@Param("employeeId") employeeId: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.payrollService.getTaxDeclaration(employeeId, user);
   }
 
   @Post("tax-proofs")
@@ -131,8 +134,8 @@ export class PayrollController {
 
   @Get("tax-proofs")
   @RequirePermissions("payroll.read")
-  listProofs() {
-    return this.payrollService.listProofs();
+  listProofs(@CurrentUser() user: AuthenticatedUser) {
+    return this.payrollService.listProofs(user);
   }
 
   @Patch("tax-proofs/:id/decide")
@@ -188,8 +191,8 @@ export class PayrollController {
 
   @Get("gratuity/:employeeId/calculate")
   @RequirePermissions("payroll.read")
-  calculateGratuity(@Param("employeeId") employeeId: string) {
-    return this.payrollService.calculateGratuity(employeeId);
+  calculateGratuity(@Param("employeeId") employeeId: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.payrollService.calculateGratuity(employeeId, user);
   }
 
   @Post("gratuity")
@@ -237,5 +240,69 @@ export class PayrollController {
       body.decidedByUserId = user.sub;
     }
     return this.payrollService.decideCorrection(id, body);
+  }
+
+  // ==========================================
+  // Retention Bonuses
+  // ==========================================
+  @Post("retention-bonuses")
+  @RequirePermissions("payroll.create")
+  createRetentionBonus(@Body() body: CreateRetentionBonusDto) {
+    return this.payrollService.createRetentionBonus(body);
+  }
+
+  @Get("retention-bonuses")
+  @RequirePermissions("payroll.read")
+  listRetentionBonuses(@CurrentUser() user: AuthenticatedUser) {
+    return this.payrollService.listRetentionBonuses(user);
+  }
+
+  @Patch("retention-bonuses/:id/decide")
+  @RequirePermissions("payroll.approve")
+  decideRetentionBonus(
+    @Param("id") id: string,
+    @Body() body: DecideRetentionBonusDto,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    if (!body.decidedByUserId) {
+      body.decidedByUserId = user.sub;
+    }
+    return this.payrollService.decideRetentionBonus(id, body);
+  }
+
+  // ==========================================
+  // Salary Withholding
+  // ==========================================
+  @Post("withholdings")
+  @RequirePermissions("payroll.create")
+  createWithholding(@Body() body: CreateSalaryWithholdingDto) {
+    return this.payrollService.createWithholding(body);
+  }
+
+  @Get("withholdings")
+  @RequirePermissions("payroll.read")
+  listWithholdings(@CurrentUser() user: AuthenticatedUser) {
+    return this.payrollService.listWithholdings(user);
+  }
+
+  @Post("withholdings/:id/release")
+  @RequirePermissions("payroll.update")
+  releaseWithholding(@Param("id") id: string) {
+    return this.payrollService.releaseWithholding(id);
+  }
+
+  // ==========================================
+  // Form 16 - Annual Tax Summary
+  // ==========================================
+  @Get("form16/:employeeId")
+  @RequirePermissions("payroll.read")
+  getForm16(
+    @Param("employeeId") employeeId: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    const now = new Date();
+    // FY runs April–March; if current month is Jan–March it's still the previous FY start year
+    const fy = now.getMonth() < 3 ? now.getFullYear() - 1 : now.getFullYear();
+    return this.payrollService.getForm16(employeeId, fy, user);
   }
 }

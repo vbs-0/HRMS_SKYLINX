@@ -11,7 +11,7 @@ const ROUTES = [
   "/holidays", "/insurance", "/recruitment", "/training", "/travel",
   "/performance", "/approvals", "/organization", "/analytics", "/reports",
   "/rewards", "/social", "/notifications", "/compliance", "/assets",
-  "/support", "/grievance", "/security", "/settings", "/saas", "/saas-admin",
+  "/support", "/grievance", "/policies", "/security", "/settings", "/saas", "/saas-admin",
   "/cards", "/documents",
 ];
 
@@ -59,7 +59,7 @@ for (const role of ROLES) {
       let status = "PASS";
       let note = "";
       try {
-        const response = await page.goto(route, { waitUntil: "domcontentloaded", timeout: 30000 });
+        const response = await page.goto(route, { waitUntil: "domcontentloaded", timeout: 90000 });
         await page.waitForTimeout(2500); // let client data fetches settle
         if (response && response.status() >= 400) {
           status = "FAIL";

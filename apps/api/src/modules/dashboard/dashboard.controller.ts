@@ -29,4 +29,10 @@ export class DashboardController {
   superAdmin() {
     return this.dashboardService.metrics("super-admin");
   }
+
+  @Get("celebrations")
+  @RequirePermissions("employees.read")
+  celebrations() {
+    return this.dashboardService.celebrations();
+  }
 }

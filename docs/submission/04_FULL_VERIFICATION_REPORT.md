@@ -8,9 +8,9 @@
 ## 1. What was tested
 
 ### 1.1 Automated full-surface page sweep (Playwright, headless Chromium)
-`apps/web/e2e/full-audit.spec.ts` — for **each of 3 roles** (HR_ADMIN, MANAGER, EMPLOYEE): UI login, then visit **all 28 app routes**, capturing per page: console errors, every HTTP ≥500 response, blank-page detection, **horizontal-overflow layout check**, visible button/input counts, and a full-page screenshot.
+`apps/web/e2e/full-audit.spec.ts` — for **each of 3 roles** (HR_ADMIN, MANAGER, EMPLOYEE): UI login, then visit **all 29 app routes**, capturing per page: console errors, every HTTP ≥500 response, blank-page detection, **horizontal-overflow layout check**, visible button/input counts, and a full-page screenshot.
 
-**Final result: 3/3 roles × 28 pages = 84 page-loads, 0 FAIL.**
+**Final result: 3/3 roles × 29 pages = 87 page-loads, 0 FAIL.**
 - Evidence: `docs/reference_blueprint/images/HR_ADMIN_DEEP/`, `MANAGER_DEEP/`, `EMPLOYEE_DEEP/` (28 full-page screenshots each, numbered) + machine-readable `docs/reference_blueprint/audit-results-<ROLE>.json` (status/note/buttons/inputs per route).
 - **Layout:** no page exceeded the 8px horizontal-overflow threshold — no broken layouts detected at 1280px desktop viewport.
 - Remaining WARNs are **expected 403s** for restricted roles (RBAC denials render graceful empty/denied states; the API correctly answers `Missing required permission`).
@@ -21,7 +21,7 @@ HR_ADMIN: login, directory, profile grade edit, attendance roster, leave blackou
 ### 1.3 Quality gates (final state)
 | Gate | Result |
 |---|---|
-| `npm test -w @skylinx/api` (Jest) | ✅ 8 suites, **43/43 tests passed** |
+| `npm test -w @skylinx/api` (Jest) | ✅ 11 suites, **65/65 tests passed** |
 | `npm run typecheck -w @skylinx/api` | ✅ clean |
 | `npm run typecheck -w @skylinx/web` | ✅ clean |
 | Playwright `full-audit.spec.ts` | ✅ 3/3 passed |

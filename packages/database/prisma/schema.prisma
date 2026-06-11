@@ -74,6 +74,14 @@ model Company {
   tenantUsers     User[]            @relation("TenantUsers")
   tenantRoles     Role[]            @relation("TenantRoles")
   tenantAudits    AuditLog[]        @relation("TenantAuditLogs")
+  appraisalCycles AppraisalCycle[]
+  appraisalTemplates AppraisalTemplate[]
+  appraisals      Appraisal[]
+  retentionBonuses RetentionBonus[]
+  salaryWithholdings SalaryWithholding[]
+  policies        CompanyPolicy[]
+  announcements   Announcement[]
+  customFieldDefs CustomFieldDefinition[]
 }
 
 model User {
@@ -286,6 +294,12 @@ model Employee {
   feedbackRequestsProvider  FeedbackRequest[]          @relation("FeedbackProvider")
   grade                     EmployeeGrade?             @relation(fields: [gradeId], references: [id])
   employmentTypeRelation    EmploymentType?            @relation("EmployeeEmploymentType", fields: [employmentTypeId], references: [id])
+  appraisals                Appraisal[]
+  retentionBonuses          RetentionBonus[]
+  salaryWithholdings        SalaryWithholding[]
+  policyAcknowledgments     PolicyAcknowledgment[]
+  announcementReads         AnnouncementRead[]
+  customFieldValues         CustomFieldValue[]
 
   @@unique([companyId, employeeCode])
   @@index([companyId, status])
@@ -357,8 +371,10 @@ model AttendanceLog {
   checkOutAt        DateTime?
   checkInLatitude   Decimal?
   checkInLongitude  Decimal?
+  checkInAccuracy   Decimal?
   checkOutLatitude  Decimal?
   checkOutLongitude Decimal?
+  checkOutAccuracy  Decimal?
   source            String                     @default("WEB")
   status            AttendanceStatus           @default(PRESENT)
   approvedBy        String?
@@ -1706,5 +1722,210 @@ model FeedbackRequest {
 
   requestor      Employee @relation("FeedbackRequestor", fields: [requestorId], references: [id])
   provider       Employee @relation("FeedbackProvider", fields: [providerId], references: [id])
+}
+
+model AppraisalCycle {
+  id                 String           @id @default(cuid())
+  companyId          String
+  name               String
+  startDate          DateTime
+  endDate            DateTime
+  status             String           @default("DRAFT") // DRAFT, ACTIVE, COMPLETED
+  company            Company          @relation(fields: [companyId], references: [id])
+  appraisals         Appraisal[]
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  @@index([companyId])
+}
+
+model AppraisalTemplate {
+  id                 String           @id @default(cuid())
+  companyId          String
+  name               String
+  company            Company          @relation(fields: [companyId], references: [id])
+  kras               AppraisalKra[]
+  appraisals         Appraisal[]
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  @@index([companyId])
+}
+
+model AppraisalKra {
+  id                 String           @id @default(cuid())
+  templateId         String
+  title              String
+  weightagePercent   Decimal
+  template           AppraisalTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  goals              AppraisalGoal[]
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  @@index([templateId])
+}
+
+model Appraisal {
+  id                 String           @id @default(cuid())
+  companyId          String
+  cycleId            String
+  employeeId         String
+  templateId         String
+  status             String           @default("PENDING") // PENDING, SELF_DONE, MANAGER_DONE, COMPLETED
+  selfScore          Decimal?
+  managerScore       Decimal?
+  finalScore         Decimal?
+  cycle              AppraisalCycle   @relation(fields: [cycleId], references: [id], onDelete: Cascade)
+  employee           Employee         @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  template           AppraisalTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  goals              AppraisalGoal[]
+  company            Company          @relation(fields: [companyId], references: [id])
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  @@index([companyId])
+  @@index([cycleId])
+  @@index([employeeId])
+  @@index([templateId])
+}
+
+model AppraisalGoal {
+  id                 String           @id @default(cuid())
+  appraisalId        String
+  kraId              String
+  description        String
+  selfRating         Decimal?
+  managerRating      Decimal?
+  appraisal          Appraisal        @relation(fields: [appraisalId], references: [id], onDelete: Cascade)
+  kra                AppraisalKra     @relation(fields: [kraId], references: [id], onDelete: Cascade)
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  @@index([appraisalId])
+  @@index([kraId])
+}
+
+model RetentionBonus {
+  id                 String           @id @default(cuid())
+  companyId          String
+  employeeId         String
+  bonusAmount        Decimal
+  bonusDate          DateTime
+  reason             String?
+  status             ApprovalStatus   @default(PENDING)
+  company            Company          @relation(fields: [companyId], references: [id])
+  employee           Employee         @relation(fields: [employeeId], references: [id])
+  additionalSalaryId String?
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  @@index([companyId])
+  @@index([employeeId])
+}
+
+model SalaryWithholding {
+  id                 String           @id @default(cuid())
+  companyId          String
+  employeeId         String
+  fromDate           DateTime
+  toDate             DateTime?
+  reason             String?
+  status             String           @default("ACTIVE") // ACTIVE, RELEASED
+  company            Company          @relation(fields: [companyId], references: [id])
+  employee           Employee         @relation(fields: [employeeId], references: [id])
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  @@index([companyId])
+  @@index([employeeId])
+}
+
+model CompanyPolicy {
+  id                    String                 @id @default(cuid())
+  companyId             String
+  company               Company                @relation(fields: [companyId], references: [id])
+  title                 String
+  category              String
+  description           String?
+  fileUrl               String?
+  contentHtml           String?
+  version               String                 @default("1.0")
+  effectiveDate         DateTime               @default(now())
+  requiresAcknowledgment Boolean               @default(true)
+  status                String                 @default("ACTIVE") // ACTIVE/ARCHIVED
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  acknowledgments       PolicyAcknowledgment[]
+
+  @@index([companyId, status])
+}
+
+model PolicyAcknowledgment {
+  id             String        @id @default(cuid())
+  policyId       String
+  policy         CompanyPolicy @relation(fields: [policyId], references: [id], onDelete: Cascade)
+  employeeId     String
+  employee       Employee      @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  acknowledgedAt DateTime      @default(now())
+
+  @@unique([policyId, employeeId])
+}
+
+model Announcement {
+  id          String             @id @default(cuid())
+  companyId   String
+  company     Company            @relation(fields: [companyId], references: [id])
+  title       String
+  body        String
+  pinned      Boolean            @default(false)
+  audience    String             @default("ALL") // ALL/HR/MANAGERS
+  publishedAt DateTime           @default(now())
+  expiresAt   DateTime?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  reads       AnnouncementRead[]
+
+  @@index([companyId, publishedAt])
+}
+
+model AnnouncementRead {
+  id             String       @id @default(cuid())
+  announcementId String
+  announcement   Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+  employeeId     String
+  employee       Employee     @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  readAt         DateTime     @default(now())
+
+  @@unique([announcementId, employeeId])
+}
+
+model CustomFieldDefinition {
+  id          String             @id @default(cuid())
+  companyId   String
+  company     Company            @relation(fields: [companyId], references: [id])
+  entityType  String             @default("EMPLOYEE")
+  label       String
+  fieldKey    String
+  fieldType   String             // TEXT/NUMBER/DATE/SELECT
+  optionsJson String?
+  required    Boolean            @default(false)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  values      CustomFieldValue[]
+
+  @@unique([companyId, fieldKey])
+}
+
+model CustomFieldValue {
+  id           String                @id @default(cuid())
+  definitionId String
+  definition   CustomFieldDefinition @relation(fields: [definitionId], references: [id], onDelete: Cascade)
+  employeeId   String
+  employee     Employee              @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  valueJson    String
+  createdAt    DateTime              @default(now())
+  updatedAt    DateTime              @updatedAt
+
+  @@unique([definitionId, employeeId])
 }
 

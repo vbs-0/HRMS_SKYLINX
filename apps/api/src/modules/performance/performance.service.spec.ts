@@ -10,6 +10,7 @@ describe("PerformanceService", () => {
   const mockPrismaService = {
     employee: {
       findMany: jest.fn(),
+      findUnique: jest.fn(),
     },
     attendanceLog: {
       findMany: jest.fn(),
@@ -29,6 +30,34 @@ describe("PerformanceService", () => {
       findMany: jest.fn(),
       findUnique: jest.fn(),
       update: jest.fn(),
+    },
+    appraisalCycle: {
+      create: jest.fn(),
+      findMany: jest.fn(),
+      findUnique: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+    },
+    appraisalTemplate: {
+      create: jest.fn(),
+      findMany: jest.fn(),
+      findUnique: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+    },
+    appraisal: {
+      create: jest.fn(),
+      findMany: jest.fn(),
+      findUnique: jest.fn(),
+      update: jest.fn(),
+      delete: jest.fn(),
+    },
+    appraisalGoal: {
+      createMany: jest.fn(),
+      updateMany: jest.fn(),
+    },
+    company: {
+      findFirst: jest.fn(),
     },
   };
 
@@ -78,5 +107,84 @@ describe("PerformanceService", () => {
     const res = await service.submitFeedbackResponse("f-1", dto);
     expect(res.data).toBeDefined();
     expect(res.data!.status).toBe("SUBMITTED");
+  });
+
+  describe("Appraisal Templates & Math", () => {
+    it("should reject template creation if KRA weightages do not sum to 100", async () => {
+      const dto = {
+        name: "Invalid Template",
+        kras: [
+          { title: "KRA 1", weightagePercent: 40 },
+          { title: "KRA 2", weightagePercent: 40 },
+        ],
+      };
+
+      await expect(service.createTemplate(dto)).rejects.toThrow("KRA weightages must sum to 100");
+    });
+
+    it("should accept template creation if KRA weightages sum to 100", async () => {
+      const dto = {
+        name: "Valid Template",
+        kras: [
+          { title: "KRA 1", weightagePercent: 40 },
+          { title: "KRA 2", weightagePercent: 60 },
+        ],
+      };
+
+      mockPrismaService.company.findFirst.mockResolvedValue({ id: "company-1" });
+      mockPrismaService.appraisalTemplate.create.mockResolvedValue({ id: "temp-1", name: dto.name, kras: dto.kras });
+
+      const res = await service.createTemplate(dto);
+      expect(res.data).toBeDefined();
+      expect(res.data!.name).toBe(dto.name);
+    });
+
+    it("should reject self-rating if employee attempts to rate another employee's appraisal", async () => {
+      const dto = {
+        ratings: [{ kraId: "kra-1", rating: 4, description: "Good" }],
+      };
+
+      mockPrismaService.appraisal.findUnique.mockResolvedValue({
+        id: "app-1",
+        employeeId: "emp-1",
+        status: "PENDING",
+      });
+
+      await expect(service.selfRate("app-1", "emp-2", dto)).rejects.toThrow(
+        "You can only rate your own appraisal",
+      );
+    });
+
+    it("should calculate correct weighted score on self-rating", async () => {
+      const dto = {
+        ratings: [
+          { kraId: "kra-1", rating: 4, description: "Good" },
+          { kraId: "kra-2", rating: 5, description: "Excellent" },
+        ],
+      };
+
+      mockPrismaService.appraisal.findUnique.mockResolvedValue({
+        id: "app-1",
+        employeeId: "emp-1",
+        status: "PENDING",
+        template: {
+          kras: [
+            { id: "kra-1", title: "KRA 1", weightagePercent: 40 },
+            { id: "kra-2", title: "KRA 2", weightagePercent: 60 },
+          ],
+        },
+      });
+
+      mockPrismaService.appraisal.update.mockImplementation(({ data }) => ({
+        id: "app-1",
+        status: "SELF_DONE",
+        selfScore: data.selfScore,
+      }));
+
+      const res = await service.selfRate("app-1", "emp-1", dto);
+      expect(res.data).toBeDefined();
+      // selfScore = (4 * 40 + 5 * 60) / 100 = (160 + 300) / 100 = 4.6
+      expect(res.data!.selfScore).toBe(4.6);
+    });
   });
 });

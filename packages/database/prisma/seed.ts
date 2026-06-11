@@ -76,7 +76,7 @@ async function main() {
     ),
   );
 
-  const permissions = ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "assets", "performance", "mobile", "backup", "testing", "analytics", "saas", "approvals", "notifications", "organization", "reports", "rewards", "settings", "social", "compliance", "recruitment", "training", "travel", "grievance"].flatMap((module) =>
+  const permissions = ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "assets", "performance", "mobile", "backup", "testing", "analytics", "saas", "approvals", "notifications", "organization", "reports", "rewards", "settings", "social", "compliance", "recruitment", "training", "travel", "grievance", "policies"].flatMap((module) =>
     ["create", "read", "update", "delete", "approve", "export", "configure"].map((action) => ({ module, action })),
   );
 
@@ -91,9 +91,9 @@ async function main() {
   const hrPermissions = await prisma.permission.findMany({
     where: {
       OR: [
-        { module: { in: ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "assets", "performance", "mobile", "backup", "testing", "analytics", "saas", "approvals", "notifications", "organization", "reports", "rewards", "social", "compliance", "recruitment", "training", "travel", "grievance"] }, action: "read" },
-        { module: { in: ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "notifications", "rewards", "social", "recruitment", "training", "travel", "grievance"] }, action: "create" },
-        { module: { in: ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "notifications", "organization", "recruitment", "training", "travel", "grievance"] }, action: "update" },
+        { module: { in: ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "assets", "performance", "mobile", "backup", "testing", "analytics", "saas", "approvals", "notifications", "organization", "reports", "rewards", "social", "compliance", "recruitment", "training", "travel", "grievance", "policies"] }, action: "read" },
+        { module: { in: ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "notifications", "rewards", "social", "recruitment", "training", "travel", "grievance", "policies"] }, action: "create" },
+        { module: { in: ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "notifications", "organization", "recruitment", "training", "travel", "grievance", "policies"] }, action: "update" },
         { module: { in: ["leave", "attendance", "expenses", "insurance", "recruitment", "grievance"] }, action: "approve" },
         { module: "approvals", action: "approve" },
         { module: "employees", action: "approve" },
@@ -106,7 +106,7 @@ async function main() {
         { module: "assets", action: "configure" },
         { module: "performance", action: "configure" },
         { module: "settings", action: "configure" },
-        { module: { in: ["leave", "employees", "recruitment", "travel", "training", "grievance"] }, action: "configure" },
+        { module: { in: ["leave", "employees", "recruitment", "travel", "training", "grievance", "policies"] }, action: "configure" },
         { module: "payroll", action: "export" },
         { module: "reports", action: "export" },
         { module: "compliance", action: "export" },
@@ -155,18 +155,20 @@ async function main() {
   });
 
   const seedEmployees = [
-    ["emp_1001", "EMP-1001", "Aarav", "Mehta", "aarav.mehta@skylinx.local", peopleDept.id, designationHrManager.id, locations[0].id],
-    ["emp_1002", "EMP-1002", "Priya", "Nair", "priya.nair@skylinx.local", financeDept.id, designationPayroll.id, locations[1].id],
-    ["emp_1003", "EMP-1003", "Kabir", "Sethi", "kabir.sethi@skylinx.local", engineeringDept.id, designationEngineer.id, locations[2].id],
-    ["emp_1004", "EMP-1004", "Sara", "Khan", "sara.khan@skylinx.local", salesDept.id, designationSales.id, locations[3].id],
-    ["emp_1005", "EMP-1005", "Rohan", "Iyer", "rohan.iyer@skylinx.local", operationsDept.id, designationOps.id, locations[4].id],
+    ["emp_1001", "EMP-1001", "Aarav", "Mehta", "aarav.mehta@skylinx.local", peopleDept.id, designationHrManager.id, locations[0].id, "1990-06-15", "2022-01-16"],
+    ["emp_1002", "EMP-1002", "Priya", "Nair", "priya.nair@skylinx.local", financeDept.id, designationPayroll.id, locations[1].id, "1992-08-20", "2023-06-10"],
+    ["emp_1003", "EMP-1003", "Kabir", "Sethi", "kabir.sethi@skylinx.local", engineeringDept.id, designationEngineer.id, locations[2].id, "1994-03-05", "2024-03-15"],
+    ["emp_1004", "EMP-1004", "Sara", "Khan", "sara.khan@skylinx.local", salesDept.id, designationSales.id, locations[3].id, "1995-11-12", "2024-11-20"],
+    ["emp_1005", "EMP-1005", "Rohan", "Iyer", "rohan.iyer@skylinx.local", operationsDept.id, designationOps.id, locations[4].id, "1991-06-25", "2025-06-01"],
   ];
 
-  for (const [id, employeeCode, firstName, lastName, email, departmentId, designationId, locationId] of seedEmployees) {
+  for (const [id, employeeCode, firstName, lastName, email, departmentId, designationId, locationId, dob, joining] of seedEmployees) {
     await prisma.employee.upsert({
       where: { email },
       update: {
         managerId: id === "emp_1001" ? null : id === "emp_1002" ? "emp_1001" : id === "emp_1005" ? "emp_1001" : "emp_1005",
+        dateOfBirth: new Date(dob),
+        joiningDate: new Date(joining),
       },
       create: {
         id,
@@ -176,7 +178,8 @@ async function main() {
         lastName,
         email,
         phone: "+91 98765 41000",
-        joiningDate: new Date("2023-01-16"),
+        joiningDate: new Date(joining),
+        dateOfBirth: new Date(dob),
         departmentId,
         designationId,
         locationId,
@@ -271,7 +274,6 @@ async function main() {
     });
   }
 
-  // Role permissions for MANAGER and EMPLOYEE
   const managerPermissionSpecs: Array<[string, string]> = [
     ["employees", "read"],
     ["attendance", "read"],
@@ -283,6 +285,7 @@ async function main() {
     ["training", "approve"],
     ["travel", "approve"],
     ["grievance", "read"],
+    ["policies", "read"],
   ];
   const employeePermissionSpecs: Array<[string, string]> = [
     ["employees", "read"],
@@ -295,6 +298,7 @@ async function main() {
     ["travel", "create"],
     ["grievance", "create"],
     ["grievance", "read"],
+    ["policies", "read"],
   ];
   for (const [roleId, specs] of [
     ["role_manager", managerPermissionSpecs],
@@ -944,6 +948,172 @@ async function main() {
       currentHeadcount: 1,
       startDate: new Date("2026-01-01"),
       endDate: new Date("2026-12-31"),
+    },
+  });
+
+  // ==========================================
+  // Wave 4 Seeding: Policies, Announcements, Custom Fields
+  // ==========================================
+  // 1. Company Policies
+  const leavePolicy = await prisma.companyPolicy.upsert({
+    where: { id: "policy_leave" },
+    update: {},
+    create: {
+      id: "policy_leave",
+      companyId: company.id,
+      title: "Leave Policy",
+      category: "Leave",
+      description: "Annual leave allocations and guidelines.",
+      contentHtml: "<p>Employees are entitled to 12 days of Casual Leave and 8 days of Sick Leave per year.</p>",
+      version: "1.0",
+      effectiveDate: new Date("2026-01-01"),
+      requiresAcknowledgment: true,
+      status: "ACTIVE",
+    },
+  });
+
+  const conductPolicy = await prisma.companyPolicy.upsert({
+    where: { id: "policy_conduct" },
+    update: {},
+    create: {
+      id: "policy_conduct",
+      companyId: company.id,
+      title: "Code of Conduct",
+      category: "Conduct",
+      description: "Company standards of behavior.",
+      contentHtml: "<p>All employees are expected to maintain professional behavior and integrity.</p>",
+      version: "1.0",
+      effectiveDate: new Date("2026-01-01"),
+      requiresAcknowledgment: true,
+      status: "ACTIVE",
+    },
+  });
+
+  const securityPolicy = await prisma.companyPolicy.upsert({
+    where: { id: "policy_security" },
+    update: {},
+    create: {
+      id: "policy_security",
+      companyId: company.id,
+      title: "IT & Security Policy",
+      category: "IT",
+      description: "Data protection and system security rules.",
+      contentHtml: "<p>Use authorized VPN, secure passwords, and report security incidents immediately.</p>",
+      version: "1.1",
+      effectiveDate: new Date("2026-01-01"),
+      requiresAcknowledgment: false,
+      status: "ACTIVE",
+    },
+  });
+
+  // 2. Policy Acknowledgment (1 example)
+  await prisma.policyAcknowledgment.upsert({
+    where: { policyId_employeeId: { policyId: "policy_leave", employeeId: "emp_1001" } },
+    update: {},
+    create: {
+      policyId: "policy_leave",
+      employeeId: "emp_1001",
+      acknowledgedAt: new Date("2026-06-01T10:00:00Z"),
+    },
+  });
+
+  // 3. Announcements
+  await prisma.announcement.upsert({
+    where: { id: "announcement_hackathon" },
+    update: {},
+    create: {
+      id: "announcement_hackathon",
+      companyId: company.id,
+      title: "Annual Hackathon 2026",
+      body: "SKYLINX Annual Hackathon is scheduled for July 15-16. Registrations are open!",
+      pinned: true,
+      audience: "ALL",
+      publishedAt: new Date("2026-06-05T09:00:00Z"),
+    },
+  });
+
+  await prisma.announcement.upsert({
+    where: { id: "announcement_quarterly" },
+    update: {},
+    create: {
+      id: "announcement_quarterly",
+      companyId: company.id,
+      title: "Quarterly Review Meeting",
+      body: "Join us for the Q2 review meeting on June 30 at 3 PM in the main conference hall.",
+      pinned: false,
+      audience: "ALL",
+      publishedAt: new Date("2026-06-10T14:00:00Z"),
+    },
+  });
+
+  // 4. Custom Field Definitions
+  const tshirtField = await prisma.customFieldDefinition.upsert({
+    where: { companyId_fieldKey: { companyId: company.id, fieldKey: "tshirt_size" } },
+    update: {},
+    create: {
+      companyId: company.id,
+      entityType: "EMPLOYEE",
+      label: "T-Shirt Size",
+      fieldKey: "tshirt_size",
+      fieldType: "SELECT",
+      optionsJson: '["S", "M", "L", "XL", "XXL"]',
+      required: true,
+    },
+  });
+
+  const contactField = await prisma.customFieldDefinition.upsert({
+    where: { companyId_fieldKey: { companyId: company.id, fieldKey: "emergency_contact" } },
+    update: {},
+    create: {
+      companyId: company.id,
+      entityType: "EMPLOYEE",
+      label: "Emergency Contact",
+      fieldKey: "emergency_contact",
+      fieldType: "TEXT",
+      required: false,
+    },
+  });
+
+  // 5. Custom Field Values
+  // Kabir Sethi (emp_1003)
+  await prisma.customFieldValue.upsert({
+    where: { definitionId_employeeId: { definitionId: tshirtField.id, employeeId: "emp_1003" } },
+    update: {},
+    create: {
+      definitionId: tshirtField.id,
+      employeeId: "emp_1003",
+      valueJson: '"L"',
+    },
+  });
+
+  await prisma.customFieldValue.upsert({
+    where: { definitionId_employeeId: { definitionId: contactField.id, employeeId: "emp_1003" } },
+    update: {},
+    create: {
+      definitionId: contactField.id,
+      employeeId: "emp_1003",
+      valueJson: '"9876543210"',
+    },
+  });
+
+  // Rohan Iyer (emp_1005)
+  await prisma.customFieldValue.upsert({
+    where: { definitionId_employeeId: { definitionId: tshirtField.id, employeeId: "emp_1005" } },
+    update: {},
+    create: {
+      definitionId: tshirtField.id,
+      employeeId: "emp_1005",
+      valueJson: '"XL"',
+    },
+  });
+
+  await prisma.customFieldValue.upsert({
+    where: { definitionId_employeeId: { definitionId: contactField.id, employeeId: "emp_1005" } },
+    update: {},
+    create: {
+      definitionId: contactField.id,
+      employeeId: "emp_1005",
+      valueJson: '"9988776655"',
     },
   });
 }

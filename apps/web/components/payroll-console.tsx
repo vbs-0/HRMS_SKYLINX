@@ -352,7 +352,7 @@ export function PayrollConsole() {
         eyebrow="Payroll"
         title="Payroll Console"
         summary="Calculate salaries, generate reports, lock monthly payroll operations and manage employee salary CTC allocations."
-        tabs={["Payroll Run", "Payslips", "Bank Export", "Statutory & Tax", "Salary Setup", "Corrections", "Gratuity", "Tax Slabs"]}
+        tabs={["Payroll Run", "Payslips", "Bank Export", "Statutory & Tax", "Salary Setup", "Retention Bonus", "Salary Withholding", "Corrections", "Gratuity", "Tax Slabs", "Form 16"]}
         activeTab={activeTab}
         onTabChange={setActiveTab}
         actions={[
@@ -855,6 +855,14 @@ export function PayrollConsole() {
         </Card>
       )}
 
+      {activeTab === "Retention Bonus" && (
+        <RetentionBonusConsole />
+      )}
+
+      {activeTab === "Salary Withholding" && (
+        <SalaryWithholdingConsole />
+      )}
+
       {activeTab === "Corrections" && (
         <PayrollCorrectionsConsole />
       )}
@@ -865,6 +873,10 @@ export function PayrollConsole() {
 
       {activeTab === "Tax Slabs" && (
         <TaxSlabConsole />
+      )}
+
+      {activeTab === "Form 16" && (
+        <Form16Panel />
       )}
 
       {/* CREATE RUN MODAL */}
@@ -927,7 +939,7 @@ export function PayrollConsole() {
       {/* VIEW PAYSLIP BREAKDOWN MODAL */}
       {showPayslipModal && selectedPayslip && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
-          <div className="w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150 border border-slate-100">
+          <div className="print-area w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150 border border-slate-100">
             <div className="flex items-center justify-between border-b pb-4 mb-4">
               <div>
                 <h3 className="text-lg font-bold text-slate-900">Salary Slip Breakdown</h3>
@@ -1734,6 +1746,608 @@ function TaxSlabConsole() {
           </table>
         </div>
       </Card>
+    </div>
+  );
+}
+
+function RetentionBonusConsole() {
+  const [records, setRecords] = useState<any[]>([]);
+  const [employees, setEmployees] = useState<any[]>([]);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  const [form, setForm] = useState({
+    employeeId: "",
+    bonusAmount: 0,
+    bonusDate: new Date().toISOString().slice(0, 10),
+    reason: "",
+  });
+
+  function load() {
+    apiFetch<any[]>("/payroll/retention-bonuses").then((res) => {
+      if (res.data) setRecords(res.data);
+    });
+    apiFetch<any[]>("/employees").then((res) => {
+      if (res.data) setEmployees(res.data);
+    });
+  }
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!form.employeeId || form.bonusAmount <= 0 || !form.bonusDate) {
+      setError("Please fill all required fields correctly.");
+      return;
+    }
+    setSubmitting(true);
+    setMessage("");
+    setError("");
+    try {
+      await apiFetch("/payroll/retention-bonuses", {
+        method: "POST",
+        body: JSON.stringify({
+          employeeId: form.employeeId,
+          bonusAmount: Number(form.bonusAmount),
+          bonusDate: form.bonusDate,
+          reason: form.reason,
+        }),
+      });
+      setMessage("Retention bonus logged successfully.");
+      setForm({
+        employeeId: "",
+        bonusAmount: 0,
+        bonusDate: new Date().toISOString().slice(0, 10),
+        reason: "",
+      });
+      load();
+    } catch (err: any) {
+      setError(err.message || "Failed to log retention bonus.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function handleDecide(id: string, action: "APPROVED" | "REJECTED") {
+    setMessage("");
+    setError("");
+    try {
+      await apiFetch(`/payroll/retention-bonuses/${id}/decide`, {
+        method: "PATCH",
+        body: JSON.stringify({ status: action }),
+      });
+      setMessage(`Retention bonus marked ${action.toLowerCase()} successfully.`);
+      load();
+    } catch (err: any) {
+      setError(err.message || "Failed to decide retention bonus.");
+    }
+  }
+
+  return (
+    <div className="grid grid-cols-[1fr_2fr] gap-6 max-lg:grid-cols-1 text-left">
+      <Card className="p-5 border border-[#e8edf4]">
+        <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Log Retention Bonus</h3>
+        {message && <div className="rounded-lg bg-[#e6f5ef] p-3 text-xs text-[#18865a] font-semibold mb-3">{message}</div>}
+        {error && <div className="rounded-lg bg-[#fde8e6] p-3 text-xs text-[#ba3d37] font-semibold mb-3">{error}</div>}
+        <form onSubmit={handleSubmit} className="grid gap-4">
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 mb-1">Select Employee</label>
+            <select
+              name="employeeId"
+              id="rb-employeeId"
+              required
+              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+              value={form.employeeId}
+              onChange={(e) => setForm({ ...form, employeeId: e.target.value })}
+            >
+              <option value="">Select Employee</option>
+              {employees.map((emp) => (
+                <option key={emp.id} value={emp.id}>
+                  {emp.firstName} {emp.lastName} ({emp.employeeCode})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 mb-1">Bonus Amount (₹)</label>
+            <input
+              type="number"
+              name="bonusAmount"
+              id="rb-bonusAmount"
+              min="1"
+              required
+              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+              value={form.bonusAmount || ""}
+              onChange={(e) => setForm({ ...form, bonusAmount: Number(e.target.value) })}
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 mb-1">Payout Target Date</label>
+            <input
+              type="date"
+              name="bonusDate"
+              id="rb-bonusDate"
+              required
+              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+              value={form.bonusDate}
+              onChange={(e) => setForm({ ...form, bonusDate: e.target.value })}
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 mb-1">Reason / Retention Terms</label>
+            <input
+              type="text"
+              name="reason"
+              id="rb-reason"
+              placeholder="e.g. 1-year service commitment bonus"
+              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+              value={form.reason}
+              onChange={(e) => setForm({ ...form, reason: e.target.value })}
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={submitting}
+            className="min-h-10 rounded-lg bg-brand text-white text-xs font-bold hover:bg-brand/90 transition shadow-sm"
+          >
+            {submitting ? "Logging..." : "Create Retention Bonus"}
+          </button>
+        </form>
+      </Card>
+
+      <Card className="p-5 border border-[#e8edf4]">
+        <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Retention Bonuses Ledger</h3>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-xs text-slate-655">
+            <thead className="bg-[#f8fafc] text-[10px] uppercase font-bold text-slate-500 border-b">
+              <tr>
+                <th className="p-2.5">Employee</th>
+                <th className="p-2.5">Bonus Amount</th>
+                <th className="p-2.5">Payout Date</th>
+                <th className="p-2.5">Reason</th>
+                <th className="p-2.5">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {!records.length ? (
+                <tr>
+                  <td colSpan={5} className="p-4 text-center text-slate-400">No retention bonuses recorded.</td>
+                </tr>
+              ) : (
+                records.map((r) => (
+                  <tr key={r.id} className="border-b border-slate-100 hover:bg-slate-50 transition">
+                    <td className="p-2.5 font-semibold text-slate-900">
+                      {r.employee?.firstName} {r.employee?.lastName}
+                    </td>
+                    <td className="p-2.5 font-bold text-brand">₹{Number(r.bonusAmount).toLocaleString("en-IN")}</td>
+                    <td className="p-2.5 font-medium">{new Date(r.bonusDate).toLocaleDateString("en-IN")}</td>
+                    <td className="p-2.5 max-w-[200px] truncate">{r.reason || "N/A"}</td>
+                    <td className="p-2.5">
+                      <div className="flex items-center gap-2">
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${r.status === "PENDING" ? "bg-amber-100 text-amber-800" : r.status === "APPROVED" ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"}`}>
+                          {r.status}
+                        </span>
+                        {r.status === "PENDING" && (
+                          <div className="flex gap-1">
+                            <button
+                              onClick={() => handleDecide(r.id, "APPROVED")}
+                              className="bg-emerald-600 text-white rounded px-2.5 py-1 font-semibold text-[10px] hover:bg-emerald-700 transition"
+                            >
+                              Approve
+                            </button>
+                            <button
+                              onClick={() => handleDecide(r.id, "REJECTED")}
+                              className="border border-slate-200 text-slate-700 bg-white rounded px-2.5 py-1 font-semibold text-[10px] hover:bg-slate-50 transition"
+                            >
+                              Reject
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+function SalaryWithholdingConsole() {
+  const [records, setRecords] = useState<any[]>([]);
+  const [employees, setEmployees] = useState<any[]>([]);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  const [form, setForm] = useState({
+    employeeId: "",
+    fromDate: new Date().toISOString().slice(0, 10),
+    toDate: "",
+    reason: "",
+  });
+
+  function load() {
+    apiFetch<any[]>("/payroll/withholdings").then((res) => {
+      if (res.data) setRecords(res.data);
+    });
+    apiFetch<any[]>("/employees").then((res) => {
+      if (res.data) setEmployees(res.data);
+    });
+  }
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!form.employeeId || !form.fromDate) {
+      setError("Please fill all required fields correctly.");
+      return;
+    }
+    setSubmitting(true);
+    setMessage("");
+    setError("");
+    try {
+      await apiFetch("/payroll/withholdings", {
+        method: "POST",
+        body: JSON.stringify({
+          employeeId: form.employeeId,
+          fromDate: form.fromDate,
+          toDate: form.toDate || null,
+          reason: form.reason,
+        }),
+      });
+      setMessage("Salary withholding logged successfully.");
+      setForm({
+        employeeId: "",
+        fromDate: new Date().toISOString().slice(0, 10),
+        toDate: "",
+        reason: "",
+      });
+      load();
+    } catch (err: any) {
+      setError(err.message || "Failed to log salary withholding.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function handleRelease(id: string) {
+    setMessage("");
+    setError("");
+    try {
+      await apiFetch(`/payroll/withholdings/${id}/release`, {
+        method: "POST",
+      });
+      setMessage("Salary withholding released successfully. Arrears correction will be created in next run.");
+      load();
+    } catch (err: any) {
+      setError(err.message || "Failed to release salary withholding.");
+    }
+  }
+
+  return (
+    <div className="grid grid-cols-[1fr_2fr] gap-6 max-lg:grid-cols-1 text-left">
+      <Card className="p-5 border border-[#e8edf4]">
+        <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Apply Salary Withholding</h3>
+        {message && <div className="rounded-lg bg-[#e6f5ef] p-3 text-xs text-[#18865a] font-semibold mb-3">{message}</div>}
+        {error && <div className="rounded-lg bg-[#fde8e6] p-3 text-xs text-[#ba3d37] font-semibold mb-3">{error}</div>}
+        <form onSubmit={handleSubmit} className="grid gap-4">
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 mb-1">Select Employee</label>
+            <select
+              name="employeeId"
+              id="sw-employeeId"
+              required
+              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+              value={form.employeeId}
+              onChange={(e) => setForm({ ...form, employeeId: e.target.value })}
+            >
+              <option value="">Select Employee</option>
+              {employees.map((emp) => (
+                <option key={emp.id} value={emp.id}>
+                  {emp.firstName} {emp.lastName} ({emp.employeeCode})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 mb-1">From Date</label>
+            <input
+              type="date"
+              name="fromDate"
+              id="sw-fromDate"
+              required
+              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+              value={form.fromDate}
+              onChange={(e) => setForm({ ...form, fromDate: e.target.value })}
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 mb-1">To Date (Optional)</label>
+            <input
+              type="date"
+              name="toDate"
+              id="sw-toDate"
+              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+              value={form.toDate}
+              onChange={(e) => setForm({ ...form, toDate: e.target.value })}
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 mb-1">Reason for Withholding</label>
+            <input
+              type="text"
+              name="reason"
+              id="sw-reason"
+              placeholder="e.g. Exit formalities pending"
+              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+              value={form.reason}
+              onChange={(e) => setForm({ ...form, reason: e.target.value })}
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={submitting}
+            className="min-h-10 rounded-lg bg-brand text-white text-xs font-bold hover:bg-brand/90 transition shadow-sm"
+          >
+            {submitting ? "Applying..." : "Apply Withholding"}
+          </button>
+        </form>
+      </Card>
+
+      <Card className="p-5 border border-[#e8edf4]">
+        <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Salary Withholdings Ledger</h3>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-xs text-slate-655">
+            <thead className="bg-[#f8fafc] text-[10px] uppercase font-bold text-slate-500 border-b">
+              <tr>
+                <th className="p-2.5">Employee</th>
+                <th className="p-2.5">From Date</th>
+                <th className="p-2.5">To Date</th>
+                <th className="p-2.5">Reason</th>
+                <th className="p-2.5">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {!records.length ? (
+                <tr>
+                  <td colSpan={5} className="p-4 text-center text-slate-400">No salary withholdings applied.</td>
+                </tr>
+              ) : (
+                records.map((r) => (
+                  <tr key={r.id} className="border-b border-slate-100 hover:bg-slate-50 transition">
+                    <td className="p-2.5 font-semibold text-slate-900">
+                      {r.employee?.firstName} {r.employee?.lastName}
+                    </td>
+                    <td className="p-2.5 font-medium">{new Date(r.fromDate).toLocaleDateString("en-IN")}</td>
+                    <td className="p-2.5 font-medium">{r.toDate ? new Date(r.toDate).toLocaleDateString("en-IN") : "Indefinite"}</td>
+                    <td className="p-2.5 max-w-[200px] truncate">{r.reason || "N/A"}</td>
+                    <td className="p-2.5">
+                      <div className="flex items-center gap-2">
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${r.status === "ACTIVE" ? "bg-[#fde8e6] text-[#ba3d37]" : "bg-emerald-100 text-emerald-800"}`}>
+                          {r.status}
+                        </span>
+                        {r.status === "ACTIVE" && (
+                          <button
+                            onClick={() => handleRelease(r.id)}
+                            className="bg-emerald-600 text-white rounded px-2.5 py-1 font-semibold text-[10px] hover:bg-emerald-700 transition"
+                          >
+                            Release
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+// ==========================================
+// Form 16 Panel
+// ==========================================
+function Form16Panel() {
+  const [employees, setEmployees] = useState<any[]>([]);
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState("");
+  const [form16, setForm16] = useState<any | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    apiFetch<any[]>("/employees").then((res) => {
+      if (res.data) setEmployees(res.data);
+    }).catch(() => undefined);
+  }, []);
+
+  const fetchForm16 = async () => {
+    if (!selectedEmployeeId) return;
+    setLoading(true);
+    setError("");
+    setForm16(null);
+    try {
+      const res = await apiFetch<any>(`/payroll/form16/${selectedEmployeeId}`);
+      setForm16(res.data);
+    } catch (err: any) {
+      setError(err.message || "Failed to fetch Form 16");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fmtINR = (n: number) =>
+    new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(n);
+
+  return (
+    <div className="grid gap-5">
+      <Card className="p-5 border border-[#e8edf4]">
+        <h3 className="text-base font-bold text-slate-800 mb-4">Form 16 — Annual Tax Summary</h3>
+        <div className="flex flex-wrap gap-3 items-end">
+          <div className="flex-1 min-w-[200px]">
+            <label className="block text-xs font-semibold text-slate-500 mb-1" htmlFor="form16-employee">
+              Select Employee
+            </label>
+            <select
+              id="form16-employee"
+              name="form16-employee"
+              value={selectedEmployeeId}
+              onChange={(e) => setSelectedEmployeeId(e.target.value)}
+              className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+            >
+              <option value="">— choose employee —</option>
+              {employees.map((emp) => (
+                <option key={emp.id} value={emp.id}>
+                  {emp.firstName} {emp.lastName} ({emp.employeeCode})
+                </option>
+              ))}
+            </select>
+          </div>
+          <button
+            id="form16-fetch-btn"
+            onClick={fetchForm16}
+            disabled={!selectedEmployeeId || loading}
+            className="rounded-lg bg-brand px-5 py-2 text-sm font-bold text-white hover:bg-brand/90 transition disabled:opacity-50"
+          >
+            {loading ? "Loading…" : "Generate Form 16"}
+          </button>
+        </div>
+        {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+      </Card>
+
+      {form16 && (
+        <Card className="p-6 border border-[#e8edf4] print:shadow-none" id="form16-printable">
+          {/* Header */}
+          <div className="border-b-2 border-slate-200 pb-4 mb-5 flex items-start justify-between flex-wrap gap-4">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">FORM 16</p>
+              <h2 className="text-xl font-extrabold text-slate-900 mt-0.5">Annual Tax Computation</h2>
+              <p className="text-sm text-slate-500 mt-0.5">Financial Year {form16.financialYear}</p>
+            </div>
+            <button
+              id="form16-print-btn"
+              onClick={() => window.print()}
+              className="flex items-center gap-1.5 rounded-lg border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition print:hidden"
+            >
+              <FileText className="h-3.5 w-3.5" /> Print / Save PDF
+            </button>
+          </div>
+
+          {/* Employee Info */}
+          <div className="grid grid-cols-2 gap-4 mb-6 max-sm:grid-cols-1">
+            <div className="bg-slate-50 rounded-lg p-4">
+              <p className="text-[10px] font-bold text-slate-400 uppercase mb-2">Employee Details</p>
+              <p className="text-sm font-bold text-slate-800">{form16.employeeName}</p>
+              <p className="text-xs text-slate-500">{form16.designation}</p>
+            </div>
+            <div className="bg-slate-50 rounded-lg p-4">
+              <p className="text-[10px] font-bold text-slate-400 uppercase mb-2">Assessment Details</p>
+              <p className="text-xs text-slate-600">Financial Year: <strong>{form16.financialYear}</strong></p>
+              <p className="text-xs text-slate-600 mt-0.5">Tax Regime: <strong>{form16.regime} REGIME</strong></p>
+              <p className="text-xs text-slate-600 mt-0.5">Payslips Processed: <strong>{form16.payslipCount}</strong></p>
+            </div>
+          </div>
+
+          {/* Income Computation */}
+          <div className="mb-6">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 border-b pb-2">
+              Part A — Income Computation
+            </h4>
+            <div className="space-y-1">
+              {[
+                { label: "Gross Total Income (Salary)", value: form16.grossPay, indent: false },
+                { label: "Less: Standard Deduction u/s 16(ia)", value: -form16.standardDeduction, indent: true },
+                { label: "Taxable Income", value: form16.taxableIncome, indent: false, bold: true },
+              ].map((row) => (
+                <div
+                  key={row.label}
+                  className={`flex justify-between text-sm py-1.5 ${
+                    row.bold ? "font-bold border-t border-slate-200 pt-2 mt-1" : ""
+                  }`}
+                >
+                  <span className={`text-slate-700 ${row.indent ? "pl-6" : ""}`}>{row.label}</span>
+                  <span className={row.value < 0 ? "text-red-500" : "text-slate-900"}>
+                    {fmtINR(row.value)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Tax Computation */}
+          <div className="mb-6">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 border-b pb-2">
+              Part B — Tax Computation
+            </h4>
+            <div className="space-y-1">
+              {[
+                { label: "Income Tax (as per slab)", value: form16.incomeTax },
+                { label: "Surcharge", value: form16.surcharge },
+                { label: "Health & Education Cess @ 4%", value: form16.cess },
+                { label: "Total Tax Liability", value: form16.totalTaxLiability, bold: true },
+              ].map((row) => (
+                <div
+                  key={row.label}
+                  className={`flex justify-between text-sm py-1.5 ${
+                    row.bold ? "font-bold border-t border-slate-200 pt-2 mt-1" : ""
+                  }`}
+                >
+                  <span className="text-slate-700">{row.label}</span>
+                  <span className="text-slate-900">{fmtINR(row.value)}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* TDS Summary */}
+          <div>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 border-b pb-2">
+              Part C — TDS Deducted at Source
+            </h4>
+            <div className="space-y-1">
+              {[
+                { label: "TDS Deducted (from payslip components)", value: form16.tdsDeducted },
+                { label: "Total Tax Liability", value: form16.totalTaxLiability },
+              ].map((row) => (
+                <div key={row.label} className="flex justify-between text-sm py-1.5">
+                  <span className="text-slate-700">{row.label}</span>
+                  <span className="text-slate-900">{fmtINR(row.value)}</span>
+                </div>
+              ))}
+              <div className={`flex justify-between text-sm py-2 font-bold border-t border-slate-200 mt-1 ${
+                form16.refundOrDue >= 0 ? "text-green-700" : "text-red-600"
+              }`}>
+                <span>{form16.refundOrDue >= 0 ? "Tax Refund Due" : "Balance Tax Payable"}</span>
+                <span>{fmtINR(Math.abs(form16.refundOrDue))}</span>
+              </div>
+            </div>
+          </div>
+
+          <p className="mt-6 text-[10px] text-slate-400 text-center">
+            This is a system-generated summary. For official Form 16 with employer DSC, contact the Finance team.
+          </p>
+        </Card>
+      )}
     </div>
   );
 }

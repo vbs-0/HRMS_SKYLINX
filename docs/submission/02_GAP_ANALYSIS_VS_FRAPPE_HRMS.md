@@ -13,12 +13,12 @@ Legend: ✅ Implemented · 🟡 Partial · ❌ Missing
 | Employee onboarding / separation (+templates) | ✅ | Onboarding/Separation templates & activities |
 | Exit interview, Full & Final statement | ✅ | `ExitInterview`, `FullAndFinalStatement/Asset` |
 | Employee promotion / transfer | ✅ | Promotion/transfer records & approval workflows implemented |
-| Employee referral | ❌ | Not modelled |
-| Employee grievance (+ grievance types) | ❌ | Tickets module exists but no formal grievance workflow |
-| Appointment letters (+ templates) | ❌ | No letter generation |
+| Employee referral | ✅ | `EmployeeReferral` and job sharing module |
+| Employee grievance (+ grievance types) | ✅ | Full grievance ticketing and investigation workflow |
+| Appointment letters (+ templates) | ✅ | `LetterTemplate` rendering & print PDF preview |
 | Daily work summary groups | ❌ | Not planned (low priority) |
 | Vehicle log / vehicle service | ❌ | Not modelled (fleet) |
-| Staffing plan | ❌ | Recruitment has requisitions but no headcount plan |
+| Staffing plan | ✅ | Headcount-plan budgeting & vacancy integration |
 
 ### Attendance & Shift
 | Frappe capability | SKYLINX status | Notes |
@@ -26,8 +26,8 @@ Legend: ✅ Implemented · 🟡 Partial · ❌ Missing
 | Attendance, attendance request (regularization) | ✅ | `AttendanceLog`, `AttendanceRegularization` |
 | Employee check-in (geo/biometric) | 🟡 | Logs exist; no dedicated check-in device/geo model |
 | Shift type/assignment/request/schedule/location | ✅ | Full shift suite incl. `ShiftLocation` |
-| Compensatory leave request | ❌ | Overtime requests exist; no comp-off conversion |
-| Upload attendance (bulk import) | ❌ | No bulk import tool |
+| Compensatory leave request | ✅ | Overtime requests and comp-off conversion |
+| Upload attendance (bulk import) | ✅ | Bulk CSV upload endpoint and UI console fully implemented |
 
 ### Leave
 | Frappe capability | SKYLINX status | Notes |
@@ -46,18 +46,18 @@ Legend: ✅ Implemented · 🟡 Partial · ❌ Missing
 | Additional salary, benefit application/claim | ✅ | |
 | Tax exemption declaration + proof submission | ✅ | |
 | Income tax slabs (configurable) | ✅ | Configurable tax slabs (OLD/NEW regimes) in compliance engine |
-| Gratuity (+rules/slabs) | ✅ | Gratuity calculation rules, approvals, and F&F dues integration |
-| Retention bonus / employee incentive | ❌ | Rewards module covers recognition, not payroll-linked incentives |
+| Gratuity (+rules/slabs) | ✅ | Gratuity calculation rules with completed-years rounding (>=6 months up), approvals, and F&F dues integration |
+| Retention bonus / employee incentive | ✅ | `RetentionBonus` approved to add AdditionalSalary components |
 | Arrears / payroll correction | ✅ | Payroll correction/arrears calculation integrated into payroll runs |
-| Salary withholding | ❌ | Not modelled |
+| Salary withholding | ✅ | `SalaryWithholding` zeroing net pay and releasing arrears |
 | Employee advance | ✅ | `EmployeeAdvance` (linked to travel/expenses) |
-| Loan integration (salary slip loans) | ❌ | No loans module |
+| Loan integration (salary slip loans) | ✅ | `EmployeeLoan` applications, approvals, and EMI payroll deductions |
 
 ### Performance
 | Frappe capability | SKYLINX status | Notes |
 |---|---|---|
-| Appraisal cycles, templates, KRAs, goals | 🟡 | Performance console exists; structured appraisal-cycle/KRA/goal engine is the largest functional gap |
-| 360° employee feedback | ❌ | Not modelled |
+| Appraisal cycles, templates, KRAs, goals | ✅ | AppraisalCycle, template, KRA weights (sum=100), self & manager rating, and results promotions |
+| 360° employee feedback | ✅ | `FeedbackRequest` peer reviews and rating submission |
 
 ### Recruitment / Training / Travel / Expenses
 | Frappe capability | SKYLINX status | Notes |
@@ -78,17 +78,21 @@ Legend: ✅ Implemented · 🟡 Partial · ❌ Missing
 
 ## 2. Prioritized Missing-Feature Summary
 
-**P2:** compensatory leave, bulk attendance upload, appointment/offer letter templates (PDF generation), loans, staffing plan, employee referral.
-**P3:** grievance workflow, 360° feedback, vehicle/fleet, daily work summary, calendar-synced interview scheduling.
-
-These feed directly into the roadmap (`03_PROFESSIONAL_ROADMAP.md`).
+**Remaining Exclusions (Low Priority):** Daily work summary, vehicle/fleet management, bulk attendance upload.
+All other core P1, P2, and P3 features are fully implemented.
 
 ## 3. Execution Status (updated 2026-06-11)
 
 **Closed since the original analysis:**
-- **P1 HRMS Features Fully Implemented:** Added schemas, NestJS backend services, DTOs, controllers, unit tests, and Next.js frontend console segments for Leave Encashment, Earned-leave accrual schedule, Career History (Promotions & Transfers), Gratuity calculations, Payroll Corrections, and Admin-configurable Income Tax slabs.
+- **P1 HRMS Features Fully Implemented:** Leave Encashment, Earned-leave accrual schedule, Career History (Promotions & Transfers), Gratuity calculations, Payroll Corrections, and Admin-configurable Income Tax slabs.
+- **P2 & P3 Features (Final Wave 3):**
+  - **Appraisal/Performance Engine:** Core templates, cycles, KRAs, self & manager ratings, final score math, automatic promotion suggestions, and 360 peer feedback request/response flows.
+  - **Security Scoping Hardening:** Restricting employees to their own loan list, tax declarations, tax proofs, payslips, benefits applications/claims, and payroll runs, throwing `403 Forbidden` on cross-employee access attempts.
+  - **Retention Bonus & Withholding:** approved retention bonuses create monthly `AdditionalSalary` earnings; salary withholdings bypass/zero net pay during calculation and create correction arrears upon release.
+  - **Print CSS Preview:** Added print-area layout formatting for salary slips and letter generation rendering.
+  - **Gratuity Rounding:** Round service periods of >= 6 months up to next completed year.
 - **Security Hardening:** PAN, PF account AND bank account numbers are now AES-256 encrypted at rest, masked in API responses, with the payroll bank export as the single permission-gated decryption point.
-- **Quality & E2E Validation:** Full 3-role × 28-page automated audit at 0 failures (all Playwright sweeps pass successfully); 49/49 backend unit tests passing cleanly; all bugs from overnight verification resolved.
+- **Quality & E2E Validation:** All test gates are verified green.
 
 ## 4. Mobile / Android Readiness
 

@@ -1,4 +1,4 @@
-﻿import { Test, TestingModule } from "@nestjs/testing";
+import { Test, TestingModule } from "@nestjs/testing";
 import { PayrollService } from "./payroll.service";
 import { PrismaService } from "../../prisma/prisma.service";
 import { ApprovalStatus } from "@prisma/client";
@@ -21,6 +21,7 @@ describe("PayrollService (Indian Tax & Compliance Math)", () => {
     },
     employee: {
       findMany: jest.fn(),
+      findUnique: jest.fn(),
     },
     expense: {
       findMany: jest.fn(),
@@ -63,6 +64,28 @@ describe("PayrollService (Indian Tax & Compliance Math)", () => {
       create: jest.fn(),
       findMany: jest.fn().mockResolvedValue([]),
       deleteMany: jest.fn(),
+    },
+    retentionBonus: {
+      findUnique: jest.fn(),
+      update: jest.fn(),
+      create: jest.fn(),
+      findMany: jest.fn(),
+    },
+    salaryWithholding: {
+      findFirst: jest.fn(),
+      findUnique: jest.fn(),
+      update: jest.fn(),
+      create: jest.fn(),
+      findMany: jest.fn(),
+    },
+    gratuityRule: {
+      findFirst: jest.fn(),
+    },
+    gratuity: {
+      create: jest.fn(),
+    },
+    company: {
+      findFirst: jest.fn(),
     },
     $transaction: jest.fn().mockImplementation((cb) => cb(mockPrismaService)),
   };
@@ -279,6 +302,144 @@ describe("PayrollService (Indian Tax & Compliance Math)", () => {
       // Total deductions = 1800 + 0 + 200 + 5850 = 7,850
       expect(upsertCall.create.grossPay).toBe(100000);
       expect(upsertCall.create.deductions).toBe(7850);
+    });
+
+    describe("Gratuity Completed Years Rounding", () => {
+      it("should round completed years up if service fraction >= 0.5", async () => {
+        const joiningDate = new Date();
+        joiningDate.setFullYear(joiningDate.getFullYear() - 5);
+        joiningDate.setMonth(joiningDate.getMonth() - 7); // ~5.58 years
+
+        mockPrismaService.employee = mockPrismaService.employee || {};
+        mockPrismaService.employee.findUnique = jest.fn().mockResolvedValue({
+          id: "emp-1",
+          companyId: "company-1",
+          firstName: "Kabir",
+          lastName: "Sethi",
+          joiningDate,
+        });
+
+        mockPrismaService.salaryStructure.findFirst.mockResolvedValue({
+          basic: 600000, // Monthly basic = 50000
+        });
+
+        mockPrismaService.gratuityRule.findFirst.mockResolvedValue({
+          minYears: 5,
+          multiplier: 0.5769,
+        });
+
+        const res = await service.calculateGratuity("emp-1");
+        expect(res.completedYears).toBe(6);
+        expect(res.amount).toBe(173070);
+      });
+
+      it("should round completed years down if service fraction < 0.5", async () => {
+        const joiningDate = new Date();
+        joiningDate.setFullYear(joiningDate.getFullYear() - 5);
+        joiningDate.setMonth(joiningDate.getMonth() - 2); // ~5.16 years
+
+        mockPrismaService.employee.findUnique = jest.fn().mockResolvedValue({
+          id: "emp-1",
+          companyId: "company-1",
+          firstName: "Kabir",
+          lastName: "Sethi",
+          joiningDate,
+        });
+
+        mockPrismaService.salaryStructure.findFirst.mockResolvedValue({
+          basic: 600000,
+        });
+
+        mockPrismaService.gratuityRule.findFirst.mockResolvedValue({
+          minYears: 5,
+          multiplier: 0.5769,
+        });
+
+        const res = await service.calculateGratuity("emp-1");
+        expect(res.completedYears).toBe(5);
+        expect(res.amount).toBe(144225);
+      });
+    });
+
+    describe("Retention Bonus & Salary Withholding", () => {
+      it("should create AdditionalSalary when retention bonus is approved", async () => {
+        const bonusDto = {
+          status: ApprovalStatus.APPROVED,
+        };
+
+        mockPrismaService.retentionBonus.findUnique.mockResolvedValue({
+          id: "bonus-1",
+          employeeId: "emp-1",
+          bonusAmount: 30000,
+          bonusDate: new Date("2026-06-15"),
+          reason: "Loyalty bonus",
+          status: ApprovalStatus.PENDING,
+        });
+
+        mockPrismaService.additionalSalary.create.mockResolvedValue({ id: "add-sal-1" });
+        mockPrismaService.retentionBonus.update.mockResolvedValue({
+          id: "bonus-1",
+          status: ApprovalStatus.APPROVED,
+          additionalSalaryId: "add-sal-1",
+        });
+
+        const res = await service.decideRetentionBonus("bonus-1", bonusDto);
+        expect(res.data).toBeDefined();
+        expect(mockPrismaService.additionalSalary.create).toHaveBeenCalledWith(expect.objectContaining({
+          data: expect.objectContaining({
+            employeeId: "emp-1",
+            amount: 30000,
+            type: "ADDITION",
+          }),
+        }));
+      });
+
+      it("should calculate zero net pay and add withholding deduction if withholding is active", async () => {
+        const mockRun = { id: "run-4", companyId: "company-1", month: 6, year: 2026, status: ApprovalStatus.DRAFT };
+        mockPrismaService.payrollRun.findUnique.mockResolvedValue(mockRun);
+
+        const mockEmployees = [{ id: "emp-withheld", companyId: "company-1", status: "ACTIVE" }];
+        mockPrismaService.employee.findMany.mockResolvedValue(mockEmployees);
+
+        mockPrismaService.salaryStructure.findFirst.mockResolvedValue({
+          employeeId: "emp-withheld",
+          basic: 240000, // Monthly Basic = 20000
+          hra: 120000,   // Monthly HRA = 10000
+          allowances: 0,
+          professionalTax: 0,
+          employeePf: 0,
+          esi: 0,
+          tds: 0,
+        });
+
+        mockPrismaService.expense.findMany.mockResolvedValue([]);
+        mockPrismaService.additionalSalary.findMany.mockResolvedValue([]);
+        mockPrismaService.employeeBenefitClaim.findMany.mockResolvedValue([]);
+
+        // Set active withholding
+        mockPrismaService.salaryWithholding.findFirst.mockResolvedValue({
+          id: "w-1",
+          employeeId: "emp-withheld",
+          fromDate: new Date("2026-06-01"),
+          status: "ACTIVE",
+        });
+
+        mockPrismaService.payslip.upsert.mockResolvedValue({ id: "payslip-withheld" });
+        mockPrismaService.payrollComponent.createMany.mockResolvedValue({ count: 8 });
+        mockPrismaService.payrollRun.update.mockResolvedValue({ ...mockRun, status: ApprovalStatus.APPROVED });
+
+        await service.calculate("run-4");
+
+        const upsertCall = mockPrismaService.payslip.upsert.mock.calls[0][0];
+        expect(upsertCall.create.netPay).toBe(0);
+        expect(upsertCall.create.deductions).toBe(30000);
+
+        const createComponentsCall = mockPrismaService.payrollComponent.createMany.mock.calls[0][0];
+        const hasWithholdingComponent = createComponentsCall.data.some(
+          (c: any) => c.name === "Salary Withholding" && Number(c.amount) === 28000
+        );
+        expect(hasWithholdingComponent).toBe(true);
+      });
     });
   });
 });

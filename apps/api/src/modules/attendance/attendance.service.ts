@@ -101,6 +101,7 @@ export class AttendanceService {
         checkInAt,
         checkInLatitude: data.latitude,
         checkInLongitude: data.longitude,
+        checkInAccuracy: data.accuracy,
         status,
         source: "WEB",
       },
@@ -111,6 +112,7 @@ export class AttendanceService {
         checkInAt,
         checkInLatitude: data.latitude,
         checkInLongitude: data.longitude,
+        checkInAccuracy: data.accuracy,
         status,
         source: "WEB",
       },
@@ -140,6 +142,7 @@ export class AttendanceService {
         checkOutAt,
         checkOutLatitude: data.latitude,
         checkOutLongitude: data.longitude,
+        checkOutAccuracy: data.accuracy,
       },
       include: { employee: true, shift: true },
     });

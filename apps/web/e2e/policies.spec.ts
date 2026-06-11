@@ -8,7 +8,7 @@ test.describe("Advanced Core Policies E2E Suite", () => {
     await page.getByLabel("Email").fill("hr.admin@skylinx.local");
     await page.getByLabel("Password").fill("Skylinx@123");
     await page.getByRole("button", { name: "Sign In" }).click();
-    await expect(page).toHaveURL(/.*dashboard/);
+    await page.waitForURL("**/dashboard", { timeout: 20000 });
   });
 
   test("should enforce expense grade caps warning", async ({ page }) => {

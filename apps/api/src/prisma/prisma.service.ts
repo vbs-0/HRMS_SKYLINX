@@ -6,7 +6,8 @@ class PrismaFieldsHelper {
   private static companyModels = new Set([
     "Department", "Designation", "Location", "Employee", "Shift", "AttendanceRule",
     "LeaveType", "PayrollRun", "Holiday", "JobPosting", "ModuleSetting", "ClientRule",
-    "GratuityRule"
+    "GratuityRule", "AppraisalCycle", "AppraisalTemplate", "Appraisal", "RetentionBonus",
+    "SalaryWithholding", "CompanyPolicy", "Announcement", "CustomFieldDefinition"
   ]);
 
   private static tenantModels = new Set([

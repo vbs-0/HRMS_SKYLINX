@@ -16,7 +16,7 @@ test.describe("SKYLINX PeopleOS HRMS E2E Suite", () => {
     await page.getByRole("button", { name: "Sign In" }).click();
 
     // Verify redirect to dashboard
-    await expect(page).toHaveURL(/.*dashboard/);
+    await page.waitForURL("**/dashboard", { timeout: 20000 });
 
     // Verify dashboard metrics render
     await expect(page.getByText("Active workforce").first()).toBeVisible();

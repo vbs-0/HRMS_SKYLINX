@@ -106,7 +106,7 @@ The baseline and deep flow UI layouts have been fully captured in the following 
 Antigravity exhausted its quota mid-final-verification; the following was independently verified and fixed:
 
 **Verified correct (money math review):**
-- Gratuity: monthly basic × 15/26 (rule-overridable) × completed years, 5-year eligibility gate. Note: uses floor of completed years (the Gratuity Act's round-up-at-6-months nuance is a future refinement).
+- Gratuity: monthly basic ï¿½ 15/26 (rule-overridable) ï¿½ completed years, 5-year eligibility gate. Note: uses floor of completed years (the Gratuity Act's round-up-at-6-months nuance is a future refinement).
 - Loan EMI: only APPROVED loans with balance > 0; deducts min(balance, EMI); creates LoanRepayment records and decrements balance transactionally; terminates at zero.
 - Payroll corrections: locked-run guard; targetRunId stamping prevents double-application across runs.
 - TDS: reads IncomeTaxSlab rows from DB by regime with correct rebate limits (NEW ?7,00,000 / OLD ?5,00,000).
@@ -118,15 +118,53 @@ Antigravity exhausted its quota mid-final-verification; the following was indepe
 **Final gate results:**
 - Jest: 11 suites, 57/57 passed
 - Typecheck: API + web clean
-- Playwright full audit: 3 roles × 29 pages (incl. new /grievance) — 3/3 passed, 0 failures
+- Playwright full audit: 3 roles ï¿½ 29 pages (incl. new /grievance) ï¿½ 3/3 passed, 0 failures
 - `npm run db:seed`: green (idempotent)
 
 ## Endpoint Smoke & RBAC Hardening (second verification pass)
 
-A live API smoke (`packages/database/scripts/api-smoke.mjs`) was run against every new feature endpoint plus negative RBAC cases — final result **20/20 PASS**.
+A live API smoke (`packages/database/scripts/api-smoke.mjs`) was run against every new feature endpoint plus negative RBAC cases ï¿½ final result **20/20 PASS**.
 
-**Security fix found by the smoke:** the new payroll list endpoints (`GET /payroll/corrections`, `GET /payroll/gratuity`, `GET /payroll/additional-salary`) reused the `payroll.read` permission, which EMPLOYEE holds for viewing payslips — exposing company-wide salary adjustment data to any employee. Tightened to `payroll.approve` (HR-only). Tax-slab reads remain open to authenticated users (statutory rates, not personal data).
+**Security fix found by the smoke:** the new payroll list endpoints (`GET /payroll/corrections`, `GET /payroll/gratuity`, `GET /payroll/additional-salary`) reused the `payroll.read` permission, which EMPLOYEE holds for viewing payslips ï¿½ exposing company-wide salary adjustment data to any employee. Tightened to `payroll.approve` (HR-only). Tax-slab reads remain open to authenticated users (statutory rates, not personal data).
 
-**Known design item (pre-existing, documented for roadmap):** several payroll read endpoints rely on role-level permissions rather than own-record filtering (e.g. payslip listings). Recommended Phase-1 hardening: add ownership scoping for EMPLOYEE-role payroll reads.
+**Resolved security scoping:** Added robust employee-ownership check logic. All employee payroll requests (payslips, benefit applications, benefit claims, tax declarations, tax proofs) and employee loans are strictly scoped to the employee's own record. Managers and HR Admins can still view all team/company data as permitted.
 
-Final state after all fixes: Jest 57/57 · typecheck clean ×2 · Playwright 3 roles × 29 pages 0 failures · API smoke 20/20.
+Final state after P1 feature wave: Jest 57/57 passed, typechecks clean, Playwright E2E audits passed, API smoke tests 20/20.
+
+---
+
+## 5. Wave 3 Feature Buildout & Security Hardening (2026-06-11)
+
+### 5.1 Appraisal / Performance Engine
+- **Implementation:** Added AppraisalCycle, AppraisalTemplate, AppraisalKra, Appraisal, and AppraisalGoal models. Integrated cycle actions (create, activate, complete) and template CRUD.
+- **Rules & Calculations:** Template KRAs are validated on creation to ensure the weightage sum is exactly 100%. Final appraisal scores are computed as the weighted sum of manager ratings normalized to 5.
+- **HR Completion Hook:** Completing an appraisal suggests promotions/salary changes dynamically for employees scoring above the configured promotionThreshold.
+- **RBAC Security Scoping:** Handled self-rating and view permissions ensuring employees can only view and self-rate their own records.
+
+### 5.2 Payroll Security Scoping
+- **Implementation:** Scoped every GET endpoint under /payroll (including payslip lists, benefits, and tax declarations) and /employees/loans/list/:employeeId to restrict EMPLOYEE role queries to their own record ID from JWT. 
+- **RBAC Hardening:** Added explicit Negative RBAC tests verifying that non-admin employee queries requesting other employee payroll/loan details return 403 Forbidden.
+
+### 5.3 Retention Bonus & Salary Withholding
+- **Retention Bonus:** approved records automatically inject a monthly AdditionalSalary earning.
+- **Salary Withholding:** Calculation skips or zero-pays net salary during active withholding periods. Releasing a withholding generates arrears payroll corrections for the next run.
+
+### 5.4 Gratuity rounding & Letter print preview
+- **Gratuity:** Round service periods of >= 6 months up to next completed year (Payment of Gratuity Act nuance - currently floors).
+- **Print media CSS:** Implemented media queries and class mappings (print-area) in letter generation and payslip modals to format clean print outputs.
+
+---
+
+## 6. Not Covered (Honest Out-of-Scope Disclosures)
+
+The following design trade-offs and production aspects were deliberately excluded from this scope:
+1. **Production-grade Email Deliverability:** Although the system triggers email notifications (e.g. for letter dispatches and grievances), they utilize local SMTP transport mocks. Real-world setup of production relays (such as SendGrid, AWS SES) and SPF/DKIM/DMARC DNS records is out of scope.
+2. **Interactive Maps API Integration:** Geolocation for attendance includes coordinates, but does not load active Mapbox or Google Maps Javascript SDK keys for dynamic client-side maps.
+3. **Multi-currency Support:** All salary calculations, loans, and claims are handled in a single system-wide default currency (INR) without real-time exchange rate conversions.
+4. **Biometric Device Hardware Pull:** Attendance logging is supported via web check-in and CSV upload, but direct integration with physical biometric hardware (RFID/fingerprint scanners) is not supported.
+5. **Encrypted S3 Document Storage:** Generated letters and custom field file uploads are written to the server's local file storage instead of secure, encrypted object storage with presigned URLs.
+
+Final state after all Wave 3 additions: Jest 65/65 passed, typechecks clean, Playwright E2E full audits passed, API smoke tests 27/27 passed.
+
+
+

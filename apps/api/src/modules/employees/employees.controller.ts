@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, UseInterceptors, UploadedFile, Req } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post, UseInterceptors, UploadedFile, Req, ForbiddenException } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import * as path from "path";
@@ -283,7 +283,14 @@ export class EmployeesController {
 
   @Get("loans/list/:employeeId")
   @RequirePermissions("employees.read")
-  listLoans(@Param("employeeId") employeeId: string) {
+  listLoans(
+    @Param("employeeId") employeeId: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    const isEmployee = !user.permissions.includes("employees.approve") && !user.permissions.includes("payroll.approve");
+    if (isEmployee && user.employeeId !== employeeId) {
+      throw new ForbiddenException("You can only view your own loans");
+    }
     return this.employeesService.listLoans(employeeId);
   }
 

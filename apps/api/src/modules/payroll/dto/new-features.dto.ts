@@ -76,3 +76,44 @@ export class CreateTaxSlabDto {
   @IsOptional()
   surcharge?: number;
 }
+
+export class CreateRetentionBonusDto {
+  @IsString()
+  employeeId!: string;
+
+  @IsNumber()
+  @Min(0)
+  bonusAmount!: number;
+
+  @IsString()
+  bonusDate!: string;
+
+  @IsString()
+  @IsOptional()
+  reason?: string;
+}
+
+export class DecideRetentionBonusDto {
+  @IsEnum(ApprovalStatus)
+  status!: ApprovalStatus;
+
+  @IsString()
+  @IsOptional()
+  decidedByUserId?: string;
+}
+
+export class CreateSalaryWithholdingDto {
+  @IsString()
+  employeeId!: string;
+
+  @IsString()
+  fromDate!: string;
+
+  @IsString()
+  @IsOptional()
+  toDate?: string;
+
+  @IsString()
+  @IsOptional()
+  reason?: string;
+}

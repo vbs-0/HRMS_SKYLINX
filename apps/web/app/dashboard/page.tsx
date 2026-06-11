@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { AppShell, nav } from "../../components/app-shell";
 import { LiveMetrics } from "../../components/live-metrics";
+import { DashboardWidgets } from "../../components/dashboard-widgets";
 import { Card, StatusPill } from "../../components/ui";
 import { getCompanyProfile, getDashboardMetrics } from "../../lib/api";
 import { hasPlanAccess, moduleKeyFromHref, requiredPlanForModule } from "../../lib/plan-access";
@@ -10,14 +11,19 @@ export default async function DashboardPage() {
   const [metrics, companyProfile] = await Promise.all([getDashboardMetrics(), getCompanyProfile()]);
   const activePlan = await getActivePlan();
   const hiddenFromQuickGrid = ["/dashboard", "/saas"] as string[];
-  const availableModules = nav.filter((item) => !hiddenFromQuickGrid.includes(item.href) && hasPlanAccess(requiredPlanForModule(moduleKeyFromHref(item.href)), activePlan));
-  const lockedModules = nav.filter((item) => !hiddenFromQuickGrid.includes(item.href) && !hasPlanAccess(requiredPlanForModule(moduleKeyFromHref(item.href)), activePlan));
+  const availableModules = nav.filter(
+    (item) => !hiddenFromQuickGrid.includes(item.href) && hasPlanAccess(requiredPlanForModule(moduleKeyFromHref(item.href)), activePlan),
+  );
+  const lockedModules = nav.filter(
+    (item) => !hiddenFromQuickGrid.includes(item.href) && !hasPlanAccess(requiredPlanForModule(moduleKeyFromHref(item.href)), activePlan),
+  );
 
   return (
     <AppShell title="SKYLINX PeopleOS" subtitle="Company workspace, employee operations and HR workflows.">
       <LiveMetrics initial={metrics} />
 
       <section className="mt-6 grid grid-cols-[280px_1fr_300px] gap-6 max-2xl:grid-cols-[260px_1fr] max-xl:grid-cols-1">
+        {/* Left column */}
         <div className="grid content-start gap-5">
           <Card className="text-center">
             <div className="mx-auto flex h-32 w-32 items-center justify-center overflow-hidden rounded-full border-2 border-brand bg-[#dff7ff] text-4xl font-bold text-brand select-none">
@@ -55,6 +61,7 @@ export default async function DashboardPage() {
           </div>
         </div>
 
+        {/* Center column — modules grid */}
         <Card className="min-h-[520px]">
           <div className="mb-5 rounded-lg bg-[#0f6676] p-6 text-white">
             <StatusPill>Payroll Ready</StatusPill>
@@ -101,28 +108,20 @@ export default async function DashboardPage() {
           </div>
         </Card>
 
+        {/* Right column — live dynamic widgets */}
         <div className="grid content-start gap-5 max-2xl:col-span-2 max-xl:col-span-1">
-          <div className="rounded-lg bg-[#0e2a86] p-5 text-white shadow-sm">
-            <h2 className="text-lg font-bold text-[#ffe65a]">Company Announcement</h2>
-            <p className="mt-4 text-sm font-semibold">HR policy updates, holiday changes and payroll notices will be published here.</p>
-          </div>
-
-          <div className="rounded-lg border border-[#dce2eb] bg-white p-5 shadow-sm">
-            <h2 className="text-lg font-semibold text-[#5a26d9]">Module Rollout</h2>
-            <p className="mt-2 text-sm text-muted">Employee directory, attendance, leave, payroll and support desk are active for daily HR operations.</p>
-            <div className="mt-4 rounded-lg border border-[#dce2eb] p-3 text-xs">Current workspace: http://localhost:3000/dashboard</div>
-          </div>
-
-          <div className="rounded-lg bg-[#273963] p-6 text-white shadow-sm">
-            <div className="text-center text-lg font-bold">WHAT'S NEW</div>
-            <div className="mt-3 text-center"><StatusPill tone="red">Stationery Designer</StatusPill></div>
-            <p className="mt-4 text-center text-sm text-white/80">ID card and visiting card templates are ready for employee preview.</p>
-          </div>
+          <DashboardWidgets />
 
           <div className="rounded-lg bg-[#6254d9] p-5 text-white shadow-sm">
             <h2 className="font-bold">Support Desk</h2>
             <p className="mt-4 text-sm">For HRMS queries contact skylinxcode@gmail.com or call 8008785577.</p>
             <Link className="mt-4 inline-flex min-h-9 items-center rounded-lg bg-[#ed174f] px-4 text-sm font-bold text-white" href="/support">Open Support</Link>
+          </div>
+
+          <div className="rounded-lg bg-[#273963] p-6 text-white shadow-sm">
+            <div className="text-center text-lg font-bold">WHAT&apos;S NEW</div>
+            <div className="mt-3 text-center"><StatusPill tone="red">Policy Center</StatusPill></div>
+            <p className="mt-4 text-center text-sm text-white/80">Company Policies, acknowledgment tracking, and custom employee fields are now live.</p>
           </div>
         </div>
       </section>

@@ -32,6 +32,9 @@ import { RecruitmentModule } from "./recruitment/recruitment.module";
 import { TrainingModule } from "./training/training.module";
 import { TravelModule } from "./travel/travel.module";
 import { GrievanceModule } from "./grievance/grievance.module";
+import { PoliciesModule } from "./policies/policies.module";
+import { AnnouncementsModule } from "./announcements/announcements.module";
+import { CustomFieldsModule } from "./custom-fields/custom-fields.module";
 import { PrismaModule } from "../prisma/prisma.module";
 import { JwtAuthGuard } from "../common/auth/jwt-auth.guard";
 import { PermissionsGuard } from "../common/auth/permissions.guard";
@@ -69,6 +72,9 @@ import { PermissionsGuard } from "../common/auth/permissions.guard";
     TrainingModule,
     TravelModule,
     GrievanceModule,
+    PoliciesModule,
+    AnnouncementsModule,
+    CustomFieldsModule,
   ],
   providers: [
     {

@@ -1,4 +1,4 @@
-// Live API smoke across all new P1/P2/P3 feature endpoints.
+// Live API smoke across all new P1/P2/P3/Wave4 feature endpoints.
 // Proves controller registration, permission guards, service and DB wiring.
 const BASE = "http://localhost:4000/api/v1";
 
@@ -44,14 +44,34 @@ await check("referrals", "/recruitment/referrals", hr);
 // P3
 await check("feedback requests", "/performance/feedback/requests", hr);
 await check("grievances", "/grievance", hr);
+await check("appraisal cycles", "/performance/cycles", hr);
+await check("appraisal templates", "/performance/templates", hr);
+await check("retention bonuses", "/payroll/retention-bonuses", hr);
+await check("salary withholdings", "/payroll/withholdings", hr);
+
+// Wave 4
+await check("policies list", "/policies", hr);
+await check("announcements list", "/announcements", hr);
+await check("custom field definitions", "/custom-fields/definitions", hr);
+await check("custom field values emp_1001", "/custom-fields/values/emp_1001", hr);
+await check("dashboard celebrations", "/dashboard/celebrations", hr);
+await check("form16 emp_1001", "/payroll/form16/emp_1001", hr);
 
 // RBAC negative: EMPLOYEE must NOT list org-wide salary data.
-// (tax-slabs stay readable — statutory rates, not personal data)
 const emp = await login("kabir.sethi@skylinx.local", "Skylinx@123");
 await check("RBAC employee blocked corrections", "/payroll/corrections", emp, 403);
 await check("RBAC employee blocked gratuity list", "/payroll/gratuity", emp, 403);
 await check("RBAC employee blocked addl salary", "/payroll/additional-salary", emp, 403);
 await check("RBAC manager blocked corrections", "/payroll/corrections", await login("rohan.iyer@skylinx.local", "Skylinx@123"), 403);
+
+// RBAC negative: EMPLOYEE blocked from others' loans & tax declarations
+await check("RBAC employee blocked other loans", "/employees/loans/list/emp_1004", emp, 403);
+await check("RBAC employee blocked other tax dec", "/payroll/tax-declarations/emp_1004", emp, 403);
+// But employee can see their own loans & tax declarations:
+await check("RBAC employee allowed own loans", "/employees/loans/list/emp_1003", emp, 200);
+
+// Wave 4 RBAC: Employees can read policies
+await check("RBAC employee can read policies", "/policies", emp, 200);
 
 console.log(results.join("\n"));
 const fails = results.filter((r) => r.startsWith("FAIL"));

@@ -1,0 +1,226 @@
+[
+  {
+    "route": "/dashboard",
+    "status": "PASS",
+    "note": "",
+    "buttons": 5,
+    "inputs": 1,
+    "screenshot": "HR_ADMIN_DEEP/01_dashboard.png"
+  },
+  {
+    "route": "/employees",
+    "status": "PASS",
+    "note": "",
+    "buttons": 12,
+    "inputs": 5,
+    "screenshot": "HR_ADMIN_DEEP/02_employees.png"
+  },
+  {
+    "route": "/attendance",
+    "status": "PASS",
+    "note": "",
+    "buttons": 11,
+    "inputs": 4,
+    "screenshot": "HR_ADMIN_DEEP/03_attendance.png"
+  },
+  {
+    "route": "/leave",
+    "status": "PASS",
+    "note": "",
+    "buttons": 15,
+    "inputs": 4,
+    "screenshot": "HR_ADMIN_DEEP/04_leave.png"
+  },
+  {
+    "route": "/payroll",
+    "status": "PASS",
+    "note": "",
+    "buttons": 22,
+    "inputs": 5,
+    "screenshot": "HR_ADMIN_DEEP/05_payroll.png"
+  },
+  {
+    "route": "/expenses",
+    "status": "PASS",
+    "note": "",
+    "buttons": 12,
+    "inputs": 4,
+    "screenshot": "HR_ADMIN_DEEP/06_expenses.png"
+  },
+  {
+    "route": "/holidays",
+    "status": "PASS",
+    "note": "",
+    "buttons": 15,
+    "inputs": 4,
+    "screenshot": "HR_ADMIN_DEEP/07_holidays.png"
+  },
+  {
+    "route": "/insurance",
+    "status": "PASS",
+    "note": "",
+    "buttons": 13,
+    "inputs": 4,
+    "screenshot": "HR_ADMIN_DEEP/08_insurance.png"
+  },
+  {
+    "route": "/recruitment",
+    "status": "PASS",
+    "note": "",
+    "buttons": 12,
+    "inputs": 5,
+    "screenshot": "HR_ADMIN_DEEP/09_recruitment.png"
+  },
+  {
+    "route": "/training",
+    "status": "WARN",
+    "note": "console errors: Failed to load resource: the server responded with a status of 404 (Not Found);",
+    "buttons": 13,
+    "inputs": 9,
+    "screenshot": "HR_ADMIN_DEEP/10_training.png"
+  },
+  {
+    "route": "/travel",
+    "status": "PASS",
+    "note": "",
+    "buttons": 9,
+    "inputs": 9,
+    "screenshot": "HR_ADMIN_DEEP/11_travel.png"
+  },
+  {
+    "route": "/performance",
+    "status": "PASS",
+    "note": "",
+    "buttons": 10,
+    "inputs": 4,
+    "screenshot": "HR_ADMIN_DEEP/12_performance.png"
+  },
+  {
+    "route": "/approvals",
+    "status": "PASS",
+    "note": "",
+    "buttons": 16,
+    "inputs": 5,
+    "screenshot": "HR_ADMIN_DEEP/13_approvals.png"
+  },
+  {
+    "route": "/organization",
+    "status": "PASS",
+    "note": "",
+    "buttons": 10,
+    "inputs": 1,
+    "screenshot": "HR_ADMIN_DEEP/14_organization.png"
+  },
+  {
+    "route": "/analytics",
+    "status": "PASS",
+    "note": "",
+    "buttons": 10,
+    "inputs": 4,
+    "screenshot": "HR_ADMIN_DEEP/15_analytics.png"
+  },
+  {
+    "route": "/reports",
+    "status": "PASS",
+    "note": "",
+    "buttons": 16,
+    "inputs": 7,
+    "screenshot": "HR_ADMIN_DEEP/16_reports.png"
+  },
+  {
+    "route": "/rewards",
+    "status": "PASS",
+    "note": "",
+    "buttons": 9,
+    "inputs": 4,
+    "screenshot": "HR_ADMIN_DEEP/17_rewards.png"
+  },
+  {
+    "route": "/social",
+    "status": "PASS",
+    "note": "",
+    "buttons": 25,
+    "inputs": 8,
+    "screenshot": "HR_ADMIN_DEEP/18_social.png"
+  },
+  {
+    "route": "/notifications",
+    "status": "PASS",
+    "note": "",
+    "buttons": 13,
+    "inputs": 4,
+    "screenshot": "HR_ADMIN_DEEP/19_notifications.png"
+  },
+  {
+    "route": "/compliance",
+    "status": "PASS",
+    "note": "",
+    "buttons": 11,
+    "inputs": 4,
+    "screenshot": "HR_ADMIN_DEEP/20_compliance.png"
+  },
+  {
+    "route": "/assets",
+    "status": "PASS",
+    "note": "",
+    "buttons": 25,
+    "inputs": 4,
+    "screenshot": "HR_ADMIN_DEEP/21_assets.png"
+  },
+  {
+    "route": "/support",
+    "status": "PASS",
+    "note": "",
+    "buttons": 19,
+    "inputs": 4,
+    "screenshot": "HR_ADMIN_DEEP/22_support.png"
+  },
+  {
+    "route": "/security",
+    "status": "PASS",
+    "note": "",
+    "buttons": 9,
+    "inputs": 4,
+    "screenshot": "HR_ADMIN_DEEP/23_security.png"
+  },
+  {
+    "route": "/settings",
+    "status": "PASS",
+    "note": "",
+    "buttons": 50,
+    "inputs": 72,
+    "screenshot": "HR_ADMIN_DEEP/24_settings.png"
+  },
+  {
+    "route": "/saas",
+    "status": "PASS",
+    "note": "",
+    "buttons": 18,
+    "inputs": 14,
+    "screenshot": "HR_ADMIN_DEEP/25_saas.png"
+  },
+  {
+    "route": "/saas-admin",
+    "status": "PASS",
+    "note": "",
+    "buttons": 5,
+    "inputs": 1,
+    "screenshot": "HR_ADMIN_DEEP/26_saas-admin.png"
+  },
+  {
+    "route": "/cards",
+    "status": "PASS",
+    "note": "",
+    "buttons": 25,
+    "inputs": 2,
+    "screenshot": "HR_ADMIN_DEEP/27_cards.png"
+  },
+  {
+    "route": "/documents",
+    "status": "PASS",
+    "note": "",
+    "buttons": 10,
+    "inputs": 8,
+    "screenshot": "HR_ADMIN_DEEP/28_documents.png"
+  }
+]

@@ -26,7 +26,8 @@ export function EmployeeCreatePanel() {
     event.preventDefault();
     setMessage("");
     setError("");
-    const form = new FormData(event.currentTarget);
+    const currentForm = event.currentTarget;
+    const form = new FormData(currentForm);
     try {
       await apiFetch("/employees", {
         method: "POST",
@@ -42,7 +43,7 @@ export function EmployeeCreatePanel() {
       });
       setMessage("Employee created. Refresh the table to see the latest record.");
       requestDataRefresh("employees");
-      event.currentTarget.reset();
+      currentForm.reset();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Employee creation failed");
     }
@@ -141,13 +142,63 @@ export function DocumentUploadPanel() {
 export function ExpenseClaimPanel() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [warning, setWarning] = useState("");
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState("");
+  const [amount, setAmount] = useState<number | "">("");
+  const [gradeLimit, setGradeLimit] = useState<number | null>(null);
   const employees = useEmployeeOptions();
+
+  useEffect(() => {
+    if (employees.length > 0 && !selectedEmployeeId) {
+      setSelectedEmployeeId(employees[0].value);
+    }
+  }, [employees, selectedEmployeeId]);
+
+  useEffect(() => {
+    function load() {
+      if (!selectedEmployeeId) {
+        setGradeLimit(null);
+        return;
+      }
+      apiFetch<any>(`/employees/${selectedEmployeeId}`)
+        .then((res) => {
+          if (res.data?.grade) {
+            setGradeLimit(Number(res.data.grade.maxExpenseLimit));
+          } else {
+            setGradeLimit(null);
+          }
+        })
+        .catch(() => {
+          setGradeLimit(null);
+        });
+    }
+
+    load();
+
+    const handler = (event: Event) => {
+      const custom = event as CustomEvent<{ scope: string }>;
+      if (custom.detail?.scope === "employees" || custom.detail?.scope === "all") {
+        load();
+      }
+    };
+    window.addEventListener("skylinx:data-refresh", handler);
+    return () => window.removeEventListener("skylinx:data-refresh", handler);
+  }, [selectedEmployeeId]);
+
+  useEffect(() => {
+    if (gradeLimit !== null && amount !== "" && Number(amount) > gradeLimit) {
+      setWarning(`Warning: Amount exceeds employee's grade maximum expense limit of ₹${gradeLimit}.`);
+    } else {
+      setWarning("");
+    }
+  }, [amount, gradeLimit]);
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setMessage("");
     setError("");
-    const form = new FormData(event.currentTarget);
+    const currentForm = event.currentTarget;
+    const form = new FormData(currentForm);
 
     try {
       await apiFetch("/expenses", {
@@ -162,7 +213,8 @@ export function ExpenseClaimPanel() {
       });
       setMessage("Expense claim submitted.");
       requestDataRefresh("expenses");
-      event.currentTarget.reset();
+      setAmount("");
+      currentForm.reset();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Expense claim failed");
     }
@@ -170,7 +222,13 @@ export function ExpenseClaimPanel() {
 
   return (
     <form className="mb-5 grid grid-cols-4 gap-3 rounded-lg border border-[#dce2eb] bg-white p-4 shadow-sm max-xl:grid-cols-2 max-md:grid-cols-1" onSubmit={submit}>
-      <select className={inputClass()} name="employeeId" required>
+      <select
+        className={inputClass()}
+        name="employeeId"
+        required
+        value={selectedEmployeeId}
+        onChange={(e) => setSelectedEmployeeId(e.target.value)}
+      >
         {employees.map((employee) => <option key={employee.value} value={employee.value}>{employee.label}</option>)}
       </select>
       <select className={inputClass()} name="category" required>
@@ -181,10 +239,24 @@ export function ExpenseClaimPanel() {
         <option value="Client Visit">Client Visit</option>
         <option value="Office Supplies">Office Supplies</option>
       </select>
-      <input className={inputClass()} name="amount" min="1" placeholder="Amount" required type="number" />
+      <input
+        className={inputClass()}
+        name="amount"
+        min="1"
+        placeholder="Amount"
+        required
+        type="number"
+        value={amount}
+        onChange={(e) => setAmount(e.target.value !== "" ? Number(e.target.value) : "")}
+      />
       <input className={inputClass()} name="claimDate" required type="date" />
       <input className={inputClass()} name="receiptUrl" placeholder="Receipt URL" type="url" />
       <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white">Submit Claim</button>
+      {warning && (
+        <div className="col-span-full rounded-lg bg-amber-50 border border-amber-200 p-2.5 text-xs text-amber-800 font-semibold">
+          {warning}
+        </div>
+      )}
       <div className="col-span-full"><Result message={message} error={error} /></div>
     </form>
   );
@@ -198,7 +270,8 @@ export function HolidayCreatePanel() {
     event.preventDefault();
     setMessage("");
     setError("");
-    const form = new FormData(event.currentTarget);
+    const currentForm = event.currentTarget;
+    const form = new FormData(currentForm);
 
     try {
       await apiFetch("/holidays", {
@@ -212,7 +285,7 @@ export function HolidayCreatePanel() {
       });
       setMessage("Holiday added to calendar.");
       requestDataRefresh("holidays");
-      event.currentTarget.reset();
+      currentForm.reset();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Holiday creation failed");
     }
@@ -291,7 +364,8 @@ export function InsuranceActionPanel({ defaultAction = "policy" }: { defaultActi
     event.preventDefault();
     setMessage("");
     setError("");
-    const form = new FormData(event.currentTarget);
+    const currentForm = event.currentTarget;
+    const form = new FormData(currentForm);
 
     try {
       if (action === "policy") {
@@ -349,7 +423,7 @@ export function InsuranceActionPanel({ defaultAction = "policy" }: { defaultActi
       }
 
       requestDataRefresh("insurance");
-      event.currentTarget.reset();
+      currentForm.reset();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Insurance action failed");
     }
@@ -398,7 +472,8 @@ export function NotificationSendPanel() {
     event.preventDefault();
     setMessage("");
     setError("");
-    const form = new FormData(event.currentTarget);
+    const currentForm = event.currentTarget;
+    const form = new FormData(currentForm);
 
     try {
       await apiFetch("/notifications", {
@@ -412,7 +487,7 @@ export function NotificationSendPanel() {
       });
       setMessage("Notification queued.");
       requestDataRefresh("notifications");
-      event.currentTarget.reset();
+      currentForm.reset();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Notification failed");
     }
@@ -446,7 +521,8 @@ export function SocialPostPanel() {
     event.preventDefault();
     setMessage("");
     setError("");
-    const form = new FormData(event.currentTarget);
+    const currentForm = event.currentTarget;
+    const form = new FormData(currentForm);
 
     try {
       await apiFetch("/social/posts", {
@@ -460,7 +536,7 @@ export function SocialPostPanel() {
       });
       setMessage("Post published.");
       requestDataRefresh("social");
-      event.currentTarget.reset();
+      currentForm.reset();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Post creation failed");
     }
@@ -494,7 +570,8 @@ export function RewardsActionPanel() {
     event.preventDefault();
     setMessage("");
     setError("");
-    const form = new FormData(event.currentTarget);
+    const currentForm = event.currentTarget;
+    const form = new FormData(currentForm);
     const action = String(form.get("action"));
 
     try {
@@ -549,7 +626,7 @@ export function RewardsActionPanel() {
         setMessage("Benefit created.");
       }
       requestDataRefresh("rewards");
-      event.currentTarget.reset();
+      currentForm.reset();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Rewards action failed");
     }
@@ -606,7 +683,7 @@ export function AttendanceActionPanel() {
   return (
     <div className="mb-5 rounded-lg border border-[#dce2eb] bg-white p-4 shadow-sm">
       <div className="grid grid-cols-[1fr_auto_auto] gap-3 max-md:grid-cols-1">
-        <select className={inputClass()} value={employeeId} onChange={(event) => setEmployeeId(event.target.value)}>
+        <select className={inputClass()} id="attendance-employee-select" name="employeeId" value={employeeId} onChange={(event) => setEmployeeId(event.target.value)}>
           {employees.map((employee) => <option key={employee.value} value={employee.value}>{employee.label}</option>)}
         </select>
         <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white" onClick={() => action("/attendance/check-in", employeeId)}>
@@ -631,7 +708,8 @@ export function LeaveApplyPanel() {
     event.preventDefault();
     setMessage("");
     setError("");
-    const form = new FormData(event.currentTarget);
+    const currentForm = event.currentTarget;
+    const form = new FormData(currentForm);
     try {
       await apiFetch("/leave/requests", {
         method: "POST",
@@ -646,7 +724,7 @@ export function LeaveApplyPanel() {
       });
       setMessage("Leave request submitted.");
       requestDataRefresh("leave");
-      event.currentTarget.reset();
+      currentForm.reset();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Leave request failed");
     }
@@ -719,7 +797,7 @@ export function PayrollActionPanel() {
   return (
     <div className="mb-5 rounded-lg border border-[#dce2eb] bg-white p-4 shadow-sm" id="payroll-actions">
       <div className="grid grid-cols-[1fr_repeat(4,auto)] gap-3 max-xl:grid-cols-2 max-md:grid-cols-1">
-        <select className={inputClass()} value={runId} onChange={(event) => setRunId(event.target.value)}>
+        <select className={inputClass()} id="payroll-run-select" name="payrollRunId" value={runId} onChange={(event) => setRunId(event.target.value)}>
           <option value="">Select payroll run</option>
           {payrollRuns.map((run) => <option key={run.value} value={run.value}>{run.label}</option>)}
         </select>

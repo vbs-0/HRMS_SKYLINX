@@ -44,6 +44,18 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
             if (readOperations.includes(params.action)) {
               if (params.action === "findUnique") {
                 params.action = "findFirst";
+                // findFirst does not accept compound-unique selectors
+                // (e.g. companyId_module: { ... }) — flatten them to plain fields.
+                const where = (params.args.where || {}) as Record<string, unknown>;
+                const flattened: Record<string, unknown> = {};
+                for (const [key, value] of Object.entries(where)) {
+                  if (value && typeof value === "object" && !Array.isArray(value) && !["AND", "OR", "NOT"].includes(key)) {
+                    Object.assign(flattened, value);
+                  } else {
+                    flattened[key] = value;
+                  }
+                }
+                params.args.where = flattened;
               }
               params.args.where = params.args.where || {};
               params.args.where[field] = tenantId;

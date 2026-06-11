@@ -57,16 +57,20 @@ model Company {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  departments Department[]
-  locations   Location[]
-  employees   Employee[]
-  holidays    Holiday[]
-  payrollRuns PayrollRun[]
-  settings    ModuleSetting[]
-  clientRules ClientRule[]
+  departments     Department[]
+  locations       Location[]
+  employees       Employee[]
+  holidays        Holiday[]
+  payrollRuns     PayrollRun[]
+  settings        ModuleSetting[]
+  clientRules     ClientRule[]
   subscription    Subscription?
   tickets         Ticket[]
   jobRequisitions JobRequisition[]
+  employeeGrades  EmployeeGrade[]
+  employmentTypes EmploymentType[]
+  leaveBlockLists LeaveBlockList[]
+  leavePolicies   LeavePolicy[]
   tenantUsers     User[]            @relation("TenantUsers")
   tenantRoles     Role[]            @relation("TenantRoles")
   tenantAudits    AuditLog[]        @relation("TenantAuditLogs")
@@ -169,31 +173,35 @@ model Department {
 }
 
 model Designation {
-  id           String      @id @default(cuid())
-  companyId    String
-  departmentId String?
-  title        String
-  grade        String?
-  status       String      @default("ACTIVE")
-  department   Department? @relation(fields: [departmentId], references: [id])
-  employees    Employee[]
+  id                String             @id @default(cuid())
+  companyId         String
+  departmentId      String?
+  title             String
+  grade             String?
+  status            String             @default("ACTIVE")
+  department        Department?        @relation(fields: [departmentId], references: [id])
+  employees         Employee[]
+  designationSkills DesignationSkill[]
 
   @@index([companyId, status])
   @@index([departmentId])
 }
 
 model Location {
-  id        String     @id @default(cuid())
-  companyId String
-  name      String
-  address   String?
-  city      String
-  state     String
-  country   String     @default("India")
-  status    String     @default("ACTIVE")
-  company   Company    @relation(fields: [companyId], references: [id])
-  employees Employee[]
-  holidays  Holiday[]
+  id             String          @id @default(cuid())
+  companyId      String
+  name           String
+  address        String?
+  city           String
+  state          String
+  country        String          @default("India")
+  status         String          @default("ACTIVE")
+  latitude       Decimal?
+  longitude      Decimal?
+  company        Company         @relation(fields: [companyId], references: [id])
+  employees      Employee[]
+  holidays       Holiday[]
+  shiftLocations ShiftLocation[]
 
   @@index([companyId, status])
 }
@@ -215,6 +223,10 @@ model Employee {
   managerId      String?
   employmentType String         @default("FULL_TIME")
   status         EmployeeStatus @default(ACTIVE)
+  panNumber                 String?
+  providentFundAccount      String?
+  gradeId                   String?
+  employmentTypeId          String?
   createdAt      DateTime       @default(now())
   updatedAt      DateTime       @updatedAt
 
@@ -242,6 +254,25 @@ model Employee {
   requisitionsApproved      JobRequisition[]           @relation("RequisitionApprover")
   interviewsAssigned        Interviewer[]
   submittedFeedbacks        InterviewFeedback[]
+  shiftAssignments          ShiftAssignment[]
+  shiftRequests             ShiftRequest[]
+  exitInterviews            ExitInterview[]            @relation("ExitEmployee")
+  interviewsConducted       ExitInterview[]            @relation("ExitInterviewer")
+  fullAndFinalStatements    FullAndFinalStatement[]
+  benefitApplications       EmployeeBenefitApplication[]
+  benefitClaims             EmployeeBenefitClaim[]
+  taxDeclarations           EmployeeTaxExemptionDeclaration[]
+  taxExemptionProofs        EmployeeTaxExemptionProofSubmission[]
+  additionalSalaries        AdditionalSalary[]
+  trainingFeedbacks         TrainingFeedback[]
+  trainingResults           TrainingResult[]
+  skillMaps                 EmployeeSkillMap[]
+  travelRequests            TravelRequest[]
+  advances                  EmployeeAdvance[]
+  leavePolicyAssignments    LeavePolicyAssignment[]
+  leaveLedgerEntries        LeaveLedgerEntry[]
+  grade                     EmployeeGrade?             @relation(fields: [gradeId], references: [id])
+  employmentTypeRelation    EmploymentType?            @relation("EmployeeEmploymentType", fields: [employmentTypeId], references: [id])
 
   @@unique([companyId, employeeCode])
   @@index([companyId, status])
@@ -288,6 +319,9 @@ model Shift {
   halfDayMinutes Int             @default(240)
   status         String          @default("ACTIVE")
   logs           AttendanceLog[]
+  assignments    ShiftAssignment[]
+  requests       ShiftRequest[]
+  locations      ShiftLocation[]
 }
 
 model AttendanceRule {
@@ -373,6 +407,7 @@ model LeaveType {
   status              String         @default("ACTIVE")
   requests            LeaveRequest[]
   balances            LeaveBalance[]
+  ledgerEntries       LeaveLedgerEntry[]
 
   @@unique([companyId, code])
 }
@@ -953,4 +988,444 @@ model SystemLog {
   logLevel  String
   message   String
   timestamp DateTime @default(now())
+}
+
+model ShiftAssignment {
+  id         String   @id @default(cuid())
+  employeeId String
+  shiftId    String
+  date       DateTime
+  createdAt  DateTime @default(now())
+  employee   Employee @relation(fields: [employeeId], references: [id])
+  shift      Shift    @relation(fields: [shiftId], references: [id])
+
+  @@unique([employeeId, date])
+  @@index([shiftId])
+}
+
+model ShiftRequest {
+  id            String         @id @default(cuid())
+  employeeId    String
+  shiftId       String
+  requestedDate DateTime
+  status        ApprovalStatus @default(PENDING)
+  reason        String?
+  createdAt     DateTime       @default(now())
+  employee      Employee       @relation(fields: [employeeId], references: [id])
+  shift         Shift          @relation(fields: [shiftId], references: [id])
+
+  @@index([employeeId])
+  @@index([shiftId])
+}
+
+model ShiftSchedule {
+  id        String   @id @default(cuid())
+  name      String
+  startDate DateTime
+  endDate   DateTime?
+  pattern   String
+  createdAt DateTime @default(now())
+}
+
+model EmployeeOnboardingTemplate {
+  id           String                       @id @default(cuid())
+  name         String
+  departmentId String?
+  designationId String?
+  status       String                       @default("ACTIVE")
+  createdAt    DateTime                     @default(now())
+  activities   EmployeeOnboardingActivity[]
+}
+
+model EmployeeOnboardingActivity {
+  id           String                     @id @default(cuid())
+  templateId   String
+  title        String
+  description  String?
+  assignedRole String?
+  template     EmployeeOnboardingTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  @@index([templateId])
+}
+
+model EmployeeSeparationTemplate {
+  id         String                       @id @default(cuid())
+  name       String
+  status     String                       @default("ACTIVE")
+  createdAt  DateTime                     @default(now())
+  activities EmployeeSeparationActivity[]
+}
+
+model EmployeeSeparationActivity {
+  id           String                     @id @default(cuid())
+  templateId   String
+  title        String
+  description  String?
+  assignedRole String?
+  template     EmployeeSeparationTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+
+  @@index([templateId])
+}
+
+model ExitInterview {
+  id                    String    @id @default(cuid())
+  employeeId            String    @unique
+  interviewerEmployeeId String?
+  exitDate              DateTime
+  reasonForLeaving      String
+  feedback              String?
+  status                String    @default("PENDING")
+  createdAt             DateTime  @default(now())
+  employee              Employee  @relation("ExitEmployee", fields: [employeeId], references: [id])
+  interviewer           Employee? @relation("ExitInterviewer", fields: [interviewerEmployeeId], references: [id])
+
+  @@index([interviewerEmployeeId])
+}
+
+model FullAndFinalStatement {
+  id              String             @id @default(cuid())
+  employeeId      String             @unique
+  exitDate        DateTime
+  resignationDate DateTime
+  noticeDays      Int                @default(90)
+  lastDrawnSalary Decimal
+  gratuityDues    Decimal            @default(0)
+  encashmentDues  Decimal            @default(0)
+  recoveryDues    Decimal            @default(0)
+  netPayable      Decimal
+  status          ApprovalStatus     @default(DRAFT)
+  createdAt       DateTime           @default(now())
+  employee        Employee           @relation(fields: [employeeId], references: [id])
+  assets          FullAndFinalAsset[]
+}
+
+model FullAndFinalAsset {
+  id             String                @id @default(cuid())
+  statementId    String
+  assetName      String
+  serialNumber   String?
+  returnedStatus String                @default("PENDING")
+  recoveryCost   Decimal               @default(0)
+  statement      FullAndFinalStatement @relation(fields: [statementId], references: [id], onDelete: Cascade)
+
+  @@index([statementId])
+}
+
+model EmployeeBenefitApplication {
+  id          String   @id @default(cuid())
+  employeeId  String
+  benefitName String   // e.g. LTA, Medical Reimbursement, Car Maintenance
+  annualMax   Decimal
+  status      String   @default("APPROVED") // APPROVED, REJECTED
+  createdAt   DateTime @default(now())
+  employee    Employee @relation(fields: [employeeId], references: [id])
+
+  @@index([employeeId])
+}
+
+model EmployeeBenefitClaim {
+  id          String         @id @default(cuid())
+  employeeId  String
+  benefitName String
+  claimAmount Decimal
+  claimDate   DateTime
+  receiptUrl  String?
+  status      ApprovalStatus @default(PENDING)
+  createdAt   DateTime       @default(now())
+  employee    Employee       @relation(fields: [employeeId], references: [id])
+
+  @@index([employeeId])
+}
+
+model EmployeeTaxExemptionDeclaration {
+  id             String   @id @default(cuid())
+  employeeId     String   @unique
+  financialYear  String   // e.g. "2026-2027"
+  regime         String   // "NEW" or "OLD"
+  section80C     Decimal  @default(0) // PPF, LIC, ELSS, EPF
+  section80D     Decimal  @default(0) // Medical Insurance
+  section24      Decimal  @default(0) // Home Loan Interest
+  otherExemptions Decimal @default(0)
+  status         String   @default("APPROVED") // APPROVED, DRAFT
+  createdAt      DateTime @default(now())
+  employee       Employee @relation(fields: [employeeId], references: [id])
+
+  @@index([employeeId])
+}
+
+model EmployeeTaxExemptionProofSubmission {
+  id             String         @id @default(cuid())
+  employeeId     String
+  financialYear  String
+  sectionType    String         // e.g. "80C", "80D", "24"
+  declaredAmount Decimal
+  actualAmount   Decimal
+  fileUrl        String
+  status         ApprovalStatus @default(PENDING)
+  createdAt      DateTime       @default(now())
+  employee       Employee       @relation(fields: [employeeId], references: [id])
+
+  @@index([employeeId])
+}
+
+model AdditionalSalary {
+  id         String   @id @default(cuid())
+  employeeId String
+  amount     Decimal
+  type       String   // "ADDITION" or "DEDUCTION"
+  name       String   // e.g. "Performance Bonus", "LTA Cashout", "Laptop Recovery"
+  date       DateTime // Applies to this month/year run
+  createdAt  DateTime @default(now())
+  employee   Employee @relation(fields: [employeeId], references: [id])
+
+  @@index([employeeId])
+}
+
+model TrainingProgram {
+  id          String          @id @default(cuid())
+  name        String
+  description String?
+  createdAt   DateTime        @default(now())
+  events      TrainingEvent[]
+}
+
+model TrainingEvent {
+  id          String             @id @default(cuid())
+  programId   String
+  eventName   String
+  trainerName String
+  startDate   DateTime
+  endDate     DateTime
+  location    String?
+  status      String             @default("SCHEDULED") // SCHEDULED, COMPLETED, CANCELLED
+  createdAt   DateTime           @default(now())
+  program     TrainingProgram    @relation(fields: [programId], references: [id])
+  feedbacks   TrainingFeedback[]
+  results     TrainingResult[]
+
+  @@index([programId])
+}
+
+model TrainingFeedback {
+  id         String        @id @default(cuid())
+  eventId    String
+  employeeId String
+  rating     Int
+  comments   String?
+  createdAt  DateTime      @default(now())
+  event      TrainingEvent @relation(fields: [eventId], references: [id])
+  employee   Employee      @relation(fields: [employeeId], references: [id])
+
+  @@index([eventId])
+  @@index([employeeId])
+}
+
+model TrainingResult {
+  id         String        @id @default(cuid())
+  eventId    String
+  employeeId String
+  status     String        // PASSED, FAILED
+  comments   String?
+  createdAt  DateTime      @default(now())
+  event      TrainingEvent @relation(fields: [eventId], references: [id])
+  employee   Employee      @relation(fields: [employeeId], references: [id])
+
+  @@index([eventId])
+  @@index([employeeId])
+}
+
+model Skill {
+  id               String             @id @default(cuid())
+  name             String             @unique
+  description      String?
+  createdAt        DateTime           @default(now())
+  maps             EmployeeSkillMap[]
+  designationSkills DesignationSkill[]
+}
+
+model EmployeeSkillMap {
+  id          String   @id @default(cuid())
+  employeeId  String
+  skillId     String
+  proficiency String   // BEGINNER, INTERMEDIATE, EXPERT
+  createdAt   DateTime @default(now())
+  employee    Employee @relation(fields: [employeeId], references: [id])
+  skill       Skill    @relation(fields: [skillId], references: [id])
+
+  @@unique([employeeId, skillId])
+  @@index([employeeId])
+  @@index([skillId])
+}
+
+model DesignationSkill {
+  id                  String      @id @default(cuid())
+  designationId       String
+  skillId             String
+  requiredProficiency String
+  designation         Designation @relation(fields: [designationId], references: [id])
+  skill               Skill       @relation(fields: [skillId], references: [id])
+
+  @@unique([designationId, skillId])
+  @@index([designationId])
+  @@index([skillId])
+}
+
+model TravelRequest {
+  id              String            @id @default(cuid())
+  employeeId      String
+  purpose         String
+  startDate       DateTime
+  endDate         DateTime
+  sourceCity      String
+  destinationCity String
+  estimatedCost   Decimal           @default(0)
+  advanceAmount   Decimal           @default(0)
+  status          ApprovalStatus    @default(PENDING)
+  createdAt       DateTime          @default(now())
+  employee        Employee          @relation(fields: [employeeId], references: [id])
+  itineraries     TravelItinerary[]
+  advances        EmployeeAdvance[]
+
+  @@index([employeeId])
+}
+
+model TravelItinerary {
+  id           String        @id @default(cuid())
+  requestId    String
+  modeOfTravel String        // FLIGHT, TRAIN, CAB, BUS, HOTEL
+  ticketNumber String?
+  boardingAt   DateTime?
+  details      String?
+  createdAt    DateTime      @default(now())
+  request      TravelRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+
+  @@index([requestId])
+}
+
+model EmployeeAdvance {
+  id              String         @id @default(cuid())
+  employeeId      String
+  requestId       String?
+  amount          Decimal
+  status          String         @default("PENDING") // PENDING, PAID, RECOVERED
+  paymentDate     DateTime?
+  createdAt       DateTime       @default(now())
+  employee        Employee       @relation(fields: [employeeId], references: [id])
+  travelRequest   TravelRequest? @relation(fields: [requestId], references: [id])
+
+  @@index([employeeId])
+  @@index([requestId])
+}
+
+model EmployeeGrade {
+  id               String     @id @default(cuid())
+  companyId        String
+  name             String
+  description      String?
+  maxExpenseLimit  Decimal    @default(0)
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  employees        Employee[]
+  company          Company    @relation(fields: [companyId], references: [id])
+
+  @@unique([companyId, name])
+  @@index([companyId])
+}
+
+model EmploymentType {
+  id               String     @id @default(cuid())
+  companyId        String
+  name             String
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  employees        Employee[] @relation("EmployeeEmploymentType")
+  company          Company    @relation(fields: [companyId], references: [id])
+
+  @@unique([companyId, name])
+  @@index([companyId])
+}
+
+model LeaveBlockList {
+  id          String                 @id @default(cuid())
+  companyId   String
+  name        String
+  description String?
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+  dates       LeaveBlockListDate[]
+  company     Company                @relation(fields: [companyId], references: [id])
+
+  @@index([companyId])
+}
+
+model LeaveBlockListDate {
+  id          String         @id @default(cuid())
+  blockListId String
+  date        DateTime
+  reason      String
+  blockList   LeaveBlockList @relation(fields: [blockListId], references: [id], onDelete: Cascade)
+
+  @@index([blockListId])
+}
+
+model LeavePolicy {
+  id          String                  @id @default(cuid())
+  companyId   String
+  name        String
+  description String?
+  createdAt   DateTime                @default(now())
+  updatedAt   DateTime                @updatedAt
+  assignments LeavePolicyAssignment[]
+  company     Company                 @relation(fields: [companyId], references: [id])
+
+  @@index([companyId])
+}
+
+model LeavePolicyAssignment {
+  id            String      @id @default(cuid())
+  employeeId    String
+  policyId      String
+  effectiveFrom DateTime
+  createdAt     DateTime    @default(now())
+  employee      Employee    @relation(fields: [employeeId], references: [id])
+  policy        LeavePolicy @relation(fields: [policyId], references: [id])
+
+  @@index([employeeId])
+  @@index([policyId])
+}
+
+enum LeaveLedgerEntryType {
+  ACCRUAL
+  DEBIT
+  CREDIT
+  ENCASHMENT
+}
+
+model LeaveLedgerEntry {
+  id              String               @id @default(cuid())
+  employeeId      String
+  leaveTypeId     String
+  transactionDate DateTime
+  transactionType LeaveLedgerEntryType
+  days            Decimal
+  remarks         String?
+  createdAt       DateTime             @default(now())
+  employee        Employee             @relation(fields: [employeeId], references: [id])
+  leaveType       LeaveType            @relation(fields: [leaveTypeId], references: [id])
+
+  @@index([employeeId])
+  @@index([leaveTypeId])
+}
+
+model ShiftLocation {
+  id         String   @id @default(cuid())
+  shiftId    String
+  locationId String
+  createdAt  DateTime @default(now())
+  shift      Shift    @relation(fields: [shiftId], references: [id], onDelete: Cascade)
+  location   Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+
+  @@unique([shiftId, locationId])
+  @@index([shiftId])
+  @@index([locationId])
 }

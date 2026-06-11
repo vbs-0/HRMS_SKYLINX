@@ -2,6 +2,7 @@ import { Body, Controller, Get, Param, Patch, Post } from "@nestjs/common";
 import { RequirePermissions } from "../../common/auth/permissions.decorator";
 import { AttendanceService } from "./attendance.service";
 import { CheckInDto, CheckOutDto, DecideAttendanceDto, OvertimeDto, RegularizationDto } from "./dto/attendance.dto";
+import { AssignShiftDto, BulkAssignShiftDto, RequestShiftDto, DecideShiftRequestDto } from "./dto/roster.dto";
 
 @Controller("attendance")
 export class AttendanceController {
@@ -53,5 +54,47 @@ export class AttendanceController {
   @RequirePermissions("attendance.update")
   overtime(@Body() body: OvertimeDto) {
     return this.attendanceService.overtime(body);
+  }
+
+  @Post("shifts/assign")
+  @RequirePermissions("attendance.update")
+  assignShift(@Body() body: AssignShiftDto) {
+    return this.attendanceService.assignShift(body);
+  }
+
+  @Post("shifts/bulk-assign")
+  @RequirePermissions("attendance.update")
+  bulkAssignShift(@Body() body: BulkAssignShiftDto) {
+    return this.attendanceService.bulkAssignShift(body);
+  }
+
+  @Post("shifts/requests")
+  @RequirePermissions("attendance.create")
+  requestShift(@Body() body: RequestShiftDto) {
+    return this.attendanceService.requestShift(body);
+  }
+
+  @Get("shifts/requests")
+  @RequirePermissions("attendance.read")
+  listShiftRequests() {
+    return this.attendanceService.listShiftRequests();
+  }
+
+  @Patch("shifts/requests/:id/decide")
+  @RequirePermissions("attendance.approve")
+  decideShiftRequest(@Param("id") id: string, @Body() body: DecideShiftRequestDto) {
+    return this.attendanceService.decideShiftRequest(id, body);
+  }
+
+  @Get("shifts/assignments")
+  @RequirePermissions("attendance.read")
+  listShiftAssignments() {
+    return this.attendanceService.listShiftAssignments();
+  }
+
+  @Post("shifts/process-auto")
+  @RequirePermissions("attendance.update")
+  processAutoAttendance(@Body("date") date: string) {
+    return this.attendanceService.processAutoAttendance(date);
   }
 }

@@ -7,6 +7,7 @@ import { onDataRefresh, requestDataRefresh } from "../lib/refresh-events";
 import { ReferenceModuleHeader } from "./reference-module";
 import { ReferenceFlowStrip } from "./reference-sections";
 import { Card } from "./ui";
+import { ComplianceDash } from "./compliance-dash";
 import {
   BadgeIndianRupee,
   Download,
@@ -351,7 +352,7 @@ export function PayrollConsole() {
         eyebrow="Payroll"
         title="Payroll Console"
         summary="Calculate salaries, generate reports, lock monthly payroll operations and manage employee salary CTC allocations."
-        tabs={["Payroll Run", "Payslips", "Bank Export", "Statutory Summary", "Salary Setup"]}
+        tabs={["Payroll Run", "Payslips", "Bank Export", "Statutory & Tax", "Salary Setup"]}
         activeTab={activeTab}
         onTabChange={setActiveTab}
         actions={[
@@ -753,26 +754,8 @@ export function PayrollConsole() {
         </Card>
       )}
 
-      {activeTab === "Statutory Summary" && (
-        <div className="grid gap-5">
-          <Card>
-            <h3 className="text-base font-semibold border-b pb-4 mb-4">Compliance Payout Breakdown</h3>
-            <div className="grid grid-cols-4 gap-4 max-md:grid-cols-2 max-sm:grid-cols-1">
-              {[
-                { label: "Total Gross Pay", val: totalGross, desc: "Total company earnings payout before deductions" },
-                { label: "Total Employee PF", val: totalDeductions * 0.4, desc: "Provident Fund contributions withheld (12% of basic)" },
-                { label: "Total TDS (Tax)", val: totalDeductions * 0.5, desc: "Income tax withholding deposits" },
-                { label: "Net Bank Payout", val: totalNet, desc: "Final direct bank transfer total" },
-              ].map((c) => (
-                <div key={c.label} className="rounded-xl border border-slate-100 bg-[#f8fafc] p-4 text-slate-800">
-                  <div className="text-xs uppercase text-slate-400 font-bold">{c.label}</div>
-                  <div className="text-xl font-bold text-slate-800 mt-2">₹{c.val.toLocaleString("en-IN")}</div>
-                  <p className="text-[10px] text-slate-400 mt-2 leading-relaxed">{c.desc}</p>
-                </div>
-              ))}
-            </div>
-          </Card>
-        </div>
+      {activeTab === "Statutory & Tax" && (
+        <ComplianceDash />
       )}
 
       {activeTab === "Salary Setup" && (

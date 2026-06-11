@@ -25,6 +25,8 @@ import {
   TrendingUp,
   Trophy,
   Users,
+  GraduationCap,
+  Plane,
 } from "lucide-react";
 import type { Route } from "next";
 import type { LucideIcon } from "lucide-react";
@@ -48,6 +50,8 @@ export const nav: Array<{ href: Route; label: string; icon: LucideIcon; group?: 
   { href: "/organization", label: "Organization Chart", icon: GitFork },
   { href: "/payroll", label: "Payroll", icon: BadgeIndianRupee },
   { href: "/compliance", label: "Compliance", icon: Landmark },
+  { href: "/training" as any, label: "Training & Skills", icon: GraduationCap },
+  { href: "/travel" as any, label: "Travel Desk", icon: Plane },
   { href: "/expenses", label: "Expense Payout", icon: ReceiptText },
   { href: "/insurance", label: "Insurance Management", icon: HeartPulse },
   { href: "/support", label: "Support", icon: CircleHelp },

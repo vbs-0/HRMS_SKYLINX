@@ -1,8 +1,19 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import * as crypto from "crypto";
 
 const prisma = new PrismaClient();
 const { hash } = bcrypt;
+
+// Must mirror apps/api/src/common/crypto.util.ts so the API can decrypt.
+const ENCRYPTION_KEY = process.env.OTP_SECRET || "skylinx-peopleos-local-otp-secret-long-enough-32-chars!!!";
+function encryptField(text: string): string {
+  const key = crypto.createHash("sha256").update(ENCRYPTION_KEY).digest();
+  const iv = crypto.randomBytes(16);
+  const cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
+  const encrypted = Buffer.concat([cipher.update(text), cipher.final()]);
+  return iv.toString("hex") + ":" + encrypted.toString("hex");
+}
 
 async function main() {
   const company = await prisma.company.upsert({
@@ -95,6 +106,7 @@ async function main() {
         { module: "assets", action: "configure" },
         { module: "performance", action: "configure" },
         { module: "settings", action: "configure" },
+        { module: { in: ["leave", "employees", "recruitment", "travel", "training"] }, action: "configure" },
         { module: "payroll", action: "export" },
         { module: "reports", action: "export" },
         { module: "compliance", action: "export" },
@@ -172,14 +184,15 @@ async function main() {
       },
     });
 
+    const demoAccountNumber = `501000${employeeCode.replace("EMP-", "")}77`;
     await prisma.employeeBankDetail.upsert({
       where: { employeeId: id },
-      update: {},
+      update: { accountNumberEncrypted: encryptField(demoAccountNumber) },
       create: {
         employeeId: id,
         accountHolderName: `${firstName} ${lastName}`,
         bankName: id === "emp_1001" || id === "emp_1003" ? "HDFC Bank" : "ICICI Bank",
-        accountNumberEncrypted: "encrypted_acc_no_12345",
+        accountNumberEncrypted: encryptField(demoAccountNumber),
         ifsc: id === "emp_1001" || id === "emp_1003" ? "HDFC0000124" : "ICIC0000512",
         branch: "Madhapur, Hyderabad",
         verificationStatus: "VERIFIED",
@@ -191,12 +204,14 @@ async function main() {
     where: { email: "hr.admin@skylinx.local" },
     update: {
       passwordHash: await hash("Skylinx@123", 12),
+      tenantId: company.id,
     },
     create: {
       email: "hr.admin@skylinx.local",
       phone: "+91 90000 00001",
       passwordHash: await hash("Skylinx@123", 12),
       employeeId: "emp_1001",
+      tenantId: company.id,
     },
   });
 
@@ -211,12 +226,14 @@ async function main() {
     where: { email: "skylinxcode@gmail.com" },
     update: {
       passwordHash: await hash("password123", 12),
+      tenantId: company.id,
     },
     create: {
       email: "skylinxcode@gmail.com",
       phone: "+91 90000 00000",
       passwordHash: await hash("password123", 12),
       status: "ACTIVE",
+      tenantId: company.id,
     },
   });
 
@@ -225,6 +242,71 @@ async function main() {
     update: {},
     create: { userId: ownerUser.id, roleId: roles[0].id },
   });
+
+  // MANAGER and EMPLOYEE login accounts (used by E2E role audits)
+  const roleUsers: Array<[string, string, string, string]> = [
+    ["rohan.iyer@skylinx.local", "+91 98765 41005", "emp_1005", "role_manager"],
+    ["kabir.sethi@skylinx.local", "+91 98765 41003", "emp_1003", "role_employee"],
+  ];
+  for (const [email, phone, employeeId, roleId] of roleUsers) {
+    const user = await prisma.user.upsert({
+      where: { email },
+      update: { 
+        passwordHash: await hash("Skylinx@123", 12),
+        tenantId: company.id,
+      },
+      create: {
+        email,
+        phone,
+        passwordHash: await hash("Skylinx@123", 12),
+        employeeId,
+        status: "ACTIVE",
+        tenantId: company.id,
+      },
+    });
+    await prisma.userRole.upsert({
+      where: { userId_roleId: { userId: user.id, roleId } },
+      update: {},
+      create: { userId: user.id, roleId },
+    });
+  }
+
+  // Role permissions for MANAGER and EMPLOYEE
+  const managerPermissionSpecs: Array<[string, string]> = [
+    ["employees", "read"],
+    ["attendance", "read"],
+    ["attendance", "approve"],
+    ["leave", "read"],
+    ["leave", "approve"],
+    ["expenses", "approve"],
+    ["recruitment", "read"],
+    ["training", "approve"],
+    ["travel", "approve"],
+  ];
+  const employeePermissionSpecs: Array<[string, string]> = [
+    ["employees", "read"],
+    ["employees", "update"],
+    ["attendance", "create"],
+    ["leave", "create"],
+    ["payroll", "read"],
+    ["expenses", "create"],
+    ["training", "create"],
+    ["travel", "create"],
+  ];
+  for (const [roleId, specs] of [
+    ["role_manager", managerPermissionSpecs],
+    ["role_employee", employeePermissionSpecs],
+  ] as Array<[string, Array<[string, string]>]>) {
+    for (const [module, action] of specs) {
+      const permission = await prisma.permission.findFirst({ where: { module, action } });
+      if (!permission) continue;
+      await prisma.rolePermission.upsert({
+        where: { roleId_permissionId: { roleId, permissionId: permission.id } },
+        update: {},
+        create: { roleId, permissionId: permission.id },
+      });
+    }
+  }
 
   const shift = await prisma.shift.upsert({
     where: { id: "shift_general" },
@@ -649,6 +731,64 @@ async function main() {
         newValueJson: { product: "SKYLINX PeopleOS" },
       },
     });
+  }
+
+  // Seed Employee Grades
+  const gradesData = [
+    { name: "Grade L1", maxExpenseLimit: 5000, description: "Junior Staff" },
+    { name: "Grade L2", maxExpenseLimit: 15000, description: "Mid-level Staff" },
+    { name: "Grade L3", maxExpenseLimit: 50000, description: "Senior Leadership" },
+  ];
+  for (const g of gradesData) {
+    await prisma.employeeGrade.upsert({
+      where: { companyId_name: { companyId: company.id, name: g.name } },
+      update: { maxExpenseLimit: g.maxExpenseLimit, description: g.description },
+      create: { companyId: company.id, name: g.name, maxExpenseLimit: g.maxExpenseLimit, description: g.description },
+    });
+  }
+
+  // Seed Employment Types
+  const empTypesData = ["Full-Time Regular", "Part-Time Regular", "Contractor", "Intern"];
+  for (const t of empTypesData) {
+    await prisma.employmentType.upsert({
+      where: { companyId_name: { companyId: company.id, name: t } },
+      update: {},
+      create: { companyId: company.id, name: t },
+    });
+  }
+
+  // Pending approval requests so the MANAGER approval inbox has demo items
+  const kabirLog = await prisma.attendanceLog.findFirst({ where: { employeeId: "emp_1003" } });
+  if (kabirLog) {
+    const pendingReg = await prisma.attendanceRegularization.findFirst({
+      where: { employeeId: "emp_1003", status: "PENDING" },
+    });
+    if (!pendingReg) {
+      await prisma.attendanceRegularization.create({
+        data: {
+          employeeId: "emp_1003",
+          attendanceLogId: kabirLog.id,
+          requestedCheckInAt: new Date("2026-05-25T04:00:00.000Z"),
+          requestedCheckOutAt: new Date("2026-05-25T13:00:00.000Z"),
+          reason: "Biometric failure at entry gate",
+          status: "PENDING",
+        },
+      });
+    }
+    const pendingOt = await prisma.overtimeRequest.findFirst({
+      where: { employeeId: "emp_1003", status: "PENDING" },
+    });
+    if (!pendingOt) {
+      await prisma.overtimeRequest.create({
+        data: {
+          employeeId: "emp_1003",
+          attendanceLogId: kabirLog.id,
+          hours: 2.5,
+          reason: "Deploying critical patch to production",
+          status: "PENDING",
+        },
+      });
+    }
   }
 }
 

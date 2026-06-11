@@ -17,8 +17,19 @@ export class ExpensesService {
   }
 
   async create(data: CreateExpenseDto) {
-    const employee = await this.prisma.employee.findUnique({ where: { id: data.employeeId } });
+    const employee = await this.prisma.employee.findUnique({
+      where: { id: data.employeeId },
+      include: { grade: true },
+    });
     if (!employee) throw new NotFoundException("Employee not found");
+
+    if (employee.grade && Number(employee.grade.maxExpenseLimit) > 0) {
+      if (Number(data.amount) > Number(employee.grade.maxExpenseLimit)) {
+        throw new BadRequestException(
+          `Claim amount of ₹${data.amount} exceeds the maximum allowable expense limit of ₹${employee.grade.maxExpenseLimit} for employee grade "${employee.grade.name}"`
+        );
+      }
+    }
 
     const expense = await this.prisma.expense.create({
       data: {

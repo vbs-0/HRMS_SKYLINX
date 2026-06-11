@@ -29,6 +29,8 @@ import { SocialModule } from "./social/social.module";
 import { HealthModule } from "./health/health.module";
 import { TicketsModule } from "./tickets/tickets.module";
 import { RecruitmentModule } from "./recruitment/recruitment.module";
+import { TrainingModule } from "./training/training.module";
+import { TravelModule } from "./travel/travel.module";
 import { PrismaModule } from "../prisma/prisma.module";
 import { JwtAuthGuard } from "../common/auth/jwt-auth.guard";
 import { PermissionsGuard } from "../common/auth/permissions.guard";
@@ -63,6 +65,8 @@ import { PermissionsGuard } from "../common/auth/permissions.guard";
     SocialModule,
     TicketsModule,
     RecruitmentModule,
+    TrainingModule,
+    TravelModule,
   ],
   providers: [
     {

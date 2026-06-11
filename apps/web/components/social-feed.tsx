@@ -65,7 +65,8 @@ export function SocialFeed() {
 
   async function comment(event: FormEvent<HTMLFormElement>, id: string) {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
+    const currentForm = event.currentTarget;
+    const form = new FormData(currentForm);
     const body = String(form.get("body"));
     if (!body.trim()) return;
 
@@ -73,7 +74,7 @@ export function SocialFeed() {
       method: "POST",
       body: JSON.stringify({ body }),
     });
-    event.currentTarget.reset();
+    currentForm.reset();
     setMessage("Comment added.");
     requestDataRefresh("social");
   }

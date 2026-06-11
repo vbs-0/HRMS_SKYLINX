@@ -1,8 +1,18 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { ApprovalStatus } from "@prisma/client";
 import { response } from "../../common/crud-response";
+import { decrypt, sanitizeBankDetail } from "../../common/crypto.util";
 import { PrismaService } from "../../prisma/prisma.service";
 import { CreatePayrollRunDto, CreateSalaryStructureDto } from "./dto/payroll.dto";
+import {
+  CreateBenefitApplicationDto,
+  CreateBenefitClaimDto,
+  CreateTaxDeclarationDto,
+  CreateProofSubmissionDto,
+  CreateAdditionalSalaryDto,
+  DecideClaimDto,
+  DecideProofDto,
+} from "./dto/compliance.dto";
 
 @Injectable()
 export class PayrollService {
@@ -67,6 +77,168 @@ export class PayrollService {
     return response("payroll", "run.create", run);
   }
 
+  // ==========================================
+  // Flexible Benefits
+  // ==========================================
+  async applyBenefit(data: CreateBenefitApplicationDto) {
+    const app = await this.prisma.employeeBenefitApplication.create({
+      data: {
+        employeeId: data.employeeId,
+        benefitName: data.benefitName,
+        annualMax: data.annualMax,
+        status: "APPROVED",
+      },
+      include: { employee: true },
+    });
+    await this.audit("payroll", "benefit.apply", "benefit_application", app.id, app);
+    return response("payroll", "benefit.apply", app);
+  }
+
+  async listBenefitApplications() {
+    const items = await this.prisma.employeeBenefitApplication.findMany({
+      include: { employee: true },
+      orderBy: { createdAt: "desc" },
+    });
+    return response("payroll", "benefit_applications.list", items);
+  }
+
+  async claimBenefit(data: CreateBenefitClaimDto) {
+    const claim = await this.prisma.employeeBenefitClaim.create({
+      data: {
+        employeeId: data.employeeId,
+        benefitName: data.benefitName,
+        claimAmount: data.claimAmount,
+        claimDate: new Date(data.claimDate),
+        receiptUrl: data.receiptUrl,
+        status: ApprovalStatus.PENDING,
+      },
+      include: { employee: true },
+    });
+    await this.audit("payroll", "benefit.claim", "benefit_claim", claim.id, claim);
+    return response("payroll", "benefit.claim", claim);
+  }
+
+  async listBenefitClaims() {
+    const items = await this.prisma.employeeBenefitClaim.findMany({
+      include: { employee: true },
+      orderBy: { claimDate: "desc" },
+    });
+    return response("payroll", "benefit_claims.list", items);
+  }
+
+  async decideBenefitClaim(id: string, data: DecideClaimDto) {
+    const claim = await this.prisma.employeeBenefitClaim.update({
+      where: { id },
+      data: { status: data.status },
+      include: { employee: true },
+    });
+    await this.audit("payroll", "benefit.claim_decide", "benefit_claim", id, claim);
+    return response("payroll", "benefit.claim_decide", claim);
+  }
+
+  // ==========================================
+  // Tax Declarations & Proofs
+  // ==========================================
+  async submitTaxDeclaration(data: CreateTaxDeclarationDto) {
+    const declaration = await this.prisma.employeeTaxExemptionDeclaration.upsert({
+      where: { employeeId: data.employeeId },
+      update: {
+        financialYear: data.financialYear,
+        regime: data.regime,
+        section80C: data.section80C || 0,
+        section80D: data.section80D || 0,
+        section24: data.section24 || 0,
+        otherExemptions: data.otherExemptions || 0,
+        status: "APPROVED",
+      },
+      create: {
+        employeeId: data.employeeId,
+        financialYear: data.financialYear,
+        regime: data.regime,
+        section80C: data.section80C || 0,
+        section80D: data.section80D || 0,
+        section24: data.section24 || 0,
+        otherExemptions: data.otherExemptions || 0,
+        status: "APPROVED",
+      },
+      include: { employee: true },
+    });
+    await this.audit("payroll", "tax.declaration_submit", "tax_exemption_declaration", declaration.id, declaration);
+    return response("payroll", "tax.declaration_submit", declaration);
+  }
+
+  async getTaxDeclaration(employeeId: string) {
+    const dec = await this.prisma.employeeTaxExemptionDeclaration.findUnique({
+      where: { employeeId },
+    });
+    if (!dec) throw new NotFoundException("Tax declaration not found");
+    return response("payroll", "tax.declaration_get", dec);
+  }
+
+  async submitProof(data: CreateProofSubmissionDto) {
+    const proof = await this.prisma.employeeTaxExemptionProofSubmission.create({
+      data: {
+        employeeId: data.employeeId,
+        financialYear: data.financialYear,
+        sectionType: data.sectionType,
+        declaredAmount: data.declaredAmount,
+        actualAmount: data.actualAmount,
+        fileUrl: data.fileUrl,
+        status: ApprovalStatus.PENDING,
+      },
+      include: { employee: true },
+    });
+    await this.audit("payroll", "tax.proof_submit", "tax_proof_submission", proof.id, proof);
+    return response("payroll", "tax.proof_submit", proof);
+  }
+
+  async listProofs() {
+    const items = await this.prisma.employeeTaxExemptionProofSubmission.findMany({
+      include: { employee: true },
+      orderBy: { createdAt: "desc" },
+    });
+    return response("payroll", "tax_proofs.list", items);
+  }
+
+  async decideProof(id: string, data: DecideProofDto) {
+    const proof = await this.prisma.employeeTaxExemptionProofSubmission.update({
+      where: { id },
+      data: { status: data.status },
+      include: { employee: true },
+    });
+    await this.audit("payroll", "tax.proof_decide", "tax_proof_submission", id, proof);
+    return response("payroll", "tax.proof_decide", proof);
+  }
+
+  // ==========================================
+  // Additional Salary (Bonus / Recovery)
+  // ==========================================
+  async createAdditionalSalary(data: CreateAdditionalSalaryDto) {
+    const item = await this.prisma.additionalSalary.create({
+      data: {
+        employeeId: data.employeeId,
+        amount: data.amount,
+        type: data.type,
+        name: data.name,
+        date: new Date(data.date),
+      },
+      include: { employee: true },
+    });
+    await this.audit("payroll", "additional_salary.create", "additional_salary", item.id, item);
+    return response("payroll", "additional_salary.create", item);
+  }
+
+  async listAdditionalSalaries() {
+    const items = await this.prisma.additionalSalary.findMany({
+      include: { employee: true },
+      orderBy: { date: "desc" },
+    });
+    return response("payroll", "additional_salaries.list", items);
+  }
+
+  // ==========================================
+  // Compliance Math & Payroll Slip calculations
+  // ==========================================
   async calculate(id: string) {
     const run = await this.prisma.payrollRun.findUnique({
       where: { id },
@@ -86,6 +258,9 @@ export class PayrollService {
 
     const result = await this.prisma.$transaction(async (tx) => {
       const payslips = [];
+      const startDate = new Date(run.year, run.month - 1, 1);
+      const endDate = new Date(run.year, run.month, 0, 23, 59, 59, 999);
+
       for (const employee of employees) {
         const structure = await tx.salaryStructure.findFirst({
           where: {
@@ -97,30 +272,143 @@ export class PayrollService {
         });
         if (!structure) continue;
 
-        const startDate = new Date(run.year, run.month - 1, 1);
-        const endDate = new Date(run.year, run.month, 0, 23, 59, 59, 999);
+        // 1. Fetch Reimbursement Expenses
         const approvedExpenses = await tx.expense.findMany({
           where: {
             employeeId: employee.id,
             status: ApprovalStatus.APPROVED,
-            claimDate: {
-              gte: startDate,
-              lte: endDate,
-            },
+            claimDate: { gte: startDate, lte: endDate },
           },
         });
         const expensePayout = approvedExpenses.reduce((sum, exp) => sum + Number(exp.amount), 0);
 
+        // 2. Fetch Additional Salaries (Bonus & Deductions)
+        const additionalSalaries = await tx.additionalSalary.findMany({
+          where: {
+            employeeId: employee.id,
+            date: { gte: startDate, lte: endDate },
+          },
+        });
+        const additionsSum = additionalSalaries
+          .filter((s) => s.type === "ADDITION")
+          .reduce((sum, s) => sum + Number(s.amount), 0);
+        const recoveryDeductionsSum = additionalSalaries
+          .filter((s) => s.type === "DEDUCTION")
+          .reduce((sum, s) => sum + Number(s.amount), 0);
+
+        // 3. Fetch Approved Benefit Claims
+        const benefitClaims = await tx.employeeBenefitClaim.findMany({
+          where: {
+            employeeId: employee.id,
+            status: ApprovalStatus.APPROVED,
+            claimDate: { gte: startDate, lte: endDate },
+          },
+        });
+        const benefitsSum = benefitClaims.reduce((sum, c) => sum + Number(c.claimAmount), 0);
+
+        // Monthly salary components from structure (divided by 12)
         const monthlyBasic = this.monthly(structure.basic);
         const monthlyHra = this.monthly(structure.hra);
         const monthlyAllowances = this.monthly(structure.allowances);
-        const employeePf = this.monthly(structure.employeePf);
-        const esi = this.monthly(structure.esi);
-        const professionalTax = this.monthly(structure.professionalTax);
-        const tds = this.monthly(structure.tds);
-        const grossPay = monthlyBasic + monthlyHra + monthlyAllowances + expensePayout;
-        const deductions = employeePf + esi + professionalTax + tds;
-        const netPay = grossPay - deductions;
+
+        // 4. Indian Statutory EPF Calculation (12% of Basic, optionally capped at basic of 15,000)
+        // Check if capping is active (default is true for compliance)
+        const pfBasicBasis = monthlyBasic > 15000 ? 15000 : monthlyBasic;
+        const employeePf = Math.round(pfBasicBasis * 0.12);
+        const employerPf = Math.round(pfBasicBasis * 0.12);
+
+        // Gross salary before statutory deductions
+        const grossSalary = monthlyBasic + monthlyHra + monthlyAllowances + additionsSum + benefitsSum;
+
+        // 5. Indian Statutory ESIC Calculation (0.75% Employee, 3.25% Employer, if Gross <= 21,000)
+        let esi = 0;
+        let employerEsi = 0;
+        if (grossSalary <= 21000) {
+          esi = Math.round(grossSalary * 0.0075);
+          employerEsi = Math.round(grossSalary * 0.0325);
+        }
+
+        // 6. Professional Tax (PT) Slab Calculation
+        const professionalTax = grossSalary > 15000 ? 200 : 0;
+
+        // 7. Income Tax (TDS) Slabs Calculation
+        let tds = 0;
+        const taxDeclaration = await tx.employeeTaxExemptionDeclaration.findUnique({
+          where: { employeeId: employee.id },
+        });
+
+        if (taxDeclaration) {
+          const annualGross = grossSalary * 12;
+          const regime = taxDeclaration.regime || "NEW";
+          const standardDeduction = regime === "NEW" ? 75000 : 50000;
+
+          let exemptions = 0;
+          if (regime === "OLD") {
+            // Apply OLD regime tax deduction caps
+            const capped80C = Math.min(Number(taxDeclaration.section80C || 0), 150000);
+            const capped80D = Math.min(Number(taxDeclaration.section80D || 0), 25000);
+            const capped24 = Math.min(Number(taxDeclaration.section24 || 0), 200000);
+            exemptions = capped80C + capped80D + capped24 + Number(taxDeclaration.otherExemptions || 0);
+          }
+
+          const taxableIncome = Math.max(annualGross - standardDeduction - exemptions, 0);
+          let taxLiability = 0;
+
+          if (regime === "NEW") {
+            // NEW Regime Slab Calculations
+            if (taxableIncome > 700000) {
+              // Standard progressive slabs
+              let temp = taxableIncome;
+              if (temp > 1500000) {
+                taxLiability += (temp - 1500000) * 0.30;
+                temp = 1500000;
+              }
+              if (temp > 1200000) {
+                taxLiability += (temp - 1200000) * 0.20;
+                temp = 1200000;
+              }
+              if (temp > 1000000) {
+                taxLiability += (temp - 1000000) * 0.15;
+                temp = 1000000;
+              }
+              if (temp > 700000) {
+                taxLiability += (temp - 700000) * 0.10;
+                temp = 700000;
+              }
+              if (temp > 300000) {
+                taxLiability += (temp - 300000) * 0.05;
+              }
+            } // if taxableIncome <= 700,000 -> tax rebate under 87A makes taxLiability = 0
+          } else {
+            // OLD Regime Slab Calculations
+            if (taxableIncome > 500000) {
+              let temp = taxableIncome;
+              if (temp > 1000000) {
+                taxLiability += (temp - 1000000) * 0.30;
+                temp = 1000000;
+              }
+              if (temp > 500000) {
+                taxLiability += (temp - 500000) * 0.20;
+                temp = 500000;
+              }
+              if (temp > 250000) {
+                taxLiability += (temp - 250000) * 0.05;
+              }
+            } // if taxableIncome <= 500,000 -> rebate makes taxLiability = 0
+          }
+
+          // Cess calculation (4% cess on tax liability)
+          const cess = taxLiability * 0.04;
+          const totalAnnualTax = taxLiability + cess;
+          tds = Math.round(totalAnnualTax / 12);
+        } else {
+          // If no declaration, use default fallback from structure structure.tds
+          tds = this.monthly(structure.tds);
+        }
+
+        const finalGrossPay = grossSalary + expensePayout;
+        const totalDeductions = employeePf + esi + professionalTax + tds + recoveryDeductionsSum;
+        const netPay = finalGrossPay - totalDeductions;
 
         const payslip = await tx.payslip.upsert({
           where: {
@@ -130,16 +418,16 @@ export class PayrollService {
             },
           },
           update: {
-            grossPay,
-            deductions,
+            grossPay: finalGrossPay,
+            deductions: totalDeductions,
             netPay,
             status: ApprovalStatus.APPROVED,
           },
           create: {
             payrollRunId: run.id,
             employeeId: employee.id,
-            grossPay,
-            deductions,
+            grossPay: finalGrossPay,
+            deductions: totalDeductions,
             netPay,
             status: ApprovalStatus.APPROVED,
           },
@@ -156,21 +444,34 @@ export class PayrollService {
             { payslipId: payslip.id, type: "DEDUCTION", name: "Professional Tax", amount: professionalTax },
             { payslipId: payslip.id, type: "DEDUCTION", name: "TDS", amount: tds },
             ...(expensePayout > 0 ? [{ payslipId: payslip.id, type: "EARNING", name: "Expense Payout", amount: expensePayout }] : []),
+            ...(additionsSum > 0 ? [{ payslipId: payslip.id, type: "EARNING", name: "Additional Salary (Add)", amount: additionsSum }] : []),
+            ...(benefitsSum > 0 ? [{ payslipId: payslip.id, type: "EARNING", name: "Flexible Benefits Claimed", amount: benefitsSum }] : []),
+            ...(recoveryDeductionsSum > 0 ? [{ payslipId: payslip.id, type: "DEDUCTION", name: "Additional Salary (Ded)", amount: recoveryDeductionsSum }] : []),
           ],
         });
 
+        // Update Expenses status to PAID
         await tx.expense.updateMany({
           where: {
             employeeId: employee.id,
             status: ApprovalStatus.APPROVED,
-            claimDate: {
-              gte: startDate,
-              lte: endDate,
-            },
+            claimDate: { gte: startDate, lte: endDate },
           },
           data: {
             status: ApprovalStatus.PAID,
             reimbursedAt: new Date(),
+          },
+        });
+
+        // Update Benefit Claims to PAID
+        await tx.employeeBenefitClaim.updateMany({
+          where: {
+            employeeId: employee.id,
+            status: ApprovalStatus.APPROVED,
+            claimDate: { gte: startDate, lte: endDate },
+          },
+          data: {
+            status: ApprovalStatus.APPROVED,
           },
         });
 
@@ -252,7 +553,11 @@ export class PayrollService {
       },
       orderBy: { employeeId: "asc" },
     });
-    return response("payroll", "payslips", { payrollRunId: id, items: payslips });
+    const sanitized = payslips.map((payslip) => ({
+      ...payslip,
+      employee: { ...payslip.employee, bankDetails: sanitizeBankDetail(payslip.employee.bankDetails) },
+    }));
+    return response("payroll", "payslips", { payrollRunId: id, items: sanitized });
   }
 
   async bankExport(id: string) {
@@ -268,6 +573,11 @@ export class PayrollService {
         netPay: Number(payslip.netPay),
         bankName: payslip.employee.bankDetails?.bankName || "",
         ifsc: payslip.employee.bankDetails?.ifsc || "",
+        // Bank files need the real account number — decrypted only here,
+        // behind the payroll export permission, and audit-logged.
+        accountNumber: payslip.employee.bankDetails?.accountNumberEncrypted
+          ? decrypt(payslip.employee.bankDetails.accountNumberEncrypted)
+          : "",
       })),
     });
   }

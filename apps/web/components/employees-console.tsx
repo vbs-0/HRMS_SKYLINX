@@ -7,6 +7,7 @@ import { EmployeesTable, DocumentsTable } from "./live-tables";
 import { ReferenceModuleHeader } from "./reference-module";
 import { ReferenceFlowStrip } from "./reference-sections";
 import { Card, StatusPill } from "./ui";
+import { LifecycleConsole } from "./lifecycle-console";
 import { 
   UserPlus, 
   Upload, 
@@ -39,6 +40,10 @@ interface ApiEmployeeDetail {
   joiningDate: string;
   employmentType: string;
   status: string;
+  panNumber?: string | null;
+  providentFundAccount?: string | null;
+  gradeId?: string | null;
+  employmentTypeId?: string | null;
   departmentId?: string | null;
   designationId?: string | null;
   locationId?: string | null;
@@ -46,11 +51,13 @@ interface ApiEmployeeDetail {
   department?: { id: string; name: string } | null;
   designation?: { id: string; title: string } | null;
   location?: { id: string; name: string } | null;
+  grade?: { id: string; name: string; maxExpenseLimit: number } | null;
+  employmentTypeRelation?: { id: string; name: string } | null;
   bankDetails?: {
     id: string;
     accountHolderName: string;
     bankName: string;
-    accountNumberEncrypted: string;
+    accountNumberMasked?: string;
     ifsc: string;
     branch?: string | null;
   } | null;
@@ -77,7 +84,28 @@ export function EmployeesConsole() {
     departmentId: "",
     designationId: "",
     locationId: "",
+    panNumber: "",
+    providentFundAccount: "",
+    gradeId: "",
+    employmentTypeId: "",
   });
+
+  const [grades, setGrades] = useState<any[]>([]);
+  const [employmentTypes, setEmploymentTypes] = useState<any[]>([]);
+
+  useEffect(() => {
+    apiFetch<any[]>("/employees/grades/company_skylinx")
+      .then((res) => {
+        if (res.data) setGrades(res.data);
+      })
+      .catch(() => undefined);
+
+    apiFetch<any[]>("/employees/types/company_skylinx")
+      .then((res) => {
+        if (res.data) setEmploymentTypes(res.data);
+      })
+      .catch(() => undefined);
+  }, []);
 
   // Company Profile summary stats
   const [companyStats, setCompanyStats] = useState({
@@ -139,6 +167,10 @@ export function EmployeesConsole() {
             departmentId: res.data.departmentId || "",
             designationId: res.data.designationId || "",
             locationId: res.data.locationId || "",
+            panNumber: res.data.panNumber || "",
+            providentFundAccount: res.data.providentFundAccount || "",
+            gradeId: res.data.gradeId || "",
+            employmentTypeId: res.data.employmentTypeId || "",
           });
         }
       })
@@ -229,6 +261,10 @@ export function EmployeesConsole() {
           departmentId: editForm.departmentId || null,
           designationId: editForm.designationId || null,
           locationId: editForm.locationId || null,
+          panNumber: editForm.panNumber || null,
+          providentFundAccount: editForm.providentFundAccount || null,
+          gradeId: editForm.gradeId || null,
+          employmentTypeId: editForm.employmentTypeId || null,
         }),
       });
       if (updated.data) {
@@ -344,7 +380,7 @@ export function EmployeesConsole() {
         eyebrow="Directory"
         title="Employee Directory"
         summary="Search employees, manage profiles, bulk upload records, and verify documents."
-        tabs={["All Employees", "My Profile", "Company Profile", "Verification"]}
+        tabs={["All Employees", "My Profile", "Company Profile", "Verification", "Lifecycle"]}
         activeTab={activeTab}
         onTabChange={(tab: string) => {
           setActiveTab(tab);
@@ -567,6 +603,7 @@ export function EmployeesConsole() {
                           <span className="text-slate-400 font-semibold">Gender</span>
                           {isEditing ? (
                             <select
+                              name="gender"
                               className="rounded-lg border px-2 py-0.5 text-xs bg-white"
                               value={editForm.gender}
                               onChange={(e) => setEditForm(prev => ({ ...prev, gender: e.target.value }))}
@@ -613,6 +650,7 @@ export function EmployeesConsole() {
                           <span className="text-slate-400 font-semibold">Department</span>
                           {isEditing ? (
                             <select
+                              name="departmentId"
                               className="rounded-lg border px-2 py-0.5 text-xs bg-white"
                               value={editForm.departmentId}
                               onChange={(e) => setEditForm(prev => ({ ...prev, departmentId: e.target.value }))}
@@ -628,6 +666,7 @@ export function EmployeesConsole() {
                           <span className="text-slate-400 font-semibold">Designation</span>
                           {isEditing ? (
                             <select
+                              name="designationId"
                               className="rounded-lg border px-2 py-0.5 text-xs bg-white"
                               value={editForm.designationId}
                               onChange={(e) => setEditForm(prev => ({ ...prev, designationId: e.target.value }))}
@@ -643,6 +682,7 @@ export function EmployeesConsole() {
                           <span className="text-slate-400 font-semibold">Work Location</span>
                           {isEditing ? (
                             <select
+                              name="locationId"
                               className="rounded-lg border px-2 py-0.5 text-xs bg-white"
                               value={editForm.locationId}
                               onChange={(e) => setEditForm(prev => ({ ...prev, locationId: e.target.value }))}
@@ -652,6 +692,38 @@ export function EmployeesConsole() {
                             </select>
                           ) : (
                             <span className="font-semibold text-slate-800">{selectedEmployee.location?.name || "Unassigned"}</span>
+                          )}
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400 font-semibold">Grade</span>
+                          {isEditing ? (
+                            <select
+                              name="gradeId"
+                              className="rounded-lg border px-2 py-0.5 text-xs bg-white"
+                              value={editForm.gradeId}
+                              onChange={(e) => setEditForm(prev => ({ ...prev, gradeId: e.target.value }))}
+                            >
+                              <option value="">Select Grade</option>
+                              {grades.map(g => <option key={g.id} value={g.id}>{g.name}</option>)}
+                            </select>
+                          ) : (
+                            <span className="font-semibold text-slate-800">{selectedEmployee.grade?.name || "Unassigned"}</span>
+                          )}
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400 font-semibold">Employment Type</span>
+                          {isEditing ? (
+                            <select
+                              name="employmentTypeId"
+                              className="rounded-lg border px-2 py-0.5 text-xs bg-white"
+                              value={editForm.employmentTypeId}
+                              onChange={(e) => setEditForm(prev => ({ ...prev, employmentTypeId: e.target.value }))}
+                            >
+                              <option value="">Select Type</option>
+                              {employmentTypes.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
+                            </select>
+                          ) : (
+                            <span className="font-semibold text-slate-800">{selectedEmployee.employmentTypeRelation?.name || selectedEmployee.employmentType || "Full-Time"}</span>
                           )}
                         </div>
                       </div>
@@ -700,7 +772,33 @@ export function EmployeesConsole() {
                         </div>
                         <div className="flex justify-between">
                           <span className="text-slate-400 font-semibold">Account Number</span>
-                          <span className="font-semibold text-slate-800">*********3294</span>
+                          <span className="font-semibold text-slate-800">{selectedEmployee.bankDetails?.accountNumberMasked || "—"}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400 font-semibold">PAN Number</span>
+                          {isEditing ? (
+                            <input
+                              className="rounded-lg border px-2 py-0.5 text-xs"
+                              value={editForm.panNumber}
+                              onChange={(e) => setEditForm(prev => ({ ...prev, panNumber: e.target.value }))}
+                              placeholder="ABCDE1234F"
+                            />
+                          ) : (
+                            <span className="font-semibold text-slate-800">{selectedEmployee.panNumber || "Not Set"}</span>
+                          )}
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400 font-semibold">PF Account</span>
+                          {isEditing ? (
+                            <input
+                              className="rounded-lg border px-2 py-0.5 text-xs"
+                              value={editForm.providentFundAccount}
+                              onChange={(e) => setEditForm(prev => ({ ...prev, providentFundAccount: e.target.value }))}
+                              placeholder="MH/BAN/12345/678"
+                            />
+                          ) : (
+                            <span className="font-semibold text-slate-800">{selectedEmployee.providentFundAccount || "Not Set"}</span>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -819,6 +917,10 @@ export function EmployeesConsole() {
             </div>
           </Card>
         </div>
+      )}
+
+      {activeTab === "Lifecycle" && (
+        <LifecycleConsole />
       )}
     </>
   );

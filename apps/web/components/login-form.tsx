@@ -40,11 +40,14 @@ export function LoginForm() {
     <form className="mt-6 grid gap-4" onSubmit={submit}>
       <label className="grid gap-2 text-sm text-muted">
         Email
-        <input className="min-h-11 rounded-lg border border-[#dce2eb] px-3 text-ink" value={email} onChange={(event) => setEmail(event.target.value)} />
+        <input id="login-email" name="email" type="email" autoComplete="username" className="min-h-11 rounded-lg border border-[#dce2eb] px-3 text-ink" value={email} onChange={(event) => setEmail(event.target.value)} />
       </label>
       <label className="grid gap-2 text-sm text-muted">
         Password
         <input
+          id="login-password"
+          name="password"
+          autoComplete="current-password"
           className="min-h-11 rounded-lg border border-[#dce2eb] px-3 text-ink"
           value={password}
           onChange={(event) => setPassword(event.target.value)}

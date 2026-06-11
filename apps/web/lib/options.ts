@@ -41,17 +41,30 @@ export function useEmployeeOptions() {
   const [options, setOptions] = useState<SelectOption[]>([{ label: "Aarav Mehta - EMP-1001", value: "emp_1001" }]);
 
   useEffect(() => {
-    apiFetch<ApiEmployee[]>("/employees")
-      .then((body) => {
-        if (!body.data?.length) return;
-        setOptions(
-          body.data.map((employee) => ({
-            label: `${employee.firstName} ${employee.lastName} - ${employee.employeeCode}`,
-            value: employee.id,
-          })),
-        );
-      })
-      .catch(() => undefined);
+    function load() {
+      apiFetch<ApiEmployee[]>("/employees")
+        .then((body) => {
+          if (!body.data?.length) return;
+          setOptions(
+            body.data.map((employee) => ({
+              label: `${employee.firstName} ${employee.lastName} - ${employee.employeeCode}`,
+              value: employee.id,
+            })),
+          );
+        })
+        .catch(() => undefined);
+    }
+
+    load();
+
+    const handler = (event: Event) => {
+      const custom = event as CustomEvent<{ scope: string }>;
+      if (custom.detail?.scope === "employees" || custom.detail?.scope === "all") {
+        load();
+      }
+    };
+    window.addEventListener("skylinx:data-refresh", handler);
+    return () => window.removeEventListener("skylinx:data-refresh", handler);
   }, []);
 
   return options;

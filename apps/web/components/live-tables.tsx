@@ -985,7 +985,7 @@ export function NotificationsTable({
   );
 }
 
-export function AttendanceTable() {
+export function AttendanceTable({ search = "", status = "All", month = "" }: { search?: string; status?: string; month?: string }) {
   const [rows, setRows] = useState<AttendanceRow[]>([]);
   const [loaded, setLoaded] = useState(false);
 
@@ -1011,11 +1011,23 @@ export function AttendanceTable() {
     return onDataRefresh("attendance", load);
   }, []);
 
+  const filtered = rows.filter((r) => {
+    const nameMatch = !search || r.employee.toLowerCase().includes(search.toLowerCase());
+    const dateMatch = !month || r.date.startsWith(month);
+    
+    let statusMatch = true;
+    if (status !== "All") {
+      statusMatch = r.status.toLowerCase() === status.toLowerCase();
+    }
+
+    return nameMatch && dateMatch && statusMatch;
+  });
+
   return (
     <tbody>
       {!loaded ? <EmptyRow columns={5} message="Loading attendance logs from database..." /> : null}
-      {loaded && !rows.length ? <EmptyRow columns={5} message="No attendance logs found in database." /> : null}
-      {rows.map((row) => (
+      {loaded && !filtered.length ? <EmptyRow columns={5} message="No attendance logs found in database." /> : null}
+      {filtered.map((row) => (
         <tr key={`${row.employee}-${row.date}`}>
           <td className="border-b border-[#dce2eb] p-3 font-semibold">{row.employee}</td>
           <td className="border-b border-[#dce2eb] p-3">{row.date}</td>
@@ -1030,7 +1042,7 @@ export function AttendanceTable() {
   );
 }
 
-export function RegularizationsTable() {
+export function RegularizationsTable({ search = "", status = "All" }: { search?: string; status?: string }) {
   const [rows, setRows] = useState<ApiRegularization[]>([]);
   const [message, setMessage] = useState("");
 
@@ -1054,14 +1066,28 @@ export function RegularizationsTable() {
     requestDataRefresh("attendance");
   }
 
-  if (!rows.length) return null;
+  const filtered = rows.filter((r) => {
+    const nameMatch = !search || `${r.employee.firstName} ${r.employee.lastName}`.toLowerCase().includes(search.toLowerCase());
+    
+    let statusMatch = true;
+    if (status !== "All") {
+      statusMatch = r.status.toLowerCase() === status.toLowerCase();
+    }
+
+    return nameMatch && statusMatch;
+  });
+
+  if (!filtered.length && !rows.length) return null;
 
   return (
     <div className="mt-5 rounded-lg border border-[#dce2eb] bg-white p-5 shadow-sm">
       <h2 className="mb-4 text-lg font-semibold">Regularization Requests</h2>
       {message ? <div className="mb-3 rounded-lg bg-[#e6f5ef] p-3 text-sm text-[#18865a]">{message}</div> : null}
       <div className="grid gap-3">
-        {rows.map((row) => (
+        {!filtered.length ? (
+          <div className="text-sm text-muted p-2">No regularization requests match current filters.</div>
+        ) : null}
+        {filtered.map((row) => (
           <div className="flex items-center justify-between gap-3 rounded-lg border border-[#dce2eb] p-3" key={row.id}>
             <div>
               <div className="font-semibold">{row.employee.firstName} {row.employee.lastName}</div>

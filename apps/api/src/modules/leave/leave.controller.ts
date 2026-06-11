@@ -89,5 +89,53 @@ export class LeaveController {
     }
     return this.leaveService.reject(id, body);
   }
+
+  @Post("block-lists")
+  @RequirePermissions("leave.configure")
+  createBlockList(@Body() body: any) {
+    return this.leaveService.createBlockList(body);
+  }
+
+  @Get("block-lists/:companyId")
+  @RequirePermissions("leave.read")
+  listBlockLists(@Param("companyId") companyId: string) {
+    return this.leaveService.listBlockLists(companyId);
+  }
+
+  @Post("block-lists/:id/dates")
+  @RequirePermissions("leave.configure")
+  addBlockListDate(@Param("id") id: string, @Body() body: any) {
+    return this.leaveService.addBlockListDate(id, body);
+  }
+
+  @Get("ledger/:employeeId")
+  @RequirePermissions("leave.read")
+  getLedgerEntries(@Param("employeeId") employeeId: string) {
+    return this.leaveService.getLedgerEntries(employeeId);
+  }
+
+  @Post("policies")
+  @RequirePermissions("leave.configure")
+  createPolicy(@Body() body: any) {
+    return this.leaveService.createPolicy(body);
+  }
+
+  @Get("policies/:companyId")
+  @RequirePermissions("leave.read")
+  listPolicies(@Param("companyId") companyId: string) {
+    return this.leaveService.listPolicies(companyId);
+  }
+
+  @Post("policies/assign")
+  @RequirePermissions("leave.configure")
+  assignPolicy(@Body() body: any) {
+    return this.leaveService.assignPolicy(body);
+  }
+
+  @Get("policies/assignments/:companyId")
+  @RequirePermissions("leave.read")
+  listPolicyAssignments(@Param("companyId") companyId: string) {
+    return this.leaveService.listPolicyAssignments(companyId);
+  }
 }
 

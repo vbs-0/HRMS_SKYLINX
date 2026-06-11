@@ -5,6 +5,14 @@ import * as path from "path";
 import { CreateEmployeeDto } from "./dto/create-employee.dto";
 import { UpdateEmployeeDto } from "./dto/update-employee.dto";
 import { CreateEmployeeDocumentDto, VerifyEmployeeDocumentDto } from "./dto/document.dto";
+import {
+  CreateOnboardingTemplateDto,
+  CreateSeparationTemplateDto,
+  CreateExitInterviewDto,
+  CreateFullAndFinalStatementDto,
+  UpdateFfAssetDto,
+} from "./dto/lifecycle.dto";
+import { CreateEmployeeGradeDto, CreateEmploymentTypeDto } from "./dto/policy.dto";
 import { EmployeesService } from "./employees.service";
 import { RequirePermissions } from "../../common/auth/permissions.decorator";
 
@@ -81,5 +89,101 @@ export class EmployeesController {
   @RequirePermissions("employees.approve")
   verifyDocument(@Param("id") id: string, @Param("documentId") documentId: string, @Body() body: VerifyEmployeeDocumentDto) {
     return this.employeesService.verifyDocument(id, documentId, body);
+  }
+
+  // ==========================================
+  // Onboarding & Separation Lifecycle
+  // ==========================================
+  @Post("onboarding/templates")
+  @RequirePermissions("employees.create")
+  createOnboardingTemplate(@Body() body: CreateOnboardingTemplateDto) {
+    return this.employeesService.createOnboardingTemplate(body);
+  }
+
+  @Get("onboarding/templates")
+  @RequirePermissions("employees.read")
+  listOnboardingTemplates() {
+    return this.employeesService.listOnboardingTemplates();
+  }
+
+  @Post(":id/onboarding/start")
+  @RequirePermissions("employees.update")
+  startOnboarding(@Param("id") id: string, @Body("templateId") templateId: string) {
+    return this.employeesService.startOnboarding(id, templateId);
+  }
+
+  @Post("separation/templates")
+  @RequirePermissions("employees.create")
+  createSeparationTemplate(@Body() body: CreateSeparationTemplateDto) {
+    return this.employeesService.createSeparationTemplate(body);
+  }
+
+  @Get("separation/templates")
+  @RequirePermissions("employees.read")
+  listSeparationTemplates() {
+    return this.employeesService.listSeparationTemplates();
+  }
+
+  @Post(":id/separation/start")
+  @RequirePermissions("employees.update")
+  startSeparation(@Param("id") id: string, @Body("templateId") templateId: string) {
+    return this.employeesService.startSeparation(id, templateId);
+  }
+
+  @Post(":id/exit-interview")
+  @RequirePermissions("employees.update")
+  submitExitInterview(@Param("id") id: string, @Body() body: CreateExitInterviewDto) {
+    return this.employeesService.submitExitInterview(id, body);
+  }
+
+  @Get(":id/exit-interview")
+  @RequirePermissions("employees.read")
+  getExitInterview(@Param("id") id: string) {
+    return this.employeesService.getExitInterview(id);
+  }
+
+  @Post(":id/full-and-final")
+  @RequirePermissions("employees.update")
+  calculateFullAndFinal(@Param("id") id: string, @Body() body: CreateFullAndFinalStatementDto) {
+    return this.employeesService.calculateFullAndFinal(id, body);
+  }
+
+  @Get(":id/full-and-final")
+  @RequirePermissions("employees.read")
+  getFullAndFinal(@Param("id") id: string) {
+    return this.employeesService.getFullAndFinal(id);
+  }
+
+  @Patch("full-and-final/assets/:assetId")
+  @RequirePermissions("employees.update")
+  updateFfAsset(@Param("assetId") assetId: string, @Body() body: UpdateFfAssetDto) {
+    return this.employeesService.updateFfAsset(assetId, body);
+  }
+
+  // ==========================================
+  // Employee Grades & Employment Types CRUD
+  // ==========================================
+  @Post("grades")
+  @RequirePermissions("employees.create")
+  createGrade(@Body() body: CreateEmployeeGradeDto) {
+    return this.employeesService.createGrade(body);
+  }
+
+  @Get("grades/:companyId")
+  @RequirePermissions("employees.read")
+  listGrades(@Param("companyId") companyId: string) {
+    return this.employeesService.listGrades(companyId);
+  }
+
+  @Post("types")
+  @RequirePermissions("employees.create")
+  createEmploymentType(@Body() body: CreateEmploymentTypeDto) {
+    return this.employeesService.createEmploymentType(body);
+  }
+
+  @Get("types/:companyId")
+  @RequirePermissions("employees.read")
+  listEmploymentTypes(@Param("companyId") companyId: string) {
+    return this.employeesService.listEmploymentTypes(companyId);
   }
 }

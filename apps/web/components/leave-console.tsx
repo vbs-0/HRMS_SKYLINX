@@ -9,6 +9,7 @@ import { ReferenceFlowStrip } from "./reference-sections";
 import { LeaveRulesWorkspace } from "./reference-workspaces";
 import { Card } from "./ui";
 import { LeaveSettingsConsole } from "./leave-settings-console";
+import { LeavePolicyPanel } from "./leave-policy-panel";
 import { CalendarPlus, Download, ListChecks, SlidersHorizontal } from "lucide-react";
 import { apiFetch } from "../lib/client-api";
 
@@ -39,6 +40,14 @@ export function LeaveConsole() {
   useEffect(() => {
     loadData();
   }, []);
+
+  useEffect(() => {
+    if (role === "admin") {
+      setActiveTab("Leave Rules Policy");
+    } else {
+      setActiveTab("Dashboard");
+    }
+  }, [role]);
 
   async function handleExport() {
     try {
@@ -97,8 +106,9 @@ export function LeaveConsole() {
           eyebrow="Admin"
           title="Leave Configurations"
           summary="Configure company leave rules, carry forward balances, weekends policies, notice periods, and encashments."
-          tabs={["Leave Rules Policy"]}
-          activeTab="Leave Rules Policy"
+          tabs={["Leave Rules Policy", "Leave Policies", "Block Lists"]}
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
           actions={[
             { label: "Rules", icon: SlidersHorizontal, tone: "primary" },
             { label: "Export", icon: Download, onClick: handleExport },
@@ -110,7 +120,9 @@ export function LeaveConsole() {
           ]}
         />
         <ReferenceFlowStrip module="Settings" />
-        <LeaveSettingsConsole />
+        {activeTab === "Leave Rules Policy" && <LeaveSettingsConsole />}
+        {activeTab === "Leave Policies" && <LeavePolicyPanel initialTab="policies" />}
+        {activeTab === "Block Lists" && <LeavePolicyPanel initialTab="blocklists" />}
       </div>
     );
   }

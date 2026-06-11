@@ -43,6 +43,7 @@ export function LeaveSettingsConsole() {
     annualQuota: 30,
     weekendsBetweenLeave: "Not Considered",
     holidaysBetweenLeave: "Not Considered",
+    sandwichRuleEnabled: false,
     creditableOnAccrual: true,
     creditableOnPresentDay: false,
     accrualFrequency: "Monthly",
@@ -83,6 +84,7 @@ export function LeaveSettingsConsole() {
         annualQuota: 30,
         weekendsBetweenLeave: "Not Considered",
         holidaysBetweenLeave: "Not Considered",
+        sandwichRuleEnabled: false,
         creditableOnAccrual: true,
         creditableOnPresentDay: false,
         accrualFrequency: "Monthly",
@@ -456,6 +458,21 @@ export function LeaveSettingsConsole() {
                                     </select>
                                   ) : (
                                     <div className="text-sm font-semibold text-[#172033]">{type.holidaysBetweenLeave}</div>
+                                  )}
+                                </div>
+                                <div>
+                                  <div className="text-xs font-semibold text-[#6d7f98]">Sandwich Rule Enabled</div>
+                                  {isEditing ? (
+                                    <select
+                                      className="mt-1 min-h-8 rounded border border-[#dce2eb] px-2 text-sm bg-white"
+                                      value={editForm.sandwichRuleEnabled ? "Yes" : "No"}
+                                      onChange={(e) => setEditForm({ ...editForm, sandwichRuleEnabled: e.target.value === "Yes" })}
+                                    >
+                                      <option value="Yes">Yes</option>
+                                      <option value="No">No</option>
+                                    </select>
+                                  ) : (
+                                    <div className="text-sm font-semibold text-[#172033]">{type.sandwichRuleEnabled ? "Yes" : "No"}</div>
                                   )}
                                 </div>
                               </>
@@ -1041,6 +1058,17 @@ export function LeaveSettingsConsole() {
                     >
                       <option value="Not Considered">Not Considered</option>
                       <option value="Considered">Considered</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-semibold text-slate-600 block">Sandwich Rule Enabled</label>
+                    <select
+                      value={newTypeForm.sandwichRuleEnabled ? "Yes" : "No"}
+                      onChange={(e) => setNewTypeForm({ ...newTypeForm, sandwichRuleEnabled: e.target.value === "Yes" })}
+                      className="mt-1 w-full min-h-8 rounded border border-slate-200 px-2 text-sm bg-white"
+                    >
+                      <option value="Yes">Yes</option>
+                      <option value="No">No</option>
                     </select>
                   </div>
                 </div>

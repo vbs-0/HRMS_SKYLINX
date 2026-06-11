@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
-import { ApprovalStatus } from "@prisma/client";
+import { ApprovalStatus, LeaveLedgerEntryType } from "@prisma/client";
 import { response } from "../../common/crud-response";
 import { PrismaService } from "../../prisma/prisma.service";
 import { CreateLeaveRequestDto } from "./dto/create-leave-request.dto";
@@ -230,32 +230,47 @@ export class LeaveService {
       where: { id: { in: leaveTypeIds } },
     });
 
-    const results = [];
-    for (const empId of employeeIds) {
-      for (const lt of leaveTypes) {
-        const bal = await this.prisma.leaveBalance.upsert({
-          where: {
-            employeeId_leaveTypeId_year: {
+    const results = await this.prisma.$transaction(async (tx) => {
+      const list = [];
+      for (const empId of employeeIds) {
+        for (const lt of leaveTypes) {
+          const bal = await tx.leaveBalance.upsert({
+            where: {
+              employeeId_leaveTypeId_year: {
+                employeeId: empId,
+                leaveTypeId: lt.id,
+                year: 2026,
+              },
+            },
+            update: {},
+            create: {
               employeeId: empId,
               leaveTypeId: lt.id,
               year: 2026,
+              openingBalance: lt.annualQuota,
+              accrued: lt.annualQuota,
+              used: 0,
+              carriedForward: 0,
+              available: lt.annualQuota,
             },
-          },
-          update: {},
-          create: {
-            employeeId: empId,
-            leaveTypeId: lt.id,
-            year: 2026,
-            openingBalance: lt.annualQuota,
-            accrued: lt.annualQuota,
-            used: 0,
-            carriedForward: 0,
-            available: lt.annualQuota,
-          },
-        });
-        results.push(bal);
+          });
+          
+          await tx.leaveLedgerEntry.create({
+            data: {
+              employeeId: empId,
+              leaveTypeId: lt.id,
+              transactionDate: new Date(),
+              transactionType: LeaveLedgerEntryType.ACCRUAL,
+              days: lt.annualQuota,
+              remarks: `Initial rule allocation of ${lt.annualQuota} days`,
+            },
+          });
+          
+          list.push(bal);
+        }
       }
-    }
+      return list;
+    });
 
     return response("leave", "assignments.create", results);
   }
@@ -304,7 +319,35 @@ export class LeaveService {
     });
     if (!leaveType) throw new NotFoundException("Leave type not found");
 
-    const year = new Date(data.fromDate).getFullYear();
+    // Check Leave Block Lists
+    const blockLists = await this.prisma.leaveBlockList.findMany({
+      where: { companyId: leaveType.companyId },
+      include: { dates: true },
+    });
+
+    const requestedFrom = new Date(data.fromDate);
+    const requestedTo = new Date(data.toDate);
+
+    for (const bl of blockLists) {
+      for (const bld of bl.dates) {
+        const blDate = new Date(bld.date);
+        const blStr = blDate.toDateString();
+        let curr = new Date(requestedFrom);
+        while (curr <= requestedTo) {
+          if (curr.toDateString() === blStr) {
+            throw new BadRequestException(
+              `Cannot apply for leave on ${curr.toLocaleDateString()} as it is a blocked period: ${bld.reason}`
+            );
+          }
+          curr.setDate(curr.getDate() + 1);
+        }
+      }
+    }
+
+    // Calculate days using Sandwich Rule check
+    const calculatedDays = await this.calculateDaysCount(requestedFrom, requestedTo, data.leaveTypeId, data.employeeId);
+
+    const year = requestedFrom.getFullYear();
     const balance = await this.prisma.leaveBalance.findUnique({
       where: {
         employeeId_leaveTypeId_year: {
@@ -316,7 +359,7 @@ export class LeaveService {
     });
 
     if (!balance) throw new BadRequestException("Leave balance is not configured for this employee");
-    if (Number(balance.available) < data.days) {
+    if (Number(balance.available) < calculatedDays) {
       throw new BadRequestException("Insufficient leave balance");
     }
 
@@ -324,9 +367,9 @@ export class LeaveService {
       data: {
         employeeId: data.employeeId,
         leaveTypeId: data.leaveTypeId,
-        fromDate: new Date(data.fromDate),
-        toDate: new Date(data.toDate),
-        days: data.days,
+        fromDate: requestedFrom,
+        toDate: requestedTo,
+        days: calculatedDays,
         reason: data.reason,
         status: ApprovalStatus.PENDING,
       },
@@ -395,6 +438,17 @@ export class LeaveService {
         },
       });
 
+      await tx.leaveLedgerEntry.create({
+        data: {
+          employeeId: leaveRequest.employeeId,
+          leaveTypeId: leaveRequest.leaveTypeId,
+          transactionDate: new Date(),
+          transactionType: LeaveLedgerEntryType.DEBIT,
+          days: leaveRequest.days,
+          remarks: `Approved leave request from ${leaveRequest.fromDate.toLocaleDateString()} to ${leaveRequest.toDate.toLocaleDateString()}`,
+        },
+      });
+
       await tx.auditLog.create({
         data: {
           actorUserId: data.decidedByUserId,
@@ -448,5 +502,148 @@ export class LeaveService {
     });
 
     return response("leave", "request.reject", rejected);
+  }
+  async calculateDaysCount(fromDate: Date, toDate: Date, leaveTypeId: string, employeeId: string): Promise<number> {
+    const employee = await this.prisma.employee.findUnique({
+      where: { id: employeeId },
+      include: { company: true },
+    });
+    if (!employee) throw new NotFoundException("Employee not found");
+    const companyId = employee.companyId;
+    const workWeek = employee.company.workWeek;
+
+    const leaveType = await this.prisma.leaveType.findUnique({
+      where: { id: leaveTypeId },
+    });
+    if (!leaveType) throw new NotFoundException("Leave type not found");
+
+    const holidays = await this.prisma.holiday.findMany({
+      where: {
+        companyId,
+        date: {
+          gte: fromDate,
+          lte: toDate,
+        },
+        status: "ACTIVE",
+      },
+    });
+    const holidayDates = new Set(holidays.map((h) => new Date(h.date).toDateString()));
+
+    let count = 0;
+    const current = new Date(fromDate);
+    const end = new Date(toDate);
+
+    const isWeekend = (date: Date, ww: string): boolean => {
+      const day = date.getDay();
+      if (ww === "Monday to Friday") {
+        return day === 0 || day === 6;
+      }
+      return day === 0; // Default: Sunday
+    };
+
+    while (current <= end) {
+      const isWk = isWeekend(current, workWeek);
+      const isHol = holidayDates.has(current.toDateString());
+
+      if (isWk || isHol) {
+        if (leaveType.sandwichRuleEnabled) {
+          count++;
+        }
+      } else {
+        count++;
+      }
+      current.setDate(current.getDate() + 1);
+    }
+
+    return count;
+  }
+
+  async createBlockList(data: any) {
+    const list = await this.prisma.leaveBlockList.create({
+      data: {
+        companyId: data.companyId,
+        name: data.name,
+        description: data.description,
+      },
+    });
+    return response("leave", "blockList.create", list);
+  }
+
+  async listBlockLists(companyId: string) {
+    const lists = await this.prisma.leaveBlockList.findMany({
+      where: { companyId },
+      include: { dates: true },
+      orderBy: { name: "asc" },
+    });
+    return response("leave", "blockList.list", lists);
+  }
+
+  async addBlockListDate(blockListId: string, data: any) {
+    const blockListDate = await this.prisma.leaveBlockListDate.create({
+      data: {
+        blockListId,
+        date: new Date(data.date),
+        reason: data.reason,
+      },
+    });
+    return response("leave", "blockList.date.add", blockListDate);
+  }
+
+  async getLedgerEntries(employeeId: string) {
+    const entries = await this.prisma.leaveLedgerEntry.findMany({
+      where: { employeeId },
+      include: { leaveType: true },
+      orderBy: { transactionDate: "desc" },
+    });
+    return response("leave", "ledger.list", entries);
+  }
+
+  async createPolicy(data: any) {
+    const policy = await this.prisma.leavePolicy.create({
+      data: {
+        companyId: data.companyId,
+        name: data.name,
+        description: data.description,
+      },
+    });
+    return response("leave", "policy.create", policy);
+  }
+
+  async listPolicies(companyId: string) {
+    const policies = await this.prisma.leavePolicy.findMany({
+      where: { companyId },
+      include: { assignments: { include: { employee: true } } },
+      orderBy: { name: "asc" },
+    });
+    return response("leave", "policy.list", policies);
+  }
+
+  async assignPolicy(data: any) {
+    const assignments = [];
+    for (const employeeId of data.employeeIds) {
+      const assignment = await this.prisma.leavePolicyAssignment.create({
+        data: {
+          employeeId,
+          policyId: data.policyId,
+          effectiveFrom: new Date(data.effectiveFrom),
+        },
+      });
+      assignments.push(assignment);
+    }
+    return response("leave", "policy.assign", assignments);
+  }
+
+  async listPolicyAssignments(companyId: string) {
+    const assignments = await this.prisma.leavePolicyAssignment.findMany({
+      where: {
+        employee: { companyId },
+      },
+      include: {
+        employee: true,
+        policy: true,
+      },
+      orderBy: { createdAt: "desc" },
+    });
+    return response("leave", "policy.assignment.list", assignments);
   }
 }

@@ -42,4 +42,20 @@ export class CreateEmployeeDto {
   @IsOptional()
   @IsString()
   dateOfBirth?: string;
+
+  @IsOptional()
+  @IsString()
+  panNumber?: string;
+
+  @IsOptional()
+  @IsString()
+  providentFundAccount?: string;
+
+  @IsOptional()
+  @IsString()
+  gradeId?: string;
+
+  @IsOptional()
+  @IsString()
+  employmentTypeId?: string;
 }

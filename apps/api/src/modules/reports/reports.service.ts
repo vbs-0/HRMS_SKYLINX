@@ -39,32 +39,150 @@ export class ReportsService {
 
   async buildCustomReport(body: any) {
     const tenantId = TenantContext.getTenantId();
-    const { model, select, where, orderBy, take } = body;
-    if (!model || !(model in this.prisma)) {
-      throw new Error(`Invalid or unspecified model: ${model}`);
+    const { model, fields, where } = body;
+
+    const whitelist: Record<string, { prismaModel: string; fields: Record<string, string> }> = {
+      employee: {
+        prismaModel: "employee",
+        fields: {
+          employeeCode: "Employee ID",
+          firstName: "First Name",
+          lastName: "Last Name",
+          email: "Email",
+          phone: "Phone Number",
+          gender: "Gender",
+          joiningDate: "Joining Date",
+          status: "Status",
+          panNumber: "PAN Number",
+        },
+      },
+      attendanceLog: {
+        prismaModel: "attendanceLog",
+        fields: {
+          date: "Date",
+          checkInAt: "Check-In",
+          checkOutAt: "Check-Out",
+          status: "Attendance Status",
+          overtimeMinutes: "Overtime (Min)",
+        },
+      },
+      leaveRequest: {
+        prismaModel: "leaveRequest",
+        fields: {
+          fromDate: "From Date",
+          toDate: "To Date",
+          days: "Leave Days",
+          status: "Status",
+          reason: "Reason",
+        },
+      },
+      payslip: {
+        prismaModel: "payslip",
+        fields: {
+          grossPay: "Gross Pay",
+          deductions: "Deductions",
+          netPay: "Net Pay",
+          status: "Status",
+        },
+      },
+      expense: {
+        prismaModel: "expense",
+        fields: {
+          category: "Category",
+          amount: "Amount",
+          claimDate: "Claim Date",
+          status: "Status",
+          description: "Description",
+        },
+      },
+    };
+
+    const whitelistConfig = whitelist[model];
+    if (!whitelistConfig) {
+      throw new Error(`Invalid or non-whitelisted model: ${model}`);
     }
-    
-    // Inject tenant scope into the where clause
-    const queryWhere = where || {};
-    if (tenantId) {
-      if (model === "employee" || model === "payrollRun") {
-        queryWhere.companyId = tenantId;
-      } else {
-        queryWhere.employee = { ...queryWhere.employee, companyId: tenantId };
+
+    const prismaModel = whitelistConfig.prismaModel;
+    const allowedFields = whitelistConfig.fields;
+
+    // Filter requested fields to only allow whitelisted ones
+    const selectedFields = (fields || []).filter((f: string) => f in allowedFields);
+    if (selectedFields.length === 0) {
+      // Default to all whitelisted fields if none specified
+      selectedFields.push(...Object.keys(allowedFields));
+    }
+
+    // Safely construct select block
+    const selectObj: any = {};
+    for (const f of selectedFields) {
+      selectObj[f] = true;
+    }
+
+    // Set up where filters safely
+    const queryWhere: any = {};
+    if (where) {
+      for (const [key, value] of Object.entries(where)) {
+        if (key === "status" && typeof value === "string" && value) {
+          queryWhere.status = value;
+        }
       }
     }
 
-    const data = await (this.prisma as any)[model].findMany({
+    // For non-employee models, always join employee to show who it belongs to
+    const headers: Record<string, string> = {};
+    if (model !== "employee") {
+      headers["employeeCode"] = "Employee ID";
+      headers["employeeName"] = "Employee Name";
+      selectObj.employee = {
+        select: {
+          employeeCode: true,
+          firstName: true,
+          lastName: true,
+        },
+      };
+    }
+
+    for (const f of selectedFields) {
+      headers[f] = allowedFields[f];
+    }
+
+    // Scope to current company
+    if (model === "employee") {
+      queryWhere.companyId = tenantId;
+    } else {
+      queryWhere.employee = { companyId: tenantId };
+    }
+
+    // Enforce max take limit of 5000
+    const limit = Math.min(Number(body.take) || 5000, 5000);
+
+    const rawData = await (this.prisma as any)[prismaModel].findMany({
       where: queryWhere,
-      select: select || undefined,
-      orderBy: orderBy || undefined,
-      take: take || 100,
+      select: selectObj,
+      take: limit,
+    });
+
+    // Flatten / map to readable values
+    const rows = rawData.map((row: any) => {
+      const mapped: any = {};
+      if (model !== "employee" && row.employee) {
+        mapped["employeeCode"] = row.employee.employeeCode;
+        mapped["employeeName"] = `${row.employee.firstName} ${row.employee.lastName}`;
+      }
+      for (const f of selectedFields) {
+        let val = row[f];
+        if (val instanceof Date) {
+          val = val.toISOString().split("T")[0];
+        }
+        mapped[f] = val;
+      }
+      return mapped;
     });
 
     return response("reports", "custom", {
-      type: "custom",
-      total: data.length,
-      rows: data,
+      headers,
+      rows,
+      total: rows.length,
     });
   }
 

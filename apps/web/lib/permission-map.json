@@ -368,6 +368,10 @@
     "permission": "reports.read"
   },
   {
+    "pattern": "^/reports/custom$",
+    "permission": "reports.read"
+  },
+  {
     "pattern": "^/reports/compliance$",
     "permission": "reports.read"
   },

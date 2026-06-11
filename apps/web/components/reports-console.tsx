@@ -84,12 +84,144 @@ const keyToTabMap: Record<string, string> = {
   "compliance": "Compliance",
 };
 
+const CUSTOM_MODELS = [
+  {
+    key: "employee",
+    label: "Employee Directory",
+    fields: {
+      employeeCode: "Employee ID",
+      firstName: "First Name",
+      lastName: "Last Name",
+      email: "Email",
+      phone: "Phone Number",
+      gender: "Gender",
+      joiningDate: "Joining Date",
+      status: "Status",
+      panNumber: "PAN Number",
+    },
+    statuses: ["ACTIVE", "INACTIVE", "EXITED"],
+  },
+  {
+    key: "attendanceLog",
+    label: "Attendance Log",
+    fields: {
+      date: "Date",
+      checkInAt: "Check-In",
+      checkOutAt: "Check-Out",
+      status: "Attendance Status",
+      overtimeMinutes: "Overtime (Min)",
+    },
+    statuses: ["PRESENT", "LATE", "ABSENT", "HALF_DAY"],
+  },
+  {
+    key: "leaveRequest",
+    label: "Leave Request",
+    fields: {
+      fromDate: "From Date",
+      toDate: "To Date",
+      days: "Leave Days",
+      status: "Status",
+      reason: "Reason",
+    },
+    statuses: ["PENDING", "APPROVED", "REJECTED"],
+  },
+  {
+    key: "payslip",
+    label: "Payslip Payouts",
+    fields: {
+      grossPay: "Gross Pay",
+      deductions: "Deductions",
+      netPay: "Net Pay",
+      status: "Status",
+    },
+    statuses: ["DRAFT", "PENDING", "APPROVED", "PAID"],
+  },
+  {
+    key: "expense",
+    label: "Expense Claims",
+    fields: {
+      category: "Category",
+      amount: "Amount",
+      claimDate: "Claim Date",
+      status: "Status",
+      description: "Description",
+    },
+    statuses: ["PENDING", "APPROVED", "REJECTED"],
+  },
+];
+
 export function ReportsConsole() {
   const [activeTab, setActiveTab] = useState("Employees");
   const [selectedReport, setSelectedReport] = useState<ApiReport | null>(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+
+  // Custom Report Builder States
+  const [customModel, setCustomModel] = useState("employee");
+  const [customFields, setCustomFields] = useState<string[]>([]);
+  const [customStatus, setCustomStatus] = useState("All");
+  const [customData, setCustomData] = useState<{ headers: Record<string, string>; rows: any[]; total: number } | null>(null);
+  const [loadingCustom, setLoadingCustom] = useState(false);
+
+  // Initialize fields when model changes
+  useEffect(() => {
+    const modelCfg = CUSTOM_MODELS.find(m => m.key === customModel);
+    if (modelCfg) {
+      setCustomFields(Object.keys(modelCfg.fields));
+    }
+  }, [customModel]);
+
+  const handleGenerateCustom = async () => {
+    setLoadingCustom(true);
+    setError("");
+    setMessage("");
+    try {
+      const payload: any = {
+        model: customModel,
+        fields: customFields,
+        take: 5000,
+      };
+      if (customStatus !== "All") {
+        payload.where = { status: customStatus };
+      }
+      const res = await apiFetch<any>("/reports/custom", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+      if (res.data) {
+        setCustomData(res.data);
+      }
+    } catch (err: any) {
+      setError(err.message || "Failed to generate custom report");
+    } finally {
+      setLoadingCustom(false);
+    }
+  };
+
+  const handleDownloadCustomCSV = () => {
+    if (!customData || !customData.rows.length) return;
+    const headersKeys = Object.keys(customData.headers);
+    const headersLabels = headersKeys.map(k => customData.headers[k]);
+
+    const csvContent =
+      "data:text/csv;charset=utf-8," +
+      [headersLabels.join(",")].concat(
+        customData.rows.map((row: any) =>
+          headersKeys.map((k) => `"${row[k] ?? ""}"`).join(",")
+        )
+      ).join("\n");
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `custom_report_${customModel}_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    setMessage("Custom CSV Report downloaded successfully.");
+  };
 
   // Filters
   const [searchQuery, setSearchQuery] = useState("");
@@ -137,7 +269,9 @@ export function ReportsConsole() {
 
   useEffect(() => {
     loadCardCounts();
-    loadReport(tabToKeyMap[activeTab] || "employees");
+    if (activeTab !== "Custom Builder") {
+      loadReport(tabToKeyMap[activeTab] || "employees");
+    }
   }, [activeTab]);
 
   // Trigger export queued
@@ -245,17 +379,17 @@ export function ReportsConsole() {
         eyebrow="Reports"
         title="Reports Center"
         summary="Generate and inspect directory lists, shift attendance logs, leave balances, payouts, and compliance files."
-        tabs={["Employees", "Attendance", "Leaves", "Payroll", "Expenses", "Compliance"]}
+        tabs={["Employees", "Attendance", "Leaves", "Payroll", "Expenses", "Compliance", "Custom Builder"]}
         activeTab={activeTab}
         onTabChange={setActiveTab}
-        actions={[
+        actions={activeTab === "Custom Builder" ? [] : [
           { label: "Download Excel", icon: FileSpreadsheet, tone: "primary", onClick: handleDownloadCSV },
           { label: "Print PDF", icon: FileText, onClick: handlePrintPDF },
         ]}
-        searchValue={searchQuery}
-        onSearchChange={setSearchQuery}
-        statusValue={statusFilter}
-        onStatusChange={setStatusFilter}
+        searchValue={activeTab === "Custom Builder" ? undefined : searchQuery}
+        onSearchChange={activeTab === "Custom Builder" ? undefined : setSearchQuery}
+        statusValue={activeTab === "Custom Builder" ? undefined : statusFilter}
+        onStatusChange={activeTab === "Custom Builder" ? undefined : setStatusFilter}
       />
 
       <ReferenceFlowStrip module="Reports" />
@@ -278,8 +412,10 @@ export function ReportsConsole() {
         </div>
       )}
 
-      {/* Metric Display */}
-      <div className="grid grid-cols-4 gap-4 max-xl:grid-cols-2 max-md:grid-cols-1">
+      {activeTab !== "Custom Builder" && (
+        <>
+          {/* Metric Display */}
+          <div className="grid grid-cols-4 gap-4 max-xl:grid-cols-2 max-md:grid-cols-1">
         <MetricCard label={metric1.label} value={metric1.val} note={metric1.note} />
         <MetricCard label={metric2.label} value={metric2.val} note={metric2.note} />
         <MetricCard label={metric3.label} value={metric3.val} note={metric3.note} />
@@ -579,6 +715,133 @@ export function ReportsConsole() {
           )}
         </div>
       </Card>
+      </>
+      )}
+
+      {activeTab === "Custom Builder" && (
+        <Card className="p-5 border border-[#e8edf4] text-left">
+          <div className="grid grid-cols-[300px_1fr] gap-6 max-xl:grid-cols-1">
+            {/* Left panel: configurations */}
+            <div className="space-y-5 rounded-xl border border-slate-100 bg-[#f8fafc] p-4">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">Report Configurations</h4>
+
+              {/* Model selector */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 mb-1">Select Dataset</label>
+                <select
+                  className="w-full min-h-10 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm outline-none transition focus:border-brand"
+                  value={customModel}
+                  onChange={(e) => setCustomModel(e.target.value)}
+                >
+                  {CUSTOM_MODELS.map((m) => (
+                    <option key={m.key} value={m.key}>{m.label}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Filters */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 mb-1">Status Filter (Optional)</label>
+                <select
+                  className="w-full min-h-10 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm outline-none transition focus:border-brand"
+                  value={customStatus}
+                  onChange={(e) => setCustomStatus(e.target.value)}
+                >
+                  <option value="All">All Statuses</option>
+                  {CUSTOM_MODELS.find(m => m.key === customModel)?.statuses.map(st => (
+                    <option key={st} value={st}>{st}</option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Checkboxes for fields */}
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 mb-2">Select Columns</label>
+                <div className="space-y-2 max-h-60 overflow-y-auto border border-slate-200 bg-white rounded-lg p-3">
+                  {Object.entries(CUSTOM_MODELS.find(m => m.key === customModel)?.fields || {}).map(([key, label]) => (
+                    <label key={key} className="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        className="h-3.5 w-3.5 rounded border-slate-300 text-brand focus:ring-brand"
+                        checked={customFields.includes(key)}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setCustomFields([...customFields, key]);
+                          } else {
+                            setCustomFields(customFields.filter(f => f !== key));
+                          }
+                        }}
+                      />
+                      <span>{label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <button
+                onClick={handleGenerateCustom}
+                disabled={loadingCustom}
+                className="w-full min-h-10 rounded-lg bg-brand text-xs font-bold text-white transition hover:bg-brand-dark shadow-sm disabled:opacity-50"
+              >
+                {loadingCustom ? "Querying..." : "Generate Preview"}
+              </button>
+            </div>
+
+            {/* Right panel: preview workspace */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between border-b pb-3">
+                <div>
+                  <h4 className="text-sm font-bold text-slate-800">Preview Workspace</h4>
+                  <p className="text-[10px] text-slate-400">Showing first 10 matching records. Download full report as CSV.</p>
+                </div>
+                {customData && customData.rows.length > 0 && (
+                  <button
+                    onClick={handleDownloadCustomCSV}
+                    className="inline-flex min-h-10 items-center gap-1.5 rounded-lg bg-emerald-600 px-4 text-xs font-bold text-white hover:bg-emerald-700 transition shadow-sm"
+                  >
+                    <Download className="h-3.5 w-3.5" /> Export {customData.total} Rows to CSV
+                  </button>
+                )}
+              </div>
+
+              {!customData ? (
+                <div className="border border-dashed border-slate-200 p-12 text-center text-slate-400 rounded-lg bg-slate-50/50 text-xs font-semibold">
+                  Select your dataset and column fields, then click "Generate Preview" to fetch data.
+                </div>
+              ) : customData.rows.length === 0 ? (
+                <div className="border border-dashed border-slate-200 p-12 text-center text-slate-400 rounded-lg bg-slate-50/50 text-xs font-semibold">
+                  No matching records found in database.
+                </div>
+              ) : (
+                <div className="overflow-x-auto border rounded-lg">
+                  <table className="w-full border-collapse text-left text-xs text-slate-600 bg-white">
+                    <thead>
+                      <tr className="bg-slate-50 border-b">
+                        {Object.keys(customData.headers).map((k) => (
+                          <th key={k} className="p-2.5 font-bold uppercase text-slate-500 text-[10px] tracking-wider border-r">
+                            {customData.headers[k]}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {customData.rows.slice(0, 10).map((row: any, rIndex: number) => (
+                        <tr key={rIndex} className="border-b border-slate-100 hover:bg-slate-50 transition">
+                          {Object.keys(customData.headers).map((k) => (
+                            <td key={k} className="p-2.5 border-r font-medium text-slate-800">
+                              {row[k]?.toString() ?? "—"}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          </div>
+        </Card>
+      )}
     </div>
   );
 }

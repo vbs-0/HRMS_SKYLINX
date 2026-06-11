@@ -353,7 +353,7 @@ export function PayrollConsole() {
         eyebrow="Payroll"
         title="Payroll Console"
         summary="Calculate salaries, generate reports, lock monthly payroll operations and manage employee salary CTC allocations."
-        tabs={["Payroll Run", "Payslips", "Bank Export", "Statutory & Tax", "Salary Setup", "Retention Bonus", "Salary Withholding", "Corrections", "Gratuity", "Tax Slabs", "Form 16"]}
+        tabs={["Payroll Run", "Payslips", "Bank Export", "Statutory & Tax", "Salary Setup", "Retention Bonus", "Salary Withholding", "Corrections", "Gratuity", "Tax Slabs", "IT Declaration & Proofs", "Form 16"]}
         activeTab={activeTab}
         onTabChange={setActiveTab}
         actions={[
@@ -878,6 +878,10 @@ export function PayrollConsole() {
 
       {activeTab === "Form 16" && (
         <Form16Panel />
+      )}
+
+      {activeTab === "IT Declaration & Proofs" && (
+        <ITDeclarationProofsTab />
       )}
 
       {/* CREATE RUN MODAL */}
@@ -2349,6 +2353,400 @@ function Form16Panel() {
           </p>
         </Card>
       )}
+    </div>
+  );
+}
+
+// ===========================================
+// IT Declaration & Proof Verification Tab
+// ===========================================
+
+interface TaxProof {
+  id: string;
+  employeeId: string;
+  financialYear: string;
+  sectionType: string;
+  declaredAmount: number;
+  actualAmount: number;
+  fileUrl: string;
+  status: "PENDING" | "APPROVED" | "REJECTED";
+  hrRemarks?: string;
+  decidedAt?: string;
+  employee?: { firstName: string; lastName: string; employeeCode: string };
+}
+
+interface TaxDeclaration {
+  id: string;
+  employeeId: string;
+  financialYear: string;
+  regime: string;
+  section80C: number;
+  section80D: number;
+  section24: number;
+  otherExemptions: number;
+  status: string;
+}
+
+const SECTION_OPTIONS = [
+  { value: "80C", label: "80C – Investments (LIC, PF, ELSS, Tuition Fee)" },
+  { value: "80D", label: "80D – Medical Insurance Premium" },
+  { value: "24", label: "Sec 24 – Home Loan Interest" },
+  { value: "other", label: "Other Exemptions" },
+];
+
+function proofStatusBadge(status: string) {
+  const map: Record<string, string> = {
+    PENDING: "bg-amber-100 text-amber-800",
+    APPROVED: "bg-emerald-100 text-emerald-700",
+    REJECTED: "bg-red-100 text-red-700",
+  };
+  return (
+    <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${map[status] ?? "bg-slate-100 text-slate-500"}`}>
+      {status}
+    </span>
+  );
+}
+
+function ITDeclarationProofsTab() {
+  const [proofs, setProofs] = useState<TaxProof[]>([]);
+  const [declaration, setDeclaration] = useState<TaxDeclaration | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  // Upload form
+  const [uploadSection, setUploadSection] = useState("80C");
+  const [declaredAmt, setDeclaredAmt] = useState("");
+  const [actualAmt, setActualAmt] = useState("");
+  const [proofFile, setProofFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
+
+  // HR decide
+  const [decidingId, setDecidingId] = useState<string | null>(null);
+  const [decideStatus, setDecideStatus] = useState<"APPROVED" | "REJECTED">("APPROVED");
+  const [decideRemarks, setDecideRemarks] = useState("");
+  const [deciding, setDeciding] = useState(false);
+
+  const currentFY = (() => {
+    const now = new Date();
+    const yr = now.getFullYear();
+    return now.getMonth() >= 3 ? `${yr}-${yr + 1}` : `${yr - 1}-${yr}`;
+  })();
+
+  function load() {
+    setLoading(true);
+    Promise.all([
+      apiFetch<TaxProof[]>("/payroll/tax-proofs"),
+    ])
+      .then(([proofsRes]) => {
+        setProofs(proofsRes.data || []);
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  // Group proofs by section for per-section status display
+  const proofsBySection = SECTION_OPTIONS.reduce<Record<string, TaxProof[]>>((acc, s) => {
+    acc[s.value] = proofs.filter((p) => p.sectionType === s.value);
+    return acc;
+  }, {});
+
+  function getSectionStatus(section: string): string {
+    const sProofs = proofsBySection[section] ?? [];
+    if (!sProofs.length) return "Declared";
+    if (sProofs.some((p) => p.status === "APPROVED")) return "Verified";
+    if (sProofs.some((p) => p.status === "REJECTED")) return "Rejected";
+    return "Proof Pending";
+  }
+
+  async function handleUpload(e: React.FormEvent) {
+    e.preventDefault();
+    if (!proofFile) { setError("Please select a file."); return; }
+    setUploading(true);
+    setError(""); setMessage("");
+    try {
+      // Step 1: upload file
+      const fd = new FormData();
+      fd.append("file", proofFile);
+      const uploadRes = await fetch("/api/v1/payroll/tax-proofs/upload", {
+        method: "POST",
+        headers: { Authorization: `Bearer ${typeof window !== "undefined" ? localStorage.getItem("auth_token") ?? "" : ""}` },
+        body: fd,
+      });
+      if (!uploadRes.ok) throw new Error("File upload failed");
+      const { fileUrl } = await uploadRes.json();
+
+      // Step 2: create proof record
+      await apiFetch("/payroll/tax-proofs", {
+        method: "POST",
+        body: JSON.stringify({
+          employeeId: proofs[0]?.employeeId ?? "", // will be overridden by server scope
+          financialYear: currentFY,
+          sectionType: uploadSection,
+          declaredAmount: Number(declaredAmt),
+          actualAmount: Number(actualAmt),
+          fileUrl,
+        }),
+      });
+      setMessage("Proof submitted successfully. HR will review and verify.");
+      setProofFile(null);
+      setDeclaredAmt(""); setActualAmt("");
+      load();
+    } catch (err: any) {
+      setError(err?.message ?? "Proof submission failed");
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  async function handleDecide(id: string) {
+    setDeciding(true);
+    setError(""); setMessage("");
+    try {
+      await apiFetch(`/payroll/tax-proofs/${id}/decide`, {
+        method: "PATCH",
+        body: JSON.stringify({ status: decideStatus, hrRemarks: decideRemarks }),
+      });
+      setMessage(`Proof ${decideStatus === "APPROVED" ? "approved" : "rejected"} — effective exemption updated.`);
+      setDecidingId(null);
+      setDecideRemarks("");
+      load();
+    } catch (err: any) {
+      setError(err?.message ?? "Decision failed");
+    } finally {
+      setDeciding(false);
+    }
+  }
+
+  return (
+    <div className="grid gap-5">
+      {/* Per-section status summary */}
+      <Card>
+        <div className="mb-4 flex items-center justify-between border-b pb-4">
+          <div>
+            <h3 className="text-base font-semibold text-slate-800">IT Declaration — Section-wise Status</h3>
+            <p className="text-xs text-slate-400 mt-0.5">FY {currentFY} · Proofs are additive: verified sections use min(declared, approved proof total)</p>
+          </div>
+          <span className="text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded-full px-3 py-1 font-semibold">
+            {currentFY}
+          </span>
+        </div>
+        <div className="grid grid-cols-2 gap-3 max-sm:grid-cols-1">
+          {SECTION_OPTIONS.map((s) => {
+            const st = getSectionStatus(s.value);
+            const statusColor =
+              st === "Verified" ? "border-emerald-200 bg-emerald-50" :
+              st === "Rejected" ? "border-red-200 bg-red-50" :
+              st === "Proof Pending" ? "border-amber-200 bg-amber-50" :
+              "border-slate-200 bg-slate-50";
+            const sProofs = proofsBySection[s.value] ?? [];
+            const approvedActual = sProofs.filter(p => p.status === "APPROVED").reduce((sum, p) => sum + Number(p.actualAmount), 0);
+            return (
+              <div key={s.value} className={`rounded-xl border p-4 ${statusColor}`}>
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm font-bold text-slate-700">{s.value}</span>
+                  <span className={`text-xs rounded-full px-2 py-0.5 font-semibold ${
+                    st === "Verified" ? "bg-emerald-100 text-emerald-700" :
+                    st === "Rejected" ? "bg-red-100 text-red-600" :
+                    st === "Proof Pending" ? "bg-amber-100 text-amber-700" :
+                    "bg-slate-100 text-slate-500"
+                  }`}>{st}</span>
+                </div>
+                <p className="text-xs text-slate-500 mb-1">{s.label.split("–")[1]?.trim()}</p>
+                {approvedActual > 0 && (
+                  <p className="text-xs text-emerald-700 font-semibold">
+                    ✓ Verified: ₹{approvedActual.toLocaleString("en-IN")}
+                  </p>
+                )}
+                <p className="text-xs text-slate-400 mt-1">{sProofs.length} proof{sProofs.length !== 1 ? "s" : ""} submitted</p>
+              </div>
+            );
+          })}
+        </div>
+      </Card>
+
+      {/* Proof Upload (Employee) */}
+      <Card>
+        <div className="mb-4 border-b pb-4">
+          <h3 className="text-base font-semibold text-slate-800">Submit Proof Document</h3>
+          <p className="text-xs text-slate-400 mt-0.5">Upload supporting documents for each exemption section. HR will verify and update effective amounts.</p>
+        </div>
+        <form onSubmit={handleUpload} className="grid gap-4 max-w-lg">
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Section</label>
+            <select
+              id="it-proof-section"
+              className="w-full min-h-9 rounded-lg border border-slate-200 px-3 text-sm text-slate-800 outline-none focus:border-brand"
+              value={uploadSection}
+              onChange={(e) => setUploadSection(e.target.value)}
+            >
+              {SECTION_OPTIONS.map((s) => (
+                <option key={s.value} value={s.value}>{s.label}</option>
+              ))}
+            </select>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Declared Amount (₹)</label>
+              <input
+                id="it-proof-declared"
+                type="number"
+                className="w-full min-h-9 rounded-lg border border-slate-200 px-3 text-sm outline-none focus:border-brand"
+                placeholder="e.g. 150000"
+                value={declaredAmt}
+                onChange={(e) => setDeclaredAmt(e.target.value)}
+                required
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Actual Amount (₹)</label>
+              <input
+                id="it-proof-actual"
+                type="number"
+                className="w-full min-h-9 rounded-lg border border-slate-200 px-3 text-sm outline-none focus:border-brand"
+                placeholder="e.g. 140000"
+                value={actualAmt}
+                onChange={(e) => setActualAmt(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Proof File (PDF/Image)</label>
+            <input
+              id="it-proof-file"
+              type="file"
+              accept=".pdf,.jpg,.jpeg,.png"
+              className="w-full text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand/10 file:text-brand hover:file:bg-brand/20"
+              onChange={(e) => setProofFile(e.target.files?.[0] ?? null)}
+              required
+            />
+          </div>
+          {error && <div className="rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-700">{error}</div>}
+          {message && <div className="rounded-lg bg-emerald-50 border border-emerald-200 p-3 text-sm text-emerald-700">{message}</div>}
+          <button
+            id="it-proof-submit"
+            type="submit"
+            disabled={uploading}
+            className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-brand px-5 text-sm font-semibold text-white transition hover:bg-brand-dark disabled:opacity-50"
+          >
+            {uploading ? "Uploading…" : "Submit Proof"}
+          </button>
+        </form>
+      </Card>
+
+      {/* All Proofs List (HR sees all, employees see own) */}
+      <Card>
+        <div className="mb-4 flex items-center justify-between border-b pb-4">
+          <h3 className="text-base font-semibold text-slate-800">Proof Submissions — Verification Queue</h3>
+          <span className="text-xs text-slate-400">{proofs.filter(p => p.status === "PENDING").length} pending review</span>
+        </div>
+        {loading ? (
+          <div className="py-8 text-center text-slate-400">Loading proofs…</div>
+        ) : !proofs.length ? (
+          <div className="py-8 text-center text-slate-400">No proofs submitted yet for this financial year.</div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-left text-sm text-slate-600">
+              <thead>
+                <tr className="bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500">
+                  {proofs[0]?.employee && <th className="border-b p-3">Employee</th>}
+                  <th className="border-b p-3">Section</th>
+                  <th className="border-b p-3">FY</th>
+                  <th className="border-b p-3">Declared</th>
+                  <th className="border-b p-3">Actual (Proof)</th>
+                  <th className="border-b p-3">Proof Doc</th>
+                  <th className="border-b p-3">Status</th>
+                  <th className="border-b p-3">HR Remarks</th>
+                  <th className="border-b p-3 text-right">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {proofs.map((proof) => (
+                  <tr key={proof.id} className="hover:bg-slate-50/50">
+                    {proof.employee && (
+                      <td className="border-b p-3 font-semibold text-slate-800">
+                        {proof.employee.firstName} {proof.employee.lastName}
+                        <span className="block text-xs text-slate-400 font-normal">{proof.employee.employeeCode}</span>
+                      </td>
+                    )}
+                    <td className="border-b p-3 font-mono text-xs font-bold text-slate-700">{proof.sectionType}</td>
+                    <td className="border-b p-3 text-xs">{proof.financialYear}</td>
+                    <td className="border-b p-3">₹{Number(proof.declaredAmount).toLocaleString("en-IN")}</td>
+                    <td className="border-b p-3 font-semibold">₹{Number(proof.actualAmount).toLocaleString("en-IN")}</td>
+                    <td className="border-b p-3">
+                      <a
+                        href={proof.fileUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-brand text-xs underline hover:text-brand-dark"
+                      >
+                        View Doc
+                      </a>
+                    </td>
+                    <td className="border-b p-3">{proofStatusBadge(proof.status)}</td>
+                    <td className="border-b p-3 text-xs text-slate-500 max-w-[120px] truncate">
+                      {proof.hrRemarks || "—"}
+                    </td>
+                    <td className="border-b p-3 text-right">
+                      {proof.status === "PENDING" ? (
+                        decidingId === proof.id ? (
+                          <div className="flex flex-col gap-2 min-w-[200px]">
+                            <select
+                              className="rounded border border-slate-200 px-2 py-1 text-xs"
+                              value={decideStatus}
+                              onChange={(e) => setDecideStatus(e.target.value as any)}
+                            >
+                              <option value="APPROVED">Approve</option>
+                              <option value="REJECTED">Reject</option>
+                            </select>
+                            <input
+                              placeholder="Remarks (optional)"
+                              className="rounded border border-slate-200 px-2 py-1 text-xs"
+                              value={decideRemarks}
+                              onChange={(e) => setDecideRemarks(e.target.value)}
+                            />
+                            <div className="flex gap-2">
+                              <button
+                                className="flex-1 rounded-lg bg-brand text-white text-xs font-semibold px-2 py-1.5 hover:bg-brand-dark disabled:opacity-50"
+                                disabled={deciding}
+                                onClick={() => handleDecide(proof.id)}
+                              >
+                                {deciding ? "…" : "Confirm"}
+                              </button>
+                              <button
+                                className="flex-1 rounded-lg border border-slate-200 text-xs text-slate-600 px-2 py-1.5 hover:bg-slate-50"
+                                onClick={() => { setDecidingId(null); setDecideRemarks(""); }}
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <button
+                            className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-50"
+                            onClick={() => { setDecidingId(proof.id); setDecideStatus("APPROVED"); setDecideRemarks(""); }}
+                          >
+                            Decide
+                          </button>
+                        )
+                      ) : (
+                        <span className="text-xs text-slate-400">
+                          {proof.decidedAt ? new Date(proof.decidedAt).toLocaleDateString("en-IN") : "Done"}
+                        </span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </Card>
     </div>
   );
 }

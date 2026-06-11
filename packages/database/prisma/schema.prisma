@@ -1213,6 +1213,8 @@ model EmployeeTaxExemptionProofSubmission {
   actualAmount   Decimal
   fileUrl        String
   status         ApprovalStatus @default(PENDING)
+  hrRemarks      String?        // HR remarks on approve/reject
+  decidedAt      DateTime?      // When HR decided
   createdAt      DateTime       @default(now())
   employee       Employee       @relation(fields: [employeeId], references: [id])
 

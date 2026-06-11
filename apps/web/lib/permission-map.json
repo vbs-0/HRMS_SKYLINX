@@ -264,6 +264,10 @@
     "permission": "payroll.read"
   },
   {
+    "pattern": "^/payroll/tax-proofs/upload$",
+    "permission": "payroll.read"
+  },
+  {
     "pattern": "^/payroll/tax-proofs$",
     "permission": "payroll.read"
   },
@@ -356,8 +360,16 @@
     "permission": "recruitment.read"
   },
   {
+    "pattern": "^/reminders/upcoming-expiries$",
+    "permission": "employees.read"
+  },
+  {
     "pattern": "^/reminders$",
     "permission": "settings.configure"
+  },
+  {
+    "pattern": "^/reports/custom$",
+    "permission": "reports.export"
   },
   {
     "pattern": "^/reports/attendance$",

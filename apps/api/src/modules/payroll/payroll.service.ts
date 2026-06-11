@@ -202,7 +202,12 @@ export class PayrollService {
     return response("payroll", "tax.declaration_get", dec);
   }
 
-  async submitProof(data: CreateProofSubmissionDto) {
+  async submitProof(data: CreateProofSubmissionDto, user?: AuthenticatedUser) {
+    // Employees may only submit proofs for their own declaration
+    const isEmployee = user && !user.permissions.includes("payroll.approve");
+    if (isEmployee && user?.employeeId && data.employeeId !== user.employeeId) {
+      throw new ForbiddenException("You can only submit proofs for your own declaration");
+    }
     const proof = await this.prisma.employeeTaxExemptionProofSubmission.create({
       data: {
         employeeId: data.employeeId,
@@ -232,11 +237,69 @@ export class PayrollService {
   async decideProof(id: string, data: DecideProofDto) {
     const proof = await this.prisma.employeeTaxExemptionProofSubmission.update({
       where: { id },
-      data: { status: data.status },
+      data: {
+        status: data.status,
+        hrRemarks: data.hrRemarks,
+        decidedAt: new Date(),
+      },
       include: { employee: true },
     });
+    // After any decision, recalculate per-section effective exemptions on the declaration
+    await this.updateDeclarationFromProofs(proof.employeeId, proof.financialYear);
     await this.audit("payroll", "tax.proof_decide", "tax_proof_submission", id, proof);
     return response("payroll", "tax.proof_decide", proof);
+  }
+
+  /**
+   * Recalculates effective exemption amounts in EmployeeTaxExemptionDeclaration based on
+   * approved proofs for the given employee & financial year.
+   *
+   * Rule (Indian payroll practice):
+   *   - For each section (80C, 80D, 24, other): if at least one APPROVED proof exists,
+   *     effective exemption = min(declared, sum of APPROVED proof actualAmounts).
+   *   - Sections with no proofs submitted retain the original declared amount.
+   *   - Declaration status remains APPROVED (monthly TDS continues uninterrupted).
+   */
+  private async updateDeclarationFromProofs(employeeId: string, financialYear: string) {
+    const declaration = await this.prisma.employeeTaxExemptionDeclaration.findUnique({
+      where: { employeeId },
+    });
+    if (!declaration || declaration.financialYear !== financialYear) return;
+
+    const approvedProofs = await this.prisma.employeeTaxExemptionProofSubmission.findMany({
+      where: { employeeId, financialYear, status: ApprovalStatus.APPROVED },
+    });
+
+    const sumActual = (section: string) =>
+      approvedProofs
+        .filter((p) => p.sectionType === section)
+        .reduce((sum, p) => sum + Number(p.actualAmount), 0);
+
+    const hasProofs = (section: string) =>
+      approvedProofs.some((p) => p.sectionType === section);
+
+    const new80C = hasProofs("80C")
+      ? Math.min(Number(declaration.section80C), sumActual("80C"))
+      : Number(declaration.section80C);
+    const new80D = hasProofs("80D")
+      ? Math.min(Number(declaration.section80D), sumActual("80D"))
+      : Number(declaration.section80D);
+    const new24 = hasProofs("24")
+      ? Math.min(Number(declaration.section24), sumActual("24"))
+      : Number(declaration.section24);
+    const newOther = hasProofs("other")
+      ? Math.min(Number(declaration.otherExemptions), sumActual("other"))
+      : Number(declaration.otherExemptions);
+
+    await this.prisma.employeeTaxExemptionDeclaration.update({
+      where: { employeeId },
+      data: {
+        section80C: new80C,
+        section80D: new80D,
+        section24: new24,
+        otherExemptions: newOther,
+      },
+    });
   }
 
   // ==========================================

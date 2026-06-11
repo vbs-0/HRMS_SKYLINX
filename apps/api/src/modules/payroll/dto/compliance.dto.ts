@@ -125,4 +125,8 @@ export class DecideProofDto {
   @IsEnum(ApprovalStatus)
   @IsNotEmpty()
   status: ApprovalStatus;
+
+  @IsString()
+  @IsOptional()
+  hrRemarks?: string;
 }

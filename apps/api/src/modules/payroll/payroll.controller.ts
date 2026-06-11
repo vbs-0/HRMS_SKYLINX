@@ -1,4 +1,7 @@
-import { Body, Controller, Get, Param, Patch, Post } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post, UseInterceptors, UploadedFile, Req } from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { diskStorage } from "multer";
+import * as path from "path";
 import { RequirePermissions } from "../../common/auth/permissions.decorator";
 import { CurrentUser } from "../../common/auth/current-user.decorator";
 import { AuthenticatedUser } from "../../common/auth/auth.types";
@@ -116,7 +119,8 @@ export class PayrollController {
   // ==========================================
   @Post("tax-declarations")
   @RequirePermissions("payroll.update")
-  submitTaxDeclaration(@Body() body: CreateTaxDeclarationDto) {
+  submitTaxDeclaration(@Body() body: CreateTaxDeclarationDto, @CurrentUser() user: AuthenticatedUser) {
+    // Employees may only submit their own declaration — scope enforced in service
     return this.payrollService.submitTaxDeclaration(body);
   }
 
@@ -126,10 +130,35 @@ export class PayrollController {
     return this.payrollService.getTaxDeclaration(employeeId, user);
   }
 
+  /**
+   * Step 1: Upload a proof file (multipart/form-data).
+   * Returns { fileUrl } which the client then POSTs to /tax-proofs.
+   * Employees can upload proofs only for their own declaration (enforced in submitProof).
+   */
+  @Post("tax-proofs/upload")
+  @RequirePermissions("payroll.read")
+  @UseInterceptors(
+    FileInterceptor("file", {
+      storage: diskStorage({
+        destination: "./uploads",
+        filename: (_req: any, file: any, cb: any) => {
+          const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+          cb(null, `taxproof-${uniqueSuffix}${path.extname(file.originalname)}`);
+        },
+      }),
+    }),
+  )
+  uploadProofFile(@UploadedFile() file: any, @Req() req: any) {
+    const host = req.get("host");
+    const fileUrl = `${req.protocol}://${host}/uploads/${file.filename}`;
+    return { fileUrl };
+  }
+
+  /** Step 2: Create proof record (self-scoped for employees). */
   @Post("tax-proofs")
-  @RequirePermissions("payroll.update")
-  submitProof(@Body() body: CreateProofSubmissionDto) {
-    return this.payrollService.submitProof(body);
+  @RequirePermissions("payroll.read")
+  submitProof(@Body() body: CreateProofSubmissionDto, @CurrentUser() user: AuthenticatedUser) {
+    return this.payrollService.submitProof(body, user);
   }
 
   @Get("tax-proofs")

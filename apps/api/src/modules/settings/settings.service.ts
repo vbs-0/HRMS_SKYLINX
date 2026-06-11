@@ -106,6 +106,9 @@ const DEFAULT_RULES: Required<UpdateClientRulesDto> = {
     slaMediumHours: 48,
     slaLowHours: 72,
   },
+  documents: {
+    expiryReminderDays: 30,
+  },
 };
 
 @Injectable()

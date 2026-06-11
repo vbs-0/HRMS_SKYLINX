@@ -30,4 +30,10 @@ export class RemindersController {
   processReminders() {
     return this.remindersService.processReminders();
   }
+
+  @Get("upcoming-expiries")
+  @RequirePermissions("employees.read")
+  getUpcomingExpiries() {
+    return this.remindersService.getUpcomingExpiries();
+  }
 }

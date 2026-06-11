@@ -83,6 +83,21 @@ export function EmployeesConsole() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
+  const [expiries, setExpiries] = useState<any[]>([]);
+  const [loadingExpiries, setLoadingExpiries] = useState(false);
+
+  useEffect(() => {
+    if (activeTab === "Document Expiry") {
+      setLoadingExpiries(true);
+      apiFetch<any[]>("/reminders/upcoming-expiries")
+        .then((res) => {
+          if (res.data) setExpiries(res.data);
+        })
+        .catch(() => undefined)
+        .finally(() => setLoadingExpiries(false));
+    }
+  }, [activeTab]);
+
   // Edit states for profile
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
@@ -406,7 +421,7 @@ export function EmployeesConsole() {
         eyebrow="Directory"
         title="Employee Directory"
         summary="Search employees, manage profiles, bulk upload records, and verify documents."
-        tabs={["All Employees", "My Profile", "Company Profile", "Verification", "Lifecycle", "Letter Templates", "Loans", "Custom Fields"]}
+        tabs={["All Employees", "My Profile", "Company Profile", "Verification", "Lifecycle", "Letter Templates", "Loans", "Custom Fields", "Document Expiry"]}
         activeTab={activeTab}
         onTabChange={(tab: string) => {
           setActiveTab(tab);
@@ -950,7 +965,89 @@ export function EmployeesConsole() {
       {activeTab === "Custom Fields" && (
         <CustomFieldsPanel />
       )}
+
+      {activeTab === "Document Expiry" && (
+        <DocumentExpiryPanel expiries={expiries} loading={loadingExpiries} />
+      )}
     </>
+  );
+}
+
+function DocumentExpiryPanel({ expiries, loading }: { expiries: any[]; loading: boolean }) {
+  return (
+    <Card className="p-5 border border-[#e8edf4] text-left">
+      <div className="mb-4 border-b pb-2 flex justify-between items-center">
+        <div>
+          <h3 className="text-base font-bold text-slate-800">Upcoming Document Expiries</h3>
+          <p className="text-xs text-slate-400 mt-0.5">Documents expiring soon based on company rules & offsets.</p>
+        </div>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse text-xs text-slate-650">
+          <thead className="bg-[#f8fafc] text-[10px] uppercase font-bold text-slate-500 border-b">
+            <tr>
+              <th className="p-2.5 text-left">Employee</th>
+              <th className="p-2.5 text-left">Document Type</th>
+              <th className="p-2.5 text-left">Expiry Date</th>
+              <th className="p-2.5 text-left">Days Left</th>
+              <th className="p-2.5 text-left">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {loading ? (
+              <tr>
+                <td colSpan={5} className="p-4 text-center text-slate-450">Loading upcoming expiries...</td>
+              </tr>
+            ) : !expiries || expiries.length === 0 ? (
+              <tr>
+                <td colSpan={5} className="p-4 text-center text-slate-400">No documents set to expire soon.</td>
+              </tr>
+            ) : (
+              expiries.map((doc: any) => {
+                const expiryDate = new Date(doc.expiresAt);
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const diffTime = expiryDate.getTime() - today.getTime();
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                let textColor = "text-slate-700";
+                let badgeClass = "bg-slate-100 text-slate-700 border-slate-200";
+                let statusLabel = "Normal";
+
+                if (diffDays < 7) {
+                  textColor = "text-rose-600 font-bold animate-pulse";
+                  badgeClass = "bg-rose-50 text-rose-700 border-rose-200";
+                  statusLabel = "Critical";
+                } else if (diffDays < 30) {
+                  textColor = "text-amber-600 font-semibold";
+                  badgeClass = "bg-amber-50 text-amber-700 border-amber-200";
+                  statusLabel = "Warning";
+                } else {
+                  badgeClass = "bg-emerald-50 text-emerald-700 border-emerald-200";
+                  statusLabel = "Good";
+                }
+
+                return (
+                  <tr key={doc.id} className="border-b border-slate-100 hover:bg-slate-50 transition">
+                    <td className="p-2.5 font-semibold text-slate-900">
+                      {doc.employee ? `${doc.employee.firstName} ${doc.employee.lastName}` : "—"}
+                    </td>
+                    <td className="p-2.5">{doc.documentType}</td>
+                    <td className="p-2.5">{expiryDate.toLocaleDateString("en-IN")}</td>
+                    <td className={`p-2.5 ${textColor}`}>{diffDays} day{diffDays !== 1 ? "s" : ""}</td>
+                    <td className="p-2.5">
+                      <span className={`inline-flex items-center rounded-md border px-2 py-0.5 text-[10px] font-bold ${badgeClass}`}>
+                        {statusLabel}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })
+            )}
+          </tbody>
+        </table>
+      </div>
+    </Card>
   );
 }
 

@@ -264,10 +264,6 @@
     "permission": "payroll.read"
   },
   {
-    "pattern": "^/payroll/tax-proofs/upload$",
-    "permission": "payroll.read"
-  },
-  {
     "pattern": "^/payroll/tax-proofs$",
     "permission": "payroll.read"
   },
@@ -366,10 +362,6 @@
   {
     "pattern": "^/reminders$",
     "permission": "settings.configure"
-  },
-  {
-    "pattern": "^/reports/custom$",
-    "permission": "reports.export"
   },
   {
     "pattern": "^/reports/attendance$",

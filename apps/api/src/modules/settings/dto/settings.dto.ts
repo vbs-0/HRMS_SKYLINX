@@ -67,4 +67,8 @@ export class UpdateClientRulesDto {
   @IsOptional()
   @IsObject()
   support?: Record<string, unknown>;
+
+  @IsOptional()
+  @IsObject()
+  documents?: Record<string, unknown>;
 }

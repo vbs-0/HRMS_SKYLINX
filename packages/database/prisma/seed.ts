@@ -1125,6 +1125,21 @@ async function main() {
       valueJson: '"9988776655"',
     },
   });
+
+  // Seed Default Reminder Rules
+  await prisma.reminderRule.upsert({
+    where: { companyId_event_daysOffset: { companyId: "company_skylinx", event: "DOCUMENT_EXPIRY", daysOffset: 30 } },
+    update: {},
+    create: {
+      companyId: "company_skylinx",
+      event: "DOCUMENT_EXPIRY",
+      daysOffset: 30,
+      channel: "IN_APP",
+      enabled: true,
+      templateSubject: "Document Expiry Reminder",
+      templateBody: "Your document of type {{documentType}} is expiring soon. Please upload a renewed one.",
+    },
+  });
 }
 
 main()

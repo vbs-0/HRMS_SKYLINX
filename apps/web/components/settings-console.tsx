@@ -39,6 +39,7 @@ interface ClientRules {
   payroll: PayrollRules;
   approvals: Record<string, string | number | boolean>;
   support: Record<string, string | number | boolean>;
+  documents: Record<string, string | number | boolean>;
 }
 
 interface SettingsLog {
@@ -117,6 +118,9 @@ const defaultClientRules: ClientRules = {
     slaHighHours: 24,
     slaMediumHours: 48,
     slaLowHours: 72,
+  },
+  documents: {
+    expiryReminderDays: 30,
   },
 };
 
@@ -436,6 +440,9 @@ export function SettingsConsole() {
         slaHighHours: Number(form.get("slaHighHours")),
         slaMediumHours: Number(form.get("slaMediumHours")),
         slaLowHours: Number(form.get("slaLowHours")),
+      },
+      documents: {
+        expiryReminderDays: Number(form.get("documentsExpiryReminderDays") || 30),
       },
     };
 
@@ -800,6 +807,25 @@ export function SettingsConsole() {
               <div className="flex flex-col gap-1">
                 <label className="text-xs font-semibold text-muted">Low Priority SLA (Hours)</label>
                 <input type="number" className={inputClass()} name="slaLowHours" defaultValue={Number(rules.support?.slaLowHours || 72)} placeholder="72" />
+              </div>
+            </div>
+          </section>
+
+          {/* Documents */}
+          <section>
+            <h3 className="mb-3 text-sm font-bold uppercase text-muted">📁 Documents Configuration</h3>
+            <div className="grid grid-cols-4 gap-3 max-xl:grid-cols-2 max-md:grid-cols-1">
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-muted">Document Expiry Reminder Offset (Days)</label>
+                <input
+                  type="number"
+                  className={inputClass()}
+                  name="documentsExpiryReminderDays"
+                  defaultValue={Number(rules.documents?.expiryReminderDays || 30)}
+                  placeholder="30"
+                  min="1"
+                  required
+                />
               </div>
             </div>
           </section>

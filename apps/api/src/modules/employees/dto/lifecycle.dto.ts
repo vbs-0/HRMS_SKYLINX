@@ -106,6 +106,14 @@ export class CreateFullAndFinalStatementDto {
   @IsOptional()
   recoveryDues?: number;
 
+  @IsNumber()
+  @IsOptional()
+  unpaidSalary?: number;
+
+  @IsNumber()
+  @IsOptional()
+  noticeShortfall?: number;
+
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => AssetRecoveryDto)

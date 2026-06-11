@@ -1,4 +1,4 @@
-﻿import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
+import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
 import { TenantContext } from "../../common/tenant-context";
 import { response } from "../../common/crud-response";
@@ -336,28 +336,44 @@ export class EmployeesService {
     const serviceYears = (exitDate.getTime() - employee.joiningDate.getTime()) / (1000 * 60 * 60 * 24 * 365.25);
     let gratuityDues = 0;
     if (serviceYears >= 5) {
-      gratuityDues = Math.round((15 / 26) * data.lastDrawnSalary * serviceYears);
+      gratuityDues = Math.round((15 * data.lastDrawnSalary * serviceYears) / 26);
     }
     if (data.gratuityDues !== undefined) {
       gratuityDues = data.gratuityDues;
     }
 
+    const unpaidSalary = data.unpaidSalary || 0;
+
+    // Notice pay shortfall calculation: ((noticeDays - actualNoticeDays) * lastDrawnSalary / 30)
+    let noticeShortfall = 0;
+    const noticeDays = data.noticeDays || 90;
+    const diffTime = exitDate.getTime() - resignationDate.getTime();
+    const actualNoticeDays = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+    if (actualNoticeDays < noticeDays) {
+      noticeShortfall = Math.max(0, Math.round(((noticeDays - actualNoticeDays) * data.lastDrawnSalary) / 30));
+    }
+    if (data.noticeShortfall !== undefined) {
+      noticeShortfall = data.noticeShortfall;
+    }
+
     const encashmentDues = data.encashmentDues || 0;
     const recoveryDues = data.recoveryDues || 0;
     
-    const grossDues = Number(data.lastDrawnSalary) + Number(gratuityDues) + Number(encashmentDues);
-    const netPayable = grossDues - Number(recoveryDues);
+    const grossDues = Number(data.lastDrawnSalary) + Number(gratuityDues) + Number(encashmentDues) + Number(unpaidSalary);
+    const netPayable = grossDues - Number(recoveryDues) - Number(noticeShortfall);
 
     const statement = await this.prisma.fullAndFinalStatement.upsert({
       where: { employeeId },
       update: {
         exitDate,
         resignationDate,
-        noticeDays: data.noticeDays || 90,
+        noticeDays,
         lastDrawnSalary: data.lastDrawnSalary,
         gratuityDues,
         encashmentDues,
         recoveryDues,
+        unpaidSalary,
+        noticeShortfall,
         netPayable,
         status: "APPROVED",
         assets: {
@@ -374,11 +390,13 @@ export class EmployeesService {
         employeeId,
         exitDate,
         resignationDate,
-        noticeDays: data.noticeDays || 90,
+        noticeDays,
         lastDrawnSalary: data.lastDrawnSalary,
         gratuityDues,
         encashmentDues,
         recoveryDues,
+        unpaidSalary,
+        noticeShortfall,
         netPayable,
         status: "APPROVED",
         assets: {
@@ -395,6 +413,7 @@ export class EmployeesService {
       },
     });
 
+    await this.audit("employees", "full_and_final.calculate", "full_and_final_statement", statement.id, statement);
     return response("employees", "full_and_final.calculate", statement);
   }
 
@@ -623,9 +642,41 @@ export class EmployeesService {
     return response("employees", "transfer.decide", updated);
   }
 
-  async getFfSuggestions(employeeId: string) {
-    // 1. Gratuity auto-suggest
+  async getFfSuggestions(
+    employeeId: string,
+    query?: { resignationDate?: string; exitDate?: string; noticeDays?: string }
+  ) {
+    const employee = await this.prisma.employee.findUnique({
+      where: { id: employeeId },
+    });
+    if (!employee) throw new NotFoundException("Employee not found");
+
+    const exitInterview = await this.prisma.exitInterview.findUnique({
+      where: { employeeId },
+    });
+
+    const activeSal = await this.prisma.salaryStructure.findFirst({
+      where: { employeeId, status: "ACTIVE" },
+      orderBy: { effectiveFrom: "desc" },
+    });
+    const lastDrawnSalary = activeSal
+      ? Math.round((Number(activeSal.basic || 0) + Number(activeSal.hra || 0) + Number(activeSal.allowances || 0)) / 12)
+      : 0;
+
+    const exitDateStr = query?.exitDate || exitInterview?.exitDate?.toISOString() || new Date().toISOString();
+    const resignDateStr = query?.resignationDate || exitInterview?.createdAt?.toISOString() || new Date().toISOString();
+    const noticeDays = Number(query?.noticeDays || 90);
+
+    const exitDate = new Date(exitDateStr);
+    const resignDate = new Date(resignDateStr);
+
+    // 1. Gratuity estimation (if >5 years tenure, formula: 15 × lastDrawnMonthlyGross × tenureYears/26, else 0)
+    const serviceYears = Math.max(0, (exitDate.getTime() - employee.joiningDate.getTime()) / (1000 * 60 * 60 * 24 * 365.25));
     let gratuityDues = 0;
+    if (serviceYears >= 5) {
+      gratuityDues = Math.round((15 * lastDrawnSalary * serviceYears) / 26);
+    }
+    // Fallback if specific approved record exists
     try {
       const gratuityCalc = await this.prisma.gratuity.findFirst({
         where: { employeeId, status: ApprovalStatus.APPROVED },
@@ -644,7 +695,7 @@ export class EmployeesService {
       encashmentDues = encashments.reduce((sum, e) => sum + Number(e.totalAmount), 0);
     } catch (e) {}
 
-    // 3. Outstanding loan balance
+    // 3. Outstanding loan balance (deductible)
     let outstandingLoanBalance = 0;
     try {
       const loans = await this.prisma.employeeLoan.findMany({
@@ -653,7 +704,62 @@ export class EmployeesService {
       outstandingLoanBalance = loans.reduce((sum, l) => sum + Number(l.balanceAmount), 0);
     } catch (e) {}
 
-    return response("employees", "ff_suggestions", { gratuityDues, encashmentDues, outstandingLoanBalance });
+    // 4. Unpaid salary from latest payroll run
+    let unpaidSalary = 0;
+    try {
+      const latestRun = await this.prisma.payrollRun.findFirst({
+        orderBy: [
+          { year: "desc" },
+          { month: "desc" },
+        ],
+      });
+      if (latestRun) {
+        const latestPayslip = await this.prisma.payslip.findUnique({
+          where: {
+            payrollRunId_employeeId: {
+              payrollRunId: latestRun.id,
+              employeeId,
+            },
+          },
+        });
+        if (latestPayslip && latestRun.status !== ApprovalStatus.APPROVED) {
+          unpaidSalary = Number(latestPayslip.netPay);
+        }
+      }
+    } catch (e) {}
+
+    // 5. Unreturned company assets
+    let unreturnedAssets: Array<{ assetName: string; serialNumber: string; recoveryCost: number }> = [];
+    try {
+      const companyAssets = await this.prisma.companyAsset.findMany({
+        where: { assignedToId: employeeId },
+      });
+      unreturnedAssets = companyAssets.map((asset) => ({
+        assetName: `${asset.type} - ${asset.item}`,
+        serialNumber: asset.assetTag,
+        recoveryCost: 0,
+      }));
+    } catch (e) {}
+
+    // 6. Notice shortfall pay deduction: Math.max(0, (noticeDays - actualNoticeDays) * lastDrawnMonthlyGross/30)
+    const diffTime = exitDate.getTime() - resignDate.getTime();
+    const actualNoticeDays = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+    const noticeShortfallDeduction = Math.max(
+      0,
+      Math.round(((noticeDays - actualNoticeDays) * lastDrawnSalary) / 30)
+    );
+
+    return response("employees", "ff_suggestions", {
+      gratuityDues,
+      encashmentDues,
+      outstandingLoanBalance,
+      unpaidSalary,
+      lastDrawnSalary,
+      unreturnedAssets,
+      noticeShortfallDeduction,
+      resignationDate: resignDateStr.substring(0, 10),
+      exitDate: exitDateStr.substring(0, 10),
+    });
   }
 
   private async audit(module: string, action: string, entityType: string, entityId: string, data: unknown) {

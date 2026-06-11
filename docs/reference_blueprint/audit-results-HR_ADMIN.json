@@ -35,7 +35,7 @@
     "route": "/payroll",
     "status": "PASS",
     "note": "",
-    "buttons": 28,
+    "buttons": 29,
     "inputs": 5,
     "screenshot": "HR_ADMIN_DEEP/05_payroll.png"
   },

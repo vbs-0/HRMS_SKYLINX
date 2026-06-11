@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import { apiFetch } from "../lib/client-api";
@@ -57,6 +57,8 @@ interface FfStatement {
   gratuityDues: string;
   encashmentDues: string;
   recoveryDues: string;
+  unpaidSalary: string;
+  noticeShortfall: string;
   netPayable: string;
   status: string;
   assets: FfAsset[];
@@ -95,6 +97,8 @@ export function LifecycleConsole() {
   const [ffNoticeDays, setFfNoticeDays] = useState("90");
   const [ffGratuity, setFfGratuity] = useState("0");
   const [ffEncashment, setFfEncashment] = useState("0");
+  const [ffUnpaidSalary, setFfUnpaidSalary] = useState("0");
+  const [ffNoticeShortfall, setFfNoticeShortfall] = useState("0");
   const [ffRecovery, setFfRecovery] = useState("0");
   const [ffAssets, setFfAssets] = useState<Array<{ assetName: string; serialNumber: string; recoveryCost: number }>>([
     { assetName: "", serialNumber: "", recoveryCost: 0 }
@@ -110,36 +114,64 @@ export function LifecycleConsole() {
     loadData();
   }, [activeTab]);
 
+  const loadFfSuggestions = (empId: string, resignDate?: string, exitDate?: string, noticeDays?: string) => {
+    if (!empId) return;
+    let url = `/employees/${empId}/ff-suggestions`;
+    const params = [];
+    if (resignDate) params.push(`resignationDate=${resignDate}`);
+    if (exitDate) params.push(`exitDate=${exitDate}`);
+    if (noticeDays) params.push(`noticeDays=${noticeDays}`);
+    if (params.length) url += `?${params.join("&")}`;
+
+    apiFetch<any>(url)
+      .then((res) => {
+        if (res.data) {
+          const d = res.data;
+          setFfSalary(String(d.lastDrawnSalary || 0));
+          setFfGratuity(String(d.gratuityDues || 0));
+          setFfEncashment(String(d.encashmentDues || 0));
+          setFfUnpaidSalary(String(d.unpaidSalary || 0));
+          setFfNoticeShortfall(String(d.noticeShortfallDeduction || 0));
+
+          const loanBalance = Number(d.outstandingLoanBalance || 0);
+          const shortfall = Number(d.noticeShortfallDeduction || 0);
+          setFfRecovery(String(loanBalance + shortfall));
+
+          if (d.resignationDate && !resignDate) setFfResignDate(d.resignationDate);
+          if (d.exitDate && !exitDate) setFfExitDate(d.exitDate);
+
+          if (d.unreturnedAssets && d.unreturnedAssets.length > 0) {
+            setFfAssets(d.unreturnedAssets);
+          }
+        }
+      })
+      .catch((err) => console.warn("Failed to fetch F&F suggestions:", err));
+  };
+
+  const handleFieldChange = (field: "resign" | "exit" | "notice", val: string) => {
+    let rDate = ffResignDate;
+    let eDate = ffExitDate;
+    let nDays = ffNoticeDays;
+    if (field === "resign") { setFfResignDate(val); rDate = val; }
+    if (field === "exit") { setFfExitDate(val); eDate = val; }
+    if (field === "notice") { setFfNoticeDays(val); nDays = val; }
+    if (ffEmp) {
+      loadFfSuggestions(ffEmp, rDate, eDate, nDays);
+    }
+  };
+
   useEffect(() => {
     if (!ffEmp) {
       setFfGratuity("0");
       setFfEncashment("0");
       setFfSalary("0");
+      setFfUnpaidSalary("0");
+      setFfNoticeShortfall("0");
+      setFfRecovery("0");
+      setFfAssets([{ assetName: "", serialNumber: "", recoveryCost: 0 }]);
       return;
     }
-    apiFetch<any>(`/employees/${ffEmp}/ff-suggestions`)
-      .then((res) => {
-        if (res.data) {
-          setFfGratuity(String(res.data.gratuityDues || 0));
-          setFfEncashment(String(res.data.encashmentDues || 0));
-        }
-      })
-      .catch((err) => console.warn("Failed to fetch F&F suggestions:", err));
-
-    apiFetch<any>(`/employees/${ffEmp}`)
-      .then((res) => {
-        if (res.data) {
-          const emp = res.data;
-          const activeSal = emp.salaryStructures?.find((s: any) => s.status === "ACTIVE");
-          if (activeSal) {
-            const monthlyBasic = Math.round(Number(activeSal.basic || 0) / 12);
-            setFfSalary(String(monthlyBasic || 0));
-          } else {
-            setFfSalary("0");
-          }
-        }
-      })
-      .catch((err) => console.warn("Failed to fetch employee details for F&F:", err));
+    loadFfSuggestions(ffEmp);
   }, [ffEmp]);
 
   function loadData() {
@@ -335,6 +367,8 @@ export function LifecycleConsole() {
           gratuityDues: ffGratuity ? Number(ffGratuity) : undefined,
           encashmentDues: Number(ffEncashment),
           recoveryDues: Number(ffRecovery),
+          unpaidSalary: Number(ffUnpaidSalary),
+          noticeShortfall: Number(ffNoticeShortfall),
           assets: filteredAssets,
         }),
       });
@@ -833,7 +867,7 @@ export function LifecycleConsole() {
                       className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-xs"
                       type="date"
                       value={ffResignDate}
-                      onChange={(e) => setFfResignDate(e.target.value)}
+                      onChange={(e) => handleFieldChange("resign", e.target.value)}
                       required
                     />
                   </div>
@@ -843,7 +877,7 @@ export function LifecycleConsole() {
                       className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-xs"
                       type="date"
                       value={ffExitDate}
-                      onChange={(e) => setFfExitDate(e.target.value)}
+                      onChange={(e) => handleFieldChange("exit", e.target.value)}
                       required
                     />
                   </div>
@@ -853,7 +887,7 @@ export function LifecycleConsole() {
                       className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-xs"
                       type="number"
                       value={ffNoticeDays}
-                      onChange={(e) => setFfNoticeDays(e.target.value)}
+                      onChange={(e) => handleFieldChange("notice", e.target.value)}
                       required
                     />
                   </div>
@@ -861,7 +895,7 @@ export function LifecycleConsole() {
 
                 <div className="grid grid-cols-3 gap-3">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-500 mb-1">Gratuity (Auto-computed if empty)</label>
+                    <label className="block text-xs font-semibold text-slate-500 mb-1">Gratuity (Estimated)</label>
                     <input
                       className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-xs"
                       type="number"
@@ -880,7 +914,28 @@ export function LifecycleConsole() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-500 mb-1">Deductions & Recoveries</label>
+                    <label className="block text-xs font-semibold text-slate-500 mb-1">Unpaid Salary Dues</label>
+                    <input
+                      className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-xs"
+                      type="number"
+                      value={ffUnpaidSalary}
+                      onChange={(e) => setFfUnpaidSalary(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-500 mb-1">Notice Shortfall Pay Deduction</label>
+                    <input
+                      className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-xs"
+                      type="number"
+                      value={ffNoticeShortfall}
+                      onChange={(e) => setFfNoticeShortfall(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-500 mb-1">Other Recoveries & Deductions</label>
                     <input
                       className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-xs"
                       type="number"
@@ -980,10 +1035,22 @@ export function LifecycleConsole() {
                       <span className="text-slate-500">Gratuity Payout</span>
                       <span className="font-semibold text-slate-800">INR {Number(statement.gratuityDues).toLocaleString("en-IN")}</span>
                     </div>
-                    <div className="flex justify-between border-b pb-2">
+                     <div className="flex justify-between border-b pb-2">
                       <span className="text-slate-500">Leave Encashment</span>
                       <span className="font-semibold text-slate-800">INR {Number(statement.encashmentDues).toLocaleString("en-IN")}</span>
                     </div>
+                    {Number(statement.unpaidSalary || 0) > 0 && (
+                      <div className="flex justify-between border-b pb-2">
+                        <span className="text-slate-500">Unpaid Salary Dues</span>
+                        <span className="font-semibold text-slate-800">INR {Number(statement.unpaidSalary).toLocaleString("en-IN")}</span>
+                      </div>
+                    )}
+                    {Number(statement.noticeShortfall || 0) > 0 && (
+                      <div className="flex justify-between border-b pb-2 text-rose-600">
+                        <span>Notice Shortfall Deduction</span>
+                        <span className="font-semibold">- INR {Number(statement.noticeShortfall).toLocaleString("en-IN")}</span>
+                      </div>
+                    )}
                     <div className="flex justify-between border-b pb-2 text-rose-600">
                       <span>Deductions & Recovery</span>
                       <span className="font-semibold">- INR {Number(statement.recoveryDues).toLocaleString("en-IN")}</span>

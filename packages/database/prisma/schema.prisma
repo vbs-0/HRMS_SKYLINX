@@ -1143,6 +1143,8 @@ model FullAndFinalStatement {
   gratuityDues    Decimal            @default(0)
   encashmentDues  Decimal            @default(0)
   recoveryDues    Decimal            @default(0)
+  unpaidSalary    Decimal            @default(0)
+  noticeShortfall Decimal            @default(0)
   netPayable      Decimal
   status          ApprovalStatus     @default(DRAFT)
   createdAt       DateTime           @default(now())

@@ -35,7 +35,7 @@
     "route": "/payroll",
     "status": "PASS",
     "note": "",
-    "buttons": 25,
+    "buttons": 26,
     "inputs": 5,
     "screenshot": "EMPLOYEE_DEEP/05_payroll.png"
   },
@@ -219,7 +219,7 @@
     "route": "/saas-admin",
     "status": "PASS",
     "note": "",
-    "buttons": 5,
+    "buttons": 4,
     "inputs": 1,
     "screenshot": "EMPLOYEE_DEEP/28_saas-admin.png"
   },
@@ -227,8 +227,8 @@
     "route": "/cards",
     "status": "PASS",
     "note": "",
-    "buttons": 25,
-    "inputs": 2,
+    "buttons": 5,
+    "inputs": 1,
     "screenshot": "EMPLOYEE_DEEP/29_cards.png"
   },
   {

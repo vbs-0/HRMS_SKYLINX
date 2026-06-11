@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, UseInterceptors, UploadedFile, Req, ForbiddenException } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post, UseInterceptors, UploadedFile, Req, ForbiddenException, Query } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import * as path from "path";
@@ -247,8 +247,13 @@ export class EmployeesController {
 
   @Get(":id/ff-suggestions")
   @RequirePermissions("employees.read")
-  getFfSuggestions(@Param("id") id: string) {
-    return this.employeesService.getFfSuggestions(id);
+  getFfSuggestions(
+    @Param("id") id: string,
+    @Query("resignationDate") resignationDate?: string,
+    @Query("exitDate") exitDate?: string,
+    @Query("noticeDays") noticeDays?: string,
+  ) {
+    return this.employeesService.getFfSuggestions(id, { resignationDate, exitDate, noticeDays });
   }
 
   // ==========================================

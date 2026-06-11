@@ -1,16 +1,16 @@
 [
   {
     "route": "/dashboard",
-    "status": "WARN",
-    "note": "console errors: Failed to load resource: net::ERR_CONNECTION_REFUSED;",
+    "status": "PASS",
+    "note": "",
     "buttons": 5,
     "inputs": 1,
     "screenshot": "MANAGER_DEEP/01_dashboard.png"
   },
   {
     "route": "/employees",
-    "status": "WARN",
-    "note": "console errors: Failed to load resource: net::ERR_CONNECTION_REFUSED;",
+    "status": "PASS",
+    "note": "",
     "buttons": 16,
     "inputs": 5,
     "screenshot": "MANAGER_DEEP/02_employees.png"
@@ -35,7 +35,7 @@
     "route": "/payroll",
     "status": "PASS",
     "note": "",
-    "buttons": 21,
+    "buttons": 22,
     "inputs": 5,
     "screenshot": "MANAGER_DEEP/05_payroll.png"
   },

@@ -76,7 +76,7 @@ async function main() {
     ),
   );
 
-  const permissions = ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "assets", "performance", "mobile", "backup", "testing", "analytics", "saas", "approvals", "notifications", "organization", "reports", "rewards", "settings", "social", "compliance", "recruitment", "training", "travel"].flatMap((module) =>
+  const permissions = ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "assets", "performance", "mobile", "backup", "testing", "analytics", "saas", "approvals", "notifications", "organization", "reports", "rewards", "settings", "social", "compliance", "recruitment", "training", "travel", "grievance"].flatMap((module) =>
     ["create", "read", "update", "delete", "approve", "export", "configure"].map((action) => ({ module, action })),
   );
 
@@ -91,10 +91,10 @@ async function main() {
   const hrPermissions = await prisma.permission.findMany({
     where: {
       OR: [
-        { module: { in: ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "assets", "performance", "mobile", "backup", "testing", "analytics", "saas", "approvals", "notifications", "organization", "reports", "rewards", "social", "compliance", "recruitment", "training", "travel"] }, action: "read" },
-        { module: { in: ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "notifications", "rewards", "social", "recruitment", "training", "travel"] }, action: "create" },
-        { module: { in: ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "notifications", "organization", "recruitment", "training", "travel"] }, action: "update" },
-        { module: { in: ["leave", "attendance", "expenses", "insurance", "recruitment"] }, action: "approve" },
+        { module: { in: ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "assets", "performance", "mobile", "backup", "testing", "analytics", "saas", "approvals", "notifications", "organization", "reports", "rewards", "social", "compliance", "recruitment", "training", "travel", "grievance"] }, action: "read" },
+        { module: { in: ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "notifications", "rewards", "social", "recruitment", "training", "travel", "grievance"] }, action: "create" },
+        { module: { in: ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "notifications", "organization", "recruitment", "training", "travel", "grievance"] }, action: "update" },
+        { module: { in: ["leave", "attendance", "expenses", "insurance", "recruitment", "grievance"] }, action: "approve" },
         { module: "approvals", action: "approve" },
         { module: "employees", action: "approve" },
         { module: "payroll", action: "approve" },
@@ -106,7 +106,7 @@ async function main() {
         { module: "assets", action: "configure" },
         { module: "performance", action: "configure" },
         { module: "settings", action: "configure" },
-        { module: { in: ["leave", "employees", "recruitment", "travel", "training"] }, action: "configure" },
+        { module: { in: ["leave", "employees", "recruitment", "travel", "training", "grievance"] }, action: "configure" },
         { module: "payroll", action: "export" },
         { module: "reports", action: "export" },
         { module: "compliance", action: "export" },
@@ -282,6 +282,7 @@ async function main() {
     ["recruitment", "read"],
     ["training", "approve"],
     ["travel", "approve"],
+    ["grievance", "read"],
   ];
   const employeePermissionSpecs: Array<[string, string]> = [
     ["employees", "read"],
@@ -292,6 +293,8 @@ async function main() {
     ["expenses", "create"],
     ["training", "create"],
     ["travel", "create"],
+    ["grievance", "create"],
+    ["grievance", "read"],
   ];
   for (const [roleId, specs] of [
     ["role_manager", managerPermissionSpecs],
@@ -358,6 +361,7 @@ async function main() {
     "compliance",
     "reports",
     "security",
+    "grievance",
   ]) {
     await prisma.moduleSetting.upsert({
       where: { companyId_module: { companyId: company.id, module } },
@@ -790,6 +794,158 @@ async function main() {
       });
     }
   }
+
+  // Seed Gratuity Rule
+  await prisma.gratuityRule.upsert({
+    where: { companyId: company.id },
+    update: {},
+    create: {
+      companyId: company.id,
+      minYears: 5,
+      multiplier: 0.5769, // 15/26
+    },
+  });
+
+  // Seed Tax Slabs
+  const taxSlabs = [
+    { regime: "NEW", fromAmount: 0, toAmount: 300000, ratePercent: 0 },
+    { regime: "NEW", fromAmount: 300000, toAmount: 700000, ratePercent: 5 },
+    { regime: "NEW", fromAmount: 700000, toAmount: 1000000, ratePercent: 10 },
+    { regime: "NEW", fromAmount: 1000000, toAmount: 1200000, ratePercent: 15 },
+    { regime: "NEW", fromAmount: 1200000, toAmount: 1500000, ratePercent: 20 },
+    { regime: "NEW", fromAmount: 1500000, toAmount: null, ratePercent: 30 },
+
+    { regime: "OLD", fromAmount: 0, toAmount: 250000, ratePercent: 0 },
+    { regime: "OLD", fromAmount: 250000, toAmount: 500000, ratePercent: 5 },
+    { regime: "OLD", fromAmount: 500000, toAmount: 1000000, ratePercent: 20 },
+    { regime: "OLD", fromAmount: 1000000, toAmount: null, ratePercent: 30 },
+  ];
+
+  await prisma.incomeTaxSlab.deleteMany({});
+  for (const slab of taxSlabs) {
+    await prisma.incomeTaxSlab.create({
+      data: slab,
+    });
+  }
+
+  // Seed Default Policy & Accrual Schedule
+  const defaultPolicy = await prisma.leavePolicy.upsert({
+    where: { id: "policy_default" },
+    update: {},
+    create: {
+      id: "policy_default",
+      companyId: company.id,
+      name: "Standard Leave Policy",
+      description: "Standard company leave policy",
+    },
+  });
+
+  for (const empId of ["emp_1001", "emp_1002", "emp_1003", "emp_1004", "emp_1005"]) {
+    await prisma.leavePolicyAssignment.upsert({
+      where: { id: `assign_${empId}` },
+      update: {},
+      create: {
+        id: `assign_${empId}`,
+        employeeId: empId,
+        policyId: defaultPolicy.id,
+        effectiveFrom: new Date("2026-01-01"),
+      },
+    });
+  }
+
+  await prisma.leaveAccrualSchedule.upsert({
+    where: { id: "accrual_cl" },
+    update: {},
+    create: {
+      id: "accrual_cl",
+      leavePolicyId: defaultPolicy.id,
+      leaveTypeId: casualLeave.id,
+      frequency: "MONTHLY",
+      daysPerPeriod: 1.0,
+    },
+  });
+
+  // P2: Comp-off Leave Type
+  const compOffLeave = await prisma.leaveType.upsert({
+    where: { companyId_code: { companyId: company.id, code: "COMP-OFF" } },
+    update: {},
+    create: { companyId: company.id, name: "Compensatory Off", code: "COMP-OFF", annualQuota: 0 },
+  });
+
+  for (const employeeId of ["emp_1001", "emp_1002", "emp_1003", "emp_1004", "emp_1005"]) {
+    await prisma.leaveBalance.upsert({
+      where: {
+        employeeId_leaveTypeId_year: {
+          employeeId,
+          leaveTypeId: compOffLeave.id,
+          year: 2026,
+        },
+      },
+      update: {},
+      create: {
+        employeeId,
+        leaveTypeId: compOffLeave.id,
+        year: 2026,
+        openingBalance: 0,
+        accrued: 0,
+        used: 0,
+        carriedForward: 0,
+        available: 0,
+      },
+    });
+  }
+
+  // P2: Letter Templates
+  await prisma.letterTemplate.upsert({
+    where: { id: "temp_offer" },
+    update: {},
+    create: {
+      id: "temp_offer",
+      companyId: company.id,
+      type: "OFFER",
+      title: "Standard Offer Letter",
+      body: "Dear {{candidateName}},\n\nWe are pleased to offer you the position of {{designationTitle}} at SKYLINX. Your annual CTC will be INR {{annualCtc}}.\n\nBest regards,\nSKYLINX HR",
+    },
+  });
+
+  await prisma.letterTemplate.upsert({
+    where: { id: "temp_appointment" },
+    update: {},
+    create: {
+      id: "temp_appointment",
+      companyId: company.id,
+      type: "APPOINTMENT",
+      title: "Standard Appointment Letter",
+      body: "Dear {{employeeName}},\n\nThis is to confirm your appointment as {{designationTitle}} starting {{joiningDate}}.\n\nSincerely,\nSKYLINX Management",
+    },
+  });
+
+  await prisma.letterTemplate.upsert({
+    where: { id: "temp_relieving" },
+    update: {},
+    create: {
+      id: "temp_relieving",
+      companyId: company.id,
+      type: "RELIEVING",
+      title: "Standard Relieving Letter",
+      body: "To Whom It May Concern,\n\nThis is to certify that {{employeeName}} was employed with us as {{designationTitle}} from {{joiningDate}} to {{relievingDate}}.\n\nBest wishes,\nSKYLINX HR",
+    },
+  });
+
+  // P2: Staffing Plan
+  await prisma.staffingPlan.upsert({
+    where: { companyId_departmentId_designationId: { companyId: company.id, departmentId: engineeringDept.id, designationId: designationEngineer.id } },
+    update: {},
+    create: {
+      companyId: company.id,
+      departmentId: engineeringDept.id,
+      designationId: designationEngineer.id,
+      budgetedHeadcount: 5,
+      currentHeadcount: 1,
+      startDate: new Date("2026-01-01"),
+      endDate: new Date("2026-12-31"),
+    },
+  });
 }
 
 main()

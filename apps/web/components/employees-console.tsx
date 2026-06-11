@@ -3,6 +3,7 @@
 import { useState, useEffect, FormEvent } from "react";
 import { apiFetch } from "../lib/client-api";
 import { onDataRefresh, requestDataRefresh } from "../lib/refresh-events";
+import { useActiveRole } from "../lib/role";
 import { EmployeesTable, DocumentsTable } from "./live-tables";
 import { ReferenceModuleHeader } from "./reference-module";
 import { ReferenceFlowStrip } from "./reference-sections";
@@ -380,7 +381,7 @@ export function EmployeesConsole() {
         eyebrow="Directory"
         title="Employee Directory"
         summary="Search employees, manage profiles, bulk upload records, and verify documents."
-        tabs={["All Employees", "My Profile", "Company Profile", "Verification", "Lifecycle"]}
+        tabs={["All Employees", "My Profile", "Company Profile", "Verification", "Lifecycle", "Letter Templates", "Loans"]}
         activeTab={activeTab}
         onTabChange={(tab: string) => {
           setActiveTab(tab);
@@ -787,22 +788,12 @@ export function EmployeesConsole() {
                             <span className="font-semibold text-slate-800">{selectedEmployee.panNumber || "Not Set"}</span>
                           )}
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-slate-400 font-semibold">PF Account</span>
-                          {isEditing ? (
-                            <input
-                              className="rounded-lg border px-2 py-0.5 text-xs"
-                              value={editForm.providentFundAccount}
-                              onChange={(e) => setEditForm(prev => ({ ...prev, providentFundAccount: e.target.value }))}
-                              placeholder="MH/BAN/12345/678"
-                            />
-                          ) : (
-                            <span className="font-semibold text-slate-800">{selectedEmployee.providentFundAccount || "Not Set"}</span>
-                          )}
-                        </div>
                       </div>
                     </div>
                   </div>
+
+                  {/* Career History Section */}
+                  <CareerHistoryPanel employeeId={selectedEmployee.id} />
                 </div>
               ) : (
                 <div className="py-20 text-center text-slate-400">Failed to load profile details.</div>
@@ -922,6 +913,566 @@ export function EmployeesConsole() {
       {activeTab === "Lifecycle" && (
         <LifecycleConsole />
       )}
+
+      {activeTab === "Letter Templates" && (
+        <LetterTemplatesPanel />
+      )}
+
+      {activeTab === "Loans" && (
+        <EmployeeLoansPanel />
+      )}
     </>
+  );
+}
+
+function LetterTemplatesPanel() {
+  const [templates, setTemplates] = useState<any[]>([]);
+  const [employees, setEmployees] = useState<any[]>([]);
+  const [selectedTemplateId, setSelectedTemplateId] = useState("");
+  const [selectedEmployeeId, setSelectedEmployeeId] = useState("");
+  const [renderedLetter, setRenderedLetter] = useState<any | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  const [form, setForm] = useState({
+    type: "OFFER",
+    title: "",
+    body: "Dear {{employeeName}},\n\nWe are pleased to offer you the position of {{designation}} in our {{department}} department. Your joining date is {{joiningDate}}.\n\nBest regards,\nSkylinx HR Team",
+  });
+
+  function load() {
+    apiFetch<any[]>("/employees/letter-templates/list/company_skylinx").then((res) => {
+      if (res.data) setTemplates(res.data);
+    });
+    apiFetch<any[]>("/employees").then((res) => {
+      if (res.data) setEmployees(res.data);
+    });
+  }
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  async function handleCreateTemplate(e: React.FormEvent) {
+    e.preventDefault();
+    if (!form.title || !form.body) {
+      setError("Please fill in all template fields.");
+      return;
+    }
+    setSubmitting(true);
+    setMessage("");
+    setError("");
+    try {
+      await apiFetch("/employees/letter-templates", {
+        method: "POST",
+        body: JSON.stringify({
+          companyId: "company_skylinx",
+          type: form.type,
+          title: form.title,
+          body: form.body,
+        }),
+      });
+      setMessage("Template created successfully!");
+      setForm({ type: "OFFER", title: "", body: "Dear {{employeeName}},\n\nWe are pleased to offer you the position of {{designation}} in our {{department}} department. Your joining date is {{joiningDate}}.\n\nBest regards,\nSkylinx HR Team" });
+      load();
+    } catch (err: any) {
+      setError(err.message || "Failed to create template.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function handleRender() {
+    if (!selectedTemplateId || !selectedEmployeeId) {
+      setError("Please select both a template and an employee.");
+      return;
+    }
+    setError("");
+    setRenderedLetter(null);
+    try {
+      const emp = employees.find(e => e.id === selectedEmployeeId);
+      if (!emp) return;
+
+      const placeholders = {
+        employeeName: `${emp.firstName} ${emp.lastName}`,
+        employeeCode: emp.employeeCode,
+        joiningDate: emp.joiningDate ? emp.joiningDate.slice(0, 10) : "",
+        email: emp.email,
+        designation: emp.designation?.title || "Staff Member",
+        department: emp.department?.name || "General Department",
+      };
+
+      const res = await apiFetch<any>("/employees/letter-templates/render", {
+        method: "POST",
+        body: JSON.stringify({
+          templateId: selectedTemplateId,
+          placeholders,
+        }),
+      });
+      if (res.data) {
+        setRenderedLetter(res.data);
+      }
+    } catch (err: any) {
+      setError(err.message || "Failed to render letter.");
+    }
+  }
+
+  return (
+    <div className="grid gap-6 text-left">
+      {message && <div className="rounded-lg bg-[#e6f5ef] p-3 text-sm text-[#18865a] font-semibold">{message}</div>}
+      {error && <div className="rounded-lg bg-[#fde8e6] p-3 text-sm text-[#ba3d37] font-semibold">{error}</div>}
+
+      <div className="grid grid-cols-[1fr_2fr] gap-6 max-lg:grid-cols-1">
+        <Card className="p-5 border border-[#e8edf4]">
+          <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Create Document Template</h3>
+          <form onSubmit={handleCreateTemplate} className="grid gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Type</label>
+              <select
+                name="type"
+                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                value={form.type}
+                onChange={(e) => setForm({ ...form, type: e.target.value })}
+              >
+                <option value="OFFER">Offer Letter</option>
+                <option value="APPOINTMENT">Appointment Letter</option>
+                <option value="RELIEVING">Relieving Letter</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Template Title</label>
+              <input
+                type="text"
+                required
+                placeholder="e.g. Standard Developer Offer"
+                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                value={form.title}
+                onChange={(e) => setForm({ ...form, title: e.target.value })}
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">{"Body Text (use placeholders like {{employeeName}}, {{designation}})"}</label>
+              <textarea
+                rows={8}
+                required
+                className="w-full rounded-lg border border-slate-200 p-3 text-xs font-mono bg-slate-50"
+                value={form.body}
+                onChange={(e) => setForm({ ...form, body: e.target.value })}
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={submitting}
+              className="min-h-10 rounded-lg bg-brand text-white text-xs font-bold hover:bg-brand/90 transition shadow-sm"
+            >
+              {submitting ? "Saving..." : "Save Template"}
+            </button>
+          </form>
+        </Card>
+
+        <div className="grid gap-6">
+          <Card className="p-5 border border-[#e8edf4]">
+            <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Generate & Print Preview</h3>
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 mb-1">Choose Template</label>
+                <select
+                  className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                  value={selectedTemplateId}
+                  onChange={(e) => setSelectedTemplateId(e.target.value)}
+                >
+                  <option value="">Select Template</option>
+                  {templates.map((t) => (
+                    <option key={t.id} value={t.id}>{t.title} ({t.type})</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-500 mb-1">Choose Employee</label>
+                <select
+                  className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                  value={selectedEmployeeId}
+                  onChange={(e) => setSelectedEmployeeId(e.target.value)}
+                >
+                  <option value="">Select Employee</option>
+                  {employees.map((emp) => (
+                    <option key={emp.id} value={emp.id}>{emp.firstName} {emp.lastName}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="flex gap-2 mb-4">
+              <button
+                onClick={handleRender}
+                className="px-4 py-2 bg-brand text-white rounded text-xs font-bold hover:bg-brand/90"
+              >
+                Render Preview
+              </button>
+              {renderedLetter && (
+                <button
+                  onClick={() => window.print()}
+                  className="px-4 py-2 border border-slate-200 rounded text-xs font-bold hover:bg-slate-50"
+                >
+                  Print / Save PDF
+                </button>
+              )}
+            </div>
+
+            {renderedLetter ? (
+              <div className="border border-dashed border-slate-350 p-8 bg-white rounded-lg min-h-[300px] shadow-inner print:border-none print:shadow-none" id="print-area">
+                <div className="text-center mb-6">
+                  <h2 className="text-xl font-bold uppercase tracking-wider text-slate-800">Skylinx PeopleOS</h2>
+                  <p className="text-[10px] text-slate-400">121 Innovation Way, Tech District, Mumbai</p>
+                  <hr className="my-3 border-slate-200" />
+                </div>
+                <div className="text-sm font-semibold text-slate-700 mb-2">Subject: {renderedLetter.title}</div>
+                <p className="text-xs text-slate-600 whitespace-pre-wrap leading-relaxed">
+                  {renderedLetter.renderedBody}
+                </p>
+              </div>
+            ) : (
+              <div className="border border-dashed border-slate-200 p-8 text-center text-slate-400 rounded-lg bg-slate-50/50">
+                Select template & employee to view preview
+              </div>
+            )}
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function EmployeeLoansPanel() {
+  const [loans, setLoans] = useState<any[]>([]);
+  const [employees, setEmployees] = useState<any[]>([]);
+  const [submitting, setSubmitting] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const { role } = useActiveRole();
+
+  const [form, setForm] = useState({
+    employeeId: "",
+    principal: 10000,
+    interestRate: 0,
+    totalPayable: 10000,
+    emiAmount: 1000,
+    repaymentStart: new Date().toISOString().split("T")[0],
+  });
+
+  function load() {
+    apiFetch<any[]>("/employees/loans/list/all").then((res) => {
+      if (res.data) setLoans(res.data);
+    });
+    apiFetch<any[]>("/employees").then((res) => {
+      if (res.data) setEmployees(res.data);
+    });
+  }
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  useEffect(() => {
+    const total = Number(form.principal) + (Number(form.principal) * (Number(form.interestRate) / 100));
+    setForm((prev) => ({ ...prev, totalPayable: total }));
+  }, [form.principal, form.interestRate]);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!form.employeeId || form.principal <= 0 || form.emiAmount <= 0) {
+      setError("Please fill all required fields correctly.");
+      return;
+    }
+    setSubmitting(true);
+    setMessage("");
+    setError("");
+    try {
+      await apiFetch("/employees/loans", {
+        method: "POST",
+        body: JSON.stringify({
+          employeeId: form.employeeId,
+          principal: Number(form.principal),
+          interestRate: Number(form.interestRate),
+          totalPayable: Number(form.totalPayable),
+          emiAmount: Number(form.emiAmount),
+          repaymentStart: form.repaymentStart,
+        }),
+      });
+      setMessage("Loan application submitted successfully!");
+      setForm({
+        employeeId: "",
+        principal: 10000,
+        interestRate: 0,
+        totalPayable: 10000,
+        emiAmount: 1000,
+        repaymentStart: new Date().toISOString().split("T")[0],
+      });
+      load();
+    } catch (err: any) {
+      setError(err.message || "Failed to create loan.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function handleDecide(id: string, action: "APPROVED" | "REJECTED") {
+    setMessage("");
+    setError("");
+    try {
+      await apiFetch(`/employees/loans/${id}/decide`, {
+        method: "PATCH",
+        body: JSON.stringify({ status: action }),
+      });
+      setMessage(`Loan request marked ${action.toLowerCase()} successfully.`);
+      load();
+    } catch (err: any) {
+      setError(err.message || "Failed to decide loan request.");
+    }
+  }
+
+  return (
+    <div className="grid gap-6 text-left">
+      {message && <div className="rounded-lg bg-[#e6f5ef] p-3 text-sm text-[#18865a] font-semibold">{message}</div>}
+      {error && <div className="rounded-lg bg-[#fde8e6] p-3 text-sm text-[#ba3d37] font-semibold">{error}</div>}
+
+      <div className="grid grid-cols-[1fr_2fr] gap-6 max-lg:grid-cols-1">
+        <Card className="p-5 border border-[#e8edf4]">
+          <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Apply for Employee Loan</h3>
+          <form onSubmit={handleSubmit} className="grid gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Employee</label>
+              <select
+                name="employeeId"
+                id="loan-employee-select"
+                required
+                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                value={form.employeeId}
+                onChange={(e) => setForm({ ...form, employeeId: e.target.value })}
+              >
+                <option value="">Choose Employee</option>
+                {employees.map((emp) => (
+                  <option key={emp.id} value={emp.id}>
+                    {emp.firstName} {emp.lastName} ({emp.employeeCode})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Principal Amount (₹)</label>
+              <input
+                type="number"
+                required
+                min="1000"
+                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                value={form.principal}
+                onChange={(e) => setForm({ ...form, principal: Number(e.target.value) })}
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Interest Rate (%)</label>
+              <input
+                type="number"
+                min="0"
+                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                value={form.interestRate}
+                onChange={(e) => setForm({ ...form, interestRate: Number(e.target.value) })}
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Total Payable (₹)</label>
+              <input
+                type="number"
+                disabled
+                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-slate-50 font-bold"
+                value={form.totalPayable}
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Monthly EMI (₹)</label>
+              <input
+                type="number"
+                required
+                min="100"
+                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                value={form.emiAmount}
+                onChange={(e) => setForm({ ...form, emiAmount: Number(e.target.value) })}
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Repayment Start Date</label>
+              <input
+                type="date"
+                required
+                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                value={form.repaymentStart}
+                onChange={(e) => setForm({ ...form, repaymentStart: e.target.value })}
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={submitting}
+              className="min-h-10 rounded-lg bg-brand text-white text-xs font-bold hover:bg-brand/90 transition shadow-sm"
+            >
+              {submitting ? "Submitting..." : "Apply Loan"}
+            </button>
+          </form>
+        </Card>
+
+        <Card className="p-5 border border-[#e8edf4]">
+          <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Active Loans & Outstanding EMI</h3>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-xs text-slate-650">
+              <thead className="bg-[#f8fafc] text-[10px] uppercase font-bold text-slate-500 border-b">
+                <tr>
+                  <th className="p-2.5">Employee</th>
+                  <th className="p-2.5">Principal</th>
+                  <th className="p-2.5">Total Payable</th>
+                  <th className="p-2.5">EMI Amount</th>
+                  <th className="p-2.5">Balance Amount</th>
+                  <th className="p-2.5">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {!loans.length ? (
+                  <tr>
+                    <td colSpan={6} className="p-4 text-center text-slate-400">No active loans found.</td>
+                  </tr>
+                ) : (
+                  loans.map((loan) => (
+                    <tr key={loan.id} className="border-b border-slate-100 hover:bg-slate-50 transition">
+                      <td className="p-2.5 font-semibold text-slate-900">{loan.employee?.firstName} {loan.employee?.lastName}</td>
+                      <td className="p-2.5">₹{Number(loan.principal).toLocaleString("en-IN")}</td>
+                      <td className="p-2.5">₹{Number(loan.totalPayable).toLocaleString("en-IN")}</td>
+                      <td className="p-2.5 font-bold">₹{Number(loan.emiAmount).toLocaleString("en-IN")}</td>
+                      <td className="p-2.5 font-bold text-brand">₹{Number(loan.balanceAmount).toLocaleString("en-IN")}</td>
+                      <td className="p-2.5">
+                        <div className="flex items-center gap-2">
+                          <StatusPill tone={loan.status === "PENDING" ? "yellow" : loan.status === "APPROVED" ? "green" : "red"}>
+                            {loan.status}
+                          </StatusPill>
+                          {loan.status === "PENDING" && role === "admin" && (
+                            <div className="flex gap-1">
+                              <button
+                                onClick={() => handleDecide(loan.id, "APPROVED")}
+                                className="bg-emerald-600 text-white rounded px-2 py-0.5 font-bold hover:bg-emerald-700"
+                              >
+                                Approve
+                              </button>
+                              <button
+                                onClick={() => handleDecide(loan.id, "REJECTED")}
+                                className="border border-slate-200 text-slate-700 bg-white rounded px-2 py-0.5 font-bold hover:bg-slate-50"
+                              >
+                                Reject
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+function CareerHistoryPanel({ employeeId }: { employeeId: string }) {
+  const [promotions, setPromotions] = useState<any[]>([]);
+  const [transfers, setTransfers] = useState<any[]>([]);
+  const [activeHistoryTab, setActiveHistoryTab] = useState<"promotions" | "transfers">("promotions");
+
+  useEffect(() => {
+    if (!employeeId) return;
+    apiFetch<any[]>(`/employees/${employeeId}/promotions`).then((res) => {
+      if (res.data) setPromotions(res.data);
+    });
+    apiFetch<any[]>(`/employees/${employeeId}/transfers`).then((res) => {
+      if (res.data) setTransfers(res.data);
+    });
+  }, [employeeId]);
+
+  return (
+    <div className="rounded-xl border border-slate-200 p-5 mt-4 space-y-4 text-left">
+      <div className="flex items-center justify-between border-b pb-2">
+        <h4 className="text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
+          <span>Career History Timeline</span>
+        </h4>
+        <div className="flex gap-2 text-xs">
+          <button
+            onClick={() => setActiveHistoryTab("promotions")}
+            className={`px-3 py-1 rounded-md font-bold transition ${activeHistoryTab === "promotions" ? "bg-brand text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+          >
+            Promotions ({promotions.length})
+          </button>
+          <button
+            onClick={() => setActiveHistoryTab("transfers")}
+            className={`px-3 py-1 rounded-md font-bold transition ${activeHistoryTab === "transfers" ? "bg-brand text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+          >
+            Transfers ({transfers.length})
+          </button>
+        </div>
+      </div>
+
+      {activeHistoryTab === "promotions" ? (
+        <div className="space-y-4">
+          {!promotions.length ? (
+            <p className="text-xs text-slate-400 italic">No promotions recorded.</p>
+          ) : (
+            promotions.map((p) => (
+              <div key={p.id} className="relative border-l-2 border-brand/20 pl-4 py-1">
+                <div className="absolute -left-1.5 top-1.5 h-3 w-3 rounded-full bg-brand"></div>
+                <div className="text-xs font-bold text-slate-800">
+                  {p.fromDesignation?.title || "Designation"} → {p.toDesignation?.title || "New Designation"}
+                </div>
+                <div className="text-[10px] text-slate-400 mt-0.5">
+                  Effective: {p.effectiveDate?.slice(0, 10)} | CTC Revision: {p.revisedCtc ? `₹${Number(p.revisedCtc).toLocaleString("en-IN")}` : "N/A"}
+                </div>
+                {p.reason && <p className="text-xs text-slate-500 mt-1">Reason: {p.reason}</p>}
+                <div className="mt-1">
+                  <span className="rounded bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-800">{p.status}</span>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      ) : (
+        <div className="space-y-4">
+          {!transfers.length ? (
+            <p className="text-xs text-slate-400 italic">No transfers recorded.</p>
+          ) : (
+            transfers.map((t) => (
+              <div key={t.id} className="relative border-l-2 border-brand/20 pl-4 py-1">
+                <div className="absolute -left-1.5 top-1.5 h-3 w-3 rounded-full bg-brand"></div>
+                <div className="text-xs font-bold text-slate-800">
+                  Department: {t.fromDepartment?.name || "N/A"} → {t.toDepartment?.name || "N/A"}
+                </div>
+                <div className="text-[10px] text-slate-400 mt-0.5">
+                  Location: {t.fromLocation?.name || "N/A"} → {t.toLocation?.name || "N/A"} | Effective: {t.effectiveDate?.slice(0, 10)}
+                </div>
+                <div className="mt-1">
+                  <span className="rounded bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-800">{t.status}</span>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+      )}
+    </div>
   );
 }

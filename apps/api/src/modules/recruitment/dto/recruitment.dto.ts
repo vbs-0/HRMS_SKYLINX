@@ -21,6 +21,10 @@ export class CreateRequisitionDto {
   @IsString()
   @IsNotEmpty()
   requestedById!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  designationId!: string;
 }
 
 export class DecideRequisitionDto {

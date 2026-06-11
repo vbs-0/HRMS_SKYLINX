@@ -5,6 +5,11 @@ import { AuthenticatedUser } from "../../common/auth/auth.types";
 import { LeaveService } from "./leave.service";
 import { CreateLeaveRequestDto } from "./dto/create-leave-request.dto";
 import { DecideLeaveRequestDto } from "./dto/decide-leave-request.dto";
+import { CreateLeaveEncashmentDto } from "./dto/create-leave-encashment.dto";
+import { DecideLeaveEncashmentDto } from "./dto/decide-leave-encashment.dto";
+import { ProcessLeaveAccrualDto } from "./dto/process-leave-accrual.dto";
+import { CreateCompOffConversionDto } from "./dto/comp-off-conversion.dto";
+import { ApprovalStatus } from "@prisma/client";
 
 @Controller("leave")
 export class LeaveController {
@@ -136,6 +141,76 @@ export class LeaveController {
   @RequirePermissions("leave.read")
   listPolicyAssignments(@Param("companyId") companyId: string) {
     return this.leaveService.listPolicyAssignments(companyId);
+  }
+
+  // ==========================================
+  // Leave Encashment
+  // ==========================================
+  @Get("encashments")
+  @RequirePermissions("leave.read")
+  encashments() {
+    return this.leaveService.listEncashments();
+  }
+
+  @Post("encashments")
+  @RequirePermissions("leave.create")
+  createEncashment(@Body() body: CreateLeaveEncashmentDto) {
+    return this.leaveService.createEncashment(body);
+  }
+
+  @Patch("encashments/:id/decide")
+  @RequirePermissions("leave.approve")
+  decideEncashment(
+    @Param("id") id: string,
+    @Body() body: DecideLeaveEncashmentDto,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    if (!body.decidedByUserId) {
+      body.decidedByUserId = user.sub;
+    }
+    return this.leaveService.decideEncashment(id, body);
+  }
+
+  // ==========================================
+  // Earned-Leave Accrual
+  // ==========================================
+  @Post("accruals/process")
+  @RequirePermissions("leave.configure")
+  processAccruals(@Body() body: ProcessLeaveAccrualDto) {
+    return this.leaveService.processAccruals(body);
+  }
+
+  // ==========================================
+  // Compensatory Leave Conversion
+  // ==========================================
+  @Post("comp-off-conversions")
+  @RequirePermissions("leave.create")
+  createCompOffConversion(@Body() body: CreateCompOffConversionDto) {
+    return this.leaveService.createCompOffConversion(body);
+  }
+
+  @Get("comp-off-conversions")
+  @RequirePermissions("leave.read")
+  listCompOffConversions() {
+    return this.leaveService.listCompOffConversions();
+  }
+
+  @Patch("comp-off-conversions/:id/approve")
+  @RequirePermissions("leave.approve")
+  approveCompOffConversion(
+    @Param("id") id: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.leaveService.decideCompOffConversion(id, ApprovalStatus.APPROVED, user.sub);
+  }
+
+  @Patch("comp-off-conversions/:id/reject")
+  @RequirePermissions("leave.approve")
+  rejectCompOffConversion(
+    @Param("id") id: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.leaveService.decideCompOffConversion(id, ApprovalStatus.REJECTED, user.sub);
   }
 }
 

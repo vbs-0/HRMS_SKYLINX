@@ -13,6 +13,8 @@ import {
   CreateJobOfferDto,
   UpdateApplicationStageDto,
 } from "./dto/recruitment.dto";
+import { CreateStaffingPlanDto } from "./dto/staffing-plan.dto";
+import { CreateReferralDto, DecideReferralDto } from "./dto/referral.dto";
 
 @Controller("recruitment")
 export class RecruitmentController {
@@ -143,5 +145,41 @@ export class RecruitmentController {
   @RequirePermissions("recruitment.read")
   getJobOffer(@Param("id") id: string) {
     return this.recruitmentService.getJobOffer(id);
+  }
+
+  // ==========================================
+  // Staffing Plans
+  // ==========================================
+  @Post("staffing-plans")
+  @RequirePermissions("recruitment.create")
+  createStaffingPlan(@Body() body: CreateStaffingPlanDto) {
+    return this.recruitmentService.createStaffingPlan(body);
+  }
+
+  @Get("staffing-plans/list/:companyId")
+  @RequirePermissions("recruitment.read")
+  listStaffingPlans(@Param("companyId") companyId: string) {
+    return this.recruitmentService.listStaffingPlans(companyId);
+  }
+
+  // ==========================================
+  // Employee Referrals
+  // ==========================================
+  @Post("referrals")
+  @RequirePermissions("recruitment.create")
+  createReferral(@Body() body: CreateReferralDto) {
+    return this.recruitmentService.createReferral(body);
+  }
+
+  @Get("referrals")
+  @RequirePermissions("recruitment.read")
+  listReferrals() {
+    return this.recruitmentService.listReferrals();
+  }
+
+  @Patch("referrals/:id/decide")
+  @RequirePermissions("recruitment.approve")
+  decideReferral(@Param("id") id: string, @Body() body: DecideReferralDto) {
+    return this.recruitmentService.decideReferral(id, body);
   }
 }

@@ -1,7 +1,8 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { response } from "../../common/crud-response";
 import { AuthenticatedUser } from "../../common/auth/auth.types";
 import { PrismaService } from "../../prisma/prisma.service";
+import { CreateFeedbackRequestDto, SubmitFeedbackResponseDto } from "./dto/feedback.dto";
 
 @Injectable()
 export class PerformanceService {
@@ -86,5 +87,58 @@ export class PerformanceService {
     });
 
     return response("performance", "cycle.launch", log);
+  }
+
+  // ==========================================
+  // 360-degree Feedback Requests
+  // ==========================================
+  async createFeedbackRequest(data: CreateFeedbackRequestDto) {
+    const request = await this.prisma.feedbackRequest.create({
+      data: {
+        appraisalId: data.appraisalId || null,
+        requestorId: data.requestorId,
+        providerId: data.providerId,
+        status: "PENDING",
+        questions: data.questions,
+      },
+      include: {
+        requestor: true,
+        provider: true,
+      },
+    });
+    return response("performance", "feedback.request.create", request);
+  }
+
+  async listFeedbackRequests() {
+    const requests = await this.prisma.feedbackRequest.findMany({
+      include: {
+        requestor: true,
+        provider: true,
+      },
+      orderBy: { createdAt: "desc" },
+    });
+    return response("performance", "feedback.request.list", requests);
+  }
+
+  async submitFeedbackResponse(id: string, data: SubmitFeedbackResponseDto) {
+    const request = await this.prisma.feedbackRequest.findUnique({
+      where: { id },
+    });
+    if (!request) {
+      throw new NotFoundException("Feedback request not found");
+    }
+
+    const updated = await this.prisma.feedbackRequest.update({
+      where: { id },
+      data: {
+        status: "SUBMITTED",
+        answers: data.answers,
+      },
+      include: {
+        requestor: true,
+        provider: true,
+      },
+    });
+    return response("performance", "feedback.request.respond", updated);
   }
 }

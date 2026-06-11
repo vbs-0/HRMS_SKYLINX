@@ -1,4 +1,4 @@
-import { Test, TestingModule } from "@nestjs/testing";
+﻿import { Test, TestingModule } from "@nestjs/testing";
 import { PayrollService } from "./payroll.service";
 import { PrismaService } from "../../prisma/prisma.service";
 import { ApprovalStatus } from "@prisma/client";
@@ -48,6 +48,22 @@ describe("PayrollService (Indian Tax & Compliance Math)", () => {
     auditLog: {
       create: jest.fn(),
     },
+    incomeTaxSlab: {
+      findMany: jest.fn(),
+    },
+    payrollCorrection: {
+      findMany: jest.fn(),
+      updateMany: jest.fn(),
+    },
+    employeeLoan: {
+      findMany: jest.fn(),
+      update: jest.fn(),
+    },
+    loanRepayment: {
+      create: jest.fn(),
+      findMany: jest.fn().mockResolvedValue([]),
+      deleteMany: jest.fn(),
+    },
     $transaction: jest.fn().mockImplementation((cb) => cb(mockPrismaService)),
   };
 
@@ -61,6 +77,10 @@ describe("PayrollService (Indian Tax & Compliance Math)", () => {
 
     service = module.get<PayrollService>(PayrollService);
     prisma = module.get<PrismaService>(PrismaService);
+
+    mockPrismaService.incomeTaxSlab.findMany.mockResolvedValue([]);
+    mockPrismaService.payrollCorrection.findMany.mockResolvedValue([]);
+    mockPrismaService.employeeLoan.findMany.mockResolvedValue([]);
   });
 
   afterEach(() => {
@@ -72,7 +92,7 @@ describe("PayrollService (Indian Tax & Compliance Math)", () => {
   });
 
   describe("Indian Compliance Math Calculations", () => {
-    it("should calculate PF with ₹15,000 wage ceiling and correct ESIC / PT slabs", async () => {
+    it("should calculate PF with â‚¹15,000 wage ceiling and correct ESIC / PT slabs", async () => {
       const mockRun = { id: "run-1", companyId: "company-1", month: 6, year: 2026, status: ApprovalStatus.DRAFT };
       mockPrismaService.payrollRun.findUnique.mockResolvedValue(mockRun);
       
@@ -262,3 +282,4 @@ describe("PayrollService (Indian Tax & Compliance Math)", () => {
     });
   });
 });
+

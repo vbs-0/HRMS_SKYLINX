@@ -110,6 +110,38 @@ export function LifecycleConsole() {
     loadData();
   }, [activeTab]);
 
+  useEffect(() => {
+    if (!ffEmp) {
+      setFfGratuity("0");
+      setFfEncashment("0");
+      setFfSalary("0");
+      return;
+    }
+    apiFetch<any>(`/employees/${ffEmp}/ff-suggestions`)
+      .then((res) => {
+        if (res.data) {
+          setFfGratuity(String(res.data.gratuityDues || 0));
+          setFfEncashment(String(res.data.encashmentDues || 0));
+        }
+      })
+      .catch((err) => console.error("Failed to fetch F&F suggestions:", err));
+
+    apiFetch<any>(`/employees/${ffEmp}`)
+      .then((res) => {
+        if (res.data) {
+          const emp = res.data;
+          const activeSal = emp.salaryStructures?.find((s: any) => s.status === "ACTIVE");
+          if (activeSal) {
+            const monthlyBasic = Math.round(Number(activeSal.basic || 0) / 12);
+            setFfSalary(String(monthlyBasic || 0));
+          } else {
+            setFfSalary("0");
+          }
+        }
+      })
+      .catch((err) => console.error("Failed to fetch employee details for F&F:", err));
+  }, [ffEmp]);
+
   function loadData() {
     // Fetch Employees
     apiFetch<any[]>("/employees")

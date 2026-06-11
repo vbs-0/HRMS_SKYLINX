@@ -7,7 +7,7 @@ import { LeaveTable } from "./live-tables";
 import { ReferenceModuleHeader } from "./reference-module";
 import { ReferenceFlowStrip } from "./reference-sections";
 import { LeaveRulesWorkspace } from "./reference-workspaces";
-import { Card } from "./ui";
+import { Card, StatusPill } from "./ui";
 import { LeaveSettingsConsole } from "./leave-settings-console";
 import { LeavePolicyPanel } from "./leave-policy-panel";
 import { CalendarPlus, Download, ListChecks, SlidersHorizontal } from "lucide-react";
@@ -137,7 +137,7 @@ export function LeaveConsole() {
         eyebrow="Leave"
         title="Leave Dashboard"
         summary="Apply, approve, reject and audit leave requests with balances, rules, carry forward and sandwich policy views."
-        tabs={["Dashboard", "Leave Requests", "Leave Balance", "Leave Rules"]}
+        tabs={["Dashboard", "Leave Requests", "Leave Balance", "Leave Rules", "Leave Encashment", "Comp-Off Conversion"]}
         activeTab={activeTab}
         onTabChange={setActiveTab}
         searchValue={search}
@@ -183,7 +183,7 @@ export function LeaveConsole() {
           <div className="rounded-lg bg-blue-50/50 border border-blue-200 p-5 text-left">
             <h3 className="text-sm font-bold text-blue-900 mb-2">Welcome to the Leave Control Room</h3>
             <p className="text-xs text-blue-700 leading-relaxed">
-              Use the tab controls above to review individual employee leave requests, check year-to-date balances, or inspect active leave policy rules. Click <strong>Apply Leave</strong> to submit a new leave record.
+              Use the tab controls above to review individual employee leave requests, check YTD balances, apply for leave encashments, or process earned-leave accruals. Click <strong>Apply Leave</strong> to submit a new leave record.
             </p>
           </div>
         </div>
@@ -252,6 +252,444 @@ export function LeaveConsole() {
           ))}
         </div>
       )}
+
+      {activeTab === "Leave Encashment" && (
+        <LeaveEncashmentPanel />
+      )}
+
+      {activeTab === "Comp-Off Conversion" && (
+        <CompOffConversionPanel />
+      )}
+    </div>
+  );
+}
+
+function CompOffConversionPanel() {
+  const [conversions, setConversions] = useState<any[]>([]);
+  const [employees, setEmployees] = useState<any[]>([]);
+  const [leaveTypes, setLeaveTypes] = useState<any[]>([]);
+  const [submitting, setSubmitting] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const { role } = useActiveRole();
+
+  const [form, setForm] = useState({
+    employeeId: "",
+    overtimeRequestId: "",
+    leaveTypeId: "",
+    daysGranted: 1,
+  });
+
+  function load() {
+    apiFetch<any[]>("/leave/comp-off-conversions").then((res) => {
+      if (res.data) setConversions(res.data);
+    });
+    apiFetch<any[]>("/employees").then((res) => {
+      if (res.data) setEmployees(res.data);
+    });
+    apiFetch<any[]>("/leave/types").then((res) => {
+      if (res.data) setLeaveTypes(res.data);
+    });
+  }
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!form.employeeId || !form.overtimeRequestId || !form.leaveTypeId || form.daysGranted <= 0) {
+      setError("Please fill all required fields correctly.");
+      return;
+    }
+    setSubmitting(true);
+    setMessage("");
+    setError("");
+    try {
+      await apiFetch("/leave/comp-off-conversions", {
+        method: "POST",
+        body: JSON.stringify({
+          employeeId: form.employeeId,
+          overtimeRequestId: form.overtimeRequestId,
+          leaveTypeId: form.leaveTypeId,
+          daysGranted: Number(form.daysGranted),
+        }),
+      });
+      setMessage("Comp-off conversion request submitted successfully!");
+      setForm({ employeeId: "", overtimeRequestId: "", leaveTypeId: "", daysGranted: 1 });
+      load();
+    } catch (err: any) {
+      setError(err.message || "Failed to submit request.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function handleDecide(id: string, action: "approve" | "reject") {
+    setMessage("");
+    setError("");
+    try {
+      await apiFetch(`/leave/comp-off-conversions/${id}/${action}`, {
+        method: "PATCH",
+      });
+      setMessage(`Comp-off conversion request marked ${action === "approve" ? "approved" : "rejected"} successfully.`);
+      load();
+    } catch (err: any) {
+      setError(err.message || "Failed to decide comp-off conversion request.");
+    }
+  }
+
+  return (
+    <div className="grid gap-6 text-left">
+      {message && <div className="rounded-lg bg-[#e6f5ef] p-3 text-sm text-[#18865a] font-semibold">{message}</div>}
+      {error && <div className="rounded-lg bg-[#fde8e6] p-3 text-sm text-[#ba3d37] font-semibold">{error}</div>}
+
+      <div className="grid grid-cols-[1fr_2fr] gap-6 max-lg:grid-cols-1">
+        <Card className="p-5 border border-[#e8edf4]">
+          <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Overtime to Comp-Off Conversion</h3>
+          <form onSubmit={handleSubmit} className="grid gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Employee</label>
+              <select
+                name="employeeId"
+                id="compoff-employee-select"
+                required
+                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                value={form.employeeId}
+                onChange={(e) => setForm({ ...form, employeeId: e.target.value })}
+              >
+                <option value="">Choose Employee</option>
+                {employees.map((emp) => (
+                  <option key={emp.id} value={emp.id}>
+                    {emp.firstName} {emp.lastName} ({emp.employeeCode})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Overtime Request ID</label>
+              <input
+                type="text"
+                name="overtimeRequestId"
+                id="compoff-ot-id-input"
+                required
+                placeholder="e.g. ot_12345"
+                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                value={form.overtimeRequestId}
+                onChange={(e) => setForm({ ...form, overtimeRequestId: e.target.value })}
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Leave Type (Comp-Off)</label>
+              <select
+                name="leaveTypeId"
+                id="compoff-type-select"
+                required
+                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                value={form.leaveTypeId}
+                onChange={(e) => setForm({ ...form, leaveTypeId: e.target.value })}
+              >
+                <option value="">Select Leave Type</option>
+                {leaveTypes.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.name} ({t.code})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Days Granted</label>
+              <input
+                type="number"
+                name="daysGranted"
+                id="compoff-days-input"
+                min="0.5"
+                step="0.5"
+                required
+                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                value={form.daysGranted}
+                onChange={(e) => setForm({ ...form, daysGranted: Number(e.target.value) })}
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={submitting}
+              id="compoff-submit-btn"
+              className="min-h-10 rounded-lg bg-brand text-white text-xs font-bold hover:bg-brand/90 transition shadow-sm"
+            >
+              {submitting ? "Submitting..." : "Convert Overtime"}
+            </button>
+          </form>
+        </Card>
+
+        <Card className="p-5 border border-[#e8edf4]">
+          <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Comp-Off Requests Log</h3>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-xs text-slate-650">
+              <thead className="bg-[#f8fafc] text-[10px] uppercase font-bold text-slate-500 border-b">
+                <tr>
+                  <th className="p-2.5">Employee</th>
+                  <th className="p-2.5">Overtime Request ID</th>
+                  <th className="p-2.5">Leave Type</th>
+                  <th className="p-2.5">Days</th>
+                  <th className="p-2.5">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {!conversions.length ? (
+                  <tr>
+                    <td colSpan={5} className="p-4 text-center text-slate-400">No comp-off conversion records found.</td>
+                  </tr>
+                ) : (
+                  conversions.map((conv) => (
+                    <tr key={conv.id} className="border-b border-slate-100 hover:bg-slate-50 transition">
+                      <td className="p-2.5 font-semibold text-slate-900">{conv.employee?.firstName} {conv.employee?.lastName}</td>
+                      <td className="p-2.5">{conv.overtimeRequestId}</td>
+                      <td className="p-2.5">{conv.leaveType?.name}</td>
+                      <td className="p-2.5 font-bold">{Number(conv.daysGranted)}</td>
+                      <td className="p-2.5">
+                        <div className="flex items-center gap-2">
+                          <StatusPill tone={conv.status === "PENDING" ? "yellow" : conv.status === "APPROVED" ? "green" : "red"}>
+                            {conv.status}
+                          </StatusPill>
+                          {conv.status === "PENDING" && role === "admin" && (
+                            <div className="flex gap-1">
+                              <button
+                                onClick={() => handleDecide(conv.id, "approve")}
+                                className="bg-emerald-600 text-white rounded px-2 py-0.5 font-bold hover:bg-emerald-700"
+                              >
+                                Approve
+                              </button>
+                              <button
+                                onClick={() => handleDecide(conv.id, "reject")}
+                                className="border border-slate-200 text-slate-700 bg-white rounded px-2 py-0.5 font-bold hover:bg-slate-50"
+                              >
+                                Reject
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      </div>
+    </div>
+  );
+}
+
+function LeaveEncashmentPanel() {
+  const [encashments, setEncashments] = useState<any[]>([]);
+  const [employees, setEmployees] = useState<any[]>([]);
+  const [leaveTypes, setLeaveTypes] = useState<any[]>([]);
+  const [submitting, setSubmitting] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const { role } = useActiveRole();
+
+  const [form, setForm] = useState({
+    employeeId: "",
+    leaveTypeId: "",
+    days: 1,
+  });
+
+  function load() {
+    apiFetch<any[]>("/leave/encashments").then((res) => {
+      if (res.data) setEncashments(res.data);
+    });
+    apiFetch<any[]>("/employees").then((res) => {
+      if (res.data) setEmployees(res.data);
+    });
+    apiFetch<any[]>("/leave/types").then((res) => {
+      if (res.data) setLeaveTypes(res.data);
+    });
+  }
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!form.employeeId || !form.leaveTypeId || form.days <= 0) {
+      setError("Please fill all required fields correctly.");
+      return;
+    }
+    setSubmitting(true);
+    setMessage("");
+    setError("");
+    try {
+      await apiFetch("/leave/encashments", {
+        method: "POST",
+        body: JSON.stringify({
+          employeeId: form.employeeId,
+          leaveTypeId: form.leaveTypeId,
+          days: Number(form.days),
+        }),
+      });
+      setMessage("Encashment request submitted successfully!");
+      setForm({ employeeId: "", leaveTypeId: "", days: 1 });
+      load();
+    } catch (err: any) {
+      setError(err.message || "Failed to submit request.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function handleDecide(id: string, action: "APPROVED" | "REJECTED") {
+    setMessage("");
+    setError("");
+    try {
+      await apiFetch(`/leave/encashments/${id}/decide`, {
+        method: "PATCH",
+        body: JSON.stringify({ status: action }),
+      });
+      setMessage(`Encashment request marked ${action.toLowerCase()} successfully.`);
+      load();
+    } catch (err: any) {
+      setError(err.message || "Failed to decide encashment request.");
+    }
+  }
+
+  return (
+    <div className="grid gap-6 text-left">
+      {message && <div className="rounded-lg bg-[#e6f5ef] p-3 text-sm text-[#18865a] font-semibold">{message}</div>}
+      {error && <div className="rounded-lg bg-[#fde8e6] p-3 text-sm text-[#ba3d37] font-semibold">{error}</div>}
+
+      <div className="grid grid-cols-[1fr_2fr] gap-6 max-lg:grid-cols-1">
+        <Card className="p-5 border border-[#e8edf4]">
+          <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Apply for Leave Encashment</h3>
+          <form onSubmit={handleSubmit} className="grid gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Employee</label>
+              <select
+                name="employeeId"
+                id="encash-employee-select"
+                required
+                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                value={form.employeeId}
+                onChange={(e) => setForm({ ...form, employeeId: e.target.value })}
+              >
+                <option value="">Choose Employee</option>
+                {employees.map((emp) => (
+                  <option key={emp.id} value={emp.id}>
+                    {emp.firstName} {emp.lastName} ({emp.employeeCode})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Leave Type</label>
+              <select
+                name="leaveTypeId"
+                id="encash-type-select"
+                required
+                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                value={form.leaveTypeId}
+                onChange={(e) => setForm({ ...form, leaveTypeId: e.target.value })}
+              >
+                <option value="">Select Leave Type</option>
+                {leaveTypes.filter(t => t.leaveEncashEnabled).map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.name} ({t.code})
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-500 mb-1">Days to Encash</label>
+              <input
+                type="number"
+                name="days"
+                id="encash-days-input"
+                min="1"
+                required
+                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                value={form.days}
+                onChange={(e) => setForm({ ...form, days: Number(e.target.value) })}
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={submitting}
+              id="encash-submit-btn"
+              className="min-h-10 rounded-lg bg-brand text-white text-xs font-bold hover:bg-brand/90 transition shadow-sm"
+            >
+              {submitting ? "Submitting..." : "Submit Request"}
+            </button>
+          </form>
+        </Card>
+
+        <Card className="p-5 border border-[#e8edf4]">
+          <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Encashment History & Approvals</h3>
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-xs text-slate-650">
+              <thead className="bg-[#f8fafc] text-[10px] uppercase font-bold text-slate-500 border-b">
+                <tr>
+                  <th className="p-2.5">Employee</th>
+                  <th className="p-2.5">Leave Type</th>
+                  <th className="p-2.5">Days</th>
+                  <th className="p-2.5">Rate / Day</th>
+                  <th className="p-2.5">Total Amount</th>
+                  <th className="p-2.5">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {!encashments.length ? (
+                  <tr>
+                    <td colSpan={6} className="p-4 text-center text-slate-400">No encashment records found.</td>
+                  </tr>
+                ) : (
+                  encashments.map((enc) => (
+                    <tr key={enc.id} className="border-b border-slate-100 hover:bg-slate-50 transition">
+                      <td className="p-2.5 font-semibold text-slate-900">{enc.employee?.firstName} {enc.employee?.lastName}</td>
+                      <td className="p-2.5">{enc.leaveType?.name}</td>
+                      <td className="p-2.5 font-bold">{Number(enc.days)}</td>
+                      <td className="p-2.5">₹{Number(enc.amountPerDay).toLocaleString("en-IN")}</td>
+                      <td className="p-2.5 font-bold text-brand">₹{Number(enc.totalAmount).toLocaleString("en-IN")}</td>
+                      <td className="p-2.5">
+                        <div className="flex items-center gap-2">
+                          <StatusPill tone={enc.status === "PENDING" ? "yellow" : enc.status === "APPROVED" ? "green" : "red"}>
+                            {enc.status}
+                          </StatusPill>
+                          {enc.status === "PENDING" && role === "admin" && (
+                            <div className="flex gap-1">
+                              <button
+                                onClick={() => handleDecide(enc.id, "APPROVED")}
+                                className="bg-emerald-600 text-white rounded px-2 py-0.5 font-bold hover:bg-emerald-700"
+                              >
+                                Approve
+                              </button>
+                              <button
+                                onClick={() => handleDecide(enc.id, "REJECTED")}
+                                className="border border-slate-200 text-slate-700 bg-white rounded px-2 py-0.5 font-bold hover:bg-slate-50"
+                              >
+                                Reject
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      </div>
     </div>
   );
 }

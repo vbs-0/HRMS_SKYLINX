@@ -1,5 +1,7 @@
 import { Body, Controller, Get, Param, Patch, Post } from "@nestjs/common";
 import { RequirePermissions } from "../../common/auth/permissions.decorator";
+import { CurrentUser } from "../../common/auth/current-user.decorator";
+import { AuthenticatedUser } from "../../common/auth/auth.types";
 import { PayrollService } from "./payroll.service";
 import { CreatePayrollRunDto, CreateSalaryStructureDto } from "./dto/payroll.dto";
 import {
@@ -11,6 +13,15 @@ import {
   DecideClaimDto,
   DecideProofDto,
 } from "./dto/compliance.dto";
+import {
+  CreateGratuityRuleDto,
+  CreateGratuityDto,
+  DecideGratuityDto,
+  CreatePayrollCorrectionDto,
+  DecidePayrollCorrectionDto,
+  CreateTaxSlabDto,
+} from "./dto/new-features.dto";
+import { Delete } from "@nestjs/common";
 
 @Controller("payroll")
 export class PayrollController {
@@ -140,8 +151,91 @@ export class PayrollController {
   }
 
   @Get("additional-salary")
-  @RequirePermissions("payroll.read")
+  @RequirePermissions("payroll.approve")
   listAdditionalSalaries() {
     return this.payrollService.listAdditionalSalaries();
+  }
+
+  // ==========================================
+  // Income Tax Slabs
+  // ==========================================
+  @Get("tax-slabs")
+  @RequirePermissions("payroll.read")
+  listTaxSlabs() {
+    return this.payrollService.listTaxSlabs();
+  }
+
+  @Post("tax-slabs")
+  @RequirePermissions("payroll.configure")
+  createTaxSlab(@Body() body: CreateTaxSlabDto) {
+    return this.payrollService.createTaxSlab(body);
+  }
+
+  @Delete("tax-slabs/:id")
+  @RequirePermissions("payroll.configure")
+  deleteTaxSlab(@Param("id") id: string) {
+    return this.payrollService.deleteTaxSlab(id);
+  }
+
+  // ==========================================
+  // Gratuity
+  // ==========================================
+  @Get("gratuity")
+  @RequirePermissions("payroll.approve")
+  listGratuities() {
+    return this.payrollService.listGratuities();
+  }
+
+  @Get("gratuity/:employeeId/calculate")
+  @RequirePermissions("payroll.read")
+  calculateGratuity(@Param("employeeId") employeeId: string) {
+    return this.payrollService.calculateGratuity(employeeId);
+  }
+
+  @Post("gratuity")
+  @RequirePermissions("payroll.create")
+  createGratuity(@Body() body: CreateGratuityDto) {
+    return this.payrollService.createGratuity(body);
+  }
+
+  @Patch("gratuity/:id/decide")
+  @RequirePermissions("payroll.approve")
+  decideGratuity(
+    @Param("id") id: string,
+    @Body() body: DecideGratuityDto,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    if (!body.decidedByUserId) {
+      body.decidedByUserId = user.sub;
+    }
+    return this.payrollService.decideGratuity(id, body);
+  }
+
+  // ==========================================
+  // Payroll Corrections
+  // ==========================================
+  @Get("corrections")
+  @RequirePermissions("payroll.approve")
+  listCorrections() {
+    return this.payrollService.listCorrections();
+  }
+
+  @Post("corrections")
+  @RequirePermissions("payroll.create")
+  createCorrection(@Body() body: CreatePayrollCorrectionDto) {
+    return this.payrollService.createCorrection(body);
+  }
+
+  @Patch("corrections/:id/decide")
+  @RequirePermissions("payroll.approve")
+  decideCorrection(
+    @Param("id") id: string,
+    @Body() body: DecidePayrollCorrectionDto,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    if (!body.decidedByUserId) {
+      body.decidedByUserId = user.sub;
+    }
+    return this.payrollService.decideCorrection(id, body);
   }
 }

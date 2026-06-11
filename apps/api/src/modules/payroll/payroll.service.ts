@@ -261,6 +261,21 @@ export class PayrollService {
       const startDate = new Date(run.year, run.month - 1, 1);
       const endDate = new Date(run.year, run.month, 0, 23, 59, 59, 999);
 
+      // Recalculation safety: reverse loan repayments recorded by a previous
+      // calculate() of this run, otherwise balances double-decrement.
+      const priorRepayments = await tx.loanRepayment.findMany({
+        where: { payslip: { payrollRunId: id } },
+      });
+      for (const repayment of priorRepayments) {
+        await tx.employeeLoan.update({
+          where: { id: repayment.loanId },
+          data: { balanceAmount: { increment: repayment.amountPaid } },
+        });
+      }
+      if (priorRepayments.length > 0) {
+        await tx.loanRepayment.deleteMany({ where: { payslip: { payrollRunId: id } } });
+      }
+
       for (const employee of employees) {
         const structure = await tx.salaryStructure.findFirst({
           where: {
@@ -292,9 +307,32 @@ export class PayrollService {
         const additionsSum = additionalSalaries
           .filter((s) => s.type === "ADDITION")
           .reduce((sum, s) => sum + Number(s.amount), 0);
-        const recoveryDeductionsSum = additionalSalaries
+        let recoveryDeductionsSum = additionalSalaries
           .filter((s) => s.type === "DEDUCTION")
           .reduce((sum, s) => sum + Number(s.amount), 0);
+
+        // P2 Loan EMI deductions
+        const activeLoans = await tx.employeeLoan.findMany({
+          where: {
+            employeeId: employee.id,
+            status: ApprovalStatus.APPROVED,
+            balanceAmount: { gt: 0 },
+            repaymentStart: { lte: endDate },
+          },
+        });
+
+        let totalLoanEmiDeduction = 0;
+        const loansToDeduct = [];
+        for (const loan of activeLoans) {
+          const balance = Number(loan.balanceAmount);
+          const emi = Number(loan.emiAmount);
+          const deductAmount = Math.min(balance, emi);
+          if (deductAmount > 0) {
+            totalLoanEmiDeduction += deductAmount;
+            loansToDeduct.push({ loanId: loan.id, deductAmount });
+          }
+        }
+        recoveryDeductionsSum += totalLoanEmiDeduction;
 
         // 3. Fetch Approved Benefit Claims
         const benefitClaims = await tx.employeeBenefitClaim.findMany({
@@ -317,8 +355,33 @@ export class PayrollService {
         const employeePf = Math.round(pfBasicBasis * 0.12);
         const employerPf = Math.round(pfBasicBasis * 0.12);
 
+        // Fetch approved corrections
+        const approvedCorrections = await tx.payrollCorrection.findMany({
+          where: {
+            payslip: { employeeId: employee.id },
+            status: ApprovalStatus.APPROVED,
+            OR: [
+              { targetRunId: null },
+              { targetRunId: run.id },
+            ],
+          },
+        });
+        const correctionAdditions = approvedCorrections.reduce((sum, c) => sum + Number(c.amount), 0);
+
+        // Update corrections with current run ID
+        if (approvedCorrections.length > 0) {
+          await tx.payrollCorrection.updateMany({
+            where: {
+              id: { in: approvedCorrections.map((c) => c.id) },
+            },
+            data: {
+              targetRunId: run.id,
+            },
+          });
+        }
+
         // Gross salary before statutory deductions
-        const grossSalary = monthlyBasic + monthlyHra + monthlyAllowances + additionsSum + benefitsSum;
+        const grossSalary = monthlyBasic + monthlyHra + monthlyAllowances + additionsSum + benefitsSum + correctionAdditions;
 
         // 5. Indian Statutory ESIC Calculation (0.75% Employee, 3.25% Employer, if Gross <= 21,000)
         let esi = 0;
@@ -354,10 +417,28 @@ export class PayrollService {
           const taxableIncome = Math.max(annualGross - standardDeduction - exemptions, 0);
           let taxLiability = 0;
 
-          if (regime === "NEW") {
-            // NEW Regime Slab Calculations
-            if (taxableIncome > 700000) {
-              // Standard progressive slabs
+          // Fetch slabs from database
+          const dbSlabs = await tx.incomeTaxSlab.findMany({
+            where: { regime },
+            orderBy: { fromAmount: "asc" },
+          });
+
+          const rebateLimit = regime === "NEW" ? 700000 : 500000;
+
+          if (taxableIncome > rebateLimit && dbSlabs.length > 0) {
+            for (const slab of dbSlabs) {
+              const from = Number(slab.fromAmount);
+              const to = slab.toAmount ? Number(slab.toAmount) : Infinity;
+              const rate = Number(slab.ratePercent) / 100;
+
+              if (taxableIncome > from) {
+                const taxableInThisSlab = Math.min(taxableIncome - from, to - from);
+                taxLiability += taxableInThisSlab * rate;
+              }
+            }
+          } else if (taxableIncome > rebateLimit) {
+            // Fallback to old hardcoded slabs if DB slabs are empty
+            if (regime === "NEW") {
               let temp = taxableIncome;
               if (temp > 1500000) {
                 taxLiability += (temp - 1500000) * 0.30;
@@ -378,10 +459,7 @@ export class PayrollService {
               if (temp > 300000) {
                 taxLiability += (temp - 300000) * 0.05;
               }
-            } // if taxableIncome <= 700,000 -> tax rebate under 87A makes taxLiability = 0
-          } else {
-            // OLD Regime Slab Calculations
-            if (taxableIncome > 500000) {
+            } else {
               let temp = taxableIncome;
               if (temp > 1000000) {
                 taxLiability += (temp - 1000000) * 0.30;
@@ -394,7 +472,7 @@ export class PayrollService {
               if (temp > 250000) {
                 taxLiability += (temp - 250000) * 0.05;
               }
-            } // if taxableIncome <= 500,000 -> rebate makes taxLiability = 0
+            }
           }
 
           // Cess calculation (4% cess on tax liability)
@@ -402,7 +480,6 @@ export class PayrollService {
           const totalAnnualTax = taxLiability + cess;
           tds = Math.round(totalAnnualTax / 12);
         } else {
-          // If no declaration, use default fallback from structure structure.tds
           tds = this.monthly(structure.tds);
         }
 
@@ -447,8 +524,33 @@ export class PayrollService {
             ...(additionsSum > 0 ? [{ payslipId: payslip.id, type: "EARNING", name: "Additional Salary (Add)", amount: additionsSum }] : []),
             ...(benefitsSum > 0 ? [{ payslipId: payslip.id, type: "EARNING", name: "Flexible Benefits Claimed", amount: benefitsSum }] : []),
             ...(recoveryDeductionsSum > 0 ? [{ payslipId: payslip.id, type: "DEDUCTION", name: "Additional Salary (Ded)", amount: recoveryDeductionsSum }] : []),
+            ...approvedCorrections.map((c) => ({
+              payslipId: payslip.id,
+              type: "EARNING",
+              name: `Correction: ${c.type}`,
+              amount: c.amount,
+            })),
+            ...(totalLoanEmiDeduction > 0 ? [{ payslipId: payslip.id, type: "DEDUCTION", name: "Loan EMI Deduction", amount: totalLoanEmiDeduction }] : []),
           ],
         });
+
+        // Record repayments and update loan balances
+        for (const repayment of loansToDeduct) {
+          await tx.loanRepayment.create({
+            data: {
+              loanId: repayment.loanId,
+              payslipId: payslip.id,
+              amountPaid: repayment.deductAmount,
+              paymentDate: new Date(),
+            },
+          });
+          await tx.employeeLoan.update({
+            where: { id: repayment.loanId },
+            data: {
+              balanceAmount: { decrement: repayment.deductAmount },
+            },
+          });
+        }
 
         // Update Expenses status to PAID
         await tx.expense.updateMany({
@@ -580,6 +682,186 @@ export class PayrollService {
           : "",
       })),
     });
+  }
+
+  // ==========================================
+  // Income Tax Slabs
+  // ==========================================
+  async listTaxSlabs() {
+    const slabs = await this.prisma.incomeTaxSlab.findMany({
+      orderBy: [{ regime: "asc" }, { fromAmount: "asc" }],
+    });
+    return response("payroll", "taxSlabs.list", slabs);
+  }
+
+  async createTaxSlab(data: any) {
+    const slab = await this.prisma.incomeTaxSlab.create({
+      data: {
+        regime: data.regime,
+        fromAmount: data.fromAmount,
+        toAmount: data.toAmount,
+        ratePercent: data.ratePercent,
+        surcharge: data.surcharge || 0,
+      },
+    });
+    await this.audit("payroll", "taxSlab.create", "income_tax_slab", slab.id, slab);
+    return response("payroll", "taxSlab.create", slab);
+  }
+
+  async deleteTaxSlab(id: string) {
+    await this.prisma.incomeTaxSlab.delete({ where: { id } });
+    return response("payroll", "taxSlab.delete", { success: true });
+  }
+
+  // ==========================================
+  // Gratuity
+  // ==========================================
+  async calculateGratuity(employeeId: string) {
+    const employee = await this.prisma.employee.findUnique({
+      where: { id: employeeId },
+    });
+    if (!employee) throw new NotFoundException("Employee not found");
+
+    const yearsOfService = (Date.now() - employee.joiningDate.getTime()) / (1000 * 60 * 60 * 24 * 365.25);
+    const completedYears = Math.floor(yearsOfService);
+
+    const structure = await this.prisma.salaryStructure.findFirst({
+      where: { employeeId, status: "ACTIVE" },
+      orderBy: { effectiveFrom: "desc" },
+    });
+    if (!structure) {
+      throw new BadRequestException("Employee has no active salary structure to calculate basic pay");
+    }
+
+    const monthlyBasic = Number(structure.basic) / 12;
+
+    const rule = await this.prisma.gratuityRule.findFirst({
+      where: { companyId: employee.companyId },
+    });
+    const minYears = rule ? Number(rule.minYears) : 5;
+    const multiplier = rule ? Number(rule.multiplier) : 15 / 26;
+
+    let amount = 0;
+    if (yearsOfService >= minYears) {
+      amount = Math.round(monthlyBasic * multiplier * completedYears);
+    }
+
+    return {
+      employeeId,
+      employeeName: `${employee.firstName} ${employee.lastName}`,
+      yearsOfService,
+      completedYears,
+      lastBasic: monthlyBasic,
+      amount,
+      eligible: yearsOfService >= minYears,
+    };
+  }
+
+  async createGratuity(data: any) {
+    const calc = await this.calculateGratuity(data.employeeId);
+    const gratuity = await this.prisma.gratuity.create({
+      data: {
+        employeeId: data.employeeId,
+        yearsOfService: calc.yearsOfService,
+        lastBasic: calc.lastBasic,
+        amount: calc.amount,
+        status: ApprovalStatus.PENDING,
+      },
+      include: { employee: true },
+    });
+    await this.audit("payroll", "gratuity.create", "gratuity", gratuity.id, gratuity);
+    return response("payroll", "gratuity.create", gratuity);
+  }
+
+  async listGratuities() {
+    const list = await this.prisma.gratuity.findMany({
+      include: { employee: true },
+      orderBy: { createdAt: "desc" },
+    });
+    return response("payroll", "gratuities.list", list);
+  }
+
+  async decideGratuity(id: string, data: any) {
+    const gratuity = await this.prisma.gratuity.findUnique({
+      where: { id },
+    });
+    if (!gratuity) throw new NotFoundException("Gratuity record not found");
+    if (gratuity.status !== ApprovalStatus.PENDING) {
+      throw new BadRequestException("Gratuity is already decided");
+    }
+
+    const updated = await this.prisma.gratuity.update({
+      where: { id },
+      data: {
+        status: data.status,
+        decidedBy: data.decidedByUserId,
+        decidedAt: new Date(),
+      },
+      include: { employee: true },
+    });
+
+    await this.audit("payroll", "gratuity.decide", "gratuity", id, updated);
+    return response("payroll", "gratuity.decide", updated);
+  }
+
+  // ==========================================
+  // Payroll Corrections
+  // ==========================================
+  async createCorrection(data: any) {
+    const payslip = await this.prisma.payslip.findUnique({
+      where: { id: data.payslipId },
+      include: { payrollRun: true },
+    });
+    if (!payslip) throw new NotFoundException("Payslip not found");
+    if (payslip.payrollRun.lockedAt || payslip.payrollRun.status === ApprovalStatus.APPROVED) {
+      throw new BadRequestException("Cannot apply correction to a locked payroll run");
+    }
+
+    const correction = await this.prisma.payrollCorrection.create({
+      data: {
+        payslipId: data.payslipId,
+        type: data.type,
+        amount: data.amount,
+        reason: data.reason,
+        targetRunId: data.targetRunId,
+        status: ApprovalStatus.PENDING,
+      },
+      include: { payslip: { include: { employee: true } } },
+    });
+
+    await this.audit("payroll", "correction.create", "payroll_correction", correction.id, correction);
+    return response("payroll", "correction.create", correction);
+  }
+
+  async listCorrections() {
+    const list = await this.prisma.payrollCorrection.findMany({
+      include: { payslip: { include: { employee: true } } },
+      orderBy: { createdAt: "desc" },
+    });
+    return response("payroll", "corrections.list", list);
+  }
+
+  async decideCorrection(id: string, data: any) {
+    const correction = await this.prisma.payrollCorrection.findUnique({
+      where: { id },
+    });
+    if (!correction) throw new NotFoundException("Correction record not found");
+    if (correction.status !== ApprovalStatus.PENDING) {
+      throw new BadRequestException("Correction is already decided");
+    }
+
+    const updated = await this.prisma.payrollCorrection.update({
+      where: { id },
+      data: {
+        status: data.status,
+        decidedBy: data.decidedByUserId,
+        decidedAt: new Date(),
+      },
+      include: { payslip: { include: { employee: true } } },
+    });
+
+    await this.audit("payroll", "correction.decide", "payroll_correction", id, updated);
+    return response("payroll", "correction.decide", updated);
   }
 
   private monthly(value: unknown) {

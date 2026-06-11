@@ -288,12 +288,35 @@ export function LeaveSettingsConsole() {
               <h3 className="text-base font-semibold text-[#172033]">Leave Policy Setup</h3>
               <p className="text-xs text-muted">Configure active annual quotas, accrual intervals and probation applicability rules.</p>
             </div>
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="inline-flex min-h-10 items-center gap-2 rounded-lg bg-brand px-4 text-xs font-semibold text-white cursor-pointer hover:bg-brand/90 transition-all shadow-sm"
-            >
-              + Add Leave Type
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={async () => {
+                  setMessage("");
+                  setError("");
+                  try {
+                    const res = await apiFetch<any>("/leave/accruals/process", {
+                      method: "POST",
+                      body: JSON.stringify({
+                        period: new Date().toISOString().slice(0, 7), // "2026-06"
+                      }),
+                    });
+                    setMessage(res.data?.message || "Earned-leave accruals processed successfully!");
+                  } catch (err: any) {
+                    setError(err.message || "Failed to process accruals.");
+                  }
+                }}
+                id="process-accruals-btn"
+                className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-xs font-semibold text-slate-700 cursor-pointer hover:bg-slate-50 transition shadow-sm"
+              >
+                Process Accruals
+              </button>
+              <button
+                onClick={() => setShowAddModal(true)}
+                className="inline-flex min-h-10 items-center gap-2 rounded-lg bg-brand px-4 text-xs font-semibold text-white cursor-pointer hover:bg-brand/90 transition-all shadow-sm"
+              >
+                + Add Leave Type
+              </button>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 gap-6">

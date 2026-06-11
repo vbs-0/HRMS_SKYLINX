@@ -97,4 +97,10 @@ export class AttendanceController {
   processAutoAttendance(@Body("date") date: string) {
     return this.attendanceService.processAutoAttendance(date);
   }
+
+  @Post("bulk-upload")
+  @RequirePermissions("attendance.create")
+  bulkUpload(@Body() body: any[]) {
+    return this.attendanceService.bulkUpload(body);
+  }
 }

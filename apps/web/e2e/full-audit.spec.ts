@@ -11,7 +11,7 @@ const ROUTES = [
   "/holidays", "/insurance", "/recruitment", "/training", "/travel",
   "/performance", "/approvals", "/organization", "/analytics", "/reports",
   "/rewards", "/social", "/notifications", "/compliance", "/assets",
-  "/support", "/security", "/settings", "/saas", "/saas-admin",
+  "/support", "/grievance", "/security", "/settings", "/saas", "/saas-admin",
   "/cards", "/documents",
 ];
 

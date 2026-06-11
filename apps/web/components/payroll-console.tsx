@@ -352,7 +352,7 @@ export function PayrollConsole() {
         eyebrow="Payroll"
         title="Payroll Console"
         summary="Calculate salaries, generate reports, lock monthly payroll operations and manage employee salary CTC allocations."
-        tabs={["Payroll Run", "Payslips", "Bank Export", "Statutory & Tax", "Salary Setup"]}
+        tabs={["Payroll Run", "Payslips", "Bank Export", "Statutory & Tax", "Salary Setup", "Corrections", "Gratuity", "Tax Slabs"]}
         activeTab={activeTab}
         onTabChange={setActiveTab}
         actions={[
@@ -855,6 +855,18 @@ export function PayrollConsole() {
         </Card>
       )}
 
+      {activeTab === "Corrections" && (
+        <PayrollCorrectionsConsole />
+      )}
+
+      {activeTab === "Gratuity" && (
+        <GratuityConsole />
+      )}
+
+      {activeTab === "Tax Slabs" && (
+        <TaxSlabConsole />
+      )}
+
       {/* CREATE RUN MODAL */}
       {showCreateRun && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
@@ -1190,5 +1202,538 @@ export function PayrollConsole() {
         </div>
       )}
     </>
+  );
+}
+
+function PayrollCorrectionsConsole() {
+  const [corrections, setCorrections] = useState<any[]>([]);
+  const [employees, setEmployees] = useState<any[]>([]);
+  const [payslips, setPayslips] = useState<any[]>([]);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  const [form, setForm] = useState({
+    payslipId: "",
+    type: "ARREAR",
+    amount: 0,
+    reason: "",
+  });
+
+  function load() {
+    apiFetch<any[]>("/payroll/corrections").then((res) => {
+      if (res.data) setCorrections(res.data);
+    });
+    apiFetch<any[]>("/employees").then((res) => {
+      if (res.data) setEmployees(res.data);
+    });
+    // Load all payslips to select target payslip to correct
+    apiFetch<any[]>("/payroll/runs").then((res) => {
+      const runs = res.data || [];
+      if (runs.length) {
+        apiFetch<{ items: any[] }>(`/payroll/runs/${runs[0].id}/payslips`).then((pRes) => {
+          if (pRes.data?.items) setPayslips(pRes.data.items);
+        });
+      }
+    });
+  }
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!form.payslipId || form.amount <= 0 || !form.reason) {
+      setError("Please fill all required fields correctly.");
+      return;
+    }
+    setSubmitting(true);
+    setMessage("");
+    setError("");
+    try {
+      await apiFetch("/payroll/corrections", {
+        method: "POST",
+        body: JSON.stringify({
+          payslipId: form.payslipId,
+          type: form.type,
+          amount: Number(form.amount),
+          reason: form.reason,
+        }),
+      });
+      setMessage("Payroll correction adjustment submitted successfully.");
+      setForm({ payslipId: "", type: "ARREAR", amount: 0, reason: "" });
+      load();
+    } catch (err: any) {
+      setError(err.message || "Failed to submit correction.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  async function handleDecide(id: string, action: "APPROVED" | "REJECTED") {
+    setMessage("");
+    setError("");
+    try {
+      await apiFetch(`/payroll/corrections/${id}/decide`, {
+        method: "PATCH",
+        body: JSON.stringify({ status: action }),
+      });
+      setMessage(`Correction request marked ${action.toLowerCase()} successfully.`);
+      load();
+    } catch (err: any) {
+      setError(err.message || "Failed to decide correction request.");
+    }
+  }
+
+  return (
+    <div className="grid grid-cols-[1fr_2fr] gap-6 max-lg:grid-cols-1 text-left">
+      <Card className="p-5 border border-[#e8edf4]">
+        <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Record Payroll Correction / Arrears</h3>
+        {message && <div className="rounded-lg bg-[#e6f5ef] p-3 text-xs text-[#18865a] font-semibold mb-3">{message}</div>}
+        {error && <div className="rounded-lg bg-[#fde8e6] p-3 text-xs text-[#ba3d37] font-semibold mb-3">{error}</div>}
+        <form onSubmit={handleSubmit} className="grid gap-4">
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 mb-1">Target Payslip</label>
+            <select
+              name="payslipId"
+              required
+              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+              value={form.payslipId}
+              onChange={(e) => setForm({ ...form, payslipId: e.target.value })}
+            >
+              <option value="">Select Payslip</option>
+              {payslips.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.employee?.firstName} {p.employee?.lastName} (₹{Number(p.netPay).toLocaleString("en-IN")})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 mb-1">Correction Type</label>
+            <select
+              name="type"
+              required
+              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+              value={form.type}
+              onChange={(e) => setForm({ ...form, type: e.target.value })}
+            >
+              <option value="ARREAR">Arrears Credit</option>
+              <option value="BONUS_ADJUSTMENT">Bonus Adjustment</option>
+              <option value="DEDUCTION_REVERSAL">Deduction Reversal Credit</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 mb-1">Amount (₹)</label>
+            <input
+              type="number"
+              name="amount"
+              min="1"
+              required
+              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+              value={form.amount || ""}
+              onChange={(e) => setForm({ ...form, amount: Number(e.target.value) })}
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 mb-1">Reason / Explanation</label>
+            <input
+              type="text"
+              name="reason"
+              required
+              placeholder="e.g. FY2025 appraisal backlog arrears"
+              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+              value={form.reason}
+              onChange={(e) => setForm({ ...form, reason: e.target.value })}
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={submitting}
+            className="min-h-10 rounded-lg bg-brand text-white text-xs font-bold hover:bg-brand/90 transition shadow-sm"
+          >
+            {submitting ? "Saving..." : "Apply Adjustment"}
+          </button>
+        </form>
+      </Card>
+
+      <Card className="p-5 border border-[#e8edf4]">
+        <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Pending Adjustments Ledger</h3>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-xs text-slate-655">
+            <thead className="bg-[#f8fafc] text-[10px] uppercase font-bold text-slate-500 border-b">
+              <tr>
+                <th className="p-2.5">Employee</th>
+                <th className="p-2.5">Type</th>
+                <th className="p-2.5">Amount</th>
+                <th className="p-2.5">Reason</th>
+                <th className="p-2.5">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {!corrections.length ? (
+                <tr>
+                  <td colSpan={5} className="p-4 text-center text-slate-400">No corrections registered.</td>
+                </tr>
+              ) : (
+                corrections.map((c) => (
+                  <tr key={c.id} className="border-b border-slate-100 hover:bg-slate-50 transition">
+                    <td className="p-2.5 font-semibold text-slate-900">
+                      {c.payslip?.employee?.firstName} {c.payslip?.employee?.lastName}
+                    </td>
+                    <td className="p-2.5 font-medium">{c.type}</td>
+                    <td className="p-2.5 font-bold text-emerald-700">₹{Number(c.amount).toLocaleString("en-IN")}</td>
+                    <td className="p-2.5 max-w-[200px] truncate">{c.reason}</td>
+                    <td className="p-2.5">
+                      <div className="flex items-center gap-2">
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${c.status === "PENDING" ? "bg-amber-100 text-amber-800" : c.status === "APPROVED" ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"}`}>
+                          {c.status}
+                        </span>
+                        {c.status === "PENDING" && (
+                          <div className="flex gap-1">
+                            <button
+                              onClick={() => handleDecide(c.id, "APPROVED")}
+                              className="bg-emerald-600 text-white rounded px-2 py-0.5 font-bold hover:bg-emerald-700"
+                            >
+                              Approve
+                            </button>
+                            <button
+                              onClick={() => handleDecide(c.id, "REJECTED")}
+                              className="border border-slate-200 text-slate-700 bg-white rounded px-2 py-0.5 font-bold hover:bg-slate-50"
+                            >
+                              Reject
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+function GratuityConsole() {
+  const [records, setRecords] = useState<any[]>([]);
+  const [employees, setEmployees] = useState<any[]>([]);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [calculating, setCalculating] = useState(false);
+
+  const [form, setForm] = useState({
+    employeeId: "",
+  });
+
+  function load() {
+    apiFetch<any[]>("/payroll/gratuity").then((res) => {
+      if (res.data) setRecords(res.data);
+    });
+    apiFetch<any[]>("/employees").then((res) => {
+      if (res.data) setEmployees(res.data);
+    });
+  }
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  async function handleCalculate(e: React.FormEvent) {
+    e.preventDefault();
+    if (!form.employeeId) return;
+    setCalculating(true);
+    setMessage("");
+    setError("");
+    try {
+      await apiFetch("/payroll/gratuity", {
+        method: "POST",
+        body: JSON.stringify({ employeeId: form.employeeId }),
+      });
+      setMessage("Gratuity settlement computed and created successfully.");
+      setForm({ employeeId: "" });
+      load();
+    } catch (err: any) {
+      setError(err.message || "Failed to calculate gratuity.");
+    } finally {
+      setCalculating(false);
+    }
+  }
+
+  async function handleDecide(id: string, action: "APPROVED" | "REJECTED") {
+    setMessage("");
+    setError("");
+    try {
+      await apiFetch(`/payroll/gratuity/${id}/decide`, {
+        method: "PATCH",
+        body: JSON.stringify({ status: action }),
+      });
+      setMessage(`Gratuity settlement marked ${action.toLowerCase()} successfully.`);
+      load();
+    } catch (err: any) {
+      setError(err.message || "Failed to approve/reject gratuity.");
+    }
+  }
+
+  return (
+    <div className="grid grid-cols-[1fr_2fr] gap-6 max-lg:grid-cols-1 text-left">
+      <Card className="p-5 border border-[#e8edf4]">
+        <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Calculate Gratuity Dues</h3>
+        {message && <div className="rounded-lg bg-[#e6f5ef] p-3 text-xs text-[#18865a] font-semibold mb-3">{message}</div>}
+        {error && <div className="rounded-lg bg-[#fde8e6] p-3 text-xs text-[#ba3d37] font-semibold mb-3">{error}</div>}
+        <form onSubmit={handleCalculate} className="grid gap-4">
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 mb-1">Select Employee</label>
+            <select
+              name="employeeId"
+              required
+              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+              value={form.employeeId}
+              onChange={(e) => setForm({ ...form, employeeId: e.target.value })}
+            >
+              <option value="">Select Employee</option>
+              {employees.map((emp) => (
+                <option key={emp.id} value={emp.id}>
+                  {emp.firstName} {emp.lastName} ({emp.employeeCode})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <button
+            type="submit"
+            disabled={calculating}
+            className="min-h-10 rounded-lg bg-brand text-white text-xs font-bold hover:bg-brand/90 transition shadow-sm"
+          >
+            {calculating ? "Calculating..." : "Compute Dues"}
+          </button>
+        </form>
+      </Card>
+
+      <Card className="p-5 border border-[#e8edf4]">
+        <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Gratuity Settlements</h3>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-xs text-slate-655">
+            <thead className="bg-[#f8fafc] text-[10px] uppercase font-bold text-slate-500 border-b">
+              <tr>
+                <th className="p-2.5">Employee</th>
+                <th className="p-2.5">Years of Service</th>
+                <th className="p-2.5">Last Drawn Basic</th>
+                <th className="p-2.5">Gratuity Amount</th>
+                <th className="p-2.5">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {!records.length ? (
+                <tr>
+                  <td colSpan={5} className="p-4 text-center text-slate-400">No gratuity records computed.</td>
+                </tr>
+              ) : (
+                records.map((r) => (
+                  <tr key={r.id} className="border-b border-slate-100 hover:bg-slate-50 transition">
+                    <td className="p-2.5 font-semibold text-slate-900">
+                      {r.employee?.firstName} {r.employee?.lastName}
+                    </td>
+                    <td className="p-2.5 font-medium">{Number(r.yearsOfService).toFixed(2)} years</td>
+                    <td className="p-2.5">₹{Number(r.lastBasic).toLocaleString("en-IN")}</td>
+                    <td className="p-2.5 font-bold text-brand">₹{Number(r.amount).toLocaleString("en-IN")}</td>
+                    <td className="p-2.5">
+                      <div className="flex items-center gap-2">
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${r.status === "PENDING" ? "bg-amber-100 text-amber-800" : r.status === "APPROVED" ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"}`}>
+                          {r.status}
+                        </span>
+                        {r.status === "PENDING" && (
+                          <div className="flex gap-1">
+                            <button
+                              onClick={() => handleDecide(r.id, "APPROVED")}
+                              className="bg-emerald-600 text-white rounded px-2 py-0.5 font-bold hover:bg-emerald-700"
+                            >
+                              Approve
+                            </button>
+                            <button
+                              onClick={() => handleDecide(r.id, "REJECTED")}
+                              className="border border-slate-200 text-slate-700 bg-white rounded px-2 py-0.5 font-bold hover:bg-slate-50"
+                            >
+                              Reject
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+function TaxSlabConsole() {
+  const [slabs, setSlabs] = useState<any[]>([]);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+
+  const [form, setForm] = useState({
+    regime: "NEW",
+    fromAmount: 0,
+    toAmount: "",
+    ratePercent: 0,
+  });
+
+  function load() {
+    apiFetch<any[]>("/payroll/tax-slabs").then((res) => {
+      if (res.data) setSlabs(res.data);
+    });
+  }
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setSubmitting(true);
+    setMessage("");
+    setError("");
+    try {
+      await apiFetch("/payroll/tax-slabs", {
+        method: "POST",
+        body: JSON.stringify({
+          regime: form.regime,
+          fromAmount: Number(form.fromAmount),
+          toAmount: form.toAmount ? Number(form.toAmount) : null,
+          ratePercent: Number(form.ratePercent),
+        }),
+      });
+      setMessage("Tax slab added successfully.");
+      setForm({ regime: "NEW", fromAmount: 0, toAmount: "", ratePercent: 0 });
+      load();
+    } catch (err: any) {
+      setError(err.message || "Failed to create tax slab.");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
+  return (
+    <div className="grid grid-cols-[1fr_2fr] gap-6 max-lg:grid-cols-1 text-left">
+      <Card className="p-5 border border-[#e8edf4]">
+        <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Add Income Tax Slab</h3>
+        {message && <div className="rounded-lg bg-[#e6f5ef] p-3 text-xs text-[#18865a] font-semibold mb-3">{message}</div>}
+        {error && <div className="rounded-lg bg-[#fde8e6] p-3 text-xs text-[#ba3d37] font-semibold mb-3">{error}</div>}
+        <form onSubmit={handleSubmit} className="grid gap-4">
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 mb-1">Regime Type</label>
+            <select
+              name="regime"
+              required
+              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+              value={form.regime}
+              onChange={(e) => setForm({ ...form, regime: e.target.value })}
+            >
+              <option value="NEW">New Tax Regime</option>
+              <option value="OLD">Old Tax Regime</option>
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 mb-1">From Amount (Annual ₹)</label>
+            <input
+              type="number"
+              name="fromAmount"
+              min="0"
+              required
+              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+              value={form.fromAmount}
+              onChange={(e) => setForm({ ...form, fromAmount: Number(e.target.value) })}
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 mb-1">To Amount (Annual ₹, blank for no limit)</label>
+            <input
+              type="number"
+              name="toAmount"
+              min="1"
+              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+              value={form.toAmount}
+              onChange={(e) => setForm({ ...form, toAmount: e.target.value })}
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 mb-1">Tax Rate (%)</label>
+            <input
+              type="number"
+              name="ratePercent"
+              min="0"
+              max="100"
+              required
+              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+              value={form.ratePercent}
+              onChange={(e) => setForm({ ...form, ratePercent: Number(e.target.value) })}
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={submitting}
+            className="min-h-10 rounded-lg bg-brand text-white text-xs font-bold hover:bg-brand/90 transition shadow-sm"
+          >
+            {submitting ? "Adding..." : "Save Slab"}
+          </button>
+        </form>
+      </Card>
+
+      <Card className="p-5 border border-[#e8edf4]">
+        <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Active Income Tax Slabs Ledger</h3>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-xs text-slate-655">
+            <thead className="bg-[#f8fafc] text-[10px] uppercase font-bold text-slate-500 border-b">
+              <tr>
+                <th className="p-2.5">Regime</th>
+                <th className="p-2.5">Income Band</th>
+                <th className="p-2.5">Rate Percent</th>
+                <th className="p-2.5">Surcharge (%)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {!slabs.length ? (
+                <tr>
+                  <td colSpan={4} className="p-4 text-center text-slate-400">No tax slabs configured in the system.</td>
+                </tr>
+              ) : (
+                slabs.map((s) => (
+                  <tr key={s.id} className="border-b border-slate-100 hover:bg-slate-50 transition">
+                    <td className="p-2.5 font-bold text-slate-800">
+                      <span className={`px-2 py-0.5 rounded text-[10px] uppercase ${s.regime === "NEW" ? "bg-blue-100 text-blue-800" : "bg-purple-100 text-purple-800"}`}>
+                        {s.regime}
+                      </span>
+                    </td>
+                    <td className="p-2.5">
+                      ₹{Number(s.fromAmount).toLocaleString("en-IN")} — {s.toAmount ? `₹${Number(s.toAmount).toLocaleString("en-IN")}` : "Above"}
+                    </td>
+                    <td className="p-2.5 font-bold text-slate-900">{Number(s.ratePercent)}%</td>
+                    <td className="p-2.5 text-slate-400">{Number(s.surcharge)}%</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </Card>
+    </div>
   );
 }

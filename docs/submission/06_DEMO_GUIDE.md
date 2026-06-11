@@ -52,13 +52,18 @@ Loads live admin metrics (headcount, attendance, pending approvals). Point out t
 - Apply again with a normal date (e.g. 2026-06-18) → success → appears in **Leave Requests** as PENDING.
 - **Approve** it → balance decrements (check **Balances** tab) and a **Ledger** entry is written.
 - **Leave Settings/Policies**: show leave types, policy assignment, block-list editor.
+- **Leave Encashment**: Under the Leave console, employees can request Leave Encashment, which automatically debits their available balance and schedules a payment.
+- **Process Accruals**: Click the **Process Accruals** trigger in Leave Settings to simulate earned-leave periodic accruals.
 
 ### 1.5 Expenses (`/expenses`)
 **Wow-moment #2 (grade cap):** **New Claim** → Employee *Kabir Sethi* (Grade L1, cap ₹5,000), Category *Travel*, Amount **6000** → a live yellow warning appears as you type ("exceeds grade maximum ₹5000"); submit anyway → API returns 400 → red error banner. 
 Resubmit with **3500** → success → approve it as manager later, or use **Manager Approve / HR Approve** buttons here to show the two-stage flow → **Reimburse**.
 
 ### 1.6 Payroll (`/payroll`)
-- **Create Run** for current month → **Calculate** → payslips generate with earnings/deductions (PF/ESI/PT/TDS components) → open a payslip → **Lock** the run → **Bank Export**.
+- **Configurable Tax Slabs**: Go to the **Tax Slabs** tab in the Payroll console. Note the admin-editable tax slab values for both OLD and NEW tax regimes.
+- **Payroll Corrections**: Under the **Corrections** tab, add an adjustment/arrear for an employee, which dynamically gets processed in their next payslip.
+- **Create Run** for current month → **Calculate** → payslips generate with earnings/deductions (PF/ESI/PT/TDS components calculated from configured tax slabs) → open a payslip → **Lock** the run → **Bank Export**.
+- **Gratuity**: Show the auto-computed Gratuity payout under the Gratuity ledger, computed from the configured company gratuity multiplier rules.
 - Tax declarations & proofs and benefit claims panels show the compliance depth; `/compliance` has statutory dashboards + exports.
 
 ### 1.7 Recruitment (`/recruitment`)
@@ -71,12 +76,17 @@ Walk the pipeline left-to-right: **Requisition** (create + approve) → **Job Po
 ### 1.9 Quick passes (1 min each)
 `/insurance` (policy → dependent → claim approve), `/holidays` (add holiday), `/organization` (org chart, change manager), `/approvals` (cross-module inbox), `/analytics` + `/reports` (exports), `/rewards` (recognition + points), `/social` (post, like, comment — SkyNexus feed), `/notifications` (queue an alert), `/assets`, `/support` (ticket + comment), `/security` (audit logs of everything you just did).
 
-### 1.10 SaaS & Settings (`/saas`, `/settings`, `/setup`)
+### 1.10 Lifecycle clearance & F&F
+- Under Employee directory `/employees` -> **Lifecycle** tab.
+- Initialize exit separation. Record exit interview.
+- Open **Full & Final Settlement**. Select the exiting employee -> note that **Gratuity**, **Leave Encashment Dues**, and **Last Drawn Salary** are automatically loaded as suggestions from their respective modules to pre-fill the settlement.
+
+### 1.11 SaaS & Settings (`/saas`, `/settings`, `/setup`)
 - `/saas`: plan catalogue (Basic free / Standard ₹1,749 / Pro ₹3,750), active plan **Pro**, usage meter.
 - `/settings`: company profile, **branding** (change primary color → whole UI re-themes live), module toggles, client rules (attendance/leave rules consumed by validations).
 - `/setup`: the tenant onboarding wizard.
 
-### 1.11 Logout
+### 1.12 Logout
 Top-right **Logout** → token cleared → back to `/login`.
 
 ---
@@ -111,15 +121,15 @@ Top-right **Logout** → token cleared → back to `/login`.
 | Bank account encryption | **Implemented (2026-06-11):** account numbers are AES-256 encrypted at rest (same scheme as PAN/PF numbers), API responses return only `accountNumberMasked` (last 4 digits), and the full number is decrypted ONLY inside the payroll bank-export | "Sensitive fields — PAN, PF account, bank account — are AES-256 encrypted at rest and masked in all API responses; the bank file export is the single decryption point, permission-gated and audit-logged." |
 | Grade expense caps | L1=₹5,000 / L2=₹15,000 / L3=₹50,000 seeded; editable via Grades admin | "Caps are data, not code — HR can change them." |
 | Plan prices & features | Hardcoded catalogue in `saas.service.ts` | "Plan catalogue will move to the Plans table for production billing." |
-| Income tax slabs | Computed in payroll service code, not admin-configurable | "Configurable slab admin is Roadmap Phase 2." |
+| Income tax slabs | Fully configurable via UI or seeded defaults | "Tax slabs are fully admin-configurable under the Tax Slabs editor tab in the Payroll console." |
 | Email/WhatsApp sending | SMTP commented out in `.env`; WhatsApp provider disabled | "Notification records queue correctly; transports are env-config." |
 | OWNER password | `password123` — change before any shared deployment | — |
 
 ## 5. What NOT to click live
-- **`/performance`** — console exists but the appraisal engine is roadmap; don't deep-dive.
+- **`/performance`** — cycle scaffold exists but the appraisal KRA engine is roadmap; don't deep-dive.
 - **Bulk upload** without a prepared CSV.
 - **`/saas-admin` company status changes** — suspending the demo company mid-demo locks you out.
-- Don't promise leave **encashment**, **gratuity**, or **loans** — documented roadmap gaps (see `02_GAP_ANALYSIS_VS_FRAPPE_HRMS.md`).
+- Don't promise **loans** — documented roadmap gap.
 
 ## 6. If something breaks live
 - API down? `npm run dev -w @skylinx/api`. UI stale? Hard-refresh (Ctrl+Shift+R).

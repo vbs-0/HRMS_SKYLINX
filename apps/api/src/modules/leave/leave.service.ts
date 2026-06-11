@@ -646,4 +646,379 @@ export class LeaveService {
     });
     return response("leave", "policy.assignment.list", assignments);
   }
+
+  // ==========================================
+  // Leave Encashment
+  // ==========================================
+  async listEncashments() {
+    const encashments = await this.prisma.leaveEncashment.findMany({
+      include: {
+        employee: true,
+        leaveType: true,
+      },
+      orderBy: { createdAt: "desc" },
+    });
+    return response("leave", "encashments.list", encashments);
+  }
+
+  async createEncashment(data: any) {
+    const structure = await this.prisma.salaryStructure.findFirst({
+      where: { employeeId: data.employeeId, status: "ACTIVE" },
+      orderBy: { effectiveFrom: "desc" },
+    });
+    if (!structure) {
+      throw new BadRequestException("Employee has no active salary structure to calculate encashment rate");
+    }
+
+    const balance = await this.prisma.leaveBalance.findUnique({
+      where: {
+        employeeId_leaveTypeId_year: {
+          employeeId: data.employeeId,
+          leaveTypeId: data.leaveTypeId,
+          year: 2026,
+        },
+      },
+    });
+
+    if (!balance) {
+      throw new BadRequestException("Leave balance is not configured for this employee");
+    }
+
+    if (Number(balance.available) < data.days) {
+      throw new BadRequestException("Insufficient leave balance for encashment");
+    }
+
+    const amountPerDay = Number(structure.basic) / 30;
+    const totalAmount = amountPerDay * data.days;
+
+    const encashment = await this.prisma.leaveEncashment.create({
+      data: {
+        employeeId: data.employeeId,
+        leaveTypeId: data.leaveTypeId,
+        days: data.days,
+        amountPerDay,
+        totalAmount,
+        status: ApprovalStatus.PENDING,
+      },
+      include: {
+        employee: true,
+        leaveType: true,
+      },
+    });
+
+    await this.prisma.auditLog.create({
+      data: {
+        module: "leave",
+        action: "encashment.create",
+        entityType: "leave_encashment",
+        entityId: encashment.id,
+        newValueJson: JSON.parse(JSON.stringify(encashment)),
+      },
+    });
+
+    return response("leave", "encashment.create", encashment);
+  }
+
+  async decideEncashment(id: string, data: any) {
+    const encashment = await this.prisma.leaveEncashment.findUnique({
+      where: { id },
+      include: { leaveType: true },
+    });
+    if (!encashment) throw new NotFoundException("Leave encashment record not found");
+    if (encashment.status !== ApprovalStatus.PENDING) {
+      throw new BadRequestException("Only pending leave encashments can be decided");
+    }
+
+    if (data.status === ApprovalStatus.APPROVED) {
+      const balance = await this.prisma.leaveBalance.findUnique({
+        where: {
+          employeeId_leaveTypeId_year: {
+            employeeId: encashment.employeeId,
+            leaveTypeId: encashment.leaveTypeId,
+            year: 2026,
+          },
+        },
+      });
+
+      if (!balance) {
+        throw new BadRequestException("Leave balance is not configured for this employee");
+      }
+
+      if (Number(balance.available) < Number(encashment.days)) {
+        throw new BadRequestException("Insufficient leave balance");
+      }
+
+      // Decrement balance + add ledger entry + create AdditionalSalary
+      await this.prisma.$transaction(async (tx) => {
+        await tx.leaveBalance.update({
+          where: { id: balance.id },
+          data: {
+            used: { increment: encashment.days },
+            available: { decrement: encashment.days },
+          },
+        });
+
+        await tx.leaveLedgerEntry.create({
+          data: {
+            employeeId: encashment.employeeId,
+            leaveTypeId: encashment.leaveTypeId,
+            transactionDate: new Date(),
+            transactionType: LeaveLedgerEntryType.ENCASHMENT,
+            days: encashment.days,
+            remarks: `Approved leave encashment of ${encashment.days} days`,
+          },
+        });
+
+        await tx.additionalSalary.create({
+          data: {
+            employeeId: encashment.employeeId,
+            amount: encashment.totalAmount,
+            type: "ADDITION",
+            name: `Leave Encashment (${encashment.leaveType.name})`,
+            date: new Date(),
+          },
+        });
+
+        await tx.leaveEncashment.update({
+          where: { id },
+          data: {
+            status: ApprovalStatus.APPROVED,
+            decidedBy: data.decidedByUserId,
+            decidedAt: new Date(),
+          },
+        });
+      });
+    } else {
+      await this.prisma.leaveEncashment.update({
+        where: { id },
+        data: {
+          status: ApprovalStatus.REJECTED,
+          decidedBy: data.decidedByUserId,
+          decidedAt: new Date(),
+        },
+      });
+    }
+
+    const updated = await this.prisma.leaveEncashment.findUnique({
+      where: { id },
+      include: { employee: true, leaveType: true },
+    });
+
+    await this.prisma.auditLog.create({
+      data: {
+        actorUserId: data.decidedByUserId,
+        module: "leave",
+        action: "encashment.decide",
+        entityType: "leave_encashment",
+        entityId: id,
+        oldValueJson: JSON.parse(JSON.stringify(encashment)),
+        newValueJson: JSON.parse(JSON.stringify(updated)),
+      },
+    });
+
+    return response("leave", "encashment.decide", updated);
+  }
+
+  // ==========================================
+  // Earned-Leave Accrual Engine
+  // ==========================================
+  async processAccruals(data: any) {
+    const schedules = await this.prisma.leaveAccrualSchedule.findMany({
+      include: { leaveType: true },
+    });
+
+    const results = [];
+
+    for (const schedule of schedules) {
+      // Find policy assignments
+      const assignments = await this.prisma.leavePolicyAssignment.findMany({
+        where: { policyId: schedule.leavePolicyId },
+        include: { employee: true },
+      });
+
+      for (const assignment of assignments) {
+        const employee = assignment.employee;
+        if (employee.status !== "ACTIVE") continue;
+
+        // Check idempotency for this employee, leave type, policy, and period
+        const remarksKey = `Accrual Policy:${schedule.leavePolicyId} Period:${data.period}`;
+        const existingEntry = await this.prisma.leaveLedgerEntry.findFirst({
+          where: {
+            employeeId: employee.id,
+            leaveTypeId: schedule.leaveTypeId,
+            remarks: { contains: remarksKey },
+          },
+        });
+
+        if (existingEntry) {
+          results.push({
+            employeeId: employee.id,
+            employeeName: `${employee.firstName} ${employee.lastName}`,
+            leaveType: schedule.leaveType.name,
+            status: "SKIPPED",
+            reason: "Already processed for this period",
+          });
+          continue;
+        }
+
+        // Apply accrual: increment balance
+        await this.prisma.$transaction(async (tx) => {
+          const balance = await tx.leaveBalance.upsert({
+            where: {
+              employeeId_leaveTypeId_year: {
+                employeeId: employee.id,
+                leaveTypeId: schedule.leaveTypeId,
+                year: 2026,
+              },
+            },
+            update: {
+              accrued: { increment: schedule.daysPerPeriod },
+              available: { increment: schedule.daysPerPeriod },
+            },
+            create: {
+              employeeId: employee.id,
+              leaveTypeId: schedule.leaveTypeId,
+              year: 2026,
+              openingBalance: 0,
+              accrued: schedule.daysPerPeriod,
+              used: 0,
+              carriedForward: 0,
+              available: schedule.daysPerPeriod,
+            },
+          });
+
+          await tx.leaveLedgerEntry.create({
+            data: {
+              employeeId: employee.id,
+              leaveTypeId: schedule.leaveTypeId,
+              transactionDate: new Date(),
+              transactionType: LeaveLedgerEntryType.ACCRUAL,
+              days: schedule.daysPerPeriod,
+              remarks: `Earned leave accrual. ${remarksKey}`,
+            },
+          });
+        });
+
+        // Update schedule lastProcessedPeriod
+        await this.prisma.leaveAccrualSchedule.update({
+          where: { id: schedule.id },
+          data: { lastProcessedPeriod: data.period },
+        });
+
+        results.push({
+          employeeId: employee.id,
+          employeeName: `${employee.firstName} ${employee.lastName}`,
+          leaveType: schedule.leaveType.name,
+          status: "PROCESSED",
+          amount: schedule.daysPerPeriod,
+        });
+      }
+    }
+
+    return response("leave", "accruals.process", results);
+  }
+
+  // ==========================================
+  // Compensatory Leave Conversion
+  // ==========================================
+  async createCompOffConversion(data: any) {
+    const conversion = await this.prisma.compOffConversion.create({
+      data: {
+        employeeId: data.employeeId,
+        overtimeRequestId: data.overtimeRequestId,
+        leaveTypeId: data.leaveTypeId,
+        daysGranted: data.daysGranted,
+        status: ApprovalStatus.PENDING,
+      },
+      include: {
+        employee: true,
+        overtimeRequest: true,
+        leaveType: true,
+      },
+    });
+    return response("leave", "compOffConversion.create", conversion);
+  }
+
+  async listCompOffConversions() {
+    const items = await this.prisma.compOffConversion.findMany({
+      include: {
+        employee: true,
+        overtimeRequest: true,
+        leaveType: true,
+      },
+      orderBy: { createdAt: "desc" },
+    });
+    return response("leave", "compOffConversion.list", items);
+  }
+
+  async decideCompOffConversion(id: string, status: ApprovalStatus, decidedBy: string) {
+    const conversion = await this.prisma.compOffConversion.findUnique({
+      where: { id },
+    });
+    if (!conversion) throw new NotFoundException("Comp-off conversion request not found");
+    if (conversion.status !== ApprovalStatus.PENDING) {
+      throw new BadRequestException("Comp-off conversion request has already been processed");
+    }
+
+    const result = await this.prisma.$transaction(async (tx) => {
+      const updated = await tx.compOffConversion.update({
+        where: { id },
+        data: {
+          status,
+          decidedBy,
+          decidedAt: new Date(),
+        },
+        include: {
+          employee: true,
+          overtimeRequest: true,
+          leaveType: true,
+        },
+      });
+
+      if (status === ApprovalStatus.APPROVED) {
+        // Find or create a leave balance for the year
+        const year = new Date().getFullYear();
+        const balance = await tx.leaveBalance.upsert({
+          where: {
+            employeeId_leaveTypeId_year: {
+              employeeId: conversion.employeeId,
+              leaveTypeId: conversion.leaveTypeId,
+              year,
+            },
+          },
+          update: {
+            accrued: { increment: conversion.daysGranted },
+            available: { increment: conversion.daysGranted },
+          },
+          create: {
+            employeeId: conversion.employeeId,
+            leaveTypeId: conversion.leaveTypeId,
+            year,
+            openingBalance: 0,
+            accrued: conversion.daysGranted,
+            used: 0,
+            carriedForward: 0,
+            available: conversion.daysGranted,
+          },
+        });
+
+        // Add LeaveLedgerEntry
+        await tx.leaveLedgerEntry.create({
+          data: {
+            employeeId: conversion.employeeId,
+            leaveTypeId: conversion.leaveTypeId,
+            transactionDate: new Date(),
+            transactionType: "CREDIT",
+            days: conversion.daysGranted,
+            remarks: `Comp-off conversion from Overtime Request: ${conversion.overtimeRequestId}`,
+          },
+        });
+      }
+
+      return updated;
+    });
+
+    return response("leave", "compOffConversion.decide", result);
+  }
 }
+

@@ -1,6 +1,7 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { EmployeesService } from "./employees.service";
 import { PrismaService } from "../../prisma/prisma.service";
+import { ApprovalStatus } from "@prisma/client";
 
 describe("EmployeesService (Lifecycle)", () => {
   let service: EmployeesService;
@@ -49,6 +50,22 @@ describe("EmployeesService (Lifecycle)", () => {
       createMany: jest.fn(),
     },
     auditLog: {
+      create: jest.fn(),
+    },
+    employeePromotion: {
+      create: jest.fn(),
+      findMany: jest.fn(),
+      findUnique: jest.fn(),
+      update: jest.fn(),
+    },
+    employeeTransfer: {
+      create: jest.fn(),
+      findMany: jest.fn(),
+      findUnique: jest.fn(),
+      update: jest.fn(),
+    },
+    salaryStructure: {
+      updateMany: jest.fn(),
       create: jest.fn(),
     },
     $transaction: jest.fn().mockImplementation((cb) => cb(mockPrismaService)),
@@ -185,6 +202,46 @@ describe("EmployeesService (Lifecycle)", () => {
       const result = await service.calculateFullAndFinal("emp-1", dto);
       expect(result.data).toBeDefined();
       expect(mockPrismaService.fullAndFinalStatement.upsert).toHaveBeenCalled();
+    });
+  });
+
+  describe("Promotions & Transfers", () => {
+    it("should create and decide employee promotions", async () => {
+      const promoDto = {
+        fromDesignationId: "des-1",
+        toDesignationId: "des-2",
+        effectiveDate: "2026-07-01",
+        revisedCtc: 1200000,
+        reason: "Performance",
+      };
+
+      mockPrismaService.employeePromotion.create.mockResolvedValue({ id: "promo-1", employeeId: "emp-1", ...promoDto, status: ApprovalStatus.PENDING });
+      mockPrismaService.employeePromotion.findUnique.mockResolvedValue({ id: "promo-1", employeeId: "emp-1", ...promoDto, status: ApprovalStatus.PENDING });
+      mockPrismaService.employeePromotion.update.mockResolvedValue({ id: "promo-1", employeeId: "emp-1", ...promoDto, status: ApprovalStatus.APPROVED });
+
+      const createRes = await service.createPromotion("emp-1", promoDto);
+      expect(createRes.data!.id).toBe("promo-1");
+
+      const decideRes = await service.decidePromotion("promo-1", { status: ApprovalStatus.APPROVED });
+      expect(decideRes.data!.status).toBe(ApprovalStatus.APPROVED);
+    });
+
+    it("should create and decide employee transfers", async () => {
+      const transferDto = {
+        fromDepartmentId: "dept-1",
+        toDepartmentId: "dept-2",
+        effectiveDate: "2026-07-01",
+      };
+
+      mockPrismaService.employeeTransfer.create.mockResolvedValue({ id: "trans-1", employeeId: "emp-1", ...transferDto, status: ApprovalStatus.PENDING });
+      mockPrismaService.employeeTransfer.findUnique.mockResolvedValue({ id: "trans-1", employeeId: "emp-1", ...transferDto, status: ApprovalStatus.PENDING });
+      mockPrismaService.employeeTransfer.update.mockResolvedValue({ id: "trans-1", employeeId: "emp-1", ...transferDto, status: ApprovalStatus.APPROVED });
+
+      const createRes = await service.createTransfer("emp-1", transferDto);
+      expect(createRes.data!.id).toBe("trans-1");
+
+      const decideRes = await service.decideTransfer("trans-1", { status: ApprovalStatus.APPROVED });
+      expect(decideRes.data!.status).toBe(ApprovalStatus.APPROVED);
     });
   });
 });

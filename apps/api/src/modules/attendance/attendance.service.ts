@@ -569,4 +569,48 @@ export class AttendanceService {
       },
     });
   }
+
+  async bulkUpload(records: any[]) {
+    const results = [];
+    const shift = await this.prisma.shift.findFirst({ where: { status: "ACTIVE" } });
+    if (!shift) throw new BadRequestException("No active shift configured");
+
+    for (const record of records) {
+      const { employeeId, date, checkInAt, checkOutAt, status } = record;
+      const parsedDate = new Date(date);
+      parsedDate.setHours(0, 0, 0, 0);
+
+      const parsedCheckIn = checkInAt ? new Date(checkInAt) : null;
+      const parsedCheckOut = checkOutAt ? new Date(checkOutAt) : null;
+
+      const log = await this.prisma.attendanceLog.upsert({
+        where: {
+          employeeId_date: {
+            employeeId,
+            date: parsedDate,
+          },
+        },
+        update: {
+          shiftId: shift.id,
+          checkInAt: parsedCheckIn,
+          checkOutAt: parsedCheckOut,
+          status: status || AttendanceStatus.PRESENT,
+          source: "BULK_UPLOAD",
+        },
+        create: {
+          employeeId,
+          shiftId: shift.id,
+          date: parsedDate,
+          checkInAt: parsedCheckIn,
+          checkOutAt: parsedCheckOut,
+          status: status || AttendanceStatus.PRESENT,
+          source: "BULK_UPLOAD",
+        },
+      });
+      results.push(log);
+    }
+
+    await this.audit("attendance", "bulk-upload", "attendance_log", "bulk", { count: results.length });
+    return response("attendance", "bulkUpload", { count: results.length, items: results });
+  }
 }

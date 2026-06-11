@@ -31,6 +31,7 @@ import { TicketsModule } from "./tickets/tickets.module";
 import { RecruitmentModule } from "./recruitment/recruitment.module";
 import { TrainingModule } from "./training/training.module";
 import { TravelModule } from "./travel/travel.module";
+import { GrievanceModule } from "./grievance/grievance.module";
 import { PrismaModule } from "../prisma/prisma.module";
 import { JwtAuthGuard } from "../common/auth/jwt-auth.guard";
 import { PermissionsGuard } from "../common/auth/permissions.guard";
@@ -67,6 +68,7 @@ import { PermissionsGuard } from "../common/auth/permissions.guard";
     RecruitmentModule,
     TrainingModule,
     TravelModule,
+    GrievanceModule,
   ],
   providers: [
     {

@@ -116,10 +116,14 @@ export function RecruitmentConsole() {
   const [interviews, setInterviews] = useState<Interview[]>([]);
   const [jobOffers, setJobOffers] = useState<JobOffer[]>([]);
   const [employees, setEmployees] = useState<any[]>([]);
+  const [staffingPlans, setStaffingPlans] = useState<any[]>([]);
+  const [referrals, setReferrals] = useState<any[]>([]);
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const [showAddStaffingPlan, setShowAddStaffingPlan] = useState(false);
+  const [showAddReferral, setShowAddReferral] = useState(false);
 
   const departmentsList = [
     { value: "dept_people", label: "HR" },
@@ -127,6 +131,14 @@ export function RecruitmentConsole() {
     { value: "dept_engineering", label: "Engineering" },
     { value: "dept_sales", label: "Sales" },
     { value: "dept_operations", label: "Operations" },
+  ];
+
+  const designationsList = [
+    { value: "des_hr_manager", label: "HR Manager" },
+    { value: "des_payroll", label: "Payroll Specialist" },
+    { value: "des_engineer", label: "Frontend Engineer" },
+    { value: "des_sales", label: "Sales Executive" },
+    { value: "des_ops", label: "Operations Lead" },
   ];
 
   const locationsList = [
@@ -179,6 +191,12 @@ export function RecruitmentConsole() {
       } else if (activeTab === "Job Offers") {
         const res = await apiFetch<JobOffer[]>("/recruitment/job-offers");
         setJobOffers(res.data || []);
+      } else if (activeTab === "Staffing Plans") {
+        const res = await apiFetch<any[]>("/recruitment/staffing-plans/list/company_skylinx");
+        setStaffingPlans(res.data || []);
+      } else if (activeTab === "Referrals") {
+        const res = await apiFetch<any[]>("/recruitment/referrals");
+        setReferrals(res.data || []);
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load data");
@@ -426,6 +444,80 @@ export function RecruitmentConsole() {
     }
   }
 
+  async function handleAddStaffingPlan(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setMessage("");
+    setError("");
+    setLoading(true);
+    const form = new FormData(e.currentTarget);
+    try {
+      await apiFetch("/recruitment/staffing-plans", {
+        method: "POST",
+        body: JSON.stringify({
+          companyId: "company_skylinx",
+          departmentId: String(form.get("departmentId")),
+          designationId: String(form.get("designationId")),
+          budgetedHeadcount: Number(form.get("budgetedHeadcount")),
+          startDate: new Date(String(form.get("startDate"))).toISOString(),
+          endDate: new Date(String(form.get("endDate"))).toISOString(),
+        }),
+      });
+      setMessage("Staffing plan created successfully!");
+      setShowAddStaffingPlan(false);
+      fetchTabData();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Plan creation failed");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleAddReferral(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setMessage("");
+    setError("");
+    setLoading(true);
+    const form = new FormData(e.currentTarget);
+    try {
+      await apiFetch("/recruitment/referrals", {
+        method: "POST",
+        body: JSON.stringify({
+          referrerId: currentUser?.employeeId || "emp_1001",
+          candidateName: String(form.get("candidateName")),
+          candidateEmail: String(form.get("candidateEmail")),
+          candidatePhone: String(form.get("candidatePhone")) || undefined,
+          jobPostingId: String(form.get("jobPostingId")),
+          bonusAmount: Number(form.get("bonusAmount")) || 0,
+        }),
+      });
+      setMessage("Referral submitted successfully!");
+      setShowAddReferral(false);
+      fetchTabData();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Referral submission failed");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleDecideReferral(id: string, status: string) {
+    setMessage("");
+    setError("");
+    setLoading(true);
+    try {
+      await apiFetch(`/recruitment/referrals/${id}/decide`, {
+        method: "PATCH",
+        body: JSON.stringify({ status }),
+      });
+      setMessage(`Referral status updated to ${status}.`);
+      fetchTabData();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Action failed");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   // Filter lists based on search query
   const filteredPostings = jobPostings.filter(p =>
     p.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -460,7 +552,7 @@ export function RecruitmentConsole() {
         eyebrow="Recruitment"
         title="Recruitment Workspace"
         summary="Request headcount approvals, track active job vacancies, inspect candidate scorecard stages, and issue offer letters."
-        tabs={["Job Openings", "Candidates", "Requisitions", "Interviews", "Job Offers"]}
+        tabs={["Job Openings", "Candidates", "Requisitions", "Interviews", "Job Offers", "Staffing Plans", "Referrals"]}
         activeTab={activeTab}
         onTabChange={(tab: string) => {
           setActiveTab(tab);
@@ -1260,6 +1352,229 @@ export function RecruitmentConsole() {
                         <td className="border-b border-[#eef2f6] p-3 text-xs text-slate-400">
                           {new Date(o.createdAt).toLocaleDateString("en-IN")}
                         </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </div>
+      )}
+
+      {/* STAFFING PLANS TAB */}
+      {activeTab === "Staffing Plans" && (
+        <div className="grid gap-5">
+          {showAddStaffingPlan && (
+            <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm animate-in zoom-in-95 duration-150">
+              <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-800">Create Staffing Plan</h3>
+              <form onSubmit={handleAddStaffingPlan} className="grid grid-cols-3 gap-4 max-md:grid-cols-1">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 mb-1">Department</label>
+                  <select className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white" name="departmentId" required>
+                    <option value="">Select Department</option>
+                    {departmentsList.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 mb-1">Designation</label>
+                  <select className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white" name="designationId" required>
+                    <option value="">Select Designation</option>
+                    {designationsList.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 mb-1">Budgeted Headcount</label>
+                  <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="budgetedHeadcount" type="number" defaultValue={1} min={1} required />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 mb-1">Start Date</label>
+                  <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="startDate" type="date" required />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 mb-1">End Date</label>
+                  <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="endDate" type="date" required />
+                </div>
+                <div className="col-span-full flex justify-end gap-2 mt-2">
+                  <button className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-slate-50" type="button" onClick={() => setShowAddStaffingPlan(false)}>Cancel</button>
+                  <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white hover:bg-brand-dark" type="submit" disabled={loading}>
+                    {loading ? "Creating..." : "Save Staffing Plan"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+
+          <Card>
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h2 className="text-lg font-semibold text-slate-800">Active Staffing Headcount Budgets</h2>
+                <p className="text-xs text-slate-400 mt-1">Track vacancy opening counts linked to budgeted staff limits.</p>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white hover:bg-brand-dark"
+                  onClick={() => setShowAddStaffingPlan(true)}
+                >
+                  Create Staffing Plan
+                </button>
+              </div>
+            </div>
+            <div className="overflow-auto">
+              <table className="w-full min-w-[700px] border-collapse text-sm text-left">
+                <thead className="bg-[#f8fafc] text-xs uppercase text-slate-500 tracking-wider">
+                  <tr>
+                    <th className="border-b border-[#dce2eb] p-3">Department</th>
+                    <th className="border-b border-[#dce2eb] p-3">Designation</th>
+                    <th className="border-b border-[#dce2eb] p-3">Budgeted Headcount</th>
+                    <th className="border-b border-[#dce2eb] p-3">Current Headcount</th>
+                    <th className="border-b border-[#dce2eb] p-3">Active Vacancies</th>
+                    <th className="border-b border-[#dce2eb] p-3">Validity Period</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {staffingPlans.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="p-8 text-center text-slate-400 font-semibold">
+                        No staffing plans active. Create one to monitor departments.
+                      </td>
+                    </tr>
+                  ) : (
+                    staffingPlans.map((sp) => (
+                      <tr key={sp.id} className="hover:bg-slate-50 transition">
+                        <td className="border-b border-[#eef2f6] p-3 font-semibold text-slate-800">{sp.department?.name || "Global"}</td>
+                        <td className="border-b border-[#eef2f6] p-3 font-semibold text-slate-600">{sp.designation?.title || "Staff"}</td>
+                        <td className="border-b border-[#eef2f6] p-3 font-bold">{sp.budgetedHeadcount}</td>
+                        <td className="border-b border-[#eef2f6] p-3 text-slate-500 font-semibold">{sp.currentHeadcount}</td>
+                        <td className="border-b border-[#eef2f6] p-3">
+                          <StatusPill tone={sp.currentHeadcount >= sp.budgetedHeadcount ? "red" : "green"}>
+                            {sp.budgetedHeadcount - sp.currentHeadcount} vacancies left
+                          </StatusPill>
+                        </td>
+                        <td className="border-b border-[#eef2f6] p-3 text-xs text-slate-500">
+                          {new Date(sp.startDate).toLocaleDateString("en-IN")} to {new Date(sp.endDate).toLocaleDateString("en-IN")}
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </Card>
+        </div>
+      )}
+
+      {/* REFERRALS TAB */}
+      {activeTab === "Referrals" && (
+        <div className="grid gap-5">
+          {showAddReferral && (
+            <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm animate-in zoom-in-95 duration-150">
+              <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-800">Submit Employee Referral</h3>
+              <form onSubmit={handleAddReferral} className="grid grid-cols-3 gap-4 max-md:grid-cols-1">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 mb-1">Candidate Name</label>
+                  <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="candidateName" placeholder="Sneha Patil" required />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 mb-1">Candidate Email</label>
+                  <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="candidateEmail" type="email" placeholder="sneha@example.com" required />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 mb-1">Candidate Phone</label>
+                  <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="candidatePhone" placeholder="+91 98765 43210" />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 mb-1">Target Job Vacancy</label>
+                  <select className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white" name="jobPostingId" required>
+                    <option value="">Select Job Vacancy</option>
+                    {jobPostings.map(p => <option key={p.id} value={p.id}>{p.title}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-slate-500 mb-1">Referral Bonus Amount (INR)</label>
+                  <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="bonusAmount" type="number" defaultValue={25000} min={0} required />
+                </div>
+                <div className="col-span-full flex justify-end gap-2 mt-2">
+                  <button className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-slate-50" type="button" onClick={() => setShowAddReferral(false)}>Cancel</button>
+                  <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white hover:bg-brand-dark" type="submit" disabled={loading}>
+                    {loading ? "Submitting..." : "Submit Referral"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+
+          <Card>
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h2 className="text-lg font-semibold text-slate-800">Employee Referral Program</h2>
+                <p className="text-xs text-slate-400 mt-1">Submit candidates for open roles and track bonus eligibility.</p>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white hover:bg-brand-dark"
+                  onClick={() => setShowAddReferral(true)}
+                >
+                  Refer a Friend
+                </button>
+              </div>
+            </div>
+            <div className="overflow-auto">
+              <table className="w-full min-w-[700px] border-collapse text-sm text-left">
+                <thead className="bg-[#f8fafc] text-xs uppercase text-slate-500 tracking-wider">
+                  <tr>
+                    <th className="border-b border-[#dce2eb] p-3">Candidate</th>
+                    <th className="border-b border-[#dce2eb] p-3">Job Posting</th>
+                    <th className="border-b border-[#dce2eb] p-3">Referrer</th>
+                    <th className="border-b border-[#dce2eb] p-3">Bonus Amount</th>
+                    <th className="border-b border-[#dce2eb] p-3">Status</th>
+                    {isHrOrAdmin && <th className="border-b border-[#dce2eb] p-3 text-right">Actions</th>}
+                  </tr>
+                </thead>
+                <tbody>
+                  {referrals.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="p-8 text-center text-slate-400 font-semibold">
+                        No referrals submitted yet. Start referring!
+                      </td>
+                    </tr>
+                  ) : (
+                    referrals.map((ref) => (
+                      <tr key={ref.id} className="hover:bg-slate-50 transition">
+                        <td className="border-b border-[#eef2f6] p-3">
+                          <div className="font-semibold text-slate-800">{ref.candidateName}</div>
+                          <div className="text-xs text-slate-400">{ref.candidateEmail}</div>
+                        </td>
+                        <td className="border-b border-[#eef2f6] p-3 text-slate-600 font-semibold">{ref.jobPosting?.title || "Unknown Position"}</td>
+                        <td className="border-b border-[#eef2f6] p-3 text-slate-500">
+                          {ref.referrer?.firstName} {ref.referrer?.lastName}
+                        </td>
+                        <td className="border-b border-[#eef2f6] p-3 font-semibold">INR {ref.bonusAmount.toLocaleString("en-IN")}</td>
+                        <td className="border-b border-[#eef2f6] p-3">
+                          <StatusPill tone={ref.status === "HIRED" || ref.status === "PAID" ? "green" : "yellow"}>
+                            {ref.status}
+                          </StatusPill>
+                        </td>
+                        {isHrOrAdmin && (
+                          <td className="border-b border-[#eef2f6] p-3 text-right space-x-1.5">
+                            {ref.status === "PENDING" && (
+                              <button
+                                className="rounded bg-emerald-600 text-white font-semibold text-xs px-2.5 py-1.5 hover:bg-emerald-700 transition"
+                                onClick={() => handleDecideReferral(ref.id, "HIRED")}
+                              >
+                                Mark Hired
+                              </button>
+                            )}
+                            {ref.status === "HIRED" && (
+                              <button
+                                className="rounded bg-indigo-600 text-white font-semibold text-xs px-2.5 py-1.5 hover:bg-indigo-700 transition"
+                                onClick={() => handleDecideReferral(ref.id, "PAID")}
+                              >
+                                Release Bonus
+                              </button>
+                            )}
+                          </td>
+                        )}
                       </tr>
                     ))
                   )}

@@ -1,4 +1,5 @@
 import {
+  AlertTriangle,
   BadgeIndianRupee,
   BriefcaseBusiness,
   CalendarCheck,
@@ -55,6 +56,7 @@ export const nav: Array<{ href: Route; label: string; icon: LucideIcon; group?: 
   { href: "/expenses", label: "Expense Payout", icon: ReceiptText },
   { href: "/insurance", label: "Insurance Management", icon: HeartPulse },
   { href: "/support", label: "Support", icon: CircleHelp },
+  { href: "/grievance" as any, label: "Grievances", icon: AlertTriangle },
   { href: "/notifications", label: "Notifications", icon: Megaphone },
   { href: "/social", label: "SkyNexus", icon: MessageSquareText },
   { href: "/rewards", label: "Rewards", icon: Trophy },

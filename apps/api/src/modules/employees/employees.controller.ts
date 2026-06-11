@@ -15,6 +15,11 @@ import {
 import { CreateEmployeeGradeDto, CreateEmploymentTypeDto } from "./dto/policy.dto";
 import { EmployeesService } from "./employees.service";
 import { RequirePermissions } from "../../common/auth/permissions.decorator";
+import { CreatePromotionDto, DecidePromotionDto, CreateTransferDto, DecideTransferDto } from "./dto/career.dto";
+import { CurrentUser } from "../../common/auth/current-user.decorator";
+import { AuthenticatedUser } from "../../common/auth/auth.types";
+import { CreateLetterTemplateDto, RenderLetterDto } from "./dto/letter-template.dto";
+import { CreateEmployeeLoanDto, DecideEmployeeLoanDto } from "./dto/employee-loan.dto";
 
 @Controller("employees")
 export class EmployeesController {
@@ -185,5 +190,106 @@ export class EmployeesController {
   @RequirePermissions("employees.read")
   listEmploymentTypes(@Param("companyId") companyId: string) {
     return this.employeesService.listEmploymentTypes(companyId);
+  }
+
+  // ==========================================
+  // Promotions & Transfers
+  // ==========================================
+  @Get(":id/promotions")
+  @RequirePermissions("employees.read")
+  getPromotions(@Param("id") id: string) {
+    return this.employeesService.getPromotions(id);
+  }
+
+  @Post(":id/promotions")
+  @RequirePermissions("employees.create")
+  createPromotion(@Param("id") id: string, @Body() body: CreatePromotionDto) {
+    return this.employeesService.createPromotion(id, body);
+  }
+
+  @Patch("promotions/:promoId/decide")
+  @RequirePermissions("employees.approve")
+  decidePromotion(
+    @Param("promoId") promoId: string,
+    @Body() body: DecidePromotionDto,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    if (!body.decidedByUserId) {
+      body.decidedByUserId = user.sub;
+    }
+    return this.employeesService.decidePromotion(promoId, body);
+  }
+
+  @Get(":id/transfers")
+  @RequirePermissions("employees.read")
+  getTransfers(@Param("id") id: string) {
+    return this.employeesService.getTransfers(id);
+  }
+
+  @Post(":id/transfers")
+  @RequirePermissions("employees.create")
+  createTransfer(@Param("id") id: string, @Body() body: CreateTransferDto) {
+    return this.employeesService.createTransfer(id, body);
+  }
+
+  @Patch("transfers/:transferId/decide")
+  @RequirePermissions("employees.approve")
+  decideTransfer(
+    @Param("transferId") transferId: string,
+    @Body() body: DecideTransferDto,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    if (!body.decidedByUserId) {
+      body.decidedByUserId = user.sub;
+    }
+    return this.employeesService.decideTransfer(transferId, body);
+  }
+
+  @Get(":id/ff-suggestions")
+  @RequirePermissions("employees.read")
+  getFfSuggestions(@Param("id") id: string) {
+    return this.employeesService.getFfSuggestions(id);
+  }
+
+  // ==========================================
+  // Letter Templates
+  // ==========================================
+  @Post("letter-templates")
+  @RequirePermissions("employees.create")
+  createLetterTemplate(@Body() body: CreateLetterTemplateDto) {
+    return this.employeesService.createLetterTemplate(body);
+  }
+
+  @Get("letter-templates/list/:companyId")
+  @RequirePermissions("employees.read")
+  listLetterTemplates(@Param("companyId") companyId: string) {
+    return this.employeesService.listLetterTemplates(companyId);
+  }
+
+  @Post("letter-templates/render")
+  @RequirePermissions("employees.read")
+  renderLetterTemplate(@Body() body: RenderLetterDto) {
+    return this.employeesService.renderLetterTemplate(body);
+  }
+
+  // ==========================================
+  // Employee Loans
+  // ==========================================
+  @Post("loans")
+  @RequirePermissions("employees.create")
+  createLoan(@Body() body: CreateEmployeeLoanDto) {
+    return this.employeesService.createLoan(body);
+  }
+
+  @Get("loans/list/:employeeId")
+  @RequirePermissions("employees.read")
+  listLoans(@Param("employeeId") employeeId: string) {
+    return this.employeesService.listLoans(employeeId);
+  }
+
+  @Patch("loans/:id/decide")
+  @RequirePermissions("employees.approve")
+  decideLoan(@Param("id") id: string, @Body() body: DecideEmployeeLoanDto) {
+    return this.employeesService.decideLoan(id, body);
   }
 }

@@ -11,7 +11,7 @@
     "route": "/employees",
     "status": "PASS",
     "note": "",
-    "buttons": 12,
+    "buttons": 15,
     "inputs": 5,
     "screenshot": "HR_ADMIN_DEEP/02_employees.png"
   },
@@ -19,7 +19,7 @@
     "route": "/attendance",
     "status": "PASS",
     "note": "",
-    "buttons": 11,
+    "buttons": 12,
     "inputs": 4,
     "screenshot": "HR_ADMIN_DEEP/03_attendance.png"
   },
@@ -27,7 +27,7 @@
     "route": "/leave",
     "status": "PASS",
     "note": "",
-    "buttons": 15,
+    "buttons": 17,
     "inputs": 4,
     "screenshot": "HR_ADMIN_DEEP/04_leave.png"
   },
@@ -35,7 +35,7 @@
     "route": "/payroll",
     "status": "PASS",
     "note": "",
-    "buttons": 22,
+    "buttons": 25,
     "inputs": 5,
     "screenshot": "HR_ADMIN_DEEP/05_payroll.png"
   },
@@ -67,7 +67,7 @@
     "route": "/recruitment",
     "status": "PASS",
     "note": "",
-    "buttons": 12,
+    "buttons": 15,
     "inputs": 5,
     "screenshot": "HR_ADMIN_DEEP/09_recruitment.png"
   },
@@ -91,7 +91,7 @@
     "route": "/performance",
     "status": "PASS",
     "note": "",
-    "buttons": 10,
+    "buttons": 11,
     "inputs": 4,
     "screenshot": "HR_ADMIN_DEEP/12_performance.png"
   },
@@ -176,12 +176,20 @@
     "screenshot": "HR_ADMIN_DEEP/22_support.png"
   },
   {
+    "route": "/grievance",
+    "status": "PASS",
+    "note": "",
+    "buttons": 7,
+    "inputs": 5,
+    "screenshot": "HR_ADMIN_DEEP/23_grievance.png"
+  },
+  {
     "route": "/security",
     "status": "PASS",
     "note": "",
-    "buttons": 9,
+    "buttons": 8,
     "inputs": 4,
-    "screenshot": "HR_ADMIN_DEEP/23_security.png"
+    "screenshot": "HR_ADMIN_DEEP/24_security.png"
   },
   {
     "route": "/settings",
@@ -189,7 +197,7 @@
     "note": "",
     "buttons": 50,
     "inputs": 72,
-    "screenshot": "HR_ADMIN_DEEP/24_settings.png"
+    "screenshot": "HR_ADMIN_DEEP/25_settings.png"
   },
   {
     "route": "/saas",
@@ -197,7 +205,7 @@
     "note": "",
     "buttons": 18,
     "inputs": 14,
-    "screenshot": "HR_ADMIN_DEEP/25_saas.png"
+    "screenshot": "HR_ADMIN_DEEP/26_saas.png"
   },
   {
     "route": "/saas-admin",
@@ -205,7 +213,7 @@
     "note": "",
     "buttons": 5,
     "inputs": 1,
-    "screenshot": "HR_ADMIN_DEEP/26_saas-admin.png"
+    "screenshot": "HR_ADMIN_DEEP/27_saas-admin.png"
   },
   {
     "route": "/cards",
@@ -213,7 +221,7 @@
     "note": "",
     "buttons": 25,
     "inputs": 2,
-    "screenshot": "HR_ADMIN_DEEP/27_cards.png"
+    "screenshot": "HR_ADMIN_DEEP/28_cards.png"
   },
   {
     "route": "/documents",
@@ -221,6 +229,6 @@
     "note": "",
     "buttons": 10,
     "inputs": 8,
-    "screenshot": "HR_ADMIN_DEEP/28_documents.png"
+    "screenshot": "HR_ADMIN_DEEP/29_documents.png"
   }
 ]

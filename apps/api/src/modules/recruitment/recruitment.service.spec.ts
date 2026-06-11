@@ -41,6 +41,7 @@ describe("RecruitmentService", () => {
       create: jest.fn(),
       findUnique: jest.fn(),
       update: jest.fn(),
+      findMany: jest.fn(),
     },
     interviewer: {
       createMany: jest.fn(),
@@ -52,6 +53,17 @@ describe("RecruitmentService", () => {
     jobOffer: {
       create: jest.fn(),
       findUnique: jest.fn(),
+    },
+    staffingPlan: {
+      findUnique: jest.fn(),
+      upsert: jest.fn(),
+      findMany: jest.fn(),
+    },
+    employeeReferral: {
+      create: jest.fn(),
+      findMany: jest.fn(),
+      findUnique: jest.fn(),
+      update: jest.fn(),
     },
   };
 
@@ -83,6 +95,7 @@ describe("RecruitmentService", () => {
         openings: 2,
         reason: "Expansion",
         requestedById: "emp-111",
+        designationId: "des-123",
       };
 
       const mockRequisition = { id: "req-999", ...dto, status: "PENDING" };
@@ -96,6 +109,7 @@ describe("RecruitmentService", () => {
         data: {
           companyId: "company-123",
           departmentId: dto.departmentId,
+          designationId: dto.designationId,
           title: dto.title,
           openings: dto.openings,
           requestedById: dto.requestedById,
@@ -203,6 +217,7 @@ describe("RecruitmentService", () => {
 
       mockPrismaService.jobApplication.findUnique.mockResolvedValue({ id: "app-123" });
       mockPrismaService.interviewRound.findFirst.mockResolvedValue({ id: "round-1" });
+      mockPrismaService.interview.findMany.mockResolvedValue([]);
       mockPrismaService.interview.create.mockResolvedValue({ id: "int-1", roundId: "round-1" });
       mockPrismaService.interviewer.createMany.mockResolvedValue({ count: 1 });
       mockPrismaService.interview.findUnique.mockResolvedValue({
@@ -214,6 +229,31 @@ describe("RecruitmentService", () => {
 
       expect(result.data).toBeDefined();
       expect(mockPrismaService.interviewer.createMany).toHaveBeenCalled();
+    });
+
+    it("should reject interview scheduling if there is a conflict", async () => {
+      const dto = {
+        applicationId: "app-123",
+        scheduledAt: new Date().toISOString(),
+        mode: "ONLINE",
+        interviewerIds: ["emp-1"],
+        roundName: "Technical 1",
+      };
+
+      mockPrismaService.jobApplication.findUnique.mockResolvedValue({ id: "app-123" });
+      mockPrismaService.interviewRound.findFirst.mockResolvedValue({ id: "round-1" });
+      mockPrismaService.interview.findMany.mockResolvedValue([
+        {
+          id: "conflicting-int",
+          scheduledAt: new Date(),
+          status: "SCHEDULED",
+          interviewers: [{ employeeId: "emp-1" }],
+        },
+      ]);
+
+      await expect(service.scheduleInterview(dto)).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it("should aggregate feedback ratings on last interviewer scorecard submission", async () => {

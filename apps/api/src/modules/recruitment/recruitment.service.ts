@@ -1,4 +1,5 @@
 import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
+import { ApprovalStatus } from "@prisma/client";
 import { response } from "../../common/crud-response";
 import { PrismaService } from "../../prisma/prisma.service";
 import {
@@ -20,10 +21,34 @@ export class RecruitmentService {
   // 1. Requisitions
   // ==========================================
   async createRequisition(companyId: string, data: CreateRequisitionDto) {
+    // P2 Staffing Plan budget validation
+    const staffingPlan = await this.prisma.staffingPlan.findUnique({
+      where: {
+        companyId_departmentId_designationId: {
+          companyId,
+          departmentId: data.departmentId,
+          designationId: data.designationId,
+        },
+      },
+    });
+
+    if (staffingPlan) {
+      const budget = Number(staffingPlan.budgetedHeadcount);
+      const current = Number(staffingPlan.currentHeadcount);
+      const remainingVacancy = budget - current;
+
+      if (data.openings > remainingVacancy) {
+        throw new BadRequestException(
+          `Requested openings (${data.openings}) exceed remaining vacancy (${remainingVacancy}) for this designation under the staffing plan (Budget: ${budget}, Current: ${current})`
+        );
+      }
+    }
+
     const requisition = await this.prisma.jobRequisition.create({
       data: {
         companyId,
         departmentId: data.departmentId,
+        designationId: data.designationId,
         title: data.title,
         openings: data.openings,
         requestedById: data.requestedById,
@@ -262,6 +287,35 @@ export class RecruitmentService {
       });
     }
 
+    // Check conflicts for each interviewer
+    if (data.interviewerIds && data.interviewerIds.length > 0) {
+      const newScheduledTime = new Date(data.scheduledAt);
+      const oneHourMs = 60 * 60 * 1000;
+
+      const conflictingInterviews = await this.prisma.interview.findMany({
+        where: {
+          status: "SCHEDULED",
+          interviewers: {
+            some: {
+              employeeId: { in: data.interviewerIds },
+            },
+          },
+        },
+        include: {
+          interviewers: true,
+        },
+      });
+
+      for (const conflicting of conflictingInterviews) {
+        const diffMs = Math.abs(conflicting.scheduledAt.getTime() - newScheduledTime.getTime());
+        if (diffMs < oneHourMs) {
+          throw new BadRequestException(
+            `Interviewer scheduling conflict detected for slot ${data.scheduledAt}. Overlaps with an interview scheduled at ${conflicting.scheduledAt.toISOString()}`
+          );
+        }
+      }
+    }
+
     // Create Interview
     const interview = await this.prisma.interview.create({
       data: {
@@ -467,5 +521,125 @@ export class RecruitmentService {
       throw new NotFoundException("Job Offer not found");
     }
     return response("recruitment", "joboffer.detail", offer);
+  }
+
+  // ==========================================
+  // Staffing Plans
+  // ==========================================
+  async createStaffingPlan(data: any) {
+    const plan = await this.prisma.staffingPlan.upsert({
+      where: {
+        companyId_departmentId_designationId: {
+          companyId: data.companyId,
+          departmentId: data.departmentId,
+          designationId: data.designationId,
+        },
+      },
+      update: {
+        budgetedHeadcount: data.budgetedHeadcount,
+        startDate: new Date(data.startDate),
+        endDate: new Date(data.endDate),
+      },
+      create: {
+        companyId: data.companyId,
+        departmentId: data.departmentId,
+        designationId: data.designationId,
+        budgetedHeadcount: data.budgetedHeadcount,
+        startDate: new Date(data.startDate),
+        endDate: new Date(data.endDate),
+      },
+      include: {
+        department: true,
+        designation: true,
+      },
+    });
+    return response("recruitment", "staffingPlan.create", plan);
+  }
+
+  async listStaffingPlans(companyId: string) {
+    const plans = await this.prisma.staffingPlan.findMany({
+      where: { companyId },
+      include: {
+        department: true,
+        designation: true,
+      },
+      orderBy: [{ departmentId: "asc" }, { designationId: "asc" }],
+    });
+    return response("recruitment", "staffingPlan.list", plans);
+  }
+
+  // ==========================================
+  // Employee Referrals
+  // ==========================================
+  async createReferral(data: any) {
+    const referral = await this.prisma.employeeReferral.create({
+      data: {
+        referrerId: data.referrerId,
+        candidateName: data.candidateName,
+        candidateEmail: data.candidateEmail,
+        candidatePhone: data.candidatePhone,
+        jobPostingId: data.jobPostingId,
+        bonusAmount: data.bonusAmount || 0,
+        status: "PENDING",
+      },
+      include: {
+        referrer: true,
+        jobPosting: true,
+      },
+    });
+    return response("recruitment", "referral.create", referral);
+  }
+
+  async listReferrals() {
+    const items = await this.prisma.employeeReferral.findMany({
+      include: {
+        referrer: true,
+        jobPosting: true,
+      },
+      orderBy: { createdAt: "desc" },
+    });
+    return response("recruitment", "referrals.list", items);
+  }
+
+  async decideReferral(id: string, data: any) {
+    const referral = await this.prisma.employeeReferral.findUnique({
+      where: { id },
+      include: { referrer: true },
+    });
+    if (!referral) throw new NotFoundException("Referral not found");
+
+    const result = await this.prisma.$transaction(async (tx) => {
+      let additionalSalaryId = referral.additionalSalaryId;
+
+      if (data.status === ApprovalStatus.APPROVED && referral.status !== ApprovalStatus.APPROVED && referral.status !== ApprovalStatus.PAID) {
+        // Create AdditionalSalary entry for the referrer bonus
+        const addSalary = await tx.additionalSalary.create({
+          data: {
+            employeeId: referral.referrerId,
+            amount: referral.bonusAmount,
+            type: "ADDITION",
+            name: `Referral Bonus: ${referral.candidateName}`,
+            date: new Date(),
+          },
+        });
+        additionalSalaryId = addSalary.id;
+      }
+
+      const updated = await tx.employeeReferral.update({
+        where: { id },
+        data: {
+          status: data.status,
+          additionalSalaryId,
+        },
+        include: {
+          referrer: true,
+          jobPosting: true,
+        },
+      });
+
+      return updated;
+    });
+
+    return response("recruitment", "referral.decide", result);
   }
 }

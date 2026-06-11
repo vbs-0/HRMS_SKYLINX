@@ -5,7 +5,8 @@ import { TenantContext } from "../common/tenant-context";
 class PrismaFieldsHelper {
   private static companyModels = new Set([
     "Department", "Designation", "Location", "Employee", "Shift", "AttendanceRule",
-    "LeaveType", "PayrollRun", "Holiday", "JobPosting", "ModuleSetting", "ClientRule"
+    "LeaveType", "PayrollRun", "Holiday", "JobPosting", "ModuleSetting", "ClientRule",
+    "GratuityRule"
   ]);
 
   private static tenantModels = new Set([

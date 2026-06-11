@@ -1,0 +1,59 @@
+// Live API smoke across all new P1/P2/P3 feature endpoints.
+// Proves controller registration, permission guards, service and DB wiring.
+const BASE = "http://localhost:4000/api/v1";
+
+async function login(email, password) {
+  const res = await fetch(`${BASE}/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
+  const body = await res.json();
+  return body.data.accessToken;
+}
+
+const results = [];
+async function check(name, path, token, expect = 200) {
+  try {
+    const res = await fetch(`${BASE}${path}`, { headers: { Authorization: `Bearer ${token}` } });
+    const ok = res.status === expect;
+    results.push(`${ok ? "PASS" : "FAIL"} [${res.status}] ${name} ${path}`);
+  } catch (e) {
+    results.push(`FAIL [ERR] ${name} ${path} :: ${String(e).slice(0, 80)}`);
+  }
+}
+
+const hr = await login("hr.admin@skylinx.local", "Skylinx@123");
+
+// P1
+await check("leave encashments", "/leave/encashments", hr);
+await check("leave ledger", "/leave/ledger/emp_1003", hr);
+await check("promotions", "/employees/emp_1003/promotions", hr);
+await check("transfers", "/employees/emp_1003/transfers", hr);
+await check("gratuity list", "/payroll/gratuity", hr);
+await check("gratuity calc", "/payroll/gratuity/emp_1001/calculate", hr);
+await check("corrections", "/payroll/corrections", hr);
+await check("tax slabs", "/payroll/tax-slabs", hr);
+await check("ff suggestions", "/employees/emp_1003/ff-suggestions", hr);
+// P2
+await check("comp-off conversions", "/leave/comp-off-conversions", hr);
+await check("letter templates", "/employees/letter-templates/list/company_skylinx", hr);
+await check("loans", "/employees/loans/list/emp_1003", hr);
+await check("staffing plans", "/recruitment/staffing-plans/list/company_skylinx", hr);
+await check("referrals", "/recruitment/referrals", hr);
+// P3
+await check("feedback requests", "/performance/feedback/requests", hr);
+await check("grievances", "/grievance", hr);
+
+// RBAC negative: EMPLOYEE must NOT list org-wide salary data.
+// (tax-slabs stay readable — statutory rates, not personal data)
+const emp = await login("kabir.sethi@skylinx.local", "Skylinx@123");
+await check("RBAC employee blocked corrections", "/payroll/corrections", emp, 403);
+await check("RBAC employee blocked gratuity list", "/payroll/gratuity", emp, 403);
+await check("RBAC employee blocked addl salary", "/payroll/additional-salary", emp, 403);
+await check("RBAC manager blocked corrections", "/payroll/corrections", await login("rohan.iyer@skylinx.local", "Skylinx@123"), 403);
+
+console.log(results.join("\n"));
+const fails = results.filter((r) => r.startsWith("FAIL"));
+console.log(`\n${results.length - fails.length}/${results.length} passed`);
+process.exit(fails.length ? 1 : 0);

@@ -52,7 +52,7 @@ describe("RecruitmentController", () => {
   describe("requisitions", () => {
     it("should call createRequisition on service", async () => {
       const user = { sub: "u-1", email: "admin@skylinx.com", tenantId: "company-1", roles: [], permissions: [] };
-      const dto = { departmentId: "dept-1", title: "QA", openings: 1, requestedById: "emp-1" };
+      const dto = { departmentId: "dept-1", title: "QA", openings: 1, requestedById: "emp-1", designationId: "des-1" };
       
       const res = await controller.createRequisition(user, dto);
       expect(res.data).toBeDefined();

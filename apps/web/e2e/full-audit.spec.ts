@@ -17,8 +17,8 @@ const ROUTES = [
 
 const ROLES = [
   { name: "HR_ADMIN", email: process.env.HR_ADMIN_EMAIL || "admin@example.com", password: process.env.HR_ADMIN_PASSWORD || "password123" },
-  { name: "MANAGER", email: process.env.MANAGER_EMAIL || "manager@example.com", password: process.env.MANAGER_PASSWORD || "password123" },
-  { name: "EMPLOYEE", email: process.env.EMPLOYEE_EMAIL || "employee@example.com", password: process.env.EMPLOYEE_PASSWORD || "password123" },
+  { name: "MANAGER", email: process.env.MANAGER_EMAIL || "manager@example.com", password: process.env.MANAGER_PASSWORD || "Demo@12345" },
+  { name: "EMPLOYEE", email: process.env.EMPLOYEE_EMAIL || "employee@example.com", password: process.env.EMPLOYEE_PASSWORD || "Demo@12345" },
 ];
 
 const IMAGES_ROOT = path.resolve(process.cwd(), "../../docs/reference_blueprint/images");

@@ -1348,3 +1348,126 @@ export function PayrollTable() {
   );
 }
 
+export function PenaltyLogsTable({ search = "", month = "" }: { search?: string; month?: string }) {
+  const [rows, setRows] = useState<any[]>([]);
+  const [loaded, setLoaded] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [message, setMessage] = useState("");
+
+  function load() {
+    let url = "/attendance/penalty-logs";
+    const params = new URLSearchParams();
+    if (month) {
+      const [y, m] = month.split("-");
+      params.append("month", m);
+      params.append("year", y);
+    }
+    if (params.toString()) {
+      url += "?" + params.toString();
+    }
+    apiFetch<any[]>(url)
+      .then((body) => {
+        if (!body.data) return;
+        setRows(body.data);
+      })
+      .finally(() => setLoaded(true));
+  }
+
+  useEffect(() => {
+    load();
+    return onDataRefresh("attendance", load);
+  }, [month]);
+
+  const filtered = rows.filter((r) => {
+    const empName = `${r.employee?.firstName || ""} ${r.employee?.lastName || ""}`.toLowerCase();
+    return !search || empName.includes(search.toLowerCase());
+  });
+
+  async function bulkRevert() {
+    if (!selectedIds.length) return;
+    try {
+      await apiFetch("/attendance/penalty-logs/bulk-revert", {
+        method: "POST",
+        body: JSON.stringify({ ids: selectedIds }),
+      });
+      setMessage(`Successfully reverted ${selectedIds.length} records.`);
+      setSelectedIds([]);
+      requestDataRefresh("attendance");
+      load();
+      setTimeout(() => setMessage(""), 4000);
+    } catch (err: any) {
+      console.error(err);
+      setMessage("Error reverting logs: " + err.message);
+    }
+  }
+
+  return (
+    <Card>
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-lg font-semibold text-slate-800">Penalty Logs (Loss of Pay)</h2>
+        <button
+          onClick={bulkRevert}
+          disabled={!selectedIds.length}
+          className="rounded bg-brand px-3 py-1.5 text-xs font-bold text-white hover:bg-brand/90 disabled:opacity-50 transition"
+        >
+          Revert Selected
+        </button>
+      </div>
+      {message && <div className="mb-4 rounded bg-[#e6f5ef] p-3 text-sm text-[#18865a] font-semibold">{message}</div>}
+      <div className="overflow-auto">
+        <table className="w-full min-w-[720px] border-collapse text-sm text-left">
+          <thead className="bg-[#f8fafc] text-xs uppercase text-slate-500 tracking-wider">
+            <tr>
+              <th className="border-b border-[#dce2eb] p-3 w-10">
+                <input
+                  type="checkbox"
+                  checked={selectedIds.length === filtered.length && filtered.length > 0}
+                  onChange={(e) => {
+                    if (e.target.checked) setSelectedIds(filtered.map((r) => r.id));
+                    else setSelectedIds([]);
+                  }}
+                />
+              </th>
+              <th className="border-b border-[#dce2eb] p-3">Employee</th>
+              <th className="border-b border-[#dce2eb] p-3">Month</th>
+              <th className="border-b border-[#dce2eb] p-3">Anomaly</th>
+              <th className="border-b border-[#dce2eb] p-3">Penalty</th>
+              <th className="border-b border-[#dce2eb] p-3">Deduction Days</th>
+              <th className="border-b border-[#dce2eb] p-3">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {!loaded ? <EmptyRow columns={7} message="Loading penalty logs..." /> : null}
+            {loaded && !filtered.length ? <EmptyRow columns={7} message="No penalty logs found." /> : null}
+            {filtered.map((r) => (
+              <tr key={r.id} className="hover:bg-slate-50 border-b border-slate-100 transition">
+                <td className="p-3">
+                  <input
+                    type="checkbox"
+                    checked={selectedIds.includes(r.id)}
+                    onChange={(e) => {
+                      if (e.target.checked) setSelectedIds([...selectedIds, r.id]);
+                      else setSelectedIds(selectedIds.filter((id) => id !== r.id));
+                    }}
+                  />
+                </td>
+                <td className="p-3 font-semibold text-[#172033]">
+                  {r.employee?.firstName} {r.employee?.lastName}
+                </td>
+                <td className="p-3 text-slate-650">{r.month}/{r.year}</td>
+                <td className="p-3 text-slate-650">{r.anomalyType}</td>
+                <td className="p-3 text-slate-650">{r.penaltyType}</td>
+                <td className="p-3 font-semibold text-red-600">{Number(r.deductionDays)}</td>
+                <td className="p-3">
+                  <StatusPill tone={r.status === "CONVERTED_LOP" ? "red" : r.status === "REVERTED" ? "green" : "yellow"}>
+                    {r.status}
+                  </StatusPill>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Card>
+  );
+}

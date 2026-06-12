@@ -1,9 +1,11 @@
-import { BadRequestException, Body, Controller, Get, Param, Patch, Post, UploadedFile, UseInterceptors } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, Param, Patch, Post, Query, UploadedFile, UseInterceptors } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { RequirePermissions } from "../../common/auth/permissions.decorator";
 import { AttendanceService } from "./attendance.service";
-import { CheckInDto, CheckOutDto, DecideAttendanceDto, OvertimeDto, RegularizationDto } from "./dto/attendance.dto";
+import { CheckInDto, CheckOutDto, DecideAttendanceDto, OvertimeDto, RegularizationDto, BulkRevertPenaltyLogsDto, PenaltyLogFilterDto } from "./dto/attendance.dto";
 import { AssignShiftDto, BulkAssignShiftDto, RequestShiftDto, DecideShiftRequestDto } from "./dto/roster.dto";
+import { CurrentUser } from "../../common/auth/current-user.decorator";
+import { AuthenticatedUser } from "../../common/auth/auth.types";
 
 @Controller("attendance")
 export class AttendanceController {
@@ -110,5 +112,17 @@ export class AttendanceController {
       throw new BadRequestException("CSV file is required");
     }
     return this.attendanceService.bulkUpload(file.buffer);
+  }
+
+  @Get("penalty-logs")
+  @RequirePermissions("attendance.read")
+  getPenaltyLogs(@Query() query: PenaltyLogFilterDto) {
+    return this.attendanceService.getPenaltyLogs(query);
+  }
+
+  @Post("penalty-logs/bulk-revert")
+  @RequirePermissions("attendance.approve")
+  bulkRevertPenaltyLogs(@CurrentUser() user: AuthenticatedUser, @Body() body: BulkRevertPenaltyLogsDto) {
+    return this.attendanceService.bulkRevertPenaltyLogs(user.sub, body);
   }
 }

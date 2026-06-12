@@ -652,6 +652,17 @@ export class PayrollService {
         });
         const benefitsSum = benefitClaims.reduce((sum, c) => sum + Number(c.claimAmount), 0);
 
+        // Fetch Penalty Logs (Loss of Pay)
+        const penaltyLogs = await tx.penaltyLog.findMany({
+          where: {
+            employeeId: employee.id,
+            month: run.month,
+            year: run.year,
+            status: "CONVERTED_LOP"
+          }
+        });
+        const lopDays = penaltyLogs.reduce((sum, log) => sum + Number(log.deductionDays), 0);
+
         // Monthly salary components from structure (divided by 12)
         const monthlyBasic = this.monthly(structure.basic);
         const monthlyHra = this.monthly(structure.hra);
@@ -686,6 +697,10 @@ export class PayrollService {
             },
           });
         }
+
+        // Calculate Loss of Pay (LOP) amount
+        const workingDays = new Date(run.year, run.month, 0).getDate();
+        const lopAmount = lopDays > 0 ? Math.round((lopDays / workingDays) * (monthlyBasic + monthlyHra + monthlyAllowances)) : 0;
 
         // Gross salary before statutory deductions
         const grossSalary = monthlyBasic + monthlyHra + monthlyAllowances + additionsSum + benefitsSum + correctionAdditions;
@@ -805,7 +820,7 @@ export class PayrollService {
         }
 
         const finalGrossPay = grossSalary + expensePayout;
-        const totalDeductions = employeePf + esi + professionalTax + tds + recoveryDeductionsSum;
+        const totalDeductions = employeePf + esi + professionalTax + tds + recoveryDeductionsSum + lopAmount;
         const netPay = finalGrossPay - totalDeductions;
 
         const withholding = await tx.salaryWithholding.findFirst({
@@ -860,6 +875,7 @@ export class PayrollService {
             ...(additionsSum > 0 ? [{ payslipId: payslip.id, type: "EARNING", name: "Additional Salary (Add)", amount: additionsSum }] : []),
             ...(benefitsSum > 0 ? [{ payslipId: payslip.id, type: "EARNING", name: "Flexible Benefits Claimed", amount: benefitsSum }] : []),
             ...(recoveryDeductionsSum > 0 ? [{ payslipId: payslip.id, type: "DEDUCTION", name: "Additional Salary (Ded)", amount: recoveryDeductionsSum }] : []),
+            ...(lopAmount > 0 ? [{ payslipId: payslip.id, type: "DEDUCTION", name: "Loss of Pay", amount: lopAmount }] : []),
             ...approvedCorrections.map((c) => ({
               payslipId: payslip.id,
               type: "EARNING",

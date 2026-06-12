@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { AttendanceActionPanel } from "./action-panels";
-import { AttendanceTable, RegularizationsTable } from "./live-tables";
+import { AttendanceTable, RegularizationsTable, PenaltyLogsTable } from "./live-tables";
 import { ReferenceModuleHeader } from "./reference-module";
 import { ReferenceFlowStrip } from "./reference-sections";
 import { AttendanceRulesWorkspace } from "./reference-workspaces";
@@ -48,7 +48,7 @@ export function AttendanceConsole() {
         eyebrow="Attendance"
         title="Attendance Dashboard"
         summary="Review daily presence, exceptions, regularization requests and attendance rules from one Skylinx PeopleOS control desk."
-        tabs={["Dashboard", "Attendance Log", "Regularization", "Shift & Rules", "Bulk Upload"]}
+        tabs={["Dashboard", "Attendance Log", "Regularization", "Penalty Logs", "Shift & Rules", "Bulk Upload"]}
         activeTab={activeTab}
         onTabChange={setActiveTab}
         searchValue={search}
@@ -101,6 +101,10 @@ export function AttendanceConsole() {
 
       {activeTab === "Regularization" && (
         <RegularizationsTable search={search} status={status} />
+      )}
+
+      {activeTab === "Penalty Logs" && (
+        <PenaltyLogsTable search={search} month={month} />
       )}
 
       {activeTab === "Shift & Rules" && (

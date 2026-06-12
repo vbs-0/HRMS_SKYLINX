@@ -1,4 +1,4 @@
-import { IsDateString, IsNumber, IsOptional, IsString, Min } from "class-validator";
+import { IsArray, IsDateString, IsNumber, IsOptional, IsString, Min } from "class-validator";
 
 export class CheckInDto {
   @IsString()
@@ -89,4 +89,24 @@ export class OvertimeDto {
 
   @IsString()
   reason!: string;
+}
+
+export class BulkRevertPenaltyLogsDto {
+  @IsArray()
+  @IsString({ each: true })
+  ids!: string[];
+}
+
+export class PenaltyLogFilterDto {
+  @IsOptional()
+  @IsString()
+  month?: string; // string from query params
+
+  @IsOptional()
+  @IsString()
+  year?: string;
+
+  @IsOptional()
+  @IsString()
+  anomalyType?: string;
 }

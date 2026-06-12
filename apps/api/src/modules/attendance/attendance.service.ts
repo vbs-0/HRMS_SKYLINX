@@ -4,7 +4,7 @@ import { ApprovalStatus, AttendanceStatus } from "@prisma/client";
 import { response } from "../../common/crud-response";
 import { PrismaService } from "../../prisma/prisma.service";
 import { SettingsService } from "../settings/settings.service";
-import { CheckInDto, CheckOutDto, DecideAttendanceDto, OvertimeDto, RegularizationDto } from "./dto/attendance.dto";
+import { CheckInDto, CheckOutDto, DecideAttendanceDto, OvertimeDto, RegularizationDto, BulkRevertPenaltyLogsDto, PenaltyLogFilterDto } from "./dto/attendance.dto";
 import { AssignShiftDto, BulkAssignShiftDto, RequestShiftDto, DecideShiftRequestDto } from "./dto/roster.dto";
 
 @Injectable()
@@ -301,10 +301,69 @@ export class AttendanceService {
         },
       });
 
+      // Anomaly type inferred from the attendance log status
+      // (AttendanceStatus enum: PRESENT, LATE, ABSENT, HALF_DAY, HOLIDAY, WEEK_OFF)
+      let anomalyType = "LATE";
+      if (rejected.attendanceLog?.status === "ABSENT") anomalyType = "ABSENT";
+      else if (rejected.attendanceLog?.status === "HALF_DAY") anomalyType = "OUT_TIME";
+      else if (!rejected.attendanceLog) anomalyType = "MISSED_PUNCH";
+
+      // If it's a full day absence, penalty is FULL_DAY, else HALF_DAY
+      const penaltyType = anomalyType === "ABSENT" ? "FULL_DAY" : "HALF_DAY";
+      const deductionDays = penaltyType === "FULL_DAY" ? 1 : 0.5;
+      
+      const logDate = rejected.attendanceLog?.date || new Date();
+
+      await tx.penaltyLog.create({
+        data: {
+          employeeId: rejected.employeeId,
+          companyId: rejected.employee.companyId,
+          anomalyType,
+          penaltyType,
+          leaveType: "Loss of Pay",
+          deductionDays,
+          month: logDate.getMonth() + 1,
+          year: logDate.getFullYear(),
+          status: "CONVERTED_LOP",
+        }
+      });
+
       return rejected;
     });
 
     return response("attendance", "regularization.reject", result);
+  }
+
+  async getPenaltyLogs(filters: PenaltyLogFilterDto) {
+    const where: any = {};
+    if (filters.month) where.month = parseInt(filters.month, 10);
+    if (filters.year) where.year = parseInt(filters.year, 10);
+    if (filters.anomalyType) where.anomalyType = filters.anomalyType;
+
+    const logs = await this.prisma.penaltyLog.findMany({
+      where,
+      include: {
+        employee: true,
+      },
+      orderBy: { appliedOn: "desc" }
+    });
+    return response("attendance", "penalty_logs", logs);
+  }
+
+  async bulkRevertPenaltyLogs(userId: string, data: BulkRevertPenaltyLogsDto) {
+    const result = await this.prisma.penaltyLog.updateMany({
+      where: {
+        id: { in: data.ids },
+        status: { not: "REVERTED" }
+      },
+      data: {
+        status: "REVERTED",
+        revertedBy: userId,
+      }
+    });
+
+    await this.audit("attendance", "penalty_log.bulk_revert", "penalty_log", "bulk", { count: result.count, ids: data.ids });
+    return response("attendance", "penalty_log.bulk_revert", { count: result.count });
   }
 
   async overtime(data: OvertimeDto) {

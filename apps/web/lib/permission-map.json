@@ -28,6 +28,10 @@
     "permission": "attendance.read"
   },
   {
+    "pattern": "^/attendance/penalty-logs$",
+    "permission": "attendance.read"
+  },
+  {
     "pattern": "^/attendance/regularizations$",
     "permission": "attendance.read"
   },

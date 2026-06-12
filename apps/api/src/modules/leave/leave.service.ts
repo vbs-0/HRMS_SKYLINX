@@ -32,19 +32,27 @@ export class LeaveService {
   }
 
   async types() {
-    // Ensure all 5 standard leave types exist
-    const defaultTypes = [
-      { name: "Event Leave", code: "EL", annualQuota: 5 },
-      { name: "ON Duty Leave", code: "ODL", annualQuota: 30 },
-      { name: "Paternity Leave", code: "PL", annualQuota: 7 },
-      { name: "Sick Leave", code: "SL", annualQuota: 12 },
-      { name: "Casual Leave", code: "CL", annualQuota: 12 },
-    ];
-    for (const dt of defaultTypes) {
-      await this.prisma.leaveType.upsert({
-        where: { companyId_code: { companyId: this.tenantId(), code: dt.code } },
-        update: {},
-        create: { companyId: this.tenantId(), name: dt.name, code: dt.code, annualQuota: dt.annualQuota },
+    // First-run convenience only: seed starter types when the tenant has NONE.
+    // Never re-create types the admin has deleted.
+    const existingCount = await this.prisma.leaveType.count({
+      where: { companyId: this.tenantId() },
+    });
+    if (existingCount === 0) {
+      const starterTypes = [
+        { name: "Event Leave", code: "EL", annualQuota: 5 },
+        { name: "ON Duty Leave", code: "ODL", annualQuota: 30 },
+        { name: "Paternity Leave", code: "PL", annualQuota: 7 },
+        { name: "Sick Leave", code: "SL", annualQuota: 12 },
+        { name: "Casual Leave", code: "CL", annualQuota: 12 },
+      ];
+      await this.prisma.leaveType.createMany({
+        data: starterTypes.map((dt) => ({
+          companyId: this.tenantId(),
+          name: dt.name,
+          code: dt.code,
+          annualQuota: dt.annualQuota,
+        })),
+        skipDuplicates: true,
       });
     }
 
@@ -99,6 +107,7 @@ export class LeaveService {
         encashable: data.encashable !== undefined ? Boolean(data.encashable) : undefined,
         maxEncashableDays: data.maxEncashableDays !== undefined ? Number(data.maxEncashableDays) : undefined,
         availableDuringNotice: data.availableDuringNotice !== undefined ? Boolean(data.availableDuringNotice) : undefined,
+        status: data.status !== undefined ? String(data.status) : undefined,
       },
     });
 
@@ -211,6 +220,52 @@ export class LeaveService {
     });
 
     return response("leave", "type.create", newType);
+  }
+
+  async deleteType(id: string) {
+    const leaveType = await this.prisma.leaveType.findFirst({
+      where: { id, companyId: this.tenantId() },
+    });
+    if (!leaveType) throw new NotFoundException("Leave type not found");
+
+    // If the type has history (requests/balances), deactivate instead of
+    // hard-deleting so existing records keep their reference.
+    const [requestCount, balanceCount] = await Promise.all([
+      this.prisma.leaveRequest.count({ where: { leaveTypeId: id } }),
+      this.prisma.leaveBalance.count({ where: { leaveTypeId: id } }),
+    ]);
+
+    if (requestCount > 0 || balanceCount > 0) {
+      const deactivated = await this.prisma.leaveType.update({
+        where: { id },
+        data: { status: "INACTIVE" },
+      });
+      await this.prisma.auditLog.create({
+        data: {
+          module: "leave",
+          action: "type.deactivate",
+          entityType: "leave_type",
+          entityId: id,
+          newValueJson: { reason: "Has linked requests/balances — deactivated instead of deleted", requestCount, balanceCount },
+        },
+      });
+      return response("leave", "type.deactivate", { ...deactivated, deleted: false, deactivated: true });
+    }
+
+    await this.prisma.clientRule.deleteMany({
+      where: { companyId: this.tenantId(), category: "leave_type_settings", key: id },
+    });
+    await this.prisma.leaveType.delete({ where: { id } });
+    await this.prisma.auditLog.create({
+      data: {
+        module: "leave",
+        action: "type.delete",
+        entityType: "leave_type",
+        entityId: id,
+        newValueJson: { name: leaveType.name, code: leaveType.code },
+      },
+    });
+    return response("leave", "type.delete", { deleted: true });
   }
 
   async getAssignments() {

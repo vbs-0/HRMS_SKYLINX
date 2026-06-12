@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/common";
 import { RequirePermissions } from "../../common/auth/permissions.decorator";
 import { CurrentUser } from "../../common/auth/current-user.decorator";
 import { AuthenticatedUser } from "../../common/auth/auth.types";
@@ -31,6 +31,12 @@ export class LeaveController {
   @RequirePermissions("leave.configure")
   createType(@Body() body: any) {
     return this.leaveService.createType(body);
+  }
+
+  @Delete("types/:id")
+  @RequirePermissions("leave.configure")
+  deleteType(@Param("id") id: string) {
+    return this.leaveService.deleteType(id);
   }
 
   @Get("assignments")

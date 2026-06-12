@@ -407,13 +407,31 @@ export function LeaveSettingsConsole() {
                           </button>
                         </div>
                       ) : (
-                        <button
-                          onClick={() => handleEditClick(type)}
-                          className="p-2 rounded-full text-muted hover:text-brand hover:bg-[#f3f7fb] transition-all"
-                          title="Edit Settings"
-                        >
-                          <Edit2 className="h-4.5 w-4.5" />
-                        </button>
+                        <>
+                          <button
+                            onClick={() => handleEditClick(type)}
+                            className="p-2 rounded-full text-muted hover:text-brand hover:bg-[#f3f7fb] transition-all"
+                            title="Edit Settings"
+                          >
+                            <Edit2 className="h-4.5 w-4.5" />
+                          </button>
+                          <button
+                            onClick={async () => {
+                              if (!window.confirm(`Delete leave type "${type.name}"? If employees have balances or requests for it, it will be deactivated instead so history is preserved.`)) return;
+                              try {
+                                const res = await apiFetch<{ deactivated?: boolean }>(`/leave/types/${type.id}`, { method: "DELETE" });
+                                setMessage(res.data?.deactivated ? `"${type.name}" has linked records — deactivated instead of deleted.` : `"${type.name}" deleted.`);
+                                load();
+                              } catch (err) {
+                                setError(err instanceof Error ? err.message : "Failed to delete leave type");
+                              }
+                            }}
+                            className="p-2 rounded-full text-muted hover:text-rose-600 hover:bg-rose-50 transition-all"
+                            title="Delete Leave Type"
+                          >
+                            <X className="h-4.5 w-4.5" />
+                          </button>
+                        </>
                       )}
                     </div>
                   </div>

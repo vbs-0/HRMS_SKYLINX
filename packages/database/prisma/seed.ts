@@ -5,6 +5,11 @@ import * as crypto from "crypto";
 const prisma = new PrismaClient();
 const { hash } = bcrypt;
 
+const HR_ADMIN_EMAIL = process.env.HR_ADMIN_EMAIL || "admin@example.com";
+const HR_ADMIN_PASSWORD = process.env.HR_ADMIN_PASSWORD || "password123";
+const SUPER_ADMIN_EMAIL = process.env.SUPER_ADMIN_EMAIL || "superadmin@example.com";
+const SUPER_ADMIN_PASSWORD = process.env.SUPER_ADMIN_PASSWORD || "password123";
+
 // Must mirror apps/api/src/common/crypto.util.ts so the API can decrypt.
 const ENCRYPTION_KEY = process.env.OTP_SECRET || "skylinx-peopleos-local-otp-secret-long-enough-32-chars!!!";
 function encryptField(text: string): string {
@@ -155,11 +160,11 @@ async function main() {
   });
 
   const seedEmployees = [
-    ["emp_1001", "EMP-1001", "Aarav", "Mehta", "aarav.mehta@skylinx.local", peopleDept.id, designationHrManager.id, locations[0].id, "1990-06-15", "2022-01-16"],
-    ["emp_1002", "EMP-1002", "Priya", "Nair", "priya.nair@skylinx.local", financeDept.id, designationPayroll.id, locations[1].id, "1992-08-20", "2023-06-10"],
-    ["emp_1003", "EMP-1003", "Kabir", "Sethi", "kabir.sethi@skylinx.local", engineeringDept.id, designationEngineer.id, locations[2].id, "1994-03-05", "2024-03-15"],
-    ["emp_1004", "EMP-1004", "Sara", "Khan", "sara.khan@skylinx.local", salesDept.id, designationSales.id, locations[3].id, "1995-11-12", "2024-11-20"],
-    ["emp_1005", "EMP-1005", "Rohan", "Iyer", "rohan.iyer@skylinx.local", operationsDept.id, designationOps.id, locations[4].id, "1991-06-25", "2025-06-01"],
+    ["emp_1001", "EMP-1001", "Aarav", "Mehta", HR_ADMIN_EMAIL, peopleDept.id, designationHrManager.id, locations[0].id, "1990-06-15", "2022-01-16"],
+    ["emp_1002", "EMP-1002", "Priya", "Nair", "priya.nair@example.com", financeDept.id, designationPayroll.id, locations[1].id, "1992-08-20", "2023-06-10"],
+    ["emp_1003", "EMP-1003", "Kabir", "Sethi", process.env.EMPLOYEE_EMAIL || "employee@example.com", engineeringDept.id, designationEngineer.id, locations[2].id, "1994-03-05", "2024-03-15"],
+    ["emp_1004", "EMP-1004", "Sara", "Khan", "sara.khan@example.com", salesDept.id, designationSales.id, locations[3].id, "1995-11-12", "2024-11-20"],
+    ["emp_1005", "EMP-1005", "Rohan", "Iyer", process.env.MANAGER_EMAIL || "manager@example.com", operationsDept.id, designationOps.id, locations[4].id, "1991-06-25", "2025-06-01"],
   ];
 
   for (const [id, employeeCode, firstName, lastName, email, departmentId, designationId, locationId, dob, joining] of seedEmployees) {
@@ -204,15 +209,15 @@ async function main() {
   }
 
   const hrUser = await prisma.user.upsert({
-    where: { email: "hr.admin@skylinx.local" },
+    where: { email: HR_ADMIN_EMAIL },
     update: {
-      passwordHash: await hash("Skylinx@123", 12),
+      passwordHash: await hash(HR_ADMIN_PASSWORD, 12),
       tenantId: company.id,
     },
     create: {
-      email: "hr.admin@skylinx.local",
+      email: HR_ADMIN_EMAIL,
       phone: "+91 90000 00001",
-      passwordHash: await hash("Skylinx@123", 12),
+      passwordHash: await hash(HR_ADMIN_PASSWORD, 12),
       employeeId: "emp_1001",
       tenantId: company.id,
     },
@@ -226,15 +231,15 @@ async function main() {
 
   // Create System Owner / Super Admin user
   const ownerUser = await prisma.user.upsert({
-    where: { email: "skylinxcode@gmail.com" },
+    where: { email: SUPER_ADMIN_EMAIL },
     update: {
-      passwordHash: await hash("password123", 12),
+      passwordHash: await hash(SUPER_ADMIN_PASSWORD, 12),
       tenantId: company.id,
     },
     create: {
-      email: "skylinxcode@gmail.com",
+      email: SUPER_ADMIN_EMAIL,
       phone: "+91 90000 00000",
-      passwordHash: await hash("password123", 12),
+      passwordHash: await hash(SUPER_ADMIN_PASSWORD, 12),
       status: "ACTIVE",
       tenantId: company.id,
     },
@@ -248,20 +253,20 @@ async function main() {
 
   // MANAGER and EMPLOYEE login accounts (used by E2E role audits)
   const roleUsers: Array<[string, string, string, string]> = [
-    ["rohan.iyer@skylinx.local", "+91 98765 41005", "emp_1005", "role_manager"],
-    ["kabir.sethi@skylinx.local", "+91 98765 41003", "emp_1003", "role_employee"],
+    ["manager@example.com", "+91 98765 41005", "emp_1005", "role_manager"],
+    ["employee@example.com", "+91 98765 41003", "emp_1003", "role_employee"],
   ];
   for (const [email, phone, employeeId, roleId] of roleUsers) {
     const user = await prisma.user.upsert({
       where: { email },
       update: { 
-        passwordHash: await hash("Skylinx@123", 12),
+        passwordHash: await hash(process.env.DEMO_PASSWORD || "Demo@12345", 12),
         tenantId: company.id,
       },
       create: {
         email,
         phone,
-        passwordHash: await hash("Skylinx@123", 12),
+        passwordHash: await hash(process.env.DEMO_PASSWORD || "Demo@12345", 12),
         employeeId,
         status: "ACTIVE",
         tenantId: company.id,
@@ -568,7 +573,7 @@ async function main() {
         employeeId: "emp_1004",
         category: "Travel",
         amount: 1850,
-        receiptUrl: "https://storage.skylinx.local/expenses/emp_1004/travel-may.pdf",
+        receiptUrl: "https://storage.example.com/expenses/emp_1004/travel-may.pdf",
         claimDate: new Date("2026-05-24"),
         status: "PENDING",
       },
@@ -610,7 +615,7 @@ async function main() {
         claimType: "Hospitalization",
         claimAmount: 42000,
         claimDate: new Date("2026-05-20"),
-        documentUrl: "https://storage.skylinx.local/insurance/emp_1002/claim-001.pdf",
+        documentUrl: "https://storage.example.com/insurance/emp_1002/claim-001.pdf",
         status: "PENDING",
       },
     });

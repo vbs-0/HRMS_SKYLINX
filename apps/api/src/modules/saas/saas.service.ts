@@ -5,7 +5,6 @@ import { PrismaService } from "../../prisma/prisma.service";
 import { hash } from "bcryptjs";
 import { OnboardTenantDto } from "./dto/onboard-tenant.dto";
 
-const DEFAULT_COMPANY_ID = "company_skylinx";
 type PlanName = "Basic" | "Standard" | "Pro";
 
 @Injectable()
@@ -15,7 +14,7 @@ export class SaasService {
   async summary(user: AuthenticatedUser) {
     await this.ensurePlansSeeded();
     const isOwner = user.roles.includes("SUPER_ADMIN") || user.roles.includes("SYSTEM_OWNER");
-    const tenantId = user.tenantId || DEFAULT_COMPANY_ID;
+    const tenantId = user.tenantId ?? undefined;
 
     const [companies, employees, moduleSettings, billingLogs, subscriptionSetting] = await Promise.all([
       this.prisma.company.findMany({
@@ -23,23 +22,25 @@ export class SaasService {
         orderBy: { createdAt: "desc" },
       }),
       this.prisma.employee.findMany({
-        where: { status: "ACTIVE", companyId: tenantId },
+        where: tenantId ? { status: "ACTIVE", companyId: tenantId } : { status: "ACTIVE" },
       }),
       this.prisma.moduleSetting.findMany({
-        where: { companyId: tenantId },
+        where: tenantId ? { companyId: tenantId } : {},
         orderBy: { module: "asc" },
       }),
       this.prisma.auditLog.findMany({
         where: {
           module: "saas",
-          ...(isOwner ? {} : { tenantId }),
+          ...(isOwner ? {} : tenantId ? { tenantId } : {}),
         },
         orderBy: { createdAt: "desc" },
         take: 20,
       }),
-      this.prisma.moduleSetting.findUnique({
-        where: { companyId_module: { companyId: tenantId, module: "subscription" } },
-      }),
+      tenantId
+        ? this.prisma.moduleSetting.findUnique({
+            where: { companyId_module: { companyId: tenantId, module: "subscription" } },
+          })
+        : Promise.resolve(null),
     ]);
 
     const selectedPlan = this.resolveSelectedPlan(subscriptionSetting?.settingsJson);
@@ -184,7 +185,8 @@ export class SaasService {
   }
 
   async selectPlan(user: AuthenticatedUser, planName: PlanName, paymentMethod?: string, amount?: number) {
-    const tenantId = user.tenantId || DEFAULT_COMPANY_ID;
+    const tenantId = user.tenantId;
+    if (!tenantId) throw new BadRequestException("No tenant context for plan selection");
 
     // 1. Resolve target plan details
     await this.ensurePlansSeeded();

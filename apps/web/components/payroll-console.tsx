@@ -97,7 +97,7 @@ export function PayrollConsole() {
   // Modals state
   const [showCreateRun, setShowCreateRun] = useState(false);
   const [newRunMonth, setNewRunMonth] = useState("6");
-  const [newRunYear, setNewRunYear] = useState("2026");
+  const [newRunYear, setNewRunYear] = useState(() => String(new Date().getFullYear()));
 
   const [selectedPayslip, setSelectedPayslip] = useState<ApiPayslip | null>(null);
   const [showPayslipModal, setShowPayslipModal] = useState(false);
@@ -915,7 +915,7 @@ export function PayrollConsole() {
                   value={newRunYear}
                   onChange={(e) => setNewRunYear(e.target.value)}
                 >
-                  {["2025", "2026", "2027", "2028"].map((y) => (
+                  {Array.from({ length: 5 }, (_, i) => String(new Date().getFullYear() - 1 + i)).map((y) => (
                     <option key={y} value={y}>{y}</option>
                   ))}
                 </select>

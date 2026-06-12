@@ -5,8 +5,8 @@ test.describe("Advanced Core Policies E2E Suite", () => {
     // Login
     await page.goto("/login");
     await page.waitForLoadState("networkidle");
-    await page.getByLabel("Email").fill("hr.admin@skylinx.local");
-    await page.getByLabel("Password").fill("Skylinx@123");
+    await page.getByLabel("Email").fill(process.env.HR_ADMIN_EMAIL || "admin@example.com");
+    await page.getByLabel("Password").fill(process.env.HR_ADMIN_PASSWORD || "password123");
     await page.getByRole("button", { name: "Sign In" }).click();
     await page.waitForURL("**/dashboard", { timeout: 20000 });
   });

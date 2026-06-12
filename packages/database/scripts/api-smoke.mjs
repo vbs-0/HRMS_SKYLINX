@@ -23,7 +23,7 @@ async function check(name, path, token, expect = 200) {
   }
 }
 
-const hr = await login("hr.admin@skylinx.local", "Skylinx@123");
+const hr = await login(process.env.HR_ADMIN_EMAIL || "admin@example.com", process.env.HR_ADMIN_PASSWORD || "password123");
 
 // P1
 await check("leave encashments", "/leave/encashments", hr);
@@ -58,11 +58,11 @@ await check("dashboard celebrations", "/dashboard/celebrations", hr);
 await check("form16 emp_1001", "/payroll/form16/emp_1001", hr);
 
 // RBAC negative: EMPLOYEE must NOT list org-wide salary data.
-const emp = await login("kabir.sethi@skylinx.local", "Skylinx@123");
+const emp = await login(process.env.EMPLOYEE_EMAIL || "employee@example.com", process.env.EMPLOYEE_PASSWORD || "password123");
 await check("RBAC employee blocked corrections", "/payroll/corrections", emp, 403);
 await check("RBAC employee blocked gratuity list", "/payroll/gratuity", emp, 403);
 await check("RBAC employee blocked addl salary", "/payroll/additional-salary", emp, 403);
-await check("RBAC manager blocked corrections", "/payroll/corrections", await login("rohan.iyer@skylinx.local", "Skylinx@123"), 403);
+await check("RBAC manager blocked corrections", "/payroll/corrections", await login(process.env.MANAGER_EMAIL || "manager@example.com", process.env.MANAGER_PASSWORD || "password123"), 403);
 
 // RBAC negative: EMPLOYEE blocked from others' loans & tax declarations
 await check("RBAC employee blocked other loans", "/employees/loans/list/emp_1004", emp, 403);

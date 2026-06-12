@@ -46,7 +46,7 @@ export function LeaveConsole() {
   const [activeTab, setActiveTab] = useState("Dashboard");
   const [showApplyPanel, setShowApplyPanel] = useState(false);
   const [search, setSearch] = useState("");
-  const [month, setMonth] = useState("2026-06");
+  const [month, setMonth] = useState(() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`; });
   const [status, setStatus] = useState("All");
 
   const [types, setTypes] = useState<any[]>([]);

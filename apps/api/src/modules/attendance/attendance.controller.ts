@@ -1,4 +1,5 @@
-import { Body, Controller, Get, Param, Patch, Post } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Get, Param, Patch, Post, UploadedFile, UseInterceptors } from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
 import { RequirePermissions } from "../../common/auth/permissions.decorator";
 import { AttendanceService } from "./attendance.service";
 import { CheckInDto, CheckOutDto, DecideAttendanceDto, OvertimeDto, RegularizationDto } from "./dto/attendance.dto";
@@ -103,7 +104,11 @@ export class AttendanceController {
 
   @Post("bulk-upload")
   @RequirePermissions("attendance.create")
-  bulkUpload(@Body() body: any[]) {
-    return this.attendanceService.bulkUpload(body);
+  @UseInterceptors(FileInterceptor("file"))
+  bulkUpload(@UploadedFile() file: Express.Multer.File) {
+    if (!file) {
+      throw new BadRequestException("CSV file is required");
+    }
+    return this.attendanceService.bulkUpload(file.buffer);
   }
 }

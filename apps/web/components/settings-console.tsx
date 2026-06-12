@@ -334,7 +334,7 @@ export function SettingsConsole() {
   }
 
   useEffect(() => {
-    const match = document.cookie.match(/(?:^|; )skylinx_peopleos_plan=([^;]+)/);
+    const match = document.cookie.match(/(?:^|; )peopleos_plan=([^;]+)/);
     const plan = match ? decodeURIComponent(match[1]) : "";
     if (isPlanName(plan)) setActivePlan(plan);
     load();

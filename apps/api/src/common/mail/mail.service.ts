@@ -134,7 +134,7 @@ export class MailService implements OnModuleInit {
     queue: string;
     createdAt: Date;
   }): Promise<boolean> {
-    const recipient = this.config.get<string>("SUPPORT_EMAIL") || "skylinxcode@gmail.com";
+    const recipient = this.config.get<string>("SUPPORT_EMAIL") || "support@example.com";
     const timestamp = params.createdAt.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
 
     const textContent = [
@@ -211,7 +211,7 @@ export class MailService implements OnModuleInit {
     senderName: string;
     ticketNumber: string;
   }): Promise<boolean> {
-    const recipient = this.config.get<string>("SUPPORT_EMAIL") || "skylinxcode@gmail.com";
+    const recipient = this.config.get<string>("SUPPORT_EMAIL") || "support@example.com";
     const timestamp = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
 
     const textContent = [

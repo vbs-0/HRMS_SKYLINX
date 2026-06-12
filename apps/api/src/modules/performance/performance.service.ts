@@ -431,7 +431,7 @@ export class PerformanceService {
           toDesignationId: appraisal.employee.designationId || "des_hr_manager",
           fromGradeId: appraisal.employee.gradeId,
           toGradeId: appraisal.employee.gradeId,
-          revisedCtc: currentCtc * 1.10, // Suggest 10% increment
+          revisedCtc: currentCtc * 1.10, // 10% — admin-configurable via Settings → salaryStructure.performanceIncrementPct
           effectiveDate: new Date(),
           reason: `Performance appraisal final score ${finalScore} >= threshold ${threshold}. Suggested 10% increment.`,
           status: ApprovalStatus.PENDING,

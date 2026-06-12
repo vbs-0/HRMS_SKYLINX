@@ -27,7 +27,9 @@ import {
   User, 
   Briefcase, 
   PhoneCall, 
-  CreditCard 
+  CreditCard,
+  GraduationCap,
+  Users
 } from "lucide-react";
 
 interface ApiEmployeeDetail {
@@ -44,6 +46,10 @@ interface ApiEmployeeDetail {
   status: string;
   panNumber?: string | null;
   providentFundAccount?: string | null;
+  bloodGroup?: string | null;
+  maritalStatus?: string | null;
+  emergencyContactName?: string | null;
+  emergencyContactPhone?: string | null;
   gradeId?: string | null;
   employmentTypeId?: string | null;
   departmentId?: string | null;
@@ -55,6 +61,9 @@ interface ApiEmployeeDetail {
   location?: { id: string; name: string } | null;
   grade?: { id: string; name: string; maxExpenseLimit: number } | null;
   employmentTypeRelation?: { id: string; name: string } | null;
+  addresses?: any[];
+  educationHistory?: any[];
+  familyDetails?: any[];
   bankDetails?: {
     id: string;
     accountHolderName: string;
@@ -82,6 +91,7 @@ export function EmployeesConsole() {
   const [myEmployeeId, setMyEmployeeId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [companyProfile, setCompanyProfile] = useState<any>(null);
   const [error, setError] = useState("");
 
   const [expiries, setExpiries] = useState<any[]>([]);
@@ -102,6 +112,10 @@ export function EmployeesConsole() {
   // Edit states for profile
   const [isEditing, setIsEditing] = useState(false);
   const [editForm, setEditForm] = useState({
+    employeeCode: "",
+    email: "",
+    firstName: "",
+    lastName: "",
     phone: "",
     gender: "",
     dateOfBirth: "",
@@ -112,11 +126,18 @@ export function EmployeesConsole() {
     providentFundAccount: "",
     gradeId: "",
     employmentTypeId: "",
+    bloodGroup: "",
+    maritalStatus: "",
+    emergencyContactName: "",
+    emergencyContactPhone: "",
     accountHolderName: "",
     bankName: "",
     accountNumber: "",
     ifsc: "",
     branch: "",
+    addresses: [] as any[],
+    educationHistory: [] as any[],
+    familyDetails: [] as any[],
   });
 
   const [grades, setGrades] = useState<any[]>([]);
@@ -164,6 +185,12 @@ export function EmployeesConsole() {
     apiFetch<any[]>(`/employees/types/${getCurrentCompanyId()}`)
       .then((res) => {
         if (res.data) setEmploymentTypes(res.data);
+      })
+      .catch(() => undefined);
+
+    apiFetch<any>("/settings/rules")
+      .then((res) => {
+        if (res.data) setCompanyProfile(res.data);
       })
       .catch(() => undefined);
 
@@ -225,7 +252,11 @@ export function EmployeesConsole() {
       .then((res) => {
         if (res.data) {
           setSelectedEmployee(res.data);
-          setEditForm({
+            setEditForm({
+            employeeCode: res.data.employeeCode || "",
+            email: res.data.email || "",
+            firstName: res.data.firstName || "",
+            lastName: res.data.lastName || "",
             phone: res.data.phone || "",
             gender: res.data.gender || "",
             dateOfBirth: res.data.dateOfBirth ? res.data.dateOfBirth.substring(0, 10) : "",
@@ -236,11 +267,18 @@ export function EmployeesConsole() {
             providentFundAccount: res.data.providentFundAccount || "",
             gradeId: res.data.gradeId || "",
             employmentTypeId: res.data.employmentTypeId || "",
+            bloodGroup: (res.data as any).bloodGroup || "",
+            maritalStatus: (res.data as any).maritalStatus || "",
+            emergencyContactName: (res.data as any).emergencyContactName || "",
+            emergencyContactPhone: (res.data as any).emergencyContactPhone || "",
             accountHolderName: res.data.bankDetails?.accountHolderName || "",
             bankName: res.data.bankDetails?.bankName || "",
             accountNumber: "",
             ifsc: res.data.bankDetails?.ifsc || "",
             branch: res.data.bankDetails?.branch || "",
+            addresses: res.data.addresses || [],
+            educationHistory: res.data.educationHistory || [],
+            familyDetails: res.data.familyDetails || [],
           });
         }
       })
@@ -301,13 +339,27 @@ export function EmployeesConsole() {
     e.preventDefault();
     setMessage("");
     setError("");
+    const formEl = e.currentTarget;
+    const fileInput = formEl.querySelector<HTMLInputElement>('input[type="file"]');
+    const file = fileInput?.files?.[0];
+    if (!file) {
+      setError("Please select a CSV or Excel file to upload.");
+      return;
+    }
     setLoading(true);
     try {
-      await apiFetch("/employees/bulk-upload", {
+      const formData = new FormData();
+      formData.append("file", file);
+      const token = typeof window !== "undefined" ? window.localStorage.getItem("peopleos_access_token") : null;
+      const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:4000/api/v1";
+      const res = await fetch(`${apiBase}/employees/bulk-upload`, {
         method: "POST",
-        body: JSON.stringify({ simulated: true }),
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        body: formData,
       });
-      setMessage("Bulk upload simulated successfully! All spreadsheet lines imported.");
+      const json = await res.json();
+      if (!res.ok) throw new Error(json?.message || "Bulk upload failed");
+      setMessage(`Bulk upload complete! ${json?.data?.imported ?? ""} employees imported.`);
       setShowBulkPanel(false);
       requestDataRefresh("employees");
     } catch (err) {
@@ -338,6 +390,10 @@ export function EmployeesConsole() {
           providentFundAccount: editForm.providentFundAccount || null,
           gradeId: editForm.gradeId || null,
           employmentTypeId: editForm.employmentTypeId || null,
+          bloodGroup: editForm.bloodGroup || null,
+          maritalStatus: editForm.maritalStatus || null,
+          emergencyContactName: editForm.emergencyContactName || null,
+          emergencyContactPhone: editForm.emergencyContactPhone || null,
         }),
       });
       // Bank details go through their own endpoint (encrypted, re-verification flow)
@@ -633,12 +689,53 @@ export function EmployeesConsole() {
                       {selectedEmployee.firstName.substring(0, 1) + selectedEmployee.lastName.substring(0, 1)}
                     </div>
                     <div>
-                      <h4 className="text-xl font-bold text-slate-800">{selectedEmployee.firstName} {selectedEmployee.lastName}</h4>
-                      <p className="text-sm text-slate-500 font-semibold">{selectedEmployee.designation?.title || "Staff Member"}</p>
-                      <div className="flex gap-2 items-center mt-1">
-                        <span className="text-xs text-slate-400">ID: {selectedEmployee.employeeCode}</span>
+                      <p className="text-xl font-bold text-slate-900">
+                        {isEditing ? (
+                          <div className="flex gap-2 items-center">
+                            <input 
+                              className="rounded-lg border px-2 py-1 text-sm font-bold max-w-[120px]" 
+                              value={editForm.firstName} 
+                              onChange={(e) => setEditForm(prev => ({ ...prev, firstName: e.target.value }))} 
+                              placeholder="First Name"
+                            />
+                            <input 
+                              className="rounded-lg border px-2 py-1 text-sm font-bold max-w-[120px]" 
+                              value={editForm.lastName} 
+                              onChange={(e) => setEditForm(prev => ({ ...prev, lastName: e.target.value }))} 
+                              placeholder="Last Name"
+                            />
+                          </div>
+                        ) : (
+                          <>{selectedEmployee.firstName} {selectedEmployee.lastName}</>
+                        )}
+                      </p>
+                      <div className="flex items-center gap-3 mt-1 text-sm text-slate-500 font-semibold">
+                        <div className="flex items-center gap-1">
+                          <User className="h-4 w-4" /> 
+                          {isEditing ? (
+                            <input 
+                              className="rounded-lg border px-2 py-0.5 text-xs max-w-[100px]" 
+                              value={editForm.employeeCode} 
+                              onChange={(e) => setEditForm(prev => ({ ...prev, employeeCode: e.target.value }))} 
+                              placeholder="EMP-XXXX"
+                            />
+                          ) : (
+                            selectedEmployee.employeeCode
+                          )}
+                        </div>
                         <span className="h-1 w-1 rounded-full bg-slate-300"></span>
                         <StatusPill>{selectedEmployee.status}</StatusPill>
+                        {isEditing ? (
+                          <input 
+                            className="rounded-lg border px-2 py-0.5 text-xs max-w-[200px]" 
+                            type="email"
+                            value={editForm.email} 
+                            onChange={(e) => setEditForm(prev => ({ ...prev, email: e.target.value }))} 
+                            placeholder="Email"
+                          />
+                        ) : (
+                          selectedEmployee.email
+                        )}
                       </div>
                     </div>
                     {/* Edit Profile Button (for HR or for employee) */}
@@ -704,7 +801,38 @@ export function EmployeesConsole() {
                         </div>
                         <div className="flex justify-between">
                           <span className="text-slate-400 font-semibold">Blood Group</span>
-                          <span className="font-semibold text-slate-800">O+</span>
+                          {isEditing ? (
+                            <select
+                              className="rounded-lg border px-2 py-0.5 text-xs bg-white"
+                              value={editForm.bloodGroup}
+                              onChange={(e) => setEditForm(prev => ({ ...prev, bloodGroup: e.target.value }))}
+                            >
+                              <option value="">Select Blood Group</option>
+                              {["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"].map(bg => (
+                                <option key={bg} value={bg}>{bg}</option>
+                              ))}
+                            </select>
+                          ) : (
+                            <span className="font-semibold text-slate-800">{selectedEmployee.bloodGroup || "Not recorded"}</span>
+                          )}
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400 font-semibold">Marital Status</span>
+                          {isEditing ? (
+                            <select
+                              className="rounded-lg border px-2 py-0.5 text-xs bg-white"
+                              value={editForm.maritalStatus}
+                              onChange={(e) => setEditForm(prev => ({ ...prev, maritalStatus: e.target.value }))}
+                            >
+                              <option value="">Select Status</option>
+                              <option value="Single">Single</option>
+                              <option value="Married">Married</option>
+                              <option value="Divorced">Divorced</option>
+                              <option value="Widowed">Widowed</option>
+                            </select>
+                          ) : (
+                            <span className="font-semibold text-slate-800">{selectedEmployee.maritalStatus || "Not recorded"}</span>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -820,7 +948,43 @@ export function EmployeesConsole() {
                         </div>
                         <div className="flex justify-between">
                           <span className="text-slate-400 font-semibold">Email</span>
-                          <span className="font-semibold text-slate-800">{selectedEmployee.email}</span>
+                          {isEditing ? (
+                            <input
+                              type="email"
+                              className="rounded-lg border px-2 py-0.5 text-xs"
+                              value={editForm.email}
+                              onChange={(e) => setEditForm(prev => ({ ...prev, email: e.target.value }))}
+                            />
+                          ) : (
+                            <span className="font-semibold text-slate-800">{selectedEmployee.email}</span>
+                          )}
+                        </div>
+                        <div className="flex flex-col gap-1 mt-2 pt-2 border-t border-slate-100">
+                          <span className="text-slate-400 font-semibold">Emergency Contact</span>
+                          {isEditing ? (
+                            <div className="flex gap-2">
+                              <input
+                                className="rounded-lg border px-2 py-0.5 text-xs w-1/2"
+                                placeholder="Name"
+                                value={editForm.emergencyContactName}
+                                onChange={(e) => setEditForm(prev => ({ ...prev, emergencyContactName: e.target.value }))}
+                              />
+                              <input
+                                className="rounded-lg border px-2 py-0.5 text-xs w-1/2"
+                                placeholder="Phone"
+                                value={editForm.emergencyContactPhone}
+                                onChange={(e) => setEditForm(prev => ({ ...prev, emergencyContactPhone: e.target.value }))}
+                              />
+                            </div>
+                          ) : (
+                            <span className="font-semibold text-slate-800">
+                              {selectedEmployee.emergencyContactName ? (
+                                `${selectedEmployee.emergencyContactName} (${selectedEmployee.emergencyContactPhone || 'No Phone'})`
+                              ) : (
+                                "Not recorded"
+                              )}
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -913,6 +1077,219 @@ export function EmployeesConsole() {
                     </div>
                   </div>
 
+                  <div className="grid grid-cols-2 gap-5 max-md:grid-cols-1">
+                    {/* Address Details */}
+                    <div className="rounded-xl border border-slate-200 p-5 space-y-4">
+                      <div className="flex items-center gap-2 border-b pb-2">
+                        <MapPin className="h-4 w-4 text-brand" />
+                        <h4 className="text-sm font-bold uppercase tracking-wider text-slate-700">Primary Address</h4>
+                      </div>
+                      <div className="grid gap-3 text-sm">
+                        <div className="flex justify-between">
+                          <span className="text-slate-400 font-semibold">Address</span>
+                          {isEditing ? (
+                            <input
+                              className="rounded-lg border px-2 py-0.5 text-xs w-2/3"
+                              value={editForm.addresses?.[0]?.addressLine1 || ""}
+                              onChange={(e) => {
+                                const newAddresses = [...(editForm.addresses || [])];
+                                if (!newAddresses[0]) newAddresses[0] = { type: "CURRENT", addressLine1: "", city: "", state: "", pinCode: "" };
+                                newAddresses[0].addressLine1 = e.target.value;
+                                setEditForm(prev => ({ ...prev, addresses: newAddresses }));
+                              }}
+                              placeholder="Line 1"
+                            />
+                          ) : (
+                            <span className="font-semibold text-slate-800">{selectedEmployee.addresses?.[0]?.addressLine1 || "Not Set"}</span>
+                          )}
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400 font-semibold">City/State</span>
+                          {isEditing ? (
+                            <div className="flex gap-2 w-2/3">
+                              <input
+                                className="rounded-lg border px-2 py-0.5 text-xs w-1/2"
+                                value={editForm.addresses?.[0]?.city || ""}
+                                onChange={(e) => {
+                                  const newAddresses = [...(editForm.addresses || [])];
+                                  if (!newAddresses[0]) newAddresses[0] = { type: "CURRENT", addressLine1: "", city: "", state: "", pinCode: "" };
+                                  newAddresses[0].city = e.target.value;
+                                  setEditForm(prev => ({ ...prev, addresses: newAddresses }));
+                                }}
+                                placeholder="City"
+                              />
+                              <input
+                                className="rounded-lg border px-2 py-0.5 text-xs w-1/2"
+                                value={editForm.addresses?.[0]?.state || ""}
+                                onChange={(e) => {
+                                  const newAddresses = [...(editForm.addresses || [])];
+                                  if (!newAddresses[0]) newAddresses[0] = { type: "CURRENT", addressLine1: "", city: "", state: "", pinCode: "" };
+                                  newAddresses[0].state = e.target.value;
+                                  setEditForm(prev => ({ ...prev, addresses: newAddresses }));
+                                }}
+                                placeholder="State"
+                              />
+                            </div>
+                          ) : (
+                            <span className="font-semibold text-slate-800">
+                              {selectedEmployee.addresses?.[0] ? `${selectedEmployee.addresses[0].city || ''}${selectedEmployee.addresses[0].state ? ', ' + selectedEmployee.addresses[0].state : ''}` : "Not Set"}
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-slate-400 font-semibold">PIN Code</span>
+                          {isEditing ? (
+                            <input
+                              className="rounded-lg border px-2 py-0.5 text-xs w-2/3"
+                              value={editForm.addresses?.[0]?.pinCode || ""}
+                              onChange={(e) => {
+                                const newAddresses = [...(editForm.addresses || [])];
+                                if (!newAddresses[0]) newAddresses[0] = { type: "CURRENT", addressLine1: "", city: "", state: "", pinCode: "" };
+                                newAddresses[0].pinCode = e.target.value;
+                                setEditForm(prev => ({ ...prev, addresses: newAddresses }));
+                              }}
+                              placeholder="PIN Code"
+                            />
+                          ) : (
+                            <span className="font-semibold text-slate-800">{selectedEmployee.addresses?.[0]?.pinCode || "Not Set"}</span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Education & Family Section - stacked since Address is tall */}
+                    <div className="space-y-5">
+                      {/* Education History */}
+                      <div className="rounded-xl border border-slate-200 p-5 space-y-4">
+                        <div className="flex items-center gap-2 border-b pb-2">
+                          <GraduationCap className="h-4 w-4 text-brand" />
+                          <h4 className="text-sm font-bold uppercase tracking-wider text-slate-700">Highest Education</h4>
+                        </div>
+                        <div className="grid gap-3 text-sm">
+                          <div className="flex justify-between">
+                            <span className="text-slate-400 font-semibold">Degree</span>
+                            {isEditing ? (
+                              <input
+                                className="rounded-lg border px-2 py-0.5 text-xs w-2/3"
+                                value={editForm.educationHistory?.[0]?.degree || ""}
+                                onChange={(e) => {
+                                  const newEd = [...(editForm.educationHistory || [])];
+                                  if (!newEd[0]) newEd[0] = { degree: "", institution: "", yearOfPassing: new Date().getFullYear() };
+                                  newEd[0].degree = e.target.value;
+                                  setEditForm(prev => ({ ...prev, educationHistory: newEd }));
+                                }}
+                                placeholder="e.g. B.Tech"
+                              />
+                            ) : (
+                              <span className="font-semibold text-slate-800">{selectedEmployee.educationHistory?.[0]?.degree || "Not Set"}</span>
+                            )}
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-slate-400 font-semibold">Institution</span>
+                            {isEditing ? (
+                              <input
+                                className="rounded-lg border px-2 py-0.5 text-xs w-2/3"
+                                value={editForm.educationHistory?.[0]?.institution || ""}
+                                onChange={(e) => {
+                                  const newEd = [...(editForm.educationHistory || [])];
+                                  if (!newEd[0]) newEd[0] = { degree: "", institution: "", yearOfPassing: new Date().getFullYear() };
+                                  newEd[0].institution = e.target.value;
+                                  setEditForm(prev => ({ ...prev, educationHistory: newEd }));
+                                }}
+                                placeholder="University/College"
+                              />
+                            ) : (
+                              <span className="font-semibold text-slate-800">{selectedEmployee.educationHistory?.[0]?.institution || "Not Set"}</span>
+                            )}
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-slate-400 font-semibold">Passing Year</span>
+                            {isEditing ? (
+                              <input
+                                type="number"
+                                className="rounded-lg border px-2 py-0.5 text-xs w-2/3"
+                                value={editForm.educationHistory?.[0]?.yearOfPassing || ""}
+                                onChange={(e) => {
+                                  const newEd = [...(editForm.educationHistory || [])];
+                                  if (!newEd[0]) newEd[0] = { degree: "", institution: "", yearOfPassing: new Date().getFullYear() };
+                                  newEd[0].yearOfPassing = parseInt(e.target.value) || new Date().getFullYear();
+                                  setEditForm(prev => ({ ...prev, educationHistory: newEd }));
+                                }}
+                                placeholder="YYYY"
+                              />
+                            ) : (
+                              <span className="font-semibold text-slate-800">{selectedEmployee.educationHistory?.[0]?.yearOfPassing || "Not Set"}</span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Family Details */}
+                      <div className="rounded-xl border border-slate-200 p-5 space-y-4">
+                        <div className="flex items-center gap-2 border-b pb-2">
+                          <Users className="h-4 w-4 text-brand" />
+                          <h4 className="text-sm font-bold uppercase tracking-wider text-slate-700">Primary Dependent</h4>
+                        </div>
+                        <div className="grid gap-3 text-sm">
+                          <div className="flex justify-between">
+                            <span className="text-slate-400 font-semibold">Name</span>
+                            {isEditing ? (
+                              <input
+                                className="rounded-lg border px-2 py-0.5 text-xs w-2/3"
+                                value={editForm.familyDetails?.[0]?.name || ""}
+                                onChange={(e) => {
+                                  const newFam = [...(editForm.familyDetails || [])];
+                                  if (!newFam[0]) newFam[0] = { name: "", relationship: "" };
+                                  newFam[0].name = e.target.value;
+                                  setEditForm(prev => ({ ...prev, familyDetails: newFam }));
+                                }}
+                                placeholder="Full Name"
+                              />
+                            ) : (
+                              <span className="font-semibold text-slate-800">{selectedEmployee.familyDetails?.[0]?.name || "Not Set"}</span>
+                            )}
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-slate-400 font-semibold">Relation</span>
+                            {isEditing ? (
+                              <input
+                                className="rounded-lg border px-2 py-0.5 text-xs w-2/3"
+                                value={editForm.familyDetails?.[0]?.relationship || ""}
+                                onChange={(e) => {
+                                  const newFam = [...(editForm.familyDetails || [])];
+                                  if (!newFam[0]) newFam[0] = { name: "", relationship: "" };
+                                  newFam[0].relationship = e.target.value;
+                                  setEditForm(prev => ({ ...prev, familyDetails: newFam }));
+                                }}
+                                placeholder="e.g. Spouse"
+                              />
+                            ) : (
+                              <span className="font-semibold text-slate-800">{selectedEmployee.familyDetails?.[0]?.relationship || "Not Set"}</span>
+                            )}
+                          </div>
+                          <div className="flex justify-between">
+                            <span className="text-slate-400 font-semibold">Phone</span>
+                            {isEditing ? (
+                              <input
+                                className="rounded-lg border px-2 py-0.5 text-xs w-2/3"
+                                value={editForm.familyDetails?.[0]?.phone || ""}
+                                onChange={(e) => {
+                                  const newFam = [...(editForm.familyDetails || [])];
+                                  if (!newFam[0]) newFam[0] = { name: "", relationship: "" };
+                                  newFam[0].phone = e.target.value;
+                                  setEditForm(prev => ({ ...prev, familyDetails: newFam }));
+                                }}
+                                placeholder="Mobile"
+                              />
+                            ) : (
+                              <span className="font-semibold text-slate-800">{selectedEmployee.familyDetails?.[0]?.phone || "Not Set"}</span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                   {/* Career History Section */}
                   <CareerHistoryPanel employeeId={selectedEmployee.id} />
                 </div>
@@ -944,11 +1321,11 @@ export function EmployeesConsole() {
           <section className="grid grid-cols-3 gap-5 max-xl:grid-cols-1">
             <div className="rounded-xl border border-[#dce2eb] bg-white p-5 shadow-sm text-center">
               <Building2 className="mx-auto h-8 w-8 text-brand mb-2" />
-              <h3 className="text-lg font-bold text-slate-800">SKYLINX Global Solutions</h3>
-              <p className="text-xs text-slate-400 uppercase font-semibold mt-1">HQ Corporate Office</p>
+              <h3 className="text-lg font-bold text-slate-800">{companyProfile?.company?.name || "Company"}</h3>
+              <p className="text-xs text-slate-400 uppercase font-semibold mt-1">{companyProfile?.company?.city ? `HQ - ${companyProfile.company.city}` : "HQ Corporate Office"}</p>
               <div className="mt-4 grid gap-2 text-left text-sm">
-                <div className="rounded-lg bg-[#f8fafc] p-3"><strong>Entity Code</strong><br />SGS-GLOBAL</div>
-                <div className="rounded-lg bg-[#f8fafc] p-3"><strong>Subscription</strong><br />Standard Enterprise Plan</div>
+                <div className="rounded-lg bg-[#f8fafc] p-3"><strong>Entity Code</strong><br />{companyProfile?.company?.taxId || "N/A"}</div>
+                <div className="rounded-lg bg-[#f8fafc] p-3"><strong>Subscription</strong><br />{companyProfile?.activePlan || "Standard"}</div>
               </div>
             </div>
             <div className="rounded-xl border border-[#dce2eb] bg-white p-5 shadow-sm space-y-4 col-span-2">
@@ -1145,7 +1522,7 @@ function LetterTemplatesPanel() {
   const [form, setForm] = useState({
     type: "OFFER",
     title: "",
-    body: "Dear {{employeeName}},\n\nWe are pleased to offer you the position of {{designation}} in our {{department}} department. Your joining date is {{joiningDate}}.\n\nBest regards,\nSkylinx HR Team",
+    body: "Dear {{employeeName}},\n\nWe are pleased to offer you the position of {{designation}} in our {{department}} department. Your joining date is {{joiningDate}}.\n\nBest regards,\n{{companyName}} HR Team",
   });
 
   function load() {
@@ -1181,7 +1558,7 @@ function LetterTemplatesPanel() {
         }),
       });
       setMessage("Template created successfully!");
-      setForm({ type: "OFFER", title: "", body: "Dear {{employeeName}},\n\nWe are pleased to offer you the position of {{designation}} in our {{department}} department. Your joining date is {{joiningDate}}.\n\nBest regards,\nSkylinx HR Team" });
+      setForm({ type: "OFFER", title: "", body: "Dear {{employeeName}},\n\nWe are pleased to offer you the position of {{designation}} in our {{department}} department. Your joining date is {{joiningDate}}.\n\nBest regards,\n{{companyName}} HR Team" });
       load();
     } catch (err: any) {
       setError(err.message || "Failed to create template.");

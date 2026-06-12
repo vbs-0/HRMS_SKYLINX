@@ -1,4 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { parse } from "csv-parse/sync";
 import { ApprovalStatus, AttendanceStatus } from "@prisma/client";
 import { response } from "../../common/crud-response";
 import { PrismaService } from "../../prisma/prisma.service";
@@ -580,18 +581,45 @@ export class AttendanceService {
     });
   }
 
-  async bulkUpload(records: any[]) {
+  async bulkUpload(fileBuffer: Buffer) {
+    let records: any[];
+    try {
+      const csvContent = fileBuffer.toString("utf-8");
+      records = parse(csvContent, {
+        columns: true,
+        skip_empty_lines: true,
+        trim: true,
+      });
+    } catch (err) {
+      throw new BadRequestException("Failed to parse CSV file");
+    }
+
+    if (!records || records.length === 0) {
+      throw new BadRequestException("CSV file is empty or invalid format");
+    }
+
     const results = [];
     const shift = await this.prisma.shift.findFirst({ where: { status: "ACTIVE" } });
     if (!shift) throw new BadRequestException("No active shift configured");
 
     for (const record of records) {
-      const { employeeId, date, checkInAt, checkOutAt, status } = record;
-      const parsedDate = new Date(date);
+      const employeeId = record.employeeId || record.EmployeeId || record["Employee ID"];
+      const dateStr = record.date || record.Date;
+      const checkInAtStr = record.checkInAt || record.CheckInAt || record["Check In"];
+      const checkOutAtStr = record.checkOutAt || record.CheckOutAt || record["Check Out"];
+      const statusStr = record.status || record.Status || "PRESENT";
+
+      if (!employeeId || !dateStr) continue;
+
+      const parsedDate = new Date(dateStr);
+      if (isNaN(parsedDate.getTime())) continue;
       parsedDate.setHours(0, 0, 0, 0);
 
-      const parsedCheckIn = checkInAt ? new Date(checkInAt) : null;
-      const parsedCheckOut = checkOutAt ? new Date(checkOutAt) : null;
+      const parsedCheckIn = checkInAtStr ? new Date(checkInAtStr) : null;
+      if (checkInAtStr && parsedCheckIn && isNaN(parsedCheckIn.getTime())) continue;
+
+      const parsedCheckOut = checkOutAtStr ? new Date(checkOutAtStr) : null;
+      if (checkOutAtStr && parsedCheckOut && isNaN(parsedCheckOut.getTime())) continue;
 
       const log = await this.prisma.attendanceLog.upsert({
         where: {
@@ -604,7 +632,7 @@ export class AttendanceService {
           shiftId: shift.id,
           checkInAt: parsedCheckIn,
           checkOutAt: parsedCheckOut,
-          status: status || AttendanceStatus.PRESENT,
+          status: statusStr as AttendanceStatus,
           source: "BULK_UPLOAD",
         },
         create: {
@@ -613,7 +641,7 @@ export class AttendanceService {
           date: parsedDate,
           checkInAt: parsedCheckIn,
           checkOutAt: parsedCheckOut,
-          status: status || AttendanceStatus.PRESENT,
+          status: statusStr as AttendanceStatus,
           source: "BULK_UPLOAD",
         },
       });

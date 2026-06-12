@@ -70,12 +70,12 @@ function escapeHtml(value: string) {
 
 function currentCookiePlan() {
   if (typeof document === "undefined") return "";
-  const match = document.cookie.match(/(?:^|; )skylinx_peopleos_plan=([^;]+)/);
+  const match = document.cookie.match(/(?:^|; )peopleos_plan=([^;]+)/);
   return match ? decodeURIComponent(match[1]) : "";
 }
 
 function writePlanCookie(planName: string) {
-  document.cookie = `skylinx_peopleos_plan=${encodeURIComponent(planName)}; path=/; max-age=31536000; SameSite=Lax`;
+  document.cookie = `peopleos_plan=${encodeURIComponent(planName)}; path=/; max-age=31536000; SameSite=Lax`;
 }
 
 function billingSummaryForPlan(plan: Plan, current: SaasData["billingSummary"], employees?: number, years = 1, selectedAddOnKeys: string[] = [], couponKey = "none"): SaasData["billingSummary"] {
@@ -247,9 +247,9 @@ export function SaasConsole() {
   </div>
   <div class="box">
     <strong>Billed From</strong><br />
-    SKYLINX Global Solutions<br />
+    Acme Corp<br />
     SKYLINX PeopleOS HRMS<br />
-    skylinxcode@gmail.com | 8008785577
+    support@skylinx.com | +1-800-555-0199
   </div>
   <div class="box">
     <strong>Billed To</strong><br />
@@ -618,10 +618,10 @@ export function SaasConsole() {
         <div className="grid grid-cols-3 gap-5 p-5 max-lg:grid-cols-1">
           <div className="rounded-lg border border-[#dce2eb] p-4">
             <div className="text-xs font-bold uppercase text-muted">Billed From</div>
-            <div className="mt-2 text-lg font-semibold text-[#172033]">SKYLINX Global Solutions</div>
+            <div className="mt-2 text-lg font-semibold text-[#172033]">Acme Corp</div>
             <div className="mt-1 text-sm text-muted">SKYLINX PeopleOS HRMS</div>
-            <div className="mt-3 text-sm text-[#34465f]">skylinxcode@gmail.com</div>
-            <div className="text-sm text-[#34465f]">8008785577</div>
+            <div className="mt-3 text-sm text-[#34465f]">support@skylinx.com</div>
+            <div className="text-sm text-[#34465f]">+1-800-555-0199</div>
           </div>
           <div className="rounded-lg border border-[#dce2eb] p-4">
             <div className="text-xs font-bold uppercase text-muted">Billed To</div>

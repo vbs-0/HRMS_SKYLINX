@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException, ForbiddenException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException, ForbiddenException, UnauthorizedException } from "@nestjs/common";
 import { ApprovalStatus } from "@prisma/client";
 import { response } from "../../common/crud-response";
 import { decrypt, sanitizeBankDetail } from "../../common/crypto.util";
@@ -74,7 +74,8 @@ export class PayrollService {
   }
 
   async createRun(data: CreatePayrollRunDto) {
-    const companyId = TenantContext.getTenantId() || data.companyId || "company_skylinx";
+    const companyId = TenantContext.getTenantId() || data.companyId;
+    if (!companyId) throw new UnauthorizedException("No tenant context");
     const run = await this.prisma.payrollRun.upsert({
       where: {
         companyId_month_year: {
@@ -509,7 +510,8 @@ export class PayrollService {
             const slab = ptSlabs.find((s) => grossSalary <= Number(s.upto)) || ptSlabs[ptSlabs.length - 1];
             professionalTax = num(slab?.monthly, 0);
           } else {
-            professionalTax = grossSalary > 15000 ? 200 : 0;
+            // No PT slabs configured — use esiWageCeiling as threshold, 200 as default monthly
+            professionalTax = grossSalary > num(payrollRules.pfWageCeiling, 15000) ? 200 : 0;
           }
         }
 
@@ -522,14 +524,19 @@ export class PayrollService {
         if (taxDeclaration) {
           const annualGross = grossSalary * 12;
           const regime = taxDeclaration.regime || "NEW";
-          const standardDeduction = regime === "NEW" ? 75000 : 50000;
+          const taxCfg = (payrollRules as any).taxCalc || {};
+          const stdDedNew = Number(taxCfg.standardDeductionNew ?? 75000);
+          const stdDedOld = Number(taxCfg.standardDeductionOld ?? 50000);
+          const cap80C = Number(taxCfg.section80CCap ?? 150000);
+          const cap80D = Number(taxCfg.section80DCap ?? 25000);
+          const cap24b = Number(taxCfg.section24bCap ?? 200000);
+          const standardDeduction = regime === "NEW" ? stdDedNew : stdDedOld;
 
           let exemptions = 0;
           if (regime === "OLD") {
-            // Apply OLD regime tax deduction caps
-            const capped80C = Math.min(Number(taxDeclaration.section80C || 0), 150000);
-            const capped80D = Math.min(Number(taxDeclaration.section80D || 0), 25000);
-            const capped24 = Math.min(Number(taxDeclaration.section24 || 0), 200000);
+            const capped80C = Math.min(Number(taxDeclaration.section80C || 0), cap80C);
+            const capped80D = Math.min(Number(taxDeclaration.section80D || 0), cap80D);
+            const capped24 = Math.min(Number(taxDeclaration.section24 || 0), cap24b);
             exemptions = capped80C + capped80D + capped24 + Number(taxDeclaration.otherExemptions || 0);
           }
 
@@ -1012,11 +1019,8 @@ export class PayrollService {
   // Retention Bonuses
   // ==========================================
   async createRetentionBonus(data: CreateRetentionBonusDto) {
-    let companyId = TenantContext.getTenantId();
-    if (!companyId) {
-      const firstCompany = await this.prisma.company.findFirst();
-      companyId = firstCompany?.id || "comp_skylinx";
-    }
+    const companyId = TenantContext.getTenantId();
+    if (!companyId) throw new UnauthorizedException("No tenant context");
     const bonus = await this.prisma.retentionBonus.create({
       data: {
         companyId,
@@ -1085,11 +1089,8 @@ export class PayrollService {
   // Salary Withholding
   // ==========================================
   async createWithholding(data: CreateSalaryWithholdingDto) {
-    let companyId = TenantContext.getTenantId();
-    if (!companyId) {
-      const firstCompany = await this.prisma.company.findFirst();
-      companyId = firstCompany?.id || "comp_skylinx";
-    }
+    const companyId = TenantContext.getTenantId();
+    if (!companyId) throw new UnauthorizedException("No tenant context");
     const withholding = await this.prisma.salaryWithholding.create({
       data: {
         companyId,
@@ -1212,23 +1213,44 @@ export class PayrollService {
       }
     }
 
-    // Standard deduction (New Tax Regime FY2025-26 = ₹75,000)
-    const standardDeduction = 75000;
+    // Standard deduction and tax calc params — read from admin-configurable settings
+    const rules = await this.settingsService.getPayrollRules();
+    const taxCalc = (rules as any).taxCalc || {};
+    const standardDeduction = Number(taxCalc.standardDeductionNew ?? 75000);
+    const cessPct = Number(taxCalc.cessPct ?? 0.04);
+    const surchargePct = Number(taxCalc.surchargePct ?? 0.10);
+    const surchargeThreshold = Number(taxCalc.surchargeThreshold ?? 5000000);
+
     const taxableIncome = Math.max(0, grossPay - standardDeduction);
 
-    // Simple slab computation (New Regime FY2025-26)
+    // Slab computation using admin-configurable tdsSlabs (New Regime)
+    const tdsSlabs: Array<{ from: number; upto: number; rate: number }> = Array.isArray(rules.tdsSlabs)
+      ? (rules.tdsSlabs as any[])
+      : [
+          { from: 0, upto: 300000, rate: 0 },
+          { from: 300001, upto: 700000, rate: 5 },
+          { from: 700001, upto: 1000000, rate: 10 },
+          { from: 1000001, upto: 1200000, rate: 15 },
+          { from: 1200001, upto: 1500000, rate: 20 },
+          { from: 1500001, upto: 999999999, rate: 30 },
+        ];
+
     const computeTax = (income: number): number => {
-      if (income <= 300000) return 0;
-      if (income <= 700000) return (income - 300000) * 0.05;
-      if (income <= 1000000) return 20000 + (income - 700000) * 0.10;
-      if (income <= 1200000) return 50000 + (income - 1000000) * 0.15;
-      if (income <= 1500000) return 80000 + (income - 1200000) * 0.20;
-      return 140000 + (income - 1500000) * 0.30;
+      let tax = 0;
+      for (const slab of tdsSlabs) {
+        const from = Number(slab.from);
+        const upto = Number(slab.upto);
+        const rate = Number(slab.rate) / 100;
+        if (income > from) {
+          tax += (Math.min(income, upto) - from) * rate;
+        }
+      }
+      return tax;
     };
 
     const incomeTax = computeTax(taxableIncome);
-    const surcharge = taxableIncome > 5000000 ? incomeTax * 0.10 : 0;
-    const cess = (incomeTax + surcharge) * 0.04;
+    const surcharge = taxableIncome > surchargeThreshold ? incomeTax * surchargePct : 0;
+    const cess = (incomeTax + surcharge) * cessPct;
     const totalTaxLiability = Math.round(incomeTax + surcharge + cess);
     const refundOrDue = tdsDeducted - totalTaxLiability;
 

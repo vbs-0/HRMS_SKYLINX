@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import { apiFetch } from "../lib/client-api";
@@ -59,8 +59,11 @@ export function SaasAdminPageContent() {
       const token = getAccessToken();
       if (token) {
         const payload = JSON.parse(atob(token.split(".")[1]));
-        const email = payload.email || "";
-        const ownerCheck = email === "skylinxcode@gmail.com";
+        // Check isSuperAdmin flag OR saas.admin permission OR super_admin role
+        const ownerCheck =
+          payload?.isSuperAdmin === true ||
+          (Array.isArray(payload?.permissions) && payload.permissions.includes("saas.admin")) ||
+          (Array.isArray(payload?.roles) && payload.roles.includes("super_admin"));
         setIsOwner(ownerCheck);
       }
     } catch (err) {

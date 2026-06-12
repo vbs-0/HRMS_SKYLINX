@@ -51,7 +51,7 @@ export function ReferenceModuleHeader({
   onMonthChange?: (val: string) => void;
 }) {
   const [localSearch, setLocalSearch] = useState("");
-  const [localMonth, setLocalMonth] = useState("2026-06");
+  const [localMonth, setLocalMonth] = useState(() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`; });
   const [localStatus, setLocalStatus] = useState("All");
 
   const sVal = searchValue !== undefined ? searchValue : localSearch;

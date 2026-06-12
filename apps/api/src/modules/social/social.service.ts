@@ -91,9 +91,8 @@ export class SocialService {
 
   private async resolveUserId(userId?: string) {
     if (userId) return userId;
-    const user = await this.prisma.user.findUnique({ where: { email: "hr.admin@skylinx.local" } });
-    if (!user) throw new NotFoundException("Default HR user not found");
-    return user.id;
+    // No hardcoded fallback — the caller must supply the authenticated user's ID
+    throw new NotFoundException("User ID is required and must be supplied by the authenticated request context.");
   }
 
   private async audit(action: string, entityId: string, data: unknown) {

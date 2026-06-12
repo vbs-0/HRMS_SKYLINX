@@ -71,4 +71,12 @@ export class UpdateClientRulesDto {
   @IsOptional()
   @IsObject()
   documents?: Record<string, unknown>;
+
+  @IsOptional()
+  @IsObject()
+  taxCalc?: Record<string, unknown>;
+
+  @IsOptional()
+  @IsObject()
+  salaryStructure?: Record<string, unknown>;
 }

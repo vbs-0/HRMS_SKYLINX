@@ -391,13 +391,13 @@ export function SupportConsole() {
             tone: "primary",
             onClick: () => setIsModalOpen(true),
           },
-          { label: "Call", icon: PhoneCall, href: "tel:8008785577" },
+          { label: "Call", icon: PhoneCall, href: "tel:555-0199" },
           {
             label: "Email",
             icon: Mail,
             onClick: () => setIsEmailModalOpen(true),
           },
-          { label: "Chat", icon: MessageCircle, href: "https://wa.me/918008785577" },
+          { label: "Chat", icon: MessageCircle, href: "https://wa.me/91555-0199" },
         ]}
         stats={[
           { label: "Active Tickets", value: `${tickets.filter(t => t.status !== "Resolved").length}`, note: "Awaiting resolution" },
@@ -714,8 +714,8 @@ export function SupportConsole() {
                   <PhoneCall className="h-8 w-8 text-brand mx-auto mb-2" />
                   <h3 className="font-semibold text-[#172033]">Hotline Support</h3>
                   <p className="text-xs text-muted mt-1">Direct query support line</p>
-                  <a href="tel:8008785577" className="block mt-3 text-sm font-bold text-brand hover:underline">
-                    8008785577
+                  <a href="tel:555-0199" className="block mt-3 text-sm font-bold text-brand hover:underline">
+                    555-0199
                   </a>
                 </div>
 
@@ -728,7 +728,7 @@ export function SupportConsole() {
                     onClick={() => setIsEmailModalOpen(true)}
                     className="block w-full mt-3 text-sm font-bold text-brand hover:underline bg-transparent border-0 cursor-pointer text-center"
                   >
-                    skylinxcode@gmail.com
+                    support@skylinx.com
                   </button>
                 </div>
 
@@ -736,8 +736,8 @@ export function SupportConsole() {
                   <MessageCircle className="h-8 w-8 text-brand mx-auto mb-2" />
                   <h3 className="font-semibold text-[#172033]">WhatsApp Chat</h3>
                   <p className="text-xs text-muted mt-1">Quick messaging and status updates</p>
-                  <a href="https://wa.me/918008785577" target="_blank" rel="noreferrer" className="block mt-3 text-sm font-bold text-brand hover:underline">
-                    +91 8008785577
+                  <a href="https://wa.me/91555-0199" target="_blank" rel="noreferrer" className="block mt-3 text-sm font-bold text-brand hover:underline">
+                    +91 555-0199
                   </a>
                 </div>
               </div>
@@ -773,7 +773,7 @@ export function SupportConsole() {
                   onClick={() => setIsEmailModalOpen(true)}
                   className="text-sm font-bold text-[#172033] hover:text-brand bg-transparent border-0 p-0 text-left font-sans cursor-pointer focus:outline-none"
                 >
-                  skylinxcode@gmail.com
+                  support@skylinx.com
                 </button>
               </div>
             </div>
@@ -783,8 +783,8 @@ export function SupportConsole() {
               </div>
               <div>
                 <div className="text-xs font-semibold uppercase text-muted">Query Phone</div>
-                <a className="text-sm font-bold text-[#172033] hover:text-brand" href="tel:8008785577">
-                  8008785577
+                <a className="text-sm font-bold text-[#172033] hover:text-brand" href="tel:555-0199">
+                  555-0199
                 </a>
               </div>
             </div>
@@ -973,7 +973,7 @@ export function SupportConsole() {
                 <input
                   type="text"
                   disabled
-                  value="skylinxcode@gmail.com"
+                  value="support@skylinx.com"
                   className="w-full min-h-10 rounded-lg border border-[#dce2eb] bg-[#f8fafc] px-3 text-sm text-[#8ca0bf] outline-none cursor-not-allowed"
                 />
               </div>

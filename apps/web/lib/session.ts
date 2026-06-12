@@ -1,6 +1,6 @@
 "use client";
 
-export const ACCESS_TOKEN_KEY = "skylinx_peopleos_access_token";
+export const ACCESS_TOKEN_KEY = "peopleos_access_token";
 
 export function getAccessToken() {
   if (typeof window === "undefined") return null;
@@ -17,11 +17,54 @@ export function clearAccessToken() {
 
 export function getCurrentCompanyId(): string {
   const token = getAccessToken();
-  if (!token) return "company_skylinx";
+  if (!token) {
+    console.warn("[session] No access token — tenantId unavailable");
+    return "company_skylinx";
+  }
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));
     return payload.tenantId || "company_skylinx";
   } catch {
     return "company_skylinx";
   }
+}
+
+/** Decode the JWT and return the current logged-in user's info */
+export function getCurrentUser(): {
+  email: string;
+  sub: string;
+  employeeId: string | null;
+  permissions: string[];
+  roles: string[];
+  tenantId: string;
+} | null {
+  const token = getAccessToken();
+  if (!token) return null;
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1]));
+    return {
+      email: payload.email || "",
+      sub: payload.sub || "",
+      employeeId: payload.employeeId || null,
+      permissions: payload.permissions || [],
+      roles: payload.roles || [],
+      tenantId: payload.tenantId || "",
+    };
+  } catch {
+    return null;
+  }
+}
+
+/** Returns true if the current user has any of the given roles */
+export function hasRole(...roles: string[]): boolean {
+  const user = getCurrentUser();
+  if (!user) return false;
+  return roles.some((r) => user.roles.includes(r));
+}
+
+/** Returns true if the current user has the given permission */
+export function hasPermission(permission: string): boolean {
+  const user = getCurrentUser();
+  if (!user) return false;
+  return user.permissions.includes(permission);
 }

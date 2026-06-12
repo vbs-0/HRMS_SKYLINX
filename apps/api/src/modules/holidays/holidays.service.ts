@@ -45,7 +45,7 @@ export class HolidaysService {
     const tenantId = TenantContext.getTenantId();
     const holiday = await this.prisma.holiday.create({
       data: {
-        companyId: tenantId || data.companyId || "company_skylinx",
+        companyId: tenantId || data.companyId,
         locationId: data.locationId || undefined,
         name: data.name,
         date: new Date(data.date),

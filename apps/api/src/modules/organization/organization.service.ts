@@ -108,7 +108,7 @@ export class OrganizationService {
   async createDepartment(data: CreateDepartmentDto) {
     const created = await this.prisma.department.create({
       data: {
-        companyId: TenantContext.getTenantId() || "company_skylinx",
+        companyId: TenantContext.getTenantId()!,
         name: data.name,
         code: data.code,
         managerEmployeeId: data.managerEmployeeId || null,
@@ -188,7 +188,7 @@ export class OrganizationService {
   async createDesignation(data: CreateDesignationDto) {
     const created = await this.prisma.designation.create({
       data: {
-        companyId: TenantContext.getTenantId() || "company_skylinx",
+        companyId: TenantContext.getTenantId()!,
         title: data.title,
         departmentId: data.departmentId || null,
         grade: data.grade || null,
@@ -267,7 +267,7 @@ export class OrganizationService {
   async createLocation(data: CreateLocationDto) {
     const created = await this.prisma.location.create({
       data: {
-        companyId: TenantContext.getTenantId() || "company_skylinx",
+        companyId: TenantContext.getTenantId()!,
         name: data.name,
         address: data.address || null,
         city: data.city,

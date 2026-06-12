@@ -24,7 +24,7 @@ export function HolidayConsole() {
   const [activeTab, setActiveTab] = useState("Calendar");
   const [holidays, setHolidays] = useState<ApiHoliday[]>([]);
   const [loaded, setLoaded] = useState(false);
-  const [selectedMonth, setSelectedMonth] = useState("2026-06"); // YYYY-MM
+  const [selectedMonth, setSelectedMonth] = useState(() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`; }); // YYYY-MM
   const [showAddModal, setShowAddModal] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");

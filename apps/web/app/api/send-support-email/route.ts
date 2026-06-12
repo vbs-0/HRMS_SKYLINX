@@ -59,8 +59,8 @@ export async function POST(request: Request) {
       );
     }
 
-    const emailFrom = process.env.EMAIL_FROM || "skylinxcode@gmail.com";
-    const hrEmail = "skylinxcode@gmail.com";
+    const emailFrom = process.env.EMAIL_FROM || "support@skylinx.com";
+    const hrEmail = "support@skylinx.com";
     const isEmailInquiry = type === "email";
     
     const subject = isEmailInquiry 

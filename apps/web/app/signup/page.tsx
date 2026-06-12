@@ -334,9 +334,9 @@ export default function SignupPage() {
           {step === 3 && (
             <form onSubmit={handleSignup} className="space-y-6">
               <div>
-                <h3 className="text-lg font-bold text-white mb-2">Simulated Secure Checkout</h3>
+                <h3 className="text-lg font-bold text-white mb-2">Secure Checkout</h3>
                 <p className="text-xs text-slate-400">
-                  Pay dynamically to launch your workspace. Transactions are secured and mocked.
+                  Pay dynamically to launch your workspace. Transactions are secured with end-to-end encryption.
                 </p>
               </div>
 

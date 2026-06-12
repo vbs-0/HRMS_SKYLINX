@@ -9,8 +9,8 @@ test.describe("SKYLINX PeopleOS HRMS E2E Suite", () => {
 
   test("should successfully authenticate and navigate through core modules", async ({ page }) => {
     // Fill credentials using label matching
-    await page.getByLabel("Email").fill("hr.admin@skylinx.local");
-    await page.getByLabel("Password").fill("Skylinx@123");
+    await page.getByLabel("Email").fill(process.env.HR_ADMIN_EMAIL || "admin@example.com");
+    await page.getByLabel("Password").fill(process.env.HR_ADMIN_PASSWORD || "password123");
 
     // Click Sign In button
     await page.getByRole("button", { name: "Sign In" }).click();

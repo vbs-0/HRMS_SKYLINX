@@ -1,18 +1,18 @@
-import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
+import { Injectable, NotFoundException, BadRequestException, UnauthorizedException } from "@nestjs/common";
 import { response } from "../../common/crud-response";
 import { AuthenticatedUser } from "../../common/auth/auth.types";
 import { PrismaService } from "../../prisma/prisma.service";
 import { TenantContext } from "../../common/tenant-context";
 import { CreateAssetDto } from "./dto/create-asset.dto";
 
-const DEFAULT_COMPANY_ID = "company_skylinx";
-
 @Injectable()
 export class AssetsService {
   constructor(private readonly prisma: PrismaService) {}
 
   private getTenantId(): string {
-    return TenantContext.getTenantId() || DEFAULT_COMPANY_ID;
+    const tenantId = TenantContext.getTenantId();
+    if (!tenantId) throw new UnauthorizedException("No tenant context");
+    return tenantId;
   }
 
   async summary() {

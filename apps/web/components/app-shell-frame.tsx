@@ -55,12 +55,17 @@ export function AppShellFrame({
   React.useEffect(() => {
     setCurrentDateStr(new Date().toLocaleDateString("en-IN", { weekday: "short", day: "2-digit", month: "short", year: "numeric" }));
 
-    // Decode owner flag from JWT
-    const token = typeof window !== "undefined" ? window.localStorage.getItem("skylinx_peopleos_access_token") : null;
+    // Decode owner flag from JWT — uses isSuperAdmin flag or saas.admin permission
+    const token = typeof window !== "undefined" ? window.localStorage.getItem("peopleos_access_token") : null;
     if (token) {
       try {
         const payload = JSON.parse(atob(token.split(".")[1]));
-        if (payload && payload.email === "skylinxcode@gmail.com") {
+        // Support isSuperAdmin flag in token, OR saas.admin permission, OR super_admin role
+        const isSuperAdmin =
+          payload?.isSuperAdmin === true ||
+          (Array.isArray(payload?.permissions) && payload.permissions.includes("saas.admin")) ||
+          (Array.isArray(payload?.roles) && payload.roles.includes("super_admin"));
+        if (isSuperAdmin) {
           setIsOwner(true);
         }
         if (Array.isArray(payload?.permissions)) {
@@ -73,7 +78,7 @@ export function AppShellFrame({
 
     // Fetch dynamic branding from authenticated endpoint
     const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:4000/api/v1";
-    const authToken = typeof window !== "undefined" ? window.localStorage.getItem("skylinx_peopleos_access_token") : null;
+    const authToken = typeof window !== "undefined" ? window.localStorage.getItem("peopleos_access_token") : null;
     if (authToken) {
       fetch(`${apiBase}/settings/rules`, {
         headers: {
@@ -96,10 +101,10 @@ export function AppShellFrame({
           // Keep the plan cookie in sync with the backend's active plan
           const backendPlan = body?.data?.activePlan;
           if (backendPlan) {
-            const match = document.cookie.match(/(?:^|; )skylinx_peopleos_plan=([^;]+)/);
+            const match = document.cookie.match(/(?:^|; )peopleos_plan=([^;]+)/);
             const currentCookie = match ? decodeURIComponent(match[1]) : "";
             if (currentCookie !== backendPlan) {
-              document.cookie = `skylinx_peopleos_plan=${encodeURIComponent(backendPlan)}; path=/; max-age=31536000; SameSite=Lax`;
+              document.cookie = `peopleos_plan=${encodeURIComponent(backendPlan)}; path=/; max-age=31536000; SameSite=Lax`;
               window.location.reload();
             }
           }

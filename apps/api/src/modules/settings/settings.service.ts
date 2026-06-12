@@ -109,6 +109,34 @@ const DEFAULT_RULES: Required<UpdateClientRulesDto> = {
   documents: {
     expiryReminderDays: 30,
   },
+  taxCalc: {
+    // Standard deduction (₹) — New Regime FY2025-26
+    standardDeductionNew: 75000,
+    // Standard deduction (₹) — Old Regime
+    standardDeductionOld: 50000,
+    // Section 80C cap (₹)
+    section80CCap: 150000,
+    // Section 80D cap (₹)
+    section80DCap: 25000,
+    // Section 24(b) home loan interest cap (₹)
+    section24bCap: 200000,
+    // Cess rate (fraction, e.g. 0.04 = 4%)
+    cessPct: 0.04,
+    // Surcharge rate (fraction, e.g. 0.10 = 10%)
+    surchargePct: 0.10,
+    // Surcharge applies above this annual taxable income (₹)
+    surchargeThreshold: 5000000,
+  },
+  salaryStructure: {
+    // Basic as fraction of annual CTC (e.g. 0.40 = 40%)
+    basicPct: 0.40,
+    // HRA as fraction of Basic (e.g. 0.50 = 50%)
+    hraPct: 0.50,
+    // Default TDS estimation as fraction of CTC (e.g. 0.05 = 5%)
+    defaultTdsPct: 0.05,
+    // Suggested performance increment fraction (e.g. 0.10 = 10%)
+    performanceIncrementPct: 0.10,
+  },
 };
 
 @Injectable()

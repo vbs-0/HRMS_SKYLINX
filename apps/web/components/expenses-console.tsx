@@ -14,7 +14,7 @@ export function ExpensesConsole() {
   const [activeTab, setActiveTab] = useState("Claims");
   const [showClaimPanel, setShowClaimPanel] = useState(false);
   const [search, setSearch] = useState("");
-  const [month, setMonth] = useState("2026-06");
+  const [month, setMonth] = useState(() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`; });
   const [status, setStatus] = useState("All");
 
   const [expenses, setExpenses] = useState<any[]>([]);

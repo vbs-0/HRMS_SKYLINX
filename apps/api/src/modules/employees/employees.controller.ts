@@ -46,8 +46,9 @@ export class EmployeesController {
 
   @Post("bulk-upload")
   @RequirePermissions("employees.create")
-  bulkUpload(@Body() body: unknown) {
-    return this.employeesService.bulkUpload(body);
+  @UseInterceptors(FileInterceptor("file"))
+  bulkUpload(@UploadedFile() file: any) {
+    return this.employeesService.bulkUpload(file);
   }
 
   @Get(":id")

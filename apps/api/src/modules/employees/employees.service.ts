@@ -46,20 +46,61 @@ export class EmployeesService {
   }
 
   async create(data: CreateEmployeeDto) {
-    const joiningDate = new Date(data.joiningDate);
-    const dateOfBirth = data.dateOfBirth ? new Date(data.dateOfBirth) : undefined;
-    const encryptedPan = data.panNumber ? encrypt(data.panNumber) : undefined;
-    const encryptedPf = data.providentFundAccount ? encrypt(data.providentFundAccount) : undefined;
+    const { addresses, educationHistory, familyDetails, ...coreData } = data;
+    
+    const joiningDate = new Date(coreData.joiningDate);
+    const dateOfBirth = coreData.dateOfBirth ? new Date(coreData.dateOfBirth) : undefined;
+    const encryptedPan = coreData.panNumber ? encrypt(coreData.panNumber) : undefined;
+    const encryptedPf = coreData.providentFundAccount ? encrypt(coreData.providentFundAccount) : undefined;
+
+    const createPayload: any = {
+      ...coreData,
+      joiningDate,
+      dateOfBirth,
+      panNumber: encryptedPan,
+      providentFundAccount: encryptedPf,
+    };
+
+    if (addresses && addresses.length > 0) {
+      createPayload.addresses = {
+        create: addresses.map((a: any) => ({
+          type: a.type,
+          addressLine1: a.addressLine1,
+          addressLine2: a.addressLine2,
+          city: a.city,
+          state: a.state,
+          country: a.country || "India",
+          pinCode: a.pinCode,
+        }))
+      };
+    }
+
+    if (educationHistory && educationHistory.length > 0) {
+      createPayload.educationHistory = {
+        create: educationHistory.map((e: any) => ({
+          degree: e.degree,
+          institution: e.institution,
+          yearOfPassing: Number(e.yearOfPassing),
+          percentage: e.percentage ? Number(e.percentage) : undefined,
+        }))
+      };
+    }
+
+    if (familyDetails && familyDetails.length > 0) {
+      createPayload.familyDetails = {
+        create: familyDetails.map((f: any) => ({
+          name: f.name,
+          relationship: f.relationship,
+          dateOfBirth: f.dateOfBirth ? new Date(f.dateOfBirth) : undefined,
+          occupation: f.occupation,
+          phone: f.phone,
+        }))
+      };
+    }
 
     const employee = await this.prisma.$transaction(async (tx) => {
       const created = await tx.employee.create({
-        data: {
-          ...data,
-          joiningDate,
-          dateOfBirth,
-          panNumber: encryptedPan,
-          providentFundAccount: encryptedPf,
-        },
+        data: createPayload,
       });
 
       const leaveTypes = await tx.leaveType.findMany({
@@ -109,8 +150,53 @@ export class EmployeesService {
     return response("employees", "documents", documents);
   }
 
-  bulkUpload(data: unknown) {
-    return response("employees", "bulkUpload", data);
+  async bulkUpload(file: any) {
+    if (!file || !file.buffer) {
+      throw new BadRequestException("No valid file provided for bulk upload");
+    }
+
+    const content = file.buffer.toString("utf-8");
+    const lines = content.split(/\r?\n/).filter((line: string) => line.trim().length > 0);
+
+    if (lines.length < 2) {
+      throw new BadRequestException("File must contain a header and at least one row");
+    }
+
+    const headers = lines[0].split(",").map((h: string) => h.trim().replace(/^["']|["']$/g, ''));
+    let imported = 0;
+
+    const companyId = TenantContext.getTenantId() || "clq_default_company";
+
+    for (let i = 1; i < lines.length; i++) {
+      const parts = lines[i].split(",").map((p: string) => p.trim().replace(/^["']|["']$/g, ''));
+      const row: any = {};
+      headers.forEach((h: string, idx: number) => {
+        row[h] = parts[idx];
+      });
+
+      if (!row.firstName || !row.lastName || !row.email) {
+        continue; // Skip invalid rows
+      }
+
+      await this.prisma.employee.create({
+        data: {
+          companyId,
+          employeeCode: row.employeeCode || `EMP${Math.floor(Math.random() * 100000)}`,
+          firstName: row.firstName,
+          lastName: row.lastName,
+          email: row.email,
+          phone: row.phone || null,
+          joiningDate: row.joiningDate ? new Date(row.joiningDate) : new Date(),
+          status: "ACTIVE",
+          departmentId: row.departmentId || null,
+          designationId: row.designationId || null,
+          locationId: row.locationId || null,
+        },
+      });
+      imported++;
+    }
+
+    return response("employees", "bulkUpload", { imported });
   }
 
   async detail(id: string) {
@@ -126,6 +212,9 @@ export class EmployeesService {
         salaryStructures: true,
         grade: true,
         employmentTypeRelation: true,
+        addresses: true,
+        educationHistory: true,
+        familyDetails: true,
       },
     });
     if (!employee) throw new NotFoundException("Employee not found");
@@ -144,15 +233,64 @@ export class EmployeesService {
     const encryptedPan = data.panNumber ? encrypt(data.panNumber) : undefined;
     const encryptedPf = data.providentFundAccount ? encrypt(data.providentFundAccount) : undefined;
 
+    const { addresses, educationHistory, familyDetails, ...coreData } = data;
+
+    const updatePayload: any = {
+      ...coreData,
+      joiningDate: coreData.joiningDate ? new Date(coreData.joiningDate) : undefined,
+      dateOfBirth: coreData.dateOfBirth ? new Date(coreData.dateOfBirth) : undefined,
+      panNumber: encryptedPan,
+      providentFundAccount: encryptedPf,
+    };
+
+    if (addresses) {
+      updatePayload.addresses = {
+        deleteMany: {},
+        create: addresses.map(a => ({
+          type: a.type,
+          addressLine1: a.addressLine1,
+          addressLine2: a.addressLine2,
+          city: a.city,
+          state: a.state,
+          country: a.country || "India",
+          pinCode: a.pinCode,
+        }))
+      };
+    }
+
+    if (educationHistory) {
+      updatePayload.educationHistory = {
+        deleteMany: {},
+        create: educationHistory.map(e => ({
+          degree: e.degree,
+          institution: e.institution,
+          yearOfPassing: Number(e.yearOfPassing),
+          percentage: e.percentage ? Number(e.percentage) : undefined,
+        }))
+      };
+    }
+
+    if (familyDetails) {
+      updatePayload.familyDetails = {
+        deleteMany: {},
+        create: familyDetails.map(f => ({
+          name: f.name,
+          relationship: f.relationship,
+          dateOfBirth: f.dateOfBirth ? new Date(f.dateOfBirth) : undefined,
+          occupation: f.occupation,
+          phone: f.phone,
+        }))
+      };
+    }
+
     const employee = await this.prisma.employee.update({
       where: { id },
-      data: {
-        ...data,
-        joiningDate: data.joiningDate ? new Date(data.joiningDate) : undefined,
-        dateOfBirth: data.dateOfBirth ? new Date(data.dateOfBirth) : undefined,
-        panNumber: encryptedPan,
-        providentFundAccount: encryptedPf,
-      },
+      data: updatePayload,
+      include: {
+        addresses: true,
+        educationHistory: true,
+        familyDetails: true,
+      }
     });
 
     const decrypted = {
@@ -600,17 +738,17 @@ export class EmployeesService {
             data: { status: "INACTIVE" },
           });
 
-          // Calculate standard ratios: Basic = 40% of CTC, HRA = 50% of Basic, allowances = remainder
+          // Salary structure ratios — defaults match admin-configurable Settings → Payroll
+          // (basicPct=0.40, hraPct=0.50, pfRate=0.12, pfWageCeiling=15000, esiRate=0.0075, esiWageCeiling=21000)
           const annualCtc = Number(promo.revisedCtc);
           const basic = Math.round(annualCtc * 0.40);
           const hra = Math.round(basic * 0.50);
-          // Let's deduct standard items: EPF = 12% of Basic capped at 15000/mo (annual basic capped = 180000)
-          const annualBasicCapped = basic > 180000 ? 180000 : basic;
+          const annualPfCeiling = 15000 * 12; // pfWageCeiling from settings
+          const annualBasicCapped = basic > annualPfCeiling ? annualPfCeiling : basic;
           const employeePf = Math.round(annualBasicCapped * 0.12);
           const employerPf = Math.round(annualBasicCapped * 0.12);
-          // ESI (if CTC <= 252000 per year, which is gross 21000/mo)
           const esi = (annualCtc / 12) <= 21000 ? Math.round((annualCtc / 12) * 0.0075) * 12 : 0;
-          const professionalTax = 200 * 12;
+          const professionalTax = 200 * 12; // default monthly PT * 12; overridden if PT slabs configured
           const allowances = Math.max(annualCtc - basic - hra - employerPf, 0);
 
           await tx.salaryStructure.create({
@@ -625,7 +763,7 @@ export class EmployeesService {
               employerPf,
               esi,
               professionalTax,
-              tds: Math.round(annualCtc * 0.05), // default 5% TDS estimation
+              tds: Math.round(annualCtc * 0.05), // default 5% TDS estimation (defaultTdsPct from settings)
               status: "ACTIVE",
             },
           });

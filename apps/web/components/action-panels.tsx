@@ -664,9 +664,16 @@ export function AttendanceActionPanel() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const employees = useEmployeeOptions();
-  const [employeeId, setEmployeeId] = useState("emp_1001");
+  const [employeeId, setEmployeeId] = useState("");
+
+  useEffect(() => {
+    if (employees.length > 0 && !employeeId) {
+      setEmployeeId(employees[0].value);
+    }
+  }, [employees, employeeId]);
 
   async function action(path: string, employeeId: string) {
+    if (!employeeId) return;
     setMessage("");
     setError("");
     try {
@@ -685,6 +692,7 @@ export function AttendanceActionPanel() {
     <div className="mb-5 rounded-lg border border-[#dce2eb] bg-white p-4 shadow-sm">
       <div className="grid grid-cols-[1fr_auto_auto] gap-3 max-md:grid-cols-1">
         <select className={inputClass()} id="attendance-employee-select" name="employeeId" value={employeeId} onChange={(event) => setEmployeeId(event.target.value)}>
+          <option value="">Select employee</option>
           {employees.map((employee) => <option key={employee.value} value={employee.value}>{employee.label}</option>)}
         </select>
         <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white" onClick={() => action("/attendance/check-in", employeeId)}>

@@ -311,7 +311,7 @@ export function RecruitmentConsole() {
           title: String(form.get("title")),
           departmentId: String(form.get("departmentId")),
           openings: Number(form.get("openings")),
-          requestedById: currentUser?.employeeId || "emp_1001",
+          requestedById: currentUser?.employeeId || undefined,
         }),
       });
       setMessage("Headcount requisition submitted successfully!");
@@ -369,7 +369,7 @@ export function RecruitmentConsole() {
       await apiFetch(`/recruitment/interviews/${selectedInterview.id}/feedback`, {
         method: "POST",
         body: JSON.stringify({
-          interviewerEmployeeId: currentUser?.employeeId || "emp_1001",
+          interviewerEmployeeId: currentUser?.employeeId || undefined,
           rating: Number(form.get("rating")),
           comments: String(form.get("comments")),
           recommendation: String(form.get("recommendation")), // HIRE, REJECT, HOLD
@@ -424,7 +424,7 @@ export function RecruitmentConsole() {
         method: "PATCH",
         body: JSON.stringify({
           status,
-          approvedById: currentUser?.employeeId || "emp_1001",
+          approvedById: currentUser?.employeeId || undefined,
           reason: `Approved via console by ${currentUser?.email}`,
         }),
       });
@@ -496,7 +496,7 @@ export function RecruitmentConsole() {
       await apiFetch("/recruitment/referrals", {
         method: "POST",
         body: JSON.stringify({
-          referrerId: currentUser?.employeeId || "emp_1001",
+          referrerId: currentUser?.employeeId || undefined,
           candidateName: String(form.get("candidateName")),
           candidateEmail: String(form.get("candidateEmail")),
           candidatePhone: String(form.get("candidatePhone")) || undefined,

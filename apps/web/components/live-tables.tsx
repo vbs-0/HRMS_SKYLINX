@@ -1,10 +1,11 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 import { apiFetch } from "../lib/client-api";
 import { fallbackAttendance, fallbackDepartments, fallbackDocuments, fallbackEmployees, fallbackExpenses, fallbackHolidays, fallbackInsuranceClaims, fallbackInsurancePolicies, fallbackLeaves, fallbackNotifications, fallbackOrgEmployees, fallbackPayroll } from "../lib/fallback-data";
 import { onDataRefresh, requestDataRefresh } from "../lib/refresh-events";
 import { Card, StatusPill } from "./ui";
+import { getCurrentUser } from "../lib/session";
 
 type EmployeeRow = (typeof fallbackEmployees)[number];
 type AttendanceRow = (typeof fallbackAttendance)[number];
@@ -283,9 +284,10 @@ export function DocumentsTable() {
   }, []);
 
   async function verify(employeeId: string, documentId: string) {
+    const currentUser = getCurrentUser();
     await apiFetch(`/employees/${employeeId}/documents/${documentId}/verify`, {
       method: "PATCH",
-      body: JSON.stringify({ verifiedBy: "hr.admin@skylinx.local" }),
+      body: JSON.stringify({ verifiedBy: currentUser?.email || currentUser?.sub || "" }),
     });
     setMessage("Document verified.");
     requestDataRefresh("documents");
@@ -353,9 +355,10 @@ export function ExpensesTable({
 
   async function decide(id: string, action: "manager-approve" | "hr-approve" | "reject" | "reimburse") {
     try {
+      const currentUser = getCurrentUser();
       await apiFetch(`/expenses/${id}/${action}`, {
         method: "PATCH",
-        body: JSON.stringify({ decidedBy: "hr.admin@skylinx.local" }),
+        body: JSON.stringify({ decidedBy: currentUser?.email || currentUser?.sub || "" }),
       });
       setMessage(`Expense ${action.replace("-", " ")} saved.`);
       requestDataRefresh("expenses");
@@ -800,9 +803,10 @@ export function InsuranceClaimsTable({ search = "", status = "All" }: InsuranceC
 
   async function decide(id: string, action: "approve" | "reject") {
     try {
+      const currentUser = getCurrentUser();
       await apiFetch(`/insurance/claims/${id}/${action}`, {
         method: "PATCH",
-        body: JSON.stringify({ decidedBy: "hr.admin@skylinx.local" }),
+        body: JSON.stringify({ decidedBy: currentUser?.email || currentUser?.sub || "" }),
       });
       setMessage(`Insurance claim ${action}d successfully.`);
       requestDataRefresh("insurance");

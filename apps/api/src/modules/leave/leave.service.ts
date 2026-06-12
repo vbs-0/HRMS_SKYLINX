@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { ApprovalStatus, LeaveLedgerEntryType } from "@prisma/client";
 import { AuthenticatedUser } from "../../common/auth/auth.types";
 import { response } from "../../common/crud-response";
@@ -25,9 +25,10 @@ export class LeaveService {
     return now.getFullYear();
   }
 
-  /** Active tenant from request context; demo default only as a last resort. */
   private tenantId(): string {
-    return TenantContext.getTenantId() || "company_skylinx";
+    const id = TenantContext.getTenantId();
+    if (!id) throw new UnauthorizedException("No tenant context");
+    return id;
   }
 
   async types() {

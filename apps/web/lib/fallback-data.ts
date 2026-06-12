@@ -1,4 +1,4 @@
-﻿export const fallbackEmployees = [
+export const fallbackEmployees = [
   { id: "EMP-1001", name: "Aarav Mehta", role: "HR Manager", department: "People", location: "Mumbai", status: "Active" },
   { id: "EMP-1002", name: "Priya Nair", role: "Payroll Specialist", department: "Finance", location: "Bengaluru", status: "Active" },
   { id: "EMP-1003", name: "Kabir Sethi", role: "Frontend Engineer", department: "Engineering", location: "Delhi", status: "Active" },
@@ -23,15 +23,15 @@ export const fallbackPayroll = [
 ];
 
 export const fallbackDocuments = [
-  { id: "doc_aadhaar_1001", employeeId: "emp_1001", employee: "Aarav Mehta", type: "Aadhaar", expires: "-", status: "Verified", fileUrl: "https://storage.skylinx.local/documents/aadhaar-1001.pdf" },
-  { id: "doc_pan_1002", employeeId: "emp_1002", employee: "Priya Nair", type: "PAN", expires: "-", status: "Pending", fileUrl: "https://storage.skylinx.local/documents/pan-1002.pdf" },
-  { id: "doc_degree_1003", employeeId: "emp_1003", employee: "Kabir Sethi", type: "Education Certificate", expires: "-", status: "Pending", fileUrl: "https://storage.skylinx.local/documents/degree-1003.pdf" },
+  { id: "doc_aadhaar_1001", employeeId: "emp_1001", employee: "Aarav Mehta", type: "Aadhaar", expires: "-", status: "Verified", fileUrl: "https://storage.example.com/documents/aadhaar-1001.pdf" },
+  { id: "doc_pan_1002", employeeId: "emp_1002", employee: "Priya Nair", type: "PAN", expires: "-", status: "Pending", fileUrl: "https://storage.example.com/documents/pan-1002.pdf" },
+  { id: "doc_degree_1003", employeeId: "emp_1003", employee: "Kabir Sethi", type: "Education Certificate", expires: "-", status: "Pending", fileUrl: "https://storage.example.com/documents/degree-1003.pdf" },
 ];
 
 export const fallbackExpenses = [
-  { id: "exp_travel_1004", employee: "Sara Khan", category: "Travel", amount: "\u20B91,850", claimDate: "2026-05-24", status: "PENDING", receiptUrl: "https://storage.skylinx.local/expenses/emp_1004/travel-may.pdf" },
-  { id: "exp_food_1003", employee: "Kabir Sethi", category: "Meals", amount: "\u20B9620", claimDate: "2026-05-22", status: "HOLD", receiptUrl: "https://storage.skylinx.local/expenses/emp_1003/meals-may.pdf" },
-  { id: "exp_client_1002", employee: "Priya Nair", category: "Client Visit", amount: "\u20B93,400", claimDate: "2026-05-19", status: "APPROVED", receiptUrl: "https://storage.skylinx.local/expenses/emp_1002/client-visit.pdf" },
+  { id: "exp_travel_1004", employee: "Sara Khan", category: "Travel", amount: "\u20B91,850", claimDate: "2026-05-24", status: "PENDING", receiptUrl: "https://storage.example.com/expenses/emp_1004/travel-may.pdf" },
+  { id: "exp_food_1003", employee: "Kabir Sethi", category: "Meals", amount: "\u20B9620", claimDate: "2026-05-22", status: "HOLD", receiptUrl: "https://storage.example.com/expenses/emp_1003/meals-may.pdf" },
+  { id: "exp_client_1002", employee: "Priya Nair", category: "Client Visit", amount: "\u20B93,400", claimDate: "2026-05-19", status: "APPROVED", receiptUrl: "https://storage.example.com/expenses/emp_1002/client-visit.pdf" },
 ];
 
 export const fallbackHolidays = [
@@ -58,13 +58,13 @@ export const fallbackDepartments = [
 ];
 
 export const fallbackInsurancePolicies = [
-  { id: "ins_1002", employeeId: "emp_1002", employee: "Priya Nair", provider: "SKYLINX Group Health", policyNumber: "SGH-2026-1002", policyType: "Group Mediclaim", coverage: "\u20B95,00,000", premium: "\u20B918,500", validTill: "2027-03-31", status: "ACTIVE", dependents: 1 },
-  { id: "ins_1003", employeeId: "emp_1003", employee: "Kabir Sethi", provider: "SKYLINX Group Health", policyNumber: "SGH-2026-1003", policyType: "Group Mediclaim", coverage: "\u20B95,00,000", premium: "\u20B918,500", validTill: "2027-03-31", status: "ACTIVE", dependents: 0 },
+  { id: "ins_1002", employeeId: "emp_1002", employee: "Priya Nair", provider: "Company Group Health", policyNumber: "SGH-2026-1002", policyType: "Group Mediclaim", coverage: "\u20B95,00,000", premium: "\u20B918,500", validTill: "2027-03-31", status: "ACTIVE", dependents: 1 },
+  { id: "ins_1003", employeeId: "emp_1003", employee: "Kabir Sethi", provider: "Company Group Health", policyNumber: "SGH-2026-1003", policyType: "Group Mediclaim", coverage: "\u20B95,00,000", premium: "\u20B918,500", validTill: "2027-03-31", status: "ACTIVE", dependents: 0 },
 ];
 
 export const fallbackInsuranceClaims = [
-  { id: "claim_1002_001", employee: "Priya Nair", provider: "SKYLINX Group Health", claimNumber: "CLM-2026-001", claimType: "Hospitalization", amount: "\u20B942,000", claimDate: "2026-05-20", status: "PENDING", documentUrl: "https://storage.skylinx.local/insurance/emp_1002/claim-001.pdf" },
-  { id: "claim_1003_001", employee: "Kabir Sethi", provider: "SKYLINX Group Health", claimNumber: "CLM-2026-002", claimType: "OPD", amount: "\u20B94,500", claimDate: "2026-05-18", status: "APPROVED", documentUrl: "https://storage.skylinx.local/insurance/emp_1003/claim-002.pdf" },
+  { id: "claim_1002_001", employee: "Priya Nair", provider: "Company Group Health", claimNumber: "CLM-2026-001", claimType: "Hospitalization", amount: "\u20B942,000", claimDate: "2026-05-20", status: "PENDING", documentUrl: "https://storage.example.com/insurance/emp_1002/claim-001.pdf" },
+  { id: "claim_1003_001", employee: "Kabir Sethi", provider: "Company Group Health", claimNumber: "CLM-2026-002", claimType: "OPD", amount: "\u20B94,500", claimDate: "2026-05-18", status: "APPROVED", documentUrl: "https://storage.example.com/insurance/emp_1003/claim-002.pdf" },
 ];
 
 export const fallbackCardEmployees = [
@@ -72,7 +72,7 @@ export const fallbackCardEmployees = [
     id: "emp_1001",
     employeeCode: "EMP-1001",
     name: "Aarav Mehta",
-    email: "aarav.mehta@skylinx.local",
+    email: "aarav.mehta@example.com",
     phone: "+91 98765 41000",
     department: "People",
     designation: "HR Manager",
@@ -83,7 +83,7 @@ export const fallbackCardEmployees = [
     id: "emp_1003",
     employeeCode: "EMP-1003",
     name: "Kabir Sethi",
-    email: "kabir.sethi@skylinx.local",
+    email: "kabir.sethi@example.com",
     phone: "+91 98765 41000",
     department: "Engineering",
     designation: "Frontend Engineer",
@@ -126,10 +126,10 @@ export const fallbackSocialPosts = [
 export const fallbackRewards = {
   totalPoints: 300,
   vouchers: [
-    { id: "voucher_coffee", code: "SKY-COFFEE-500", title: "Cafe Voucher", provider: "SKYLINX Benefits", value: "\u20B9500", pointsCost: 250, status: "ACTIVE" },
+    { id: "voucher_coffee", code: "SKY-COFFEE-500", title: "Cafe Voucher", provider: "Company Benefits", value: "\u20B9500", pointsCost: 250, status: "ACTIVE" },
   ],
   benefits: [
-    { id: "benefit_health", title: "Health Checkup", provider: "SKYLINX Wellness", category: "Wellness", description: "Annual preventive health checkup for employees.", pointsCost: 1200, status: "ACTIVE" },
+    { id: "benefit_health", title: "Health Checkup", provider: "Company Wellness", category: "Wellness", description: "Annual preventive health checkup for employees.", pointsCost: 1200, status: "ACTIVE" },
   ],
   recognitions: [
     { id: "recognition_sara", employee: "Sara Khan", title: "Client onboarding excellence", message: "Great ownership on the Hyderabad client onboarding.", points: 300, createdAt: "2026-05-25" },
@@ -140,8 +140,8 @@ export const fallbackRewards = {
 };
 
 export const fallbackCompanySettings = {
-  name: "SKYLINX PeopleOS",
-  legalName: "SKYLINX HR Private Limited",
+  name: "PeopleOS",
+  legalName: "Your Company Private Limited",
   logoUrl: "/skylinx-logo.png",
   address: "Mumbai, Maharashtra",
   taxId: "GSTIN-PENDING",
@@ -300,9 +300,9 @@ export const fallbackSaas = {
     { section: "Additional Features", feature: "ESS portal", basic: "Included", standard: "Included", pro: "Included" },
     { section: "Additional Features", feature: "Letter generation", basic: "Not included", standard: "Add-on \u20B930/user/month", pro: "Included" },
     { section: "Additional Features", feature: "Asset management", basic: "Not included", standard: "Add-on \u20B910/user/month", pro: "Included" },
-    { section: "Additional Features", feature: "SKYLINX Prime benefits", basic: "Included", standard: "Included", pro: "Included" },
+    { section: "Additional Features", feature: "Company Prime benefits", basic: "Included", standard: "Included", pro: "Included" },
     { section: "Additional Features", feature: "Analytics and reports", basic: "Not included", standard: "Included", pro: "Included" },
-    { section: "Additional Features", feature: "SkyNexus employee social network", basic: "Not included", standard: "Included", pro: "Included" },
+    { section: "Additional Features", feature: "Employee social network", basic: "Not included", standard: "Included", pro: "Included" },
     { section: "Additional Features", feature: "Automated ID / visiting card", basic: "Included", standard: "Included", pro: "Included" },
     { section: "Additional Features", feature: "Multicity calendar", basic: "Not included", standard: "Included", pro: "Included" },
     { section: "Additional Features", feature: "Realtime biometric integration", basic: "Not included", standard: "Included", pro: "Included" },
@@ -338,7 +338,7 @@ export const fallbackSaas = {
     grandTotal: 24765.84,
   },
   companies: [
-    { id: "company_skylinx", name: "SKYLINX PeopleOS", legalName: "SKYLINX HR Private Limited", status: "ACTIVE", timezone: "Asia/Kolkata", createdAt: "2026-05-25T00:00:00.000Z" },
+    { id: "company_skylinx", name: "PeopleOS", legalName: "Your Company Private Limited", status: "ACTIVE", timezone: "Asia/Kolkata", createdAt: "2026-05-25T00:00:00.000Z" },
   ],
   entitlements: [
     { id: "ent_employees", module: "employees", enabled: true },

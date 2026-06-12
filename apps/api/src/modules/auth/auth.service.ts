@@ -60,10 +60,12 @@ export class AuthService {
       permissions: [...new Set(permissions)],
     };
 
-    const tenantId = user.tenantId || "company_skylinx";
-    const subscriptionSetting = await this.prisma.moduleSetting.findUnique({
-      where: { companyId_module: { companyId: tenantId, module: "subscription" } },
-    });
+    const tenantId = user.tenantId;
+    const subscriptionSetting = tenantId
+      ? await this.prisma.moduleSetting.findUnique({
+          where: { companyId_module: { companyId: tenantId, module: "subscription" } },
+        })
+      : null;
     const activePlan =
       subscriptionSetting?.settingsJson &&
       typeof subscriptionSetting.settingsJson === "object" &&

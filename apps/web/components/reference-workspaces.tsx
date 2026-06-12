@@ -28,7 +28,7 @@ export function EmployeeProfileWorkspace() {
     <section className="mb-5 grid grid-cols-[280px_1fr] gap-5 max-xl:grid-cols-1">
       <div className="rounded-lg border border-[#dce2eb] bg-white p-5 text-center shadow-sm">
         <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-[#dff7ff] text-2xl font-bold text-brand">SG</div>
-        <h2 className="mt-4 text-xl font-semibold text-[#172033]">SKYLINX Employee</h2>
+        <h2 className="mt-4 text-xl font-semibold text-[#172033]">Acme Employee</h2>
         <p className="text-sm font-semibold uppercase text-brand">HR Operations</p>
         <div className="mt-5 grid gap-2 text-left text-sm">
           <div className="rounded-lg bg-[#f8fafc] p-3"><strong>Employee ID</strong><br />SGS/HR/0001</div>
@@ -38,13 +38,13 @@ export function EmployeeProfileWorkspace() {
       </div>
       <div className="grid grid-cols-2 gap-5 max-lg:grid-cols-1">
         <MiniCard title="Personal Information">
-          <FieldGrid rows={[["Full Name", "SKYLINX Employee"], ["Gender", "Not set"], ["Date of Birth", "Update required"], ["Blood Group", "O +"]]} />
+          <FieldGrid rows={[["Full Name", "Acme Employee"], ["Gender", "Not set"], ["Date of Birth", "Update required"], ["Blood Group", "O +"]]} />
         </MiniCard>
         <MiniCard title="Official Information">
           <FieldGrid rows={[["Department", "HR & Operations"], ["Designation", "Manager"], ["Reporting To", "HR Admin"], ["Work Location", "Hyderabad"]]} />
         </MiniCard>
         <MiniCard title="Contact & Address">
-          <FieldGrid rows={[["Mobile", "8008785577"], ["Email", "skylinxcode@gmail.com"], ["Emergency", "Update required"], ["Address", "Hyderabad, Telangana"]]} />
+          <FieldGrid rows={[["Mobile", "+1-800-555-0199"], ["Email", "support@skylinx.com"], ["Emergency", "Update required"], ["Address", "Hyderabad, Telangana"]]} />
         </MiniCard>
         <MiniCard title="Documents & Bank">
           <FieldGrid rows={[["Documents", "Verification queue"], ["Bank", "Secure details"], ["PAN", "Compliance"], ["UAN/ESI", "Payroll linked"]]} />
@@ -152,7 +152,7 @@ export function OrganizationChartWorkspace() {
       <div className="mt-5 grid justify-items-center gap-4">
         <div className="rounded-lg bg-[#1f2a44] px-6 py-4 text-center text-white shadow-sm">
           <Building2 className="mx-auto h-6 w-6" />
-          <div className="mt-2 font-semibold">SKYLINX Global Solutions</div>
+          <div className="mt-2 font-semibold">Acme Corp</div>
         </div>
         <GitFork className="h-6 w-6 text-[#8ca0bf]" />
         <div className="grid grid-cols-3 gap-4 max-lg:grid-cols-1">

@@ -90,7 +90,7 @@ export function SkyNexusConsole() {
   // App User State
   const [currentUserId, setCurrentUserId] = useState("");
   const [currentUserEmail, setCurrentUserEmail] = useState("");
-  const [currentUserName, setCurrentUserName] = useState("SKYLINX Employee");
+  const [currentUserName, setCurrentUserName] = useState("You");
 
   // Interactive comments state
   const [commentInputs, setCommentInputs] = useState<Record<string, string>>({});

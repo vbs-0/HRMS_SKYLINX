@@ -59,6 +59,160 @@ export class PayrollService {
     return response("payroll", "salaryStructure.create", structure);
   }
 
+  // ==========================================
+  // Salary Structure Templates
+  // ==========================================
+  async listTemplates() {
+    const templates = await this.prisma.salaryStructureTemplate.findMany({
+      orderBy: { createdAt: "desc" },
+    });
+    return response("payroll", "templates.list", templates);
+  }
+
+  async createTemplate(data: any) {
+    const companyId = TenantContext.getTenantId();
+    if (!companyId) throw new UnauthorizedException("No tenant context");
+    
+    const template = await this.prisma.salaryStructureTemplate.create({
+      data: {
+        companyId,
+        name: data.name,
+        description: data.description,
+        status: data.status || "ACTIVE",
+        components: data.components,
+      },
+    });
+    await this.audit("payroll", "template.create", "salary_structure_templates", template.id, template);
+    return response("payroll", "template.create", template);
+  }
+
+  async updateTemplate(id: string, data: any) {
+    const template = await this.prisma.salaryStructureTemplate.update({
+      where: { id },
+      data: {
+        name: data.name,
+        description: data.description,
+        status: data.status,
+        components: data.components,
+      },
+    });
+    await this.audit("payroll", "template.update", "salary_structure_templates", template.id, template);
+    return response("payroll", "template.update", template);
+  }
+
+  async deleteTemplate(id: string) {
+    await this.prisma.salaryStructureTemplate.delete({
+      where: { id },
+    });
+    await this.audit("payroll", "template.delete", "salary_structure_templates", id, null);
+    return response("payroll", "template.delete", { success: true });
+  }
+
+  async assignTemplate(id: string, data: { employeeIds: string[]; effectiveDate: string }) {
+    const template = await this.prisma.salaryStructureTemplate.findUnique({ where: { id } });
+    if (!template) throw new NotFoundException("Template not found");
+    
+    const components = template.components as Array<{ name: string; type: string; calcType: string; formula?: string; amount?: number }>;
+
+    const passed: Array<{ employeeId: string; name: string }> = [];
+    const failed: Array<{ employeeId: string; name: string; reason: string }> = [];
+
+    for (const empId of data.employeeIds) {
+      const employee = await this.prisma.employee.findUnique({ where: { id: empId } });
+      if (!employee) {
+        failed.push({ employeeId: empId, name: empId, reason: "Employee not found" });
+        continue;
+      }
+      const empName = `${employee.firstName} ${employee.lastName}`;
+
+      // Get current CTC
+      const currentStructure = await this.prisma.salaryStructure.findFirst({
+        where: { employeeId: empId, status: "ACTIVE" },
+        orderBy: { effectiveFrom: "desc" },
+      });
+
+      const ctc = currentStructure ? Number(currentStructure.annualCtc) : 0;
+      if (ctc <= 0) {
+        failed.push({ employeeId: empId, name: empName, reason: "No active salary structure with a CTC to apply formulas to" });
+        continue;
+      }
+      
+      let basic = 0;
+      let hra = 0;
+      let allowances = 0;
+      let employeePf = 0;
+      let professionalTax = 0;
+      let tds = 0;
+      let employerPf = 0;
+      let esi = 0;
+      
+      for (const comp of components) {
+        let amount = 0;
+        
+        if (comp.calcType === "FIXED" && comp.amount) {
+          amount = comp.amount;
+        } else if (comp.calcType === "FORMULA" && comp.formula) {
+          const match = comp.formula.match(/^CTC\s*\*\s*([0-9.]+)$/);
+          if (match && match[1]) {
+            const multiplier = parseFloat(match[1]);
+            amount = ctc * multiplier;
+          }
+        }
+        
+        const isDeduction = comp.type === "DEDUCTION";
+        const nameLower = comp.name.toLowerCase();
+        
+        if (!isDeduction) {
+          if (nameLower.includes("basic")) basic += amount;
+          else if (nameLower.includes("hra")) hra += amount;
+          else allowances += amount;
+        } else {
+          if (nameLower.includes("tds")) tds += amount;
+          else if (nameLower.includes("pf") || nameLower.includes("provident")) {
+            employeePf += amount; // We're simplifying based on name matching since there are limited fields in model
+          } else if (nameLower.includes("esi")) {
+            esi += amount;
+          } else if (nameLower.includes("tax") || nameLower.includes("professional")) {
+            professionalTax += amount;
+          }
+        }
+      }
+      
+      const newStructure = await this.prisma.$transaction(async (tx) => {
+        // Deactivate the old ACTIVE structure(s) so only one is ever ACTIVE per employee
+        await tx.salaryStructure.updateMany({
+          where: { employeeId: empId, status: "ACTIVE" },
+          data: { status: "INACTIVE" },
+        });
+        return tx.salaryStructure.create({
+          data: {
+            employeeId: empId,
+            effectiveFrom: new Date(data.effectiveDate),
+            annualCtc: ctc,
+            basic,
+            hra,
+            allowances,
+            employerPf,
+            employeePf,
+            esi,
+            professionalTax,
+            tds,
+            status: "ACTIVE",
+          },
+        });
+      });
+      passed.push({ employeeId: empId, name: empName });
+      await this.audit("payroll", "salaryStructure.assign", "salary_structure", newStructure.id, newStructure);
+    }
+
+    return response("payroll", "template.assign", {
+      success: failed.length === 0,
+      passed,
+      failed,
+      count: passed.length,
+    });
+  }
+
   async runs(user?: AuthenticatedUser) {
     const isEmployee = user && !user.permissions.includes("payroll.approve");
     const runs = await this.prisma.payrollRun.findMany({

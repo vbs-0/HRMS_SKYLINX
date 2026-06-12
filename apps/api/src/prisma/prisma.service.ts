@@ -8,7 +8,8 @@ class PrismaFieldsHelper {
     "LeaveType", "PayrollRun", "Holiday", "JobPosting", "ModuleSetting", "ClientRule",
     "GratuityRule", "AppraisalCycle", "AppraisalTemplate", "Appraisal", "RetentionBonus",
     "SalaryWithholding", "CompanyPolicy", "Announcement", "CustomFieldDefinition", "CompanyAsset",
-    "LeavePolicy", "LeaveBlockList", "EmployeeGrade", "EmploymentType", "LetterTemplate", "StaffingPlan"
+    "LeavePolicy", "LeaveBlockList", "EmployeeGrade", "EmploymentType", "LetterTemplate", "StaffingPlan",
+    "SalaryStructureTemplate"
   ]);
 
   private static tenantModels = new Set([

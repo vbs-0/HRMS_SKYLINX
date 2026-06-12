@@ -45,6 +45,39 @@ export class PayrollController {
     return this.payrollService.createSalaryStructure(body);
   }
 
+  // ==========================================
+  // Salary Structure Templates
+  // ==========================================
+  @Get("templates")
+  @RequirePermissions("payroll.read")
+  listTemplates() {
+    return this.payrollService.listTemplates();
+  }
+
+  @Post("templates")
+  @RequirePermissions("payroll.configure")
+  createTemplate(@Body() body: any) {
+    return this.payrollService.createTemplate(body);
+  }
+
+  @Patch("templates/:id")
+  @RequirePermissions("payroll.configure")
+  updateTemplate(@Param("id") id: string, @Body() body: any) {
+    return this.payrollService.updateTemplate(id, body);
+  }
+
+  @Delete("templates/:id")
+  @RequirePermissions("payroll.configure")
+  deleteTemplate(@Param("id") id: string) {
+    return this.payrollService.deleteTemplate(id);
+  }
+
+  @Post("templates/:id/assign")
+  @RequirePermissions("payroll.configure")
+  assignTemplate(@Param("id") id: string, @Body() body: { employeeIds: string[], effectiveDate: string }) {
+    return this.payrollService.assignTemplate(id, body);
+  }
+
   @Get("runs")
   @RequirePermissions("payroll.read")
   runs(@CurrentUser() user: AuthenticatedUser) {

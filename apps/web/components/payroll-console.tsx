@@ -88,6 +88,7 @@ export function PayrollConsole() {
   const [selectedRunId, setSelectedRunId] = useState("");
   const [payslips, setPayslips] = useState<ApiPayslip[]>([]);
   const [salaryStructures, setSalaryStructures] = useState<ApiSalaryStructure[]>([]);
+  const [templates, setTemplates] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -117,7 +118,36 @@ export function PayrollConsole() {
     tds: 0,
   });
 
+  // Template assign modal state
+  const [assignTpl, setAssignTpl] = useState<any | null>(null);
+  const [assignEmployeeIds, setAssignEmployeeIds] = useState<string[]>([]);
+  const [assignEffectiveDate, setAssignEffectiveDate] = useState(() => new Date().toISOString().slice(0, 10));
+  const [assignResult, setAssignResult] = useState<{ passed: { name: string }[]; failed: { name: string; reason: string }[] } | null>(null);
+  const [assignBusy, setAssignBusy] = useState(false);
+
   const employeeOptions = useEmployeeOptions();
+
+  async function handleAssignTemplate() {
+    if (!assignTpl || assignEmployeeIds.length === 0) return;
+    setAssignBusy(true);
+    setError("");
+    try {
+      const res = await apiFetch<{ passed: { name: string }[]; failed: { name: string; reason: string }[] }>(
+        `/payroll/templates/${assignTpl.id}/assign`,
+        {
+          method: "POST",
+          body: JSON.stringify({ employeeIds: assignEmployeeIds, effectiveDate: assignEffectiveDate }),
+        },
+      );
+      setAssignResult(res.data || { passed: [], failed: [] });
+      loadSalaryStructures();
+      requestDataRefresh("payroll");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Assignment failed");
+    } finally {
+      setAssignBusy(false);
+    }
+  }
 
   // Load basic data
   function loadRuns() {
@@ -138,6 +168,12 @@ export function PayrollConsole() {
       .catch(() => undefined);
   }
 
+  function loadTemplates() {
+    apiFetch<any[]>("/payroll/templates")
+      .then((res) => setTemplates(res.data || []))
+      .catch(() => undefined);
+  }
+
   function loadPayslips(runId: string) {
     if (!runId) {
       setPayslips([]);
@@ -155,6 +191,7 @@ export function PayrollConsole() {
   useEffect(() => {
     loadRuns();
     loadSalaryStructures();
+    loadTemplates();
 
     const cleanup = onDataRefresh("payroll", () => {
       loadRuns();
@@ -353,7 +390,7 @@ export function PayrollConsole() {
         eyebrow="Payroll"
         title="Payroll Console"
         summary="Calculate salaries, generate reports, lock monthly payroll operations and manage employee salary CTC allocations."
-        tabs={["Payroll Run", "Payslips", "Bank Export", "Statutory & Tax", "Salary Setup", "Retention Bonus", "Salary Withholding", "Corrections", "Gratuity", "Tax Slabs", "IT Declaration & Proofs", "Form 16"]}
+        tabs={["Payroll Run", "Payslips", "Bank Export", "Statutory & Tax", "Salary Setup", "Templates", "Retention Bonus", "Salary Withholding", "Corrections", "Gratuity", "Tax Slabs", "IT Declaration & Proofs", "Form 16"]}
         activeTab={activeTab}
         onTabChange={setActiveTab}
         actions={[
@@ -854,6 +891,139 @@ export function PayrollConsole() {
             </table>
           </div>
         </Card>
+      )}
+
+      {activeTab === "Templates" && (
+        <div className="grid gap-5">
+          <Card>
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b pb-4 mb-4">
+              <div>
+                <h3 className="text-base font-semibold">Salary Structure Templates</h3>
+                <p className="text-xs text-muted">Create default formulas for salary component assignment.</p>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
+              {templates.length === 0 ? (
+                <div className="col-span-2 py-8 text-center text-slate-400 border rounded-lg bg-slate-50">
+                  No templates available.
+                </div>
+              ) : (
+                templates.map((tpl) => (
+                  <div key={tpl.id} className="rounded-xl border border-[#e8edf4] bg-white p-4 shadow-sm">
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <h4 className="font-semibold text-slate-800">{tpl.name}</h4>
+                        <p className="text-xs text-slate-500 mt-1">{tpl.description}</p>
+                      </div>
+                      <button
+                        className="rounded-lg bg-brand px-3 py-1.5 text-xs font-semibold text-white hover:opacity-90"
+                        onClick={() => {
+                          setAssignTpl(tpl);
+                          setAssignEmployeeIds([]);
+                          setAssignResult(null);
+                        }}
+                        type="button"
+                      >
+                        Assign
+                      </button>
+                    </div>
+                    <div className="mt-4 border-t pt-3">
+                      <div className="text-[10px] uppercase text-muted mb-2 font-bold">Formula Components</div>
+                      <div className="grid gap-1">
+                        {(tpl.components as any[])?.map((c: any, i: number) => (
+                          <div key={i} className="flex justify-between text-xs">
+                            <span className="text-slate-600">{c.name} <span className="text-[10px] text-slate-400 bg-slate-100 px-1 rounded">{c.type}</span></span>
+                            <span className="font-mono text-slate-800">
+                              {c.calcType === "FORMULA" ? c.formula : c.calcType === "FIXED" ? `₹${c.amount}` : "SYSTEM"}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </Card>
+
+          {assignTpl ? (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#172033]/45 p-4" onClick={() => setAssignTpl(null)}>
+              <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+                {assignResult ? (
+                  <>
+                    <h3 className="text-base font-semibold">
+                      {assignResult.failed.length === 0
+                        ? "Salary structure assigned successfully"
+                        : "Salary Structure Assignment Failed for below Employees"}
+                    </h3>
+                    <div className="mt-4 grid gap-3 text-sm">
+                      {assignResult.passed.length > 0 ? (
+                        <div>
+                          <div className="text-xs font-bold uppercase text-emerald-600">Passed</div>
+                          <p className="mt-1 text-slate-700">{assignResult.passed.map((p) => p.name).join(", ")}</p>
+                        </div>
+                      ) : null}
+                      {assignResult.failed.length > 0 ? (
+                        <div>
+                          <div className="text-xs font-bold uppercase text-rose-600">Failed</div>
+                          {assignResult.failed.map((f, i) => (
+                            <p key={i} className="mt-1 text-slate-700">{f.name} — <span className="text-slate-500">{f.reason}</span></p>
+                          ))}
+                        </div>
+                      ) : null}
+                    </div>
+                    <div className="mt-5 flex justify-end">
+                      <button className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white" onClick={() => setAssignTpl(null)} type="button">OK</button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <h3 className="text-base font-semibold">Assign “{assignTpl.name}”</h3>
+                    <p className="mt-1 text-xs text-muted">Recomputes each selected employee&apos;s salary structure from the template formulas using their current CTC. Their previous structure is deactivated.</p>
+                    <label className="mt-4 grid gap-1 text-xs text-muted">
+                      Effective Date
+                      <input
+                        className="min-h-10 rounded-lg border border-[#dce2eb] px-3 text-sm text-ink"
+                        onChange={(e) => setAssignEffectiveDate(e.target.value)}
+                        type="date"
+                        value={assignEffectiveDate}
+                      />
+                    </label>
+                    <div className="mt-3 text-xs text-muted">Employees ({assignEmployeeIds.length} selected)</div>
+                    <div className="mt-1 max-h-56 overflow-auto rounded-lg border border-[#dce2eb] p-2">
+                      {employeeOptions.map((opt) => (
+                        <label key={opt.value} className="flex items-center gap-2 rounded px-2 py-1.5 text-sm hover:bg-slate-50">
+                          <input
+                            checked={assignEmployeeIds.includes(opt.value)}
+                            onChange={(e) =>
+                              setAssignEmployeeIds((prev) =>
+                                e.target.checked ? [...prev, opt.value] : prev.filter((id) => id !== opt.value),
+                              )
+                            }
+                            type="checkbox"
+                          />
+                          {opt.label}
+                        </label>
+                      ))}
+                    </div>
+                    <div className="mt-5 flex justify-end gap-2">
+                      <button className="rounded-lg border border-[#dce2eb] px-4 py-2 text-sm" onClick={() => setAssignTpl(null)} type="button">Cancel</button>
+                      <button
+                        className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
+                        disabled={assignBusy || assignEmployeeIds.length === 0}
+                        onClick={handleAssignTemplate}
+                        type="button"
+                      >
+                        {assignBusy ? "Assigning…" : "Apply"}
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          ) : null}
+        </div>
       )}
 
       {activeTab === "Retention Bonus" && (

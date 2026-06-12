@@ -34,6 +34,41 @@ async function main() {
     },
   });
 
+  const standardTemplate = await prisma.salaryStructureTemplate.upsert({
+    where: { id: "template_standard" },
+    update: {},
+    create: {
+      id: "template_standard",
+      companyId: company.id,
+      name: "Standard Structure",
+      description: "Default formula-based structure",
+      status: "ACTIVE",
+      components: [
+        { name: "Basic", type: "EARNING", calcType: "FORMULA", formula: "CTC * 0.5" },
+        { name: "HRA", type: "EARNING", calcType: "FORMULA", formula: "CTC * 0.2" },
+        { name: "Special Allowance", type: "EARNING", calcType: "FORMULA", formula: "CTC * 0.3" },
+        { name: "EPF", type: "DEDUCTION", calcType: "SYSTEM" },
+        { name: "Professional Tax", type: "DEDUCTION", calcType: "SYSTEM" }
+      ]
+    }
+  });
+
+  const contractorTemplate = await prisma.salaryStructureTemplate.upsert({
+    where: { id: "template_contractor" },
+    update: {},
+    create: {
+      id: "template_contractor",
+      companyId: company.id,
+      name: "Contractor (10% TDS)",
+      description: "Flat fee with 10% TDS deduction",
+      status: "ACTIVE",
+      components: [
+        { name: "Consulting Fee", type: "EARNING", calcType: "FORMULA", formula: "CTC * 1.0" },
+        { name: "TDS (10%)", type: "DEDUCTION", calcType: "FORMULA", formula: "CTC * 0.1" }
+      ]
+    }
+  });
+
   const departments = await Promise.all(
     [
       ["dept_people", "HR", "PEO"],

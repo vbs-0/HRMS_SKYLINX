@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from "@nestjs/common";
+import { Injectable, NotFoundException, BadRequestException, ForbiddenException, UnauthorizedException } from "@nestjs/common";
 import { ApprovalStatus } from "@prisma/client";
 import { response } from "../../common/crud-response";
 import { AuthenticatedUser } from "../../common/auth/auth.types";
@@ -15,9 +15,14 @@ import {
   CompleteAppraisalDto,
 } from "./dto/performance.dto";
 
+import { SettingsService } from "../settings/settings.service";
+
 @Injectable()
 export class PerformanceService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly settingsService: SettingsService
+  ) {}
 
   async summary() {
     const [employees, attendanceLogs, leaveRequests, recognitions, auditLogs, cycles, appraisals] = await Promise.all([
@@ -38,13 +43,20 @@ export class PerformanceService {
       this.prisma.appraisal.findMany(),
     ]);
 
+    const rules = await this.settingsService.getPerformanceRules();
+    const scoreMin = (rules.scoreMin as number) || 55;
+    const scoreMax = (rules.scoreMax as number) || 100;
+    const ratingExcellent = (rules.ratingExcellent as number) || 4.0;
+    const ratingGood = (rules.ratingGood as number) || 3.0;
+    const scoreGoodThreshold = (rules.scoreGoodThreshold as number) || 75;
+
     const rows = employees.map((employee, index) => {
       const employeeAttendance = attendanceLogs.filter((log) => log.employeeId === employee.id);
       const present = employeeAttendance.filter((log) => log.status === "PRESENT" || log.status === "LATE").length;
-      const attendanceScore = employeeAttendance.length ? Math.round((present / employeeAttendance.length) * 100) : 75;
+      const attendanceScore = employeeAttendance.length ? Math.round((present / employeeAttendance.length) * 100) : scoreGoodThreshold;
       const leaveCount = leaveRequests.filter((leave) => leave.employeeId === employee.id).length;
       const points = employee.rewardLedgers.reduce((sum, ledger) => sum + ledger.points, 0);
-      const score = Math.min(100, Math.max(55, attendanceScore + Math.min(points / 20, 10) - leaveCount * 2 + (index % 3) * 3));
+      const score = Math.min(scoreMax, Math.max(scoreMin, attendanceScore + Math.min(points / 20, 10) - leaveCount * 2 + (index % 3) * 3));
       
       const app = appraisals.find((a) => a.employeeId === employee.id);
 
@@ -59,12 +71,14 @@ export class PerformanceService {
         recognitionPoints: points,
         performanceScore: app && app.finalScore ? Math.round(Number(app.finalScore) * 20) : Math.round(score),
         rating: app && app.finalScore
-          ? Number(app.finalScore) >= 4.0 ? "EXCELLENT" : Number(app.finalScore) >= 3.0 ? "GOOD" : "REVIEW"
-          : score >= 75 ? "GOOD" : "REVIEW",
+          ? Number(app.finalScore) >= ratingExcellent ? "EXCELLENT" : Number(app.finalScore) >= ratingGood ? "GOOD" : "REVIEW"
+          : score >= scoreGoodThreshold ? "GOOD" : "REVIEW",
       };
     });
 
     const averageScore = rows.length ? Math.round(rows.reduce((sum, row) => sum + row.performanceScore, 0) / rows.length) : 0;
+
+    const attendanceCompleteThreshold = (rules.attendanceCompleteThreshold as number) || 80;
 
     return response("performance", "summary", {
       employees: rows.length,
@@ -74,7 +88,7 @@ export class PerformanceService {
       cycles: cycles.length,
       categories: [
         { name: "Goals", completed: rows.reduce((sum, row) => sum + row.completedGoals, 0), total: rows.reduce((sum, row) => sum + row.goals, 0) },
-        { name: "Attendance", completed: rows.filter((row) => row.attendanceScore >= 80).length, total: rows.length },
+        { name: "Attendance", completed: rows.filter((row) => row.attendanceScore >= attendanceCompleteThreshold).length, total: rows.length },
         { name: "Recognition", completed: rows.filter((row) => row.recognitionPoints > 0).length, total: rows.length },
         { name: "Review Ready", completed: rows.filter((row) => row.rating !== "REVIEW").length, total: rows.length },
       ],
@@ -99,11 +113,8 @@ export class PerformanceService {
   }
 
   async createCycle(data: CreateAppraisalCycleDto) {
-    let companyId = TenantContext.getTenantId();
-    if (!companyId) {
-      const firstCompany = await this.prisma.company.findFirst();
-      companyId = firstCompany?.id || "comp_skylinx";
-    }
+    const companyId = TenantContext.getTenantId();
+    if (!companyId) throw new UnauthorizedException("No tenant context");
 
     const cycle = await this.prisma.appraisalCycle.create({
       data: {
@@ -187,11 +198,8 @@ export class PerformanceService {
       throw new BadRequestException("KRA weightages must sum to 100");
     }
 
-    let companyId = TenantContext.getTenantId();
-    if (!companyId) {
-      const firstCompany = await this.prisma.company.findFirst();
-      companyId = firstCompany?.id || "comp_skylinx";
-    }
+    const companyId = TenantContext.getTenantId();
+    if (!companyId) throw new UnauthorizedException("No tenant context");
 
     const template = await this.prisma.appraisalTemplate.create({
       data: {
@@ -279,11 +287,8 @@ export class PerformanceService {
     });
     if (!template) throw new NotFoundException("Template not found");
 
-    let companyId = TenantContext.getTenantId();
-    if (!companyId) {
-      const firstCompany = await this.prisma.company.findFirst();
-      companyId = firstCompany?.id || "comp_skylinx";
-    }
+    const companyId = TenantContext.getTenantId();
+    if (!companyId) throw new UnauthorizedException("No tenant context");
 
     const created = [];
     for (const emp of employees) {
@@ -418,7 +423,11 @@ export class PerformanceService {
       include: { employee: true },
     });
 
-    const threshold = data.incrementThreshold || 4.0;
+    const pRules = await this.settingsService.getPerformanceRules();
+    const thresholdRule = (pRules.promotionScoreThreshold as number) || 4.0;
+    const incrementPct = (pRules.incrementPct as number) || 0.10;
+
+    const threshold = data.incrementThreshold || thresholdRule;
     if (finalScore && Number(finalScore) >= threshold) {
       const currentCtc = appraisal.employee.salaryStructures[0]?.annualCtc
         ? Number(appraisal.employee.salaryStructures[0].annualCtc)
@@ -431,9 +440,9 @@ export class PerformanceService {
           toDesignationId: appraisal.employee.designationId || "des_hr_manager",
           fromGradeId: appraisal.employee.gradeId,
           toGradeId: appraisal.employee.gradeId,
-          revisedCtc: currentCtc * 1.10, // 10% — admin-configurable via Settings → salaryStructure.performanceIncrementPct
+          revisedCtc: currentCtc * (1 + incrementPct),
           effectiveDate: new Date(),
-          reason: `Performance appraisal final score ${finalScore} >= threshold ${threshold}. Suggested 10% increment.`,
+          reason: `Performance appraisal final score ${finalScore} >= threshold ${threshold}. Suggested ${incrementPct * 100}% increment.`,
           status: ApprovalStatus.PENDING,
         },
       });

@@ -55,7 +55,7 @@ export default async function DashboardPage() {
             <div className="grid gap-1 p-4 text-xs">
               <div><strong>Company</strong> {companyProfile.legalName}</div>
               <div><strong>HR Owner</strong> SKYLINX HR</div>
-              <div><strong>Support</strong> support@skylinx.com</div>
+              <div><strong>Support</strong> support@example.com</div>
               <div><strong>Queries</strong> 555-0199</div>
             </div>
           </div>
@@ -114,7 +114,7 @@ export default async function DashboardPage() {
 
           <div className="rounded-lg bg-[#6254d9] p-5 text-white shadow-sm">
             <h2 className="font-bold">Support Desk</h2>
-            <p className="mt-4 text-sm">For HRMS queries contact support@skylinx.com or call +1-800-555-0199.</p>
+            <p className="mt-4 text-sm">For HRMS queries contact support@example.com or call +1-800-555-0199.</p>
             <Link className="mt-4 inline-flex min-h-9 items-center rounded-lg bg-[#ed174f] px-4 text-sm font-bold text-white" href="/support">Open Support</Link>
           </div>
 

@@ -20,10 +20,14 @@ import { CreatePromotionDto, DecidePromotionDto, CreateTransferDto, DecideTransf
 import { UpsertBankDetailDto, VerifyBankDetailDto } from "./dto/bank-detail.dto";
 import { AuthenticatedUser } from "../../common/auth/auth.types";
 import { ApprovalStatus } from "@prisma/client";
+import { SettingsService } from "../settings/settings.service";
 
 @Injectable()
 export class EmployeesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly settingsService: SettingsService
+  ) {}
 
   async list() {
     const employees = await this.prisma.employee.findMany({
@@ -167,7 +171,8 @@ export class EmployeesService {
     const headers = lines[0].split(",").map((h: string) => h.trim().replace(/^["']|["']$/g, ''));
     let imported = 0;
 
-    const companyId = TenantContext.getTenantId() || "clq_default_company";
+    const companyId = TenantContext.getTenantId();
+    if (!companyId) throw new ForbiddenException("No tenant context");
 
     for (let i = 1; i < lines.length; i++) {
       const parts = lines[i].split(",").map((p: string) => p.trim().replace(/^["']|["']$/g, ''));
@@ -539,9 +544,15 @@ export class EmployeesService {
     const resignationDate = new Date(data.resignationDate);
 
     const serviceYears = (exitDate.getTime() - employee.joiningDate.getTime()) / (1000 * 60 * 60 * 24 * 365.25);
+    // Same GratuityRule the payroll module reads — the two must never diverge
+    const gratuityRule = await this.prisma.gratuityRule.findFirst({
+      where: { companyId: employee.companyId },
+    });
+    const gratuityMinYears = gratuityRule ? Number(gratuityRule.minYears) : 5;
+    const gratuityMultiplier = gratuityRule ? Number(gratuityRule.multiplier) : 15 / 26;
     let gratuityDues = 0;
-    if (serviceYears >= 5) {
-      gratuityDues = Math.round((15 * data.lastDrawnSalary * serviceYears) / 26);
+    if (serviceYears >= gratuityMinYears) {
+      gratuityDues = Math.round(gratuityMultiplier * data.lastDrawnSalary * serviceYears);
     }
     if (data.gratuityDues !== undefined) {
       gratuityDues = data.gratuityDues;
@@ -740,9 +751,10 @@ export class EmployeesService {
 
     const updated = await this.prisma.$transaction(async (tx) => {
       if (data.status === ApprovalStatus.APPROVED) {
-        // Apply change to employee
+        const tenantId = TenantContext.getTenantId();
+        if (!tenantId) throw new ForbiddenException("No tenant context");
         await tx.employee.update({
-          where: { id: promo.employeeId },
+          where: { id: promo.employeeId, companyId: tenantId },
           data: {
             designationId: promo.toDesignationId,
             gradeId: promo.toGradeId || undefined,
@@ -757,17 +769,37 @@ export class EmployeesService {
             data: { status: "INACTIVE" },
           });
 
-          // Salary structure ratios — defaults match admin-configurable Settings → Payroll
-          // (basicPct=0.40, hraPct=0.50, pfRate=0.12, pfWageCeiling=15000, esiRate=0.0075, esiWageCeiling=21000)
+          const rules = await this.settingsService.mergedRules();
+          const salaryStructure = (rules.salaryStructure || {}) as Record<string, unknown>;
+          const payroll = await this.settingsService.getPayrollRules();
+
+          const basicPct = (salaryStructure.basicPct as number) || 0.40;
+          const hraPct = (salaryStructure.hraPct as number) || 0.50;
+          const defaultTdsPct = (salaryStructure.defaultTdsPct as number) || 0.05;
+          const pfRate = ((payroll.pfEmployeeRate as number) || 12.0) / 100;
+          const pfWageCeiling = (payroll.pfWageCeiling as number) || 15000;
+          const esiRate = ((payroll.esiEmployeeRate as number) || 0.75) / 100;
+          const esiWageCeiling = (payroll.esiWageCeiling as number) || 21000;
+          const ptSlabs = (payroll.ptSlabs as { upto: number; monthly: number }[]) || [];
+
           const annualCtc = Number(promo.revisedCtc);
-          const basic = Math.round(annualCtc * 0.40);
-          const hra = Math.round(basic * 0.50);
-          const annualPfCeiling = 15000 * 12; // pfWageCeiling from settings
+          const basic = Math.round(annualCtc * basicPct);
+          const hra = Math.round(basic * hraPct);
+          const annualPfCeiling = pfWageCeiling * 12;
           const annualBasicCapped = basic > annualPfCeiling ? annualPfCeiling : basic;
-          const employeePf = Math.round(annualBasicCapped * 0.12);
-          const employerPf = Math.round(annualBasicCapped * 0.12);
-          const esi = (annualCtc / 12) <= 21000 ? Math.round((annualCtc / 12) * 0.0075) * 12 : 0;
-          const professionalTax = 200 * 12; // default monthly PT * 12; overridden if PT slabs configured
+          const employeePf = Math.round(annualBasicCapped * pfRate);
+          const employerPf = Math.round(annualBasicCapped * pfRate);
+          
+          const monthlyCtc = annualCtc / 12;
+          const esi = monthlyCtc <= esiWageCeiling ? Math.round(monthlyCtc * esiRate) * 12 : 0;
+          
+          let monthlyPt = 200;
+          if (ptSlabs && ptSlabs.length > 0) {
+            const slab = ptSlabs.find(s => monthlyCtc <= s.upto) || ptSlabs[ptSlabs.length - 1];
+            monthlyPt = slab.monthly;
+          }
+          const professionalTax = monthlyPt * 12;
+
           const allowances = Math.max(annualCtc - basic - hra - employerPf, 0);
 
           await tx.salaryStructure.create({
@@ -782,7 +814,7 @@ export class EmployeesService {
               employerPf,
               esi,
               professionalTax,
-              tds: Math.round(annualCtc * 0.05), // default 5% TDS estimation (defaultTdsPct from settings)
+              tds: Math.round(annualCtc * defaultTdsPct),
               status: "ACTIVE",
             },
           });
@@ -892,11 +924,16 @@ export class EmployeesService {
     const exitDate = new Date(exitDateStr);
     const resignDate = new Date(resignDateStr);
 
-    // 1. Gratuity estimation (if >5 years tenure, formula: 15 × lastDrawnMonthlyGross × tenureYears/26, else 0)
+    // 1. Gratuity estimation — same GratuityRule the payroll module reads
     const serviceYears = Math.max(0, (exitDate.getTime() - employee.joiningDate.getTime()) / (1000 * 60 * 60 * 24 * 365.25));
     let gratuityDues = 0;
-    if (serviceYears >= 5) {
-      gratuityDues = Math.round((15 * lastDrawnSalary * serviceYears) / 26);
+    {
+        const gratuityRule = await this.prisma.gratuityRule.findFirst({
+          where: { companyId: employee.companyId },
+        });
+        const minYears = gratuityRule ? Number(gratuityRule.minYears) : 5;
+        const multiplier = gratuityRule ? Number(gratuityRule.multiplier) : 15 / 26;
+        gratuityDues = serviceYears >= minYears ? Math.round(multiplier * lastDrawnSalary * serviceYears) : 0;
     }
     // Fallback if specific approved record exists
     try {

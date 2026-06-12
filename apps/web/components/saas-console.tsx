@@ -38,13 +38,6 @@ const quoteAddOns = [
   { key: "attendance-ai", label: "Advanced Attendance System", monthlyPrice: 50 },
 ];
 
-const quoteCoupons = [
-  { key: "none", label: "No Coupons", discountPercent: 0 },
-  { key: "SKYLINX10", label: "SKYLINX10 - 10% Off", discountPercent: 10 },
-  { key: "ANNUAL15", label: "ANNUAL15 - 15% Off", discountPercent: 15 },
-  { key: "LAUNCH20", label: "LAUNCH20 - 20% Off", discountPercent: 20 },
-];
-
 function money(value: number) {
   return `\u20B9${Number(value || 0).toLocaleString("en-IN")}`;
 }
@@ -78,7 +71,7 @@ function writePlanCookie(planName: string) {
   document.cookie = `peopleos_plan=${encodeURIComponent(planName)}; path=/; max-age=31536000; SameSite=Lax`;
 }
 
-function billingSummaryForPlan(plan: Plan, current: SaasData["billingSummary"], employees?: number, years = 1, selectedAddOnKeys: string[] = [], couponKey = "none"): SaasData["billingSummary"] {
+function billingSummaryForPlan(plan: Plan, current: SaasData["billingSummary"], employees?: number, years = 1, selectedAddOnKeys: string[] = [], couponKey = "none", quoteCoupons: { key: string; label: string; discountPercent: number }[] = [{ key: "none", label: "No Coupons", discountPercent: 0 }]): SaasData["billingSummary"] {
   const billingEmployees = Math.max(1, Math.floor(employees || current.employees || 5));
   const billingYears = Math.max(1, Math.floor(years || 1));
   const extraEmployees = Math.max(0, billingEmployees - plan.employees);
@@ -88,7 +81,7 @@ function billingSummaryForPlan(plan: Plan, current: SaasData["billingSummary"], 
     .reduce((total, addOn) => total + addOn.monthlyPrice, current.addOnMonthlyPrice || 0);
   const monthlyTotal = plan.monthlyPrice + additionalEmployeePrice + addOnMonthlyPrice;
   const itemTotal = monthlyTotal * 12 * billingYears;
-  const coupon = quoteCoupons.find((item) => item.key === couponKey) || quoteCoupons[0];
+  const coupon = quoteCoupons.find((item) => item.key === couponKey) || quoteCoupons[0] || { key: "none", label: "No Coupons", discountPercent: 0 };
   const discountAmount = Number(((itemTotal * coupon.discountPercent) / 100).toFixed(2));
   const discountPrice = Number(Math.max(0, itemTotal - discountAmount).toFixed(2));
   const gst = Number((discountPrice * 0.18).toFixed(2));
@@ -140,6 +133,8 @@ export function SaasConsole() {
   const [selectedCouponKey, setSelectedCouponKey] = useState("none");
   const [paymentMethod, setPaymentMethod] = useState("UPI / Bank Transfer");
   const [paymentReceipt, setPaymentReceipt] = useState<PaymentReceipt | null>(null);
+  const [quoteCoupons, setQuoteCoupons] = useState<{ key: string; label: string; discountPercent: number }[]>([{ key: "none", label: "No Coupons", discountPercent: 0 }]);
+  const [supportEmail, setSupportEmail] = useState("support@example.com");
 
   function load() {
     apiFetch<SaasData>("/saas")
@@ -151,6 +146,27 @@ export function SaasConsole() {
           setQuoteYears(durationMatch ? Number(durationMatch[0]) : 1);
           if (isPlanName(body.data.activePlan) && currentCookiePlan() !== body.data.activePlan) {
             writePlanCookie(body.data.activePlan);
+          }
+        }
+      })
+      .catch(() => undefined);
+
+    apiFetch<{ coupons: any[], supportEmail: string }>("/saas/coupons")
+      .then((body) => {
+        if (body.data) {
+          if (Array.isArray(body.data.coupons) && body.data.coupons.length > 0) {
+            // settings store { code, discountPercent }; UI expects { key, label, discountPercent }
+            setQuoteCoupons(
+              body.data.coupons.map((c: any) => ({
+                key: c.key ?? c.code,
+                label:
+                  c.label ?? (c.code === "none" || !c.discountPercent ? "No Coupons" : `${c.code} — ${c.discountPercent}% off`),
+                discountPercent: Number(c.discountPercent) || 0,
+              })),
+            );
+          }
+          if (body.data.supportEmail) {
+            setSupportEmail(body.data.supportEmail);
           }
         }
       })
@@ -201,9 +217,9 @@ export function SaasConsole() {
   }
 
   const quotedPlan = data.plans.find((plan) => plan.name === data.billingSummary.plan) || data.plans.find((plan) => plan.status === "ACTIVE") || data.plans[0];
-  const quotedBillingSummary = quotedPlan ? billingSummaryForPlan(quotedPlan, data.billingSummary, quoteEmployees, quoteYears, selectedQuoteAddOns, selectedCouponKey) : data.billingSummary;
+  const quotedBillingSummary = quotedPlan ? billingSummaryForPlan(quotedPlan, data.billingSummary, quoteEmployees, quoteYears, selectedQuoteAddOns, selectedCouponKey, quoteCoupons) : data.billingSummary;
   const selectedAddOnNames = quoteAddOns.filter((addOn) => selectedQuoteAddOns.includes(addOn.key)).map((addOn) => addOn.label);
-  const selectedCoupon = quoteCoupons.find((coupon) => coupon.key === selectedCouponKey) || quoteCoupons[0];
+  const selectedCoupon = quoteCoupons.find((coupon) => coupon.key === selectedCouponKey) || quoteCoupons[0] || { key: "none", label: "No Coupons", discountPercent: 0 };
   const couponDiscountAmount = Number((quotedBillingSummary.itemTotal - quotedBillingSummary.discountPrice).toFixed(2));
   const invoiceNumber = `SKY-HRMS-${quotedBillingSummary.plan.toUpperCase()}-${quoteYears}Y-${quoteEmployees}E`;
   const billedToName = data.companies[0]?.name || "Client Company";
@@ -249,7 +265,7 @@ export function SaasConsole() {
     <strong>Billed From</strong><br />
     Acme Corp<br />
     SKYLINX PeopleOS HRMS<br />
-    support@skylinx.com | +1-800-555-0199
+    ${escapeHtml(supportEmail)} | +1-800-555-0199
   </div>
   <div class="box">
     <strong>Billed To</strong><br />
@@ -620,7 +636,7 @@ export function SaasConsole() {
             <div className="text-xs font-bold uppercase text-muted">Billed From</div>
             <div className="mt-2 text-lg font-semibold text-[#172033]">Acme Corp</div>
             <div className="mt-1 text-sm text-muted">SKYLINX PeopleOS HRMS</div>
-            <div className="mt-3 text-sm text-[#34465f]">support@skylinx.com</div>
+            <div className="mt-3 text-sm text-[#34465f]">{supportEmail}</div>
             <div className="text-sm text-[#34465f]">+1-800-555-0199</div>
           </div>
           <div className="rounded-lg border border-[#dce2eb] p-4">

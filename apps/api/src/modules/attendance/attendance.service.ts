@@ -81,7 +81,8 @@ export class AttendanceService {
             Number(sl.location.latitude),
             Number(sl.location.longitude),
           );
-          if (distance <= 200) {
+          const radius = (attendanceRule?.geofenceRadiusMeters as number) || 200;
+          if (distance <= radius) {
             inRange = true;
             break;
           }

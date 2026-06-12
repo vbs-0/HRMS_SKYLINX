@@ -44,7 +44,7 @@ export function EmployeeProfileWorkspace() {
           <FieldGrid rows={[["Department", "HR & Operations"], ["Designation", "Manager"], ["Reporting To", "HR Admin"], ["Work Location", "Hyderabad"]]} />
         </MiniCard>
         <MiniCard title="Contact & Address">
-          <FieldGrid rows={[["Mobile", "+1-800-555-0199"], ["Email", "support@skylinx.com"], ["Emergency", "Update required"], ["Address", "Hyderabad, Telangana"]]} />
+          <FieldGrid rows={[["Mobile", "+1-800-555-0199"], ["Email", "support@example.com"], ["Emergency", "Update required"], ["Address", "Hyderabad, Telangana"]]} />
         </MiniCard>
         <MiniCard title="Documents & Bank">
           <FieldGrid rows={[["Documents", "Verification queue"], ["Bank", "Secure details"], ["PAN", "Compliance"], ["UAN/ESI", "Payroll linked"]]} />

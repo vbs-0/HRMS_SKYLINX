@@ -728,7 +728,7 @@ export function SupportConsole() {
                     onClick={() => setIsEmailModalOpen(true)}
                     className="block w-full mt-3 text-sm font-bold text-brand hover:underline bg-transparent border-0 cursor-pointer text-center"
                   >
-                    support@skylinx.com
+                    support@example.com
                   </button>
                 </div>
 
@@ -773,7 +773,7 @@ export function SupportConsole() {
                   onClick={() => setIsEmailModalOpen(true)}
                   className="text-sm font-bold text-[#172033] hover:text-brand bg-transparent border-0 p-0 text-left font-sans cursor-pointer focus:outline-none"
                 >
-                  support@skylinx.com
+                  support@example.com
                 </button>
               </div>
             </div>
@@ -973,7 +973,7 @@ export function SupportConsole() {
                 <input
                   type="text"
                   disabled
-                  value="support@skylinx.com"
+                  value="support@example.com"
                   className="w-full min-h-10 rounded-lg border border-[#dce2eb] bg-[#f8fafc] px-3 text-sm text-[#8ca0bf] outline-none cursor-not-allowed"
                 />
               </div>

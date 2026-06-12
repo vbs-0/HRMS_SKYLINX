@@ -7,9 +7,14 @@ import { OnboardTenantDto } from "./dto/onboard-tenant.dto";
 import { SaasService } from "./saas.service";
 import { Public } from "../../common/auth/public.decorator";
 
+import { SettingsService } from "../settings/settings.service";
+
 @Controller("saas")
 export class SaasController {
-  constructor(private readonly saasService: SaasService) {}
+  constructor(
+    private readonly saasService: SaasService,
+    private readonly settingsService: SettingsService
+  ) {}
 
   @Public()
   @Post("signup")
@@ -21,6 +26,21 @@ export class SaasController {
   @RequirePermissions("saas.read")
   summary(@CurrentUser() user: AuthenticatedUser) {
     return this.saasService.summary(user);
+  }
+
+  @Public()
+  @Get("coupons")
+  async getCoupons() {
+    // SaaS frontend needs coupons without authentication during signup
+    const rules = await this.settingsService.mergedRules();
+    const branding = rules.branding as Record<string, unknown>;
+    return {
+      status: "success",
+      data: {
+        coupons: rules["coupons"] || [],
+        supportEmail: branding?.supportEmail || "support@example.com"
+      }
+    };
   }
 
   @Get("logs")

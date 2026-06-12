@@ -2,9 +2,14 @@ import { Injectable } from "@nestjs/common";
 import { response } from "../../common/crud-response";
 import { PrismaService } from "../../prisma/prisma.service";
 
+import { SettingsService } from "../settings/settings.service";
+
 @Injectable()
 export class ComplianceService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly settingsService: SettingsService
+  ) {}
 
   async summary() {
     const [salaryStructures, payrollRuns, employees] = await Promise.all([
@@ -63,6 +68,9 @@ export class ComplianceService {
 
     let payload = "";
     if (type === "pf") {
+      const pRules = await this.settingsService.getPayrollRules();
+      const pfCeiling = (pRules.pfWageCeiling as number) || 15000;
+
       // Generate PF ECR text format
       // UAN#~#MemberName#~#GrossWages#~#EPFWages#~#EPSWages#~#EDLIWages#~#EE_Share#~#EPS_Share#~#ER_Share#~#NCPDays#~#Refunds
       payload = salaryStructures.map(s => {
@@ -70,7 +78,7 @@ export class ComplianceService {
         const name = `${s.employee.firstName} ${s.employee.lastName}`.trim().substring(0, 50);
         const gross = Number(s.basic) + Number(s.hra) + Number(s.allowances);
         const epfWages = Number(s.basic);
-        const epsWages = Number(s.basic) > 15000 ? 15000 : Number(s.basic);
+        const epsWages = Number(s.basic) > pfCeiling ? pfCeiling : Number(s.basic);
         const edliWages = epsWages;
         const eeShare = Number(s.employeePf);
         const epsShare = Math.round(epsWages * 0.0833);

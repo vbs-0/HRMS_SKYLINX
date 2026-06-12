@@ -40,6 +40,7 @@ const DEFAULT_RULES: Required<UpdateClientRulesDto> = {
     xUrl: "",
     showPoweredBy: true,
     primaryColor: "#078ced",
+    supportEmail: "support@example.com",
   },
   attendance: {
     workWeek: "Monday to Saturday",
@@ -47,6 +48,7 @@ const DEFAULT_RULES: Required<UpdateClientRulesDto> = {
     shiftEnd: "18:30",
     graceMinutes: 10,
     geoAttendance: true,
+    geofenceRadiusMeters: 200,
     biometricRequired: false,
     overtimeEnabled: true,
   },
@@ -150,6 +152,22 @@ const DEFAULT_RULES: Required<UpdateClientRulesDto> = {
     includeHeader: true,
     narrationPrefix: "SALARY",
   },
+  performance: {
+    scoreMin: 55,
+    scoreMax: 100,
+    ratingExcellent: 4.0,
+    ratingGood: 3.0,
+    scoreGoodThreshold: 75,
+    attendanceCompleteThreshold: 80,
+    promotionScoreThreshold: 4.0,
+    incrementPct: 0.10,
+  },
+  coupons: [
+    { code: "none", discountPercent: 0 },
+    { code: "WELCOME10", discountPercent: 10 },
+    { code: "ANNUAL15", discountPercent: 15 },
+    { code: "LAUNCH20", discountPercent: 20 },
+  ],
 };
 
 @Injectable()
@@ -265,12 +283,12 @@ export class SettingsService {
   }
 
   /** Returns merged rules: DEFAULT_RULES overridden by any tenant-specific ClientRule rows */
-  private async mergedRules() {
-    const tenantId = this.getTenantIdOrThrow();
-    const rules = await this.prisma.clientRule.findMany({
+  public async mergedRules() {
+    const tenantId = TenantContext.getTenantId();
+    const rules = tenantId ? await this.prisma.clientRule.findMany({
       where: { companyId: tenantId, status: "ACTIVE" },
       orderBy: [{ category: "asc" }, { key: "asc" }],
-    });
+    }) : [];
     const merged: Record<string, Record<string, unknown>> = JSON.parse(JSON.stringify(DEFAULT_RULES));
     for (const rule of rules) {
       const category = rule.category as keyof UpdateClientRulesDto;
@@ -346,6 +364,11 @@ export class SettingsService {
       declarations: merged["declarations"],
       bankExport: merged["bankExport"],
     };
+  }
+
+  async getPerformanceRules(): Promise<Record<string, unknown>> {
+    const merged = await this.mergedRules();
+    return (merged["performance"] as Record<string, unknown>) || {};
   }
 
   private async audit(action: string, entityType: string, entityId: string, data: unknown) {

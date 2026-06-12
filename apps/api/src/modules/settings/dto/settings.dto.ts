@@ -84,7 +84,15 @@ export class UpdateClientRulesDto {
   @IsObject()
   declarations?: Record<string, unknown>;
 
+
   @IsOptional()
   @IsObject()
   bankExport?: Record<string, unknown>;
+
+  @IsOptional()
+  @IsObject()
+  performance?: Record<string, unknown>;
+
+  @IsOptional()
+  coupons?: any[];
 }

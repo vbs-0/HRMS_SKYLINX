@@ -428,10 +428,6 @@
     "permission": "saas.read"
   },
   {
-    "pattern": "^/saas$",
-    "permission": "saas.read"
-  },
-  {
     "pattern": "^/security/audit-logs$",
     "permission": "settings.configure"
   },

@@ -49,6 +49,7 @@ model Company {
   surveys            Survey[]
   tickets            Ticket[]
   tenantUsers        User[]                  @relation("TenantUsers")
+  payrollComponentConfigs PayrollComponentConfig[]
 }
 
 model User {
@@ -582,6 +583,29 @@ model PayrollComponent {
   name      String
   amount    Decimal
   payslip   Payslip @relation(fields: [payslipId], references: [id])
+}
+
+model PayrollComponentConfig {
+  id                 String   @id @default(cuid())
+  companyId          String
+  name               String
+  category           String   // "BASE" | "RECURRING" | "VARIABLE" | "ADHOC"
+  kind               String   // "ALLOWANCE" | "REIMBURSEMENT" | "DEDUCTION"
+  taxable            Boolean
+  annualLimit        Int?
+  individualOverride Boolean
+  proofRequired      Boolean
+  esiApplicable      Boolean
+  includedInCtc      Boolean
+  enabled            Boolean  @default(true)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  company            Company  @relation(fields: [companyId], references: [id])
+
+  @@unique([companyId, name])
+  @@index([companyId, enabled])
+  @@map("payroll_component_configs")
 }
 
 model Holiday {

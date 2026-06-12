@@ -7,6 +7,7 @@ import { CurrentUser } from "../../common/auth/current-user.decorator";
 import { AuthenticatedUser } from "../../common/auth/auth.types";
 import { PayrollService } from "./payroll.service";
 import { CreatePayrollRunDto, CreateSalaryStructureDto } from "./dto/payroll.dto";
+import { CreateComponentConfigDto, UpdateComponentConfigDto, ToggleComponentConfigDto } from "./dto/component-config.dto";
 import {
   CreateBenefitApplicationDto,
   CreateBenefitClaimDto,
@@ -70,6 +71,33 @@ export class PayrollController {
   @RequirePermissions("payroll.configure")
   deleteTemplate(@Param("id") id: string) {
     return this.payrollService.deleteTemplate(id);
+  }
+
+  // ==========================================
+  // Payroll Component Configs
+  // ==========================================
+  @Get("component-configs")
+  @RequirePermissions("payroll.read")
+  listComponentConfigs() {
+    return this.payrollService.listComponentConfigs();
+  }
+
+  @Post("component-configs")
+  @RequirePermissions("payroll.configure")
+  createComponentConfig(@Body() body: CreateComponentConfigDto) {
+    return this.payrollService.createComponentConfig(body);
+  }
+
+  @Patch("component-configs/:id")
+  @RequirePermissions("payroll.configure")
+  updateComponentConfig(@Param("id") id: string, @Body() body: UpdateComponentConfigDto) {
+    return this.payrollService.updateComponentConfig(id, body);
+  }
+
+  @Delete("component-configs/:id")
+  @RequirePermissions("payroll.configure")
+  deleteComponentConfig(@Param("id") id: string) {
+    return this.payrollService.deleteComponentConfig(id);
   }
 
   @Post("templates/:id/assign")

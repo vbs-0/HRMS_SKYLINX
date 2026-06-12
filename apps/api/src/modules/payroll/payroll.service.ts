@@ -108,6 +108,47 @@ export class PayrollService {
     return response("payroll", "template.delete", { success: true });
   }
 
+  // ==========================================
+  // Payroll Component Configs
+  // ==========================================
+  async listComponentConfigs() {
+    const configs = await this.prisma.payrollComponentConfig.findMany({
+      orderBy: { name: "asc" },
+    });
+    return response("payroll", "component_configs.list", configs);
+  }
+
+  async createComponentConfig(data: any) {
+    const companyId = TenantContext.getTenantId();
+    if (!companyId) throw new UnauthorizedException("No tenant context");
+
+    const config = await this.prisma.payrollComponentConfig.create({
+      data: {
+        ...data,
+        companyId,
+      },
+    });
+    await this.audit("payroll", "component_config.create", "payroll_component_configs", config.id, config);
+    return response("payroll", "component_config.create", config);
+  }
+
+  async updateComponentConfig(id: string, data: any) {
+    const config = await this.prisma.payrollComponentConfig.update({
+      where: { id },
+      data,
+    });
+    await this.audit("payroll", "component_config.update", "payroll_component_configs", config.id, config);
+    return response("payroll", "component_config.update", config);
+  }
+
+  async deleteComponentConfig(id: string) {
+    await this.prisma.payrollComponentConfig.delete({
+      where: { id },
+    });
+    await this.audit("payroll", "component_config.delete", "payroll_component_configs", id, null);
+    return response("payroll", "component_config.delete", { success: true });
+  }
+
   async assignTemplate(id: string, data: { employeeIds: string[]; effectiveDate: string }) {
     const template = await this.prisma.salaryStructureTemplate.findUnique({ where: { id } });
     if (!template) throw new NotFoundException("Template not found");

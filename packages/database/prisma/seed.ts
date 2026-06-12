@@ -1182,6 +1182,25 @@ async function main() {
       templateBody: "Your document of type {{documentType}} is expiring soon. Please upload a renewed one.",
     },
   });
+
+  // Seed Default Payroll Component Configs
+  const defaultComponentConfigs = [
+    { name: "Conveyance Allowance", category: "RECURRING", kind: "ALLOWANCE", taxable: true, annualLimit: 19200, individualOverride: false, proofRequired: false, esiApplicable: false, includedInCtc: true },
+    { name: "Medical Allowance", category: "RECURRING", kind: "ALLOWANCE", taxable: true, annualLimit: 15000, individualOverride: false, proofRequired: true, esiApplicable: false, includedInCtc: true },
+    { name: "Vehicle Allowance", category: "RECURRING", kind: "ALLOWANCE", taxable: true, annualLimit: 12000, individualOverride: false, proofRequired: false, esiApplicable: false, includedInCtc: true },
+    { name: "Phone Reimbursement", category: "RECURRING", kind: "REIMBURSEMENT", taxable: false, annualLimit: 14400, individualOverride: false, proofRequired: true, esiApplicable: false, includedInCtc: true },
+  ];
+
+  for (const config of defaultComponentConfigs) {
+    await prisma.payrollComponentConfig.upsert({
+      where: { companyId_name: { companyId: company.id, name: config.name } },
+      update: {},
+      create: {
+        companyId: company.id,
+        ...config,
+      },
+    });
+  }
 }
 
 main()

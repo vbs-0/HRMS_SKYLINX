@@ -9,7 +9,7 @@ class PrismaFieldsHelper {
     "GratuityRule", "AppraisalCycle", "AppraisalTemplate", "Appraisal", "RetentionBonus",
     "SalaryWithholding", "CompanyPolicy", "Announcement", "CustomFieldDefinition", "CompanyAsset",
     "LeavePolicy", "LeaveBlockList", "EmployeeGrade", "EmploymentType", "LetterTemplate", "StaffingPlan",
-    "SalaryStructureTemplate"
+    "SalaryStructureTemplate", "PayrollComponentConfig"
   ]);
 
   private static tenantModels = new Set([

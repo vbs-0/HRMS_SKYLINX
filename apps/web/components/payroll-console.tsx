@@ -89,6 +89,9 @@ export function PayrollConsole() {
   const [payslips, setPayslips] = useState<ApiPayslip[]>([]);
   const [salaryStructures, setSalaryStructures] = useState<ApiSalaryStructure[]>([]);
   const [templates, setTemplates] = useState<any[]>([]);
+  const [componentConfigs, setComponentConfigs] = useState<any[]>([]);
+  const [showComponentModal, setShowComponentModal] = useState(false);
+  const [componentForm, setComponentForm] = useState({ id: "", name: "", category: "BASE", kind: "ALLOWANCE", taxable: true, annualLimit: "", individualOverride: false, proofRequired: false, esiApplicable: false, includedInCtc: true, enabled: true });
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
@@ -174,6 +177,12 @@ export function PayrollConsole() {
       .catch(() => undefined);
   }
 
+  function loadComponentConfigs() {
+    apiFetch<any[]>("/payroll/component-configs")
+      .then((res) => setComponentConfigs(res.data || []))
+      .catch(() => undefined);
+  }
+
   function loadPayslips(runId: string) {
     if (!runId) {
       setPayslips([]);
@@ -192,6 +201,7 @@ export function PayrollConsole() {
     loadRuns();
     loadSalaryStructures();
     loadTemplates();
+    loadComponentConfigs();
 
     const cleanup = onDataRefresh("payroll", () => {
       loadRuns();
@@ -354,6 +364,47 @@ export function PayrollConsole() {
     }
   }
 
+  async function handleSaveComponent(e: React.FormEvent) {
+    e.preventDefault();
+    setMessage("");
+    setError("");
+    try {
+      const payload = {
+        ...componentForm,
+        annualLimit: componentForm.annualLimit ? parseInt(componentForm.annualLimit as string) : null,
+      };
+      
+      if (componentForm.id) {
+        await apiFetch(`/payroll/component-configs/${componentForm.id}`, {
+          method: "PATCH",
+          body: JSON.stringify(payload),
+        });
+      } else {
+        await apiFetch("/payroll/component-configs", {
+          method: "POST",
+          body: JSON.stringify(payload),
+        });
+      }
+      setMessage("Component configured successfully!");
+      loadComponentConfigs();
+      setShowComponentModal(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to save component configuration");
+    }
+  }
+
+  async function handleToggleComponent(id: string, enabled: boolean) {
+    try {
+      await apiFetch(`/payroll/component-configs/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify({ enabled: !enabled }),
+      });
+      loadComponentConfigs();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to toggle component");
+    }
+  }
+
   function handleOpenPayslip(payslip: ApiPayslip) {
     setLoading(true);
     // Fetch individual payslip with full components mapping
@@ -390,7 +441,7 @@ export function PayrollConsole() {
         eyebrow="Payroll"
         title="Payroll Console"
         summary="Calculate salaries, generate reports, lock monthly payroll operations and manage employee salary CTC allocations."
-        tabs={["Payroll Run", "Payslips", "Bank Export", "Statutory & Tax", "Salary Setup", "Templates", "Retention Bonus", "Salary Withholding", "Corrections", "Gratuity", "Tax Slabs", "IT Declaration & Proofs", "Form 16"]}
+        tabs={["Payroll Run", "Payslips", "Bank Export", "Statutory & Tax", "Salary Setup", "Templates", "Retention Bonus", "Salary Withholding", "Corrections", "Gratuity", "Tax Slabs", "IT Declaration & Proofs", "Form 16", "Components"]}
         activeTab={activeTab}
         onTabChange={setActiveTab}
         actions={[
@@ -1052,6 +1103,229 @@ export function PayrollConsole() {
 
       {activeTab === "IT Declaration & Proofs" && (
         <ITDeclarationProofsTab />
+      )}
+
+      {activeTab === "Components" && (
+        <Card>
+          <div className="mb-4 flex items-center justify-between border-b pb-4">
+            <div>
+              <h3 className="text-base font-semibold">Payroll Components</h3>
+              <p className="text-xs text-muted">Configure metadata for specific salary components like allowances, limits, and taxability.</p>
+            </div>
+            <button
+              className="inline-flex min-h-10 items-center gap-2 rounded-lg bg-brand px-4 text-sm font-semibold text-white transition hover:bg-brand-dark"
+              onClick={() => {
+                setComponentForm({ id: "", name: "", category: "BASE", kind: "ALLOWANCE", taxable: true, annualLimit: "", individualOverride: false, proofRequired: false, esiApplicable: false, includedInCtc: true, enabled: true });
+                setShowComponentModal(true);
+              }}
+            >
+              <Plus className="h-4 w-4" /> Add Component
+            </button>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full border-collapse text-left text-sm text-slate-600">
+              <thead>
+                <tr className="bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500">
+                  <th className="border-b border-[#e8edf4] p-3">Name</th>
+                  <th className="border-b border-[#e8edf4] p-3">Category</th>
+                  <th className="border-b border-[#e8edf4] p-3">Kind</th>
+                  <th className="border-b border-[#e8edf4] p-3">Limit (Annual)</th>
+                  <th className="border-b border-[#e8edf4] p-3 text-center">Taxable</th>
+                  <th className="border-b border-[#e8edf4] p-3 text-center">Active</th>
+                  <th className="border-b border-[#e8edf4] p-3 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {componentConfigs.map((c) => (
+                  <tr key={c.id} className="hover:bg-slate-50/50">
+                    <td className="border-b border-[#e8edf4] p-3 font-semibold text-slate-800">{c.name}</td>
+                    <td className="border-b border-[#e8edf4] p-3">{c.category}</td>
+                    <td className="border-b border-[#e8edf4] p-3">{c.kind}</td>
+                    <td className="border-b border-[#e8edf4] p-3">{c.annualLimit ? `₹${c.annualLimit.toLocaleString()}` : "No Limit"}</td>
+                    <td className="border-b border-[#e8edf4] p-3 text-center">{c.taxable ? "Yes" : "No"}</td>
+                    <td className="border-b border-[#e8edf4] p-3 text-center">
+                      <span
+                        className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${
+                          c.enabled ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-600"
+                        }`}
+                      >
+                        {c.enabled ? "Active" : "Disabled"}
+                      </span>
+                    </td>
+                    <td className="border-b border-[#e8edf4] p-3 text-right">
+                      <div className="flex justify-end gap-2">
+                        <button
+                          className="text-brand text-xs font-medium hover:underline"
+                          onClick={() => {
+                            setComponentForm({ ...c, annualLimit: c.annualLimit || "" });
+                            setShowComponentModal(true);
+                          }}
+                        >
+                          Edit
+                        </button>
+                        <button
+                          className={`${c.enabled ? "text-rose-600" : "text-emerald-600"} text-xs font-medium hover:underline`}
+                          onClick={() => handleToggleComponent(c.id, c.enabled)}
+                        >
+                          {c.enabled ? "Disable" : "Enable"}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+                {componentConfigs.length === 0 && (
+                  <tr>
+                    <td colSpan={7} className="p-8 text-center text-slate-400">No components configured. Add one to start.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      )}
+
+      {showComponentModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 p-4 backdrop-blur-sm">
+          <div className="w-full max-w-lg rounded-2xl bg-white shadow-xl flex flex-col max-h-[90vh]">
+            <div className="flex items-center justify-between border-b border-[#e8edf4] px-6 py-4 shrink-0">
+              <h2 className="text-lg font-bold text-[#172033]">{componentForm.id ? "Edit" : "Add"} Component Configuration</h2>
+              <button
+                onClick={() => setShowComponentModal(false)}
+                className="rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div className="overflow-y-auto px-6 py-4">
+              <form id="component-form" onSubmit={handleSaveComponent} className="grid gap-4">
+                <div>
+                  <label className="mb-1 block text-xs font-bold text-[#49637f]">Component Name</label>
+                  <input
+                    required
+                    className="w-full min-h-10 rounded-lg border border-[#dce2eb] px-3 text-sm"
+                    value={componentForm.name}
+                    onChange={(e) => setComponentForm({ ...componentForm, name: e.target.value })}
+                    placeholder="e.g. Conveyance Allowance"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="mb-1 block text-xs font-bold text-[#49637f]">Category</label>
+                    <select
+                      className="w-full min-h-10 rounded-lg border border-[#dce2eb] px-3 text-sm"
+                      value={componentForm.category}
+                      onChange={(e) => setComponentForm({ ...componentForm, category: e.target.value })}
+                    >
+                      <option value="BASE">Base / Core</option>
+                      <option value="RECURRING">Recurring</option>
+                      <option value="VARIABLE">Variable / Performance</option>
+                      <option value="ADHOC">Ad-Hoc / One Time</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="mb-1 block text-xs font-bold text-[#49637f]">Kind</label>
+                    <select
+                      className="w-full min-h-10 rounded-lg border border-[#dce2eb] px-3 text-sm"
+                      value={componentForm.kind}
+                      onChange={(e) => setComponentForm({ ...componentForm, kind: e.target.value })}
+                    >
+                      <option value="ALLOWANCE">Allowance</option>
+                      <option value="REIMBURSEMENT">Reimbursement</option>
+                      <option value="DEDUCTION">Deduction</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="mb-1 block text-xs font-bold text-[#49637f]">Annual Limit (₹)</label>
+                  <input
+                    type="number"
+                    className="w-full min-h-10 rounded-lg border border-[#dce2eb] px-3 text-sm"
+                    value={componentForm.annualLimit}
+                    onChange={(e) => setComponentForm({ ...componentForm, annualLimit: e.target.value })}
+                    placeholder="Leave blank for no limit"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-x-4 gap-y-3 mt-2 border border-slate-200 rounded-lg p-3 bg-slate-50">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="rounded text-brand focus:ring-brand"
+                      checked={componentForm.taxable}
+                      onChange={(e) => setComponentForm({ ...componentForm, taxable: e.target.checked })}
+                    />
+                    <span className="text-sm font-medium text-slate-700">Taxable</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="rounded text-brand focus:ring-brand"
+                      checked={componentForm.proofRequired}
+                      onChange={(e) => setComponentForm({ ...componentForm, proofRequired: e.target.checked })}
+                    />
+                    <span className="text-sm font-medium text-slate-700">Proof Required</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="rounded text-brand focus:ring-brand"
+                      checked={componentForm.includedInCtc}
+                      onChange={(e) => setComponentForm({ ...componentForm, includedInCtc: e.target.checked })}
+                    />
+                    <span className="text-sm font-medium text-slate-700">Included in CTC</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="rounded text-brand focus:ring-brand"
+                      checked={componentForm.esiApplicable}
+                      onChange={(e) => setComponentForm({ ...componentForm, esiApplicable: e.target.checked })}
+                    />
+                    <span className="text-sm font-medium text-slate-700">ESI Applicable</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="rounded text-brand focus:ring-brand"
+                      checked={componentForm.individualOverride}
+                      onChange={(e) => setComponentForm({ ...componentForm, individualOverride: e.target.checked })}
+                    />
+                    <span className="text-sm font-medium text-slate-700">Allow Individual Override</span>
+                  </label>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      className="rounded text-brand focus:ring-brand"
+                      checked={componentForm.enabled}
+                      onChange={(e) => setComponentForm({ ...componentForm, enabled: e.target.checked })}
+                    />
+                    <span className="text-sm font-medium text-slate-700">Component Active</span>
+                  </label>
+                </div>
+              </form>
+            </div>
+
+            <div className="flex justify-end gap-3 border-t border-[#e8edf4] px-6 py-4 bg-slate-50 shrink-0 rounded-b-2xl">
+              <button
+                type="button"
+                onClick={() => setShowComponentModal(false)}
+                className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                form="component-form"
+                className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-dark"
+              >
+                Save Component
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* CREATE RUN MODAL */}

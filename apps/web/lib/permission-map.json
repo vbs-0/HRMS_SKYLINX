@@ -228,6 +228,10 @@
     "permission": "payroll.read"
   },
   {
+    "pattern": "^/payroll/component-configs$",
+    "permission": "payroll.read"
+  },
+  {
     "pattern": "^/payroll/corrections$",
     "permission": "payroll.approve"
   },

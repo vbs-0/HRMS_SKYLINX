@@ -21,6 +21,7 @@ A company-ready browser-based HRMS starter for SKYLINX HR that runs without inst
 
 ## Product documents
 
+- [UI v2 Redesign — "Painted Paper" complete architecture](docs/redesign/README.md) (design language, full sitemap, every module blueprint, permissions & Form 16 UX, roadmap + browser mockup)
 - [SKYLINX PeopleOS Blueprint](docs/SKYLINX_PEOPLEOS_BLUEPRINT.md)
 - [Database Schema](docs/DATABASE_SCHEMA.md)
 - [API Specification](docs/API_SPEC.md)

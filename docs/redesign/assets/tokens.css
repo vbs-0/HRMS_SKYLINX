@@ -1,0 +1,148 @@
+/* ============================================================
+   SKYLINX PeopleOS · Painted Paper design tokens (v2)
+   Source of truth: docs/redesign/01_DESIGN_LANGUAGE_PAINTED_PAPER.md
+   Ship target: apps/web/app/globals.css (import) + Tailwind preset
+   Contrast notes: pairs marked AA verified at 4.5:1+ on stated bg.
+   ============================================================ */
+
+:root {
+  /* ---- Paper & ink (light, default) ---- */
+  --paper-0: #f4f1e8;          /* app canvas */
+  --paper-1: #fbf9f2;          /* cards, panels */
+  --paper-2: #efeadc;          /* wells, table heads, hover wash */
+  --paper-3: #e6dfcc;          /* pressed / selected wash */
+  --ink-900: #211e1a;          /* AA on paper-0/1/2 */
+  --ink-700: #524c42;          /* AA on paper-0/1/2 */
+  --ink-500: #7e776a;          /* AA on paper-1 (4.6:1) — captions */
+  --ink-300: #b3ab9a;          /* disabled only, not body text */
+  --line-strong: #cfc7b2;
+  --line: #dfd9c7;
+  --line-soft: #ebe6d7;
+
+  /* ---- Clay accent ---- */
+  --clay-700: #9d4a32;
+  --clay-600: #b85c3e;         /* primary action · AA on paper-1 */
+  --clay-500: #d97757;
+  --clay-300: #ebae92;
+  --clay-100: #f7e4d8;
+
+  /* ---- Painted status hues ---- */
+  --sage-600: #5e7a57;  --sage-300: #bfcfb4;  --sage-100: #e8eddf;
+  --ochre-600: #996f1f; --ochre-300: #dcc98f; --ochre-100: #f3e9cf;
+  --brick-600: #a8453a; --brick-300: #dfaf9f; --brick-100: #f4e0da;
+  --slate-600: #56718a; --slate-300: #afc0cd; --slate-100: #e2e8ec;
+  --plum-600: #7b5e7e;  --plum-300: #c9b4cb;  --plum-100: #ede5ee;
+
+  /* ---- Type ---- */
+  --font-serif: "Fraunces", "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-sans: "Inter", "SF Pro Text", system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Consolas, monospace;
+
+  /* ---- Radii ---- */
+  --r-control: 8px;   /* checkboxes, chips, small controls */
+  --r-input: 10px;    /* inputs, buttons */
+  --r-card: 14px;
+  --r-overlay: 16px;  /* drawers, modals */
+  --r-pill: 999px;
+
+  /* ---- Elevation (ink-tinted) ---- */
+  --shadow-1: 0 1px 2px rgba(33, 30, 26, 0.05);
+  --shadow-2: 0 2px 6px rgba(33, 30, 26, 0.06), 0 8px 24px rgba(33, 30, 26, 0.07);
+  --shadow-3: 0 4px 12px rgba(33, 30, 26, 0.08), 0 16px 48px rgba(33, 30, 26, 0.10);
+
+  /* ---- Motion ---- */
+  --ease: cubic-bezier(0.32, 0.72, 0.18, 1);
+  --t-fast: 120ms;
+  --t-base: 180ms;
+  --t-slow: 240ms;
+
+  /* ---- Focus ---- */
+  --focus-ring: 0 0 0 2px var(--paper-1), 0 0 0 4px var(--clay-600);
+
+  /* ---- Layout ---- */
+  --sidebar-w: 240px;
+  --sidebar-w-rail: 64px;
+  --topbar-h: 56px;
+  --page-gutter: 24px;
+
+  /* ---- Canvas grain (paper-0 only; never on cards) ---- */
+  --grain-opacity: 0.03;
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+}
+
+/* ---- Lamplight ink (dark) ---- */
+[data-theme="dark"] {
+  --paper-0: #181612;
+  --paper-1: #201d18;
+  --paper-2: #27231d;
+  --paper-3: #2e2922;
+  --ink-900: #eae3d4;
+  --ink-700: #b5ac9a;
+  --ink-500: #897f6c;
+  --ink-300: #5c5546;
+  --line-strong: #463f31;
+  --line: #3b352a;
+  --line-soft: #2e2922;
+
+  --clay-700: #e08962;
+  --clay-600: #d97757;        /* AA 7.1:1 on paper-1 dark */
+  --clay-500: #c4633f;
+  --clay-300: #7a4129;
+  --clay-100: #3a2418;
+
+  --sage-600: #8fae85;  --sage-300: #4a5c44;  --sage-100: #232b20;
+  --ochre-600: #c9a554; --ochre-300: #6b5526; --ochre-100: #2c2514;
+  --brick-600: #d08a7e; --brick-300: #6e3a32; --brick-100: #2f1d19;
+  --slate-600: #8ba6bd; --slate-300: #44586a; --slate-100: #1f262c;
+  --plum-600: #b297b4;  --plum-300: #5d4a5f;  --plum-100: #292129;
+
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-2: 0 2px 8px rgba(0, 0, 0, 0.45);
+  --shadow-3: 0 8px 32px rgba(0, 0, 0, 0.55);
+
+  --focus-ring: 0 0 0 2px var(--paper-1), 0 0 0 4px var(--clay-600);
+  --grain-opacity: 0.015;
+}
+
+/* ---- Base application ---- */
+.pp-canvas {
+  background-color: var(--paper-0);
+  background-image: var(--grain);
+  background-blend-mode: multiply;
+  color: var(--ink-900);
+}
+
+.rule-ink {
+  border: 0;
+  height: 3px;
+  background:
+    linear-gradient(var(--line-strong), var(--line-strong)) 0 0 / 100% 1px no-repeat,
+    linear-gradient(var(--line-soft), var(--line-soft)) 0 2px / 100% 1px no-repeat;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --t-fast: 1ms; --t-base: 1ms; --t-slow: 1ms; }
+}
+
+@media print {
+  :root, [data-theme="dark"] {
+    --paper-0: #fff; --paper-1: #fff; --paper-2: #fff; --paper-3: #fff;
+    --ink-900: #000; --ink-700: #222; --ink-500: #444;
+    --grain-opacity: 0;
+    --shadow-1: none; --shadow-2: none; --shadow-3: none;
+  }
+  .pp-canvas { background-image: none; }
+}
+
+/* ============================================================
+   Tailwind preset mapping (tailwind.config.ts):
+   colors: { paper: {0:'var(--paper-0)',1:'var(--paper-1)',2:'var(--paper-2)',3:'var(--paper-3)'},
+             ink: {900:'var(--ink-900)',700:'var(--ink-700)',500:'var(--ink-500)',300:'var(--ink-300)'},
+             clay:{100:'var(--clay-100)',300:'var(--clay-300)',500:'var(--clay-500)',600:'var(--clay-600)',700:'var(--clay-700)'},
+             sage:{...}, ochre:{...}, brick:{...}, slate:{...}, plum:{...},
+             line:{DEFAULT:'var(--line)',strong:'var(--line-strong)',soft:'var(--line-soft)'} }
+   borderRadius: { control:'var(--r-control)', input:'var(--r-input)', card:'var(--r-card)', overlay:'var(--r-overlay)' }
+   boxShadow: { 1:'var(--shadow-1)', 2:'var(--shadow-2)', 3:'var(--shadow-3)' }
+   fontFamily: { serif:'var(--font-serif)', sans:'var(--font-sans)', mono:'var(--font-mono)' }
+   darkMode: ['selector', '[data-theme="dark"]']
+   ============================================================ */

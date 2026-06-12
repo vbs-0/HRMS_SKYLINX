@@ -1,0 +1,600 @@
+<!doctype html>
+<html lang="en-IN" data-theme="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SKYLINX PeopleOS · Painted Paper preview</title>
+<style>
+/* ============ Painted Paper tokens (mirror of assets/tokens.css) ============ */
+:root{
+  --paper-0:#f4f1e8; --paper-1:#fbf9f2; --paper-2:#efeadc; --paper-3:#e6dfcc;
+  --ink-900:#211e1a; --ink-700:#524c42; --ink-500:#7e776a; --ink-300:#b3ab9a;
+  --line-strong:#cfc7b2; --line:#dfd9c7; --line-soft:#ebe6d7;
+  --clay-700:#9d4a32; --clay-600:#b85c3e; --clay-500:#d97757; --clay-300:#ebae92; --clay-100:#f7e4d8;
+  --sage-600:#5e7a57; --sage-300:#bfcfb4; --sage-100:#e8eddf;
+  --ochre-600:#996f1f; --ochre-300:#dcc98f; --ochre-100:#f3e9cf;
+  --brick-600:#a8453a; --brick-300:#dfaf9f; --brick-100:#f4e0da;
+  --slate-600:#56718a; --slate-300:#afc0cd; --slate-100:#e2e8ec;
+  --plum-600:#7b5e7e; --plum-300:#c9b4cb; --plum-100:#ede5ee;
+  --shadow-1:0 1px 2px rgba(33,30,26,.05);
+  --shadow-2:0 2px 6px rgba(33,30,26,.06),0 8px 24px rgba(33,30,26,.07);
+  --r-card:14px; --r-input:10px; --r-pill:999px;
+  --ease:cubic-bezier(.32,.72,.18,1);
+  --grain-o:.03;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,"Times New Roman",serif;
+  --sans:"Inter","SF Pro Text",system-ui,"Segoe UI",Roboto,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,"SF Mono",Consolas,monospace;
+}
+[data-theme="dark"]{
+  --paper-0:#181612; --paper-1:#201d18; --paper-2:#27231d; --paper-3:#2e2922;
+  --ink-900:#eae3d4; --ink-700:#b5ac9a; --ink-500:#897f6c; --ink-300:#5c5546;
+  --line-strong:#463f31; --line:#3b352a; --line-soft:#2e2922;
+  --clay-700:#e08962; --clay-600:#d97757; --clay-500:#c4633f; --clay-300:#7a4129; --clay-100:#3a2418;
+  --sage-600:#8fae85; --sage-300:#4a5c44; --sage-100:#232b20;
+  --ochre-600:#c9a554; --ochre-300:#6b5526; --ochre-100:#2c2514;
+  --brick-600:#d08a7e; --brick-300:#6e3a32; --brick-100:#2f1d19;
+  --slate-600:#8ba6bd; --slate-300:#44586a; --slate-100:#1f262c;
+  --plum-600:#b297b4; --plum-300:#5d4a5f; --plum-100:#292129;
+  --shadow-1:0 1px 2px rgba(0,0,0,.4);
+  --shadow-2:0 2px 8px rgba(0,0,0,.45);
+  --grain-o:.015;
+}
+*{box-sizing:border-box;margin:0}
+html,body{height:100%}
+body{
+  font-family:var(--sans); font-size:14px; line-height:1.5; color:var(--ink-900);
+  background-color:var(--paper-0);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E");
+  background-blend-mode:multiply;
+  transition:background-color .24s var(--ease), color .24s var(--ease);
+}
+::selection{background:var(--clay-300);color:var(--ink-900)}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+button:focus-visible,a:focus-visible{outline:none;box-shadow:0 0 0 2px var(--paper-1),0 0 0 4px var(--clay-600);border-radius:8px}
+
+/* ============ layout ============ */
+.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{display:none}}
+
+/* sidebar */
+.sidebar{border-right:1px solid var(--line);background:color-mix(in srgb,var(--paper-1) 60%,transparent);padding:16px 12px;position:sticky;top:0;height:100vh;overflow-y:auto;scrollbar-width:thin}
+.brand{display:flex;align-items:center;gap:10px;padding:6px 8px 18px}
+.brand-mark{width:30px;height:30px;border-radius:9px;background:var(--clay-600);color:#fbf9f2;display:grid;place-items:center;font-family:var(--serif);font-size:17px}
+.brand b{font-family:var(--serif);font-weight:560;font-size:16px;letter-spacing:.01em}
+.brand span{display:block;font-size:11px;color:var(--ink-500)}
+.ngroup{margin:14px 4px 4px;font-size:10.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-500)}
+.nitem{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:7px 10px;border-radius:9px;color:var(--ink-700);font-size:13.5px;position:relative;transition:background .12s var(--ease)}
+.nitem:hover{background:var(--paper-2);color:var(--ink-900)}
+.nitem.active{background:var(--clay-100);color:var(--ink-900);font-weight:600}
+.nitem.active::before{content:"";position:absolute;left:-12px;top:6px;bottom:6px;width:3px;border-radius:3px;background:var(--clay-600)}
+.nitem svg{width:16px;height:16px;stroke:currentColor;stroke-width:1.75;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none;opacity:.85}
+.count{margin-left:auto;background:var(--clay-600);color:#fbf9f2;font-size:10.5px;font-weight:600;border-radius:999px;padding:1px 7px}
+
+/* topbar */
+.main{display:flex;flex-direction:column;min-width:0}
+.topbar{height:56px;display:flex;align-items:center;gap:12px;padding:0 24px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--paper-0) 88%,transparent);backdrop-filter:blur(6px)}
+.crumb{font-size:13px;color:var(--ink-500)}
+.crumb b{color:var(--ink-900);font-weight:600}
+.search{margin-left:auto;display:flex;align-items:center;gap:8px;border:1px solid var(--line-strong);background:var(--paper-1);border-radius:10px;padding:7px 12px;color:var(--ink-500);font-size:13px;min-width:240px}
+.kbd{font-family:var(--mono);font-size:10.5px;border:1px solid var(--line-strong);background:var(--paper-2);border-radius:5px;padding:1px 5px;color:var(--ink-700);margin-left:auto}
+.tbtn{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;color:var(--ink-700);position:relative}
+.tbtn:hover{background:var(--paper-2)}
+.tbtn svg{width:17px;height:17px;stroke:currentColor;stroke-width:1.75;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.dot{position:absolute;top:7px;right:8px;width:7px;height:7px;border-radius:50%;background:var(--clay-600);border:2px solid var(--paper-0)}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--sage-100);color:var(--sage-600);display:grid;place-items:center;font-size:11.5px;font-weight:600;border:1px solid var(--sage-300)}
+
+/* page */
+.page{padding:24px;max-width:1280px;width:100%;margin:0 auto}
+.pagehead{display:flex;align-items:flex-end;gap:16px;margin-bottom:6px}
+h1{font-family:var(--serif);font-weight:560;font-size:30px;line-height:1.15;letter-spacing:.002em}
+.sub{color:var(--ink-500);font-size:13px;margin-top:4px}
+.pagehead .actions{margin-left:auto;display:flex;gap:8px}
+.rule{border:0;height:3px;margin:14px 0 22px;background:
+  linear-gradient(var(--line-strong),var(--line-strong)) 0 0/100% 1px no-repeat,
+  linear-gradient(var(--line-soft),var(--line-soft)) 0 2px/100% 1px no-repeat}
+
+/* demo view switcher (mockup-only) */
+.demo-tabs{display:flex;gap:4px;background:var(--paper-2);border:1px solid var(--line);padding:4px;border-radius:12px;width:max-content;margin:0 auto 20px}
+.demo-tabs button{padding:6px 14px;border-radius:8px;font-size:13px;color:var(--ink-700)}
+.demo-tabs button.on{background:var(--paper-1);box-shadow:var(--shadow-1);color:var(--ink-900);font-weight:600}
+.view{display:none}.view.on{display:block;animation:fade .24s var(--ease)}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* components */
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:10px;padding:8px 14px;font-size:13.5px;font-weight:600;transition:background .12s var(--ease)}
+.btn-primary{background:var(--clay-600);color:#fbf9f2}
+.btn-primary:hover{background:var(--clay-500)}
+.btn-quiet{border:1px solid var(--line-strong);background:var(--paper-1);color:var(--ink-900)}
+.btn-quiet:hover{background:var(--paper-2)}
+.card{background:var(--paper-1);border:1px solid var(--line);border-radius:var(--r-card);box-shadow:var(--shadow-1)}
+.card .hd{display:flex;align-items:center;gap:8px;padding:14px 18px;border-bottom:1px solid var(--line-soft)}
+.card .hd h3{font-size:13.5px;font-weight:600}
+.card .hd .more{margin-left:auto;color:var(--ink-500);font-size:12px}
+.card .bd{padding:16px 18px}
+.grid{display:grid;gap:16px}
+.cols-4{grid-template-columns:repeat(4,1fr)}
+.cols-3{grid-template-columns:repeat(3,1fr)}
+.cols-2{grid-template-columns:2fr 1fr}
+@media(max-width:1100px){.cols-4{grid-template-columns:repeat(2,1fr)}.cols-3,.cols-2{grid-template-columns:1fr}}
+.kpi .label{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-500)}
+.kpi .val{font-family:var(--serif);font-weight:560;font-size:30px;margin-top:6px;font-variant-numeric:tabular-nums}
+.kpi .delta{font-size:12px;margin-top:4px}
+.up{color:var(--sage-600)}.down{color:var(--brick-600)}.flat{color:var(--ink-500)}
+.chip{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:2px 9px;font-size:11.5px;font-weight:600;border:1px solid}
+.chip.sage{background:var(--sage-100);color:var(--sage-600);border-color:var(--sage-300)}
+.chip.ochre{background:var(--ochre-100);color:var(--ochre-600);border-color:var(--ochre-300)}
+.chip.brick{background:var(--brick-100);color:var(--brick-600);border-color:var(--brick-300)}
+.chip.slate{background:var(--slate-100);color:var(--slate-600);border-color:var(--slate-300)}
+.chip.plum{background:var(--plum-100);color:var(--plum-600);border-color:var(--plum-300)}
+.chip.clay{background:var(--clay-100);color:var(--clay-700);border-color:var(--clay-300)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-500);text-align:left;padding:9px 12px;background:var(--paper-2);border-bottom:1px solid var(--line)}
+td{padding:11px 12px;border-bottom:1px solid var(--line-soft)}
+tr:hover td{background:var(--paper-2)}
+.num{font-variant-numeric:tabular-nums;text-align:right;font-family:var(--mono);font-size:12.5px}
+.muted{color:var(--ink-500)}
+.who{display:flex;align-items:center;gap:9px}
+.who .a{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:600;flex:none}
+.who small{display:block;color:var(--ink-500);font-size:11.5px}
+.a.t1{background:var(--slate-100);color:var(--slate-600)}
+.a.t2{background:var(--plum-100);color:var(--plum-600)}
+.a.t3{background:var(--ochre-100);color:var(--ochre-600)}
+.a.t4{background:var(--sage-100);color:var(--sage-600)}
+.rowact{display:flex;gap:6px;justify-content:flex-end}
+.mini{padding:5px 10px;border-radius:8px;font-size:12px;font-weight:600;border:1px solid var(--line-strong);background:var(--paper-1)}
+.mini.ok{background:var(--sage-100);border-color:var(--sage-300);color:var(--sage-600)}
+.mini.no{background:var(--paper-1);color:var(--brick-600)}
+.mini:hover{filter:brightness(.97)}
+
+/* rings */
+.rings{display:flex;gap:18px;flex-wrap:wrap}
+.ring{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;color:var(--ink-700)}
+.ring svg{transform:rotate(-90deg)}
+.ring .track{stroke:var(--paper-3);fill:none;stroke-width:7}
+.ring .arc{fill:none;stroke-width:7;stroke-linecap:round}
+.ring .v{font-family:var(--serif);font-size:17px;fill:var(--ink-900);transform:rotate(90deg);transform-origin:center;font-variant-numeric:tabular-nums}
+
+/* punch */
+.punch{display:flex;align-items:center;gap:18px}
+.punchbtn{width:104px;height:104px;border-radius:50%;background:var(--clay-600);color:#fbf9f2;font-weight:700;font-size:14px;display:grid;place-items:center;box-shadow:0 0 0 7px var(--clay-100), var(--shadow-2);transition:transform .12s var(--ease)}
+.punchbtn:hover{transform:scale(1.03)}
+.weekstrip{display:flex;gap:6px;margin-top:10px}
+.daycell{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-size:10.5px;font-weight:600;border:1px solid var(--line-soft);color:var(--ink-700)}
+.daycell.full{background:var(--sage-100);border-color:var(--sage-300);color:var(--sage-600)}
+.daycell.warn{background:var(--ochre-100);border-color:var(--ochre-300);color:var(--ochre-600)}
+.daycell.off{background:var(--paper-2);color:var(--ink-300)}
+
+/* stepper */
+.steps{display:flex;gap:0;margin:4px 0 14px;flex-wrap:wrap}
+.step{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-500);padding:6px 0}
+.step .n{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;border:1.5px solid var(--line-strong);background:var(--paper-1)}
+.step.done .n{background:var(--sage-100);border-color:var(--sage-300);color:var(--sage-600)}
+.step.cur{color:var(--ink-900);font-weight:600}
+.step.cur .n{background:var(--clay-600);border-color:var(--clay-600);color:#fbf9f2}
+.step .bar{width:34px;height:1px;background:var(--line-strong);margin:0 10px}
+
+/* verdicts */
+.verdict{display:flex;flex-direction:column;gap:8px}
+.vrow{display:flex;align-items:center;gap:9px;font-size:13px}
+.vrow .ic{width:18px;height:18px;border-radius:50%;display:grid;place-items:center;font-size:11px;flex:none}
+.v-ok .ic{background:var(--sage-100);color:var(--sage-600)}
+.v-warn .ic{background:var(--ochre-100);color:var(--ochre-600)}
+.v-bad .ic{background:var(--brick-100);color:var(--brick-600)}
+.cite{color:var(--ink-500);font-size:12px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--ink-700);margin-bottom:5px}
+.field .ctrl{width:100%;border:1px solid var(--line-strong);background:var(--paper-1);border-radius:10px;padding:9px 12px;font-size:13.5px;color:var(--ink-900);display:flex;justify-content:space-between;align-items:center}
+.field .ctrl span:last-child{color:var(--ink-300)}
+
+/* payslip */
+.slip{font-variant-numeric:tabular-nums}
+.slip .row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line-soft);font-size:13px}
+.slip .row b{font-family:var(--mono);font-size:12.5px;font-weight:500}
+.slip .tot{border-top:2px solid var(--line-strong);border-bottom:0;padding-top:10px;font-weight:700}
+.slip .tot b{font-family:var(--serif);font-size:19px;font-weight:600}
+.sec{font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-500);margin:12px 0 2px}
+
+/* matrix */
+.matrix th,.matrix td{text-align:center;padding:8px 6px}
+.matrix td:first-child,.matrix th:first-child{text-align:left;padding-left:12px}
+.cell{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--line-strong);display:inline-grid;place-items:center;background:var(--paper-1);cursor:pointer;font-size:12px;transition:all .12s var(--ease)}
+.cell.y{background:var(--sage-100);border-color:var(--sage-600);color:var(--sage-600)}
+.cell:hover{transform:scale(1.1)}
+.scope{font-size:10px;border-radius:5px;padding:1px 5px;background:var(--slate-100);color:var(--slate-600);border:1px solid var(--slate-300);font-weight:600}
+
+.note{font-size:12px;color:var(--ink-500);display:flex;gap:6px;align-items:center;margin-top:10px}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--ink-700);margin-top:8px}
+.footer{padding:26px 24px;text-align:center;color:var(--ink-500);font-size:12px}
+.footer b{font-family:var(--serif);font-weight:560}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">S</div>
+      <div><b>SKYLINX</b><span>PeopleOS</span></div>
+    </div>
+
+    <button class="nitem active" data-go="desk"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>My Desk</button>
+    <button class="nitem"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/><path d="m16 16 2 2 4-4"/></svg>Inbox<span class="count">4</span></button>
+    <button class="nitem"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/></svg>Calendar</button>
+
+    <div class="ngroup">People</div>
+    <button class="nitem"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.4 3.4-5 6.5-5s5.7 1.6 6.5 5"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14.6c2.8.2 4.6 1.7 5.3 4.4"/></svg>Directory</button>
+    <button class="nitem"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="19" r="2.5"/><circle cx="19" cy="19" r="2.5"/><path d="M12 7.5V13m0 0-5.5 4M12 13l5.5 4"/></svg>Org chart</button>
+    <button class="nitem"><svg viewBox="0 0 24 24"><circle cx="10" cy="8" r="3.5"/><path d="M3.5 20c.8-3.4 3.4-5 6.5-5"/><path d="M16 16h6m-3-3v6"/></svg>Onboarding</button>
+
+    <div class="ngroup">Time</div>
+    <button class="nitem" data-go="leave2"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2.5"/></svg>Attendance</button>
+    <button class="nitem" data-go="leave"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M8 3v4M16 3v4M3 10h18"/><path d="m9 15.5 2 2 4-4"/></svg>Leave</button>
+
+    <div class="ngroup">Pay</div>
+    <button class="nitem" data-go="pay"><svg viewBox="0 0 24 24"><path d="M6 4h12M6 4c3 0 6 1.5 6 5s-3 5-6 5l7 6"/><path d="M6 9h12"/></svg>My Pay &amp; Tax</button>
+    <button class="nitem" data-go="pay2"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 11h18M8 16h4"/></svg>Payroll</button>
+    <button class="nitem"><svg viewBox="0 0 24 24"><path d="M4 21V9l8-5.5L20 9v12"/><path d="M9 21v-6h6v6M4 21h16"/></svg>Compliance</button>
+
+    <div class="ngroup">Workplace</div>
+    <button class="nitem"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 16.6v.1M9.6 9.4A2.5 2.5 0 1 1 12 13v1"/></svg>Helpdesk</button>
+    <button class="nitem"><svg viewBox="0 0 24 24"><path d="M12 3 4 6v5c0 5 3.4 8.6 8 10 4.6-1.4 8-5 8-10V6Z"/></svg>Policies</button>
+
+    <div class="ngroup">Admin</div>
+    <button class="nitem" data-go="perm"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/></svg>Roles &amp; permissions</button>
+    <button class="nitem"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 4.5v2m0 11v2m7.5-7.5h-2m-11 0h-2m12.4-5-1.4 1.4M8.5 15.5 7 17m10 0-1.5-1.5M8.5 8.5 7 7"/></svg>Settings</button>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <div class="main">
+    <div class="topbar">
+      <span class="crumb">SKYLINX Global · <b id="crumb">My Desk</b></span>
+      <div class="search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Search people, pages, actions…<span class="kbd">⌘K</span></div>
+      <button class="tbtn" id="themeBtn" title="Toggle theme"><svg viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4 7 7 0 0 0 20 14.5Z"/></svg></button>
+      <button class="tbtn" title="Notifications"><svg viewBox="0 0 24 24"><path d="M6 9.5a6 6 0 0 1 12 0c0 5 1.7 6 1.7 6H4.3S6 14.5 6 9.5"/><path d="M10.3 19.5a2 2 0 0 0 3.4 0"/></svg><span class="dot"></span></button>
+      <div class="avatar">AR</div>
+    </div>
+
+    <div class="page">
+      <div class="demo-tabs" role="tablist" aria-label="Preview screens">
+        <button class="on" data-view="desk">My Desk</button>
+        <button data-view="leave">Leave</button>
+        <button data-view="pay">Pay &amp; Form 16</button>
+        <button data-view="pay2">Payroll Run</button>
+        <button data-view="perm">Permissions</button>
+      </div>
+
+      <!-- ============ VIEW: MY DESK ============ -->
+      <section class="view on" id="v-desk">
+        <div class="pagehead">
+          <div><h1>Good morning, Asha.</h1><div class="sub">Thursday, 12 June 2026 · General shift 09:00 – 18:00 · Bengaluru</div></div>
+          <div class="actions"><button class="btn btn-quiet">Apply leave</button><button class="btn btn-primary">+ Quick add</button></div>
+        </div>
+        <hr class="rule"/>
+
+        <div class="grid cols-4" style="margin-bottom:16px">
+          <div class="card kpi"><div class="bd"><div class="label">Headcount</div><div class="val">218</div><div class="delta up">▲ 6 vs May · 3 joining</div></div></div>
+          <div class="card kpi"><div class="bd"><div class="label">Present today</div><div class="val">91.7%</div><div class="delta flat">187 in · 9 leave · 4 WFH</div></div></div>
+          <div class="card kpi"><div class="bd"><div class="label">June payroll</div><div class="val">6 days</div><div class="delta down">to cutoff · 3 gates open</div></div></div>
+          <div class="card kpi"><div class="bd"><div class="label">Attrition (12 mo)</div><div class="val">8.4%</div><div class="delta up">▼ 1.1 pt vs FY25</div></div></div>
+        </div>
+
+        <div class="grid cols-2">
+          <div style="display:grid;gap:16px">
+            <div class="card">
+              <div class="hd"><h3>Waiting on you</h3><span class="chip clay">4 approvals</span><span class="more">Open Inbox →</span></div>
+              <div class="bd" style="padding:0">
+                <table>
+                  <tr><td><div class="who"><span class="a t1">KS</span><div>Kabir Sethi<small>Earned leave · 3 days · 14–16 Jul</small></div></div></td>
+                      <td><span class="chip sage">Balance OK</span></td><td class="muted">2 d ago</td>
+                      <td><div class="rowact"><button class="mini ok">Approve</button><button class="mini no">Reject</button></div></td></tr>
+                  <tr><td><div class="who"><span class="a t2">MN</span><div>Meera Nair<small>Expense · Client travel · ₹8,420</small></div></div></td>
+                      <td><span class="chip ochre">Over cap ₹6k</span></td><td class="muted">1 d ago</td>
+                      <td><div class="rowact"><button class="mini ok">Approve</button><button class="mini no">Reject</button></div></td></tr>
+                  <tr><td><div class="who"><span class="a t3">RV</span><div>Rahul Verma<small>Regularization · Missed out-punch · 9 Jun</small></div></div></td>
+                      <td><span class="chip slate">Evidence ✓</span></td><td class="muted">4 h ago</td>
+                      <td><div class="rowact"><button class="mini ok">Approve</button><button class="mini no">Reject</button></div></td></tr>
+                  <tr><td><div class="who"><span class="a t4">DI</span><div>Divya Iyer<small>Comp-off earn · Worked Sun 8 Jun</small></div></div></td>
+                      <td><span class="chip sage">Roster ✓</span></td><td class="muted">just now</td>
+                      <td><div class="rowact"><button class="mini ok">Approve</button><button class="mini no">Reject</button></div></td></tr>
+                </table>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="hd"><h3>Compliance — next dues</h3><span class="more">Calendar →</span></div>
+              <div class="bd" style="display:flex;gap:12px;flex-wrap:wrap">
+                <span class="chip ochre">TDS challan · 7 Jul · ₹4,82,110</span>
+                <span class="chip slate">PF ECR · 15 Jul</span>
+                <span class="chip slate">ESI · 15 Jul</span>
+                <span class="chip sage">PT (KA) · paid 20 Jun ✓</span>
+                <span class="chip brick">Form 16 publish · 3 days left</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:grid;gap:16px">
+            <div class="card">
+              <div class="hd"><h3>My day</h3><span class="chip sage">Checked in 09:02</span></div>
+              <div class="bd">
+                <div class="punch">
+                  <button class="punchbtn">Check out</button>
+                  <div>
+                    <div style="font-family:var(--serif);font-size:24px">06:41</div>
+                    <div class="muted" style="font-size:12px">worked today · in 09:02 · geo ✓</div>
+                    <div class="weekstrip">
+                      <span class="daycell full">M</span><span class="daycell full">T</span><span class="daycell warn">W</span><span class="daycell full">T</span><span class="daycell" style="border-color:var(--clay-600);color:var(--clay-700)">F</span><span class="daycell off">S</span><span class="daycell off">S</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="hd"><h3>Leave balances</h3><span class="more">Ledger →</span></div>
+              <div class="bd rings" id="rings-desk"></div>
+            </div>
+
+            <div class="card">
+              <div class="hd"><h3>Around you</h3></div>
+              <div class="bd" style="font-size:13px;display:grid;gap:9px">
+                <div>🌿 <b>2 teammates on leave</b> today — Nikhil, Sana</div>
+                <div>🎂 <b>Priya Sharma</b>'s birthday tomorrow · <a href="#" style="color:var(--clay-700)">send wishes</a></div>
+                <div>🗓 Next holiday — <b>Independence Day</b>, Fri 15 Aug</div>
+                <div><span class="chip plum">SkyNexus AI</span> <span class="muted">“3 proofs pending verification before Form 16 lock.”</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ VIEW: LEAVE ============ -->
+      <section class="view" id="v-leave">
+        <div class="pagehead">
+          <div><h1>Leave</h1><div class="sub">Me · balances, applications and history</div></div>
+          <div class="actions"><button class="btn btn-primary">Apply leave</button></div>
+        </div>
+        <hr class="rule"/>
+        <div class="grid cols-2">
+          <div style="display:grid;gap:16px">
+            <div class="card">
+              <div class="hd"><h3>My balances · FY 2026–27</h3></div>
+              <div class="bd rings" id="rings-leave"></div>
+            </div>
+            <div class="card">
+              <div class="hd"><h3>My requests</h3></div>
+              <div class="bd" style="padding:0">
+                <table>
+                  <tr><th>Type</th><th>Dates</th><th>Days</th><th>Status</th><th>Approver</th></tr>
+                  <tr><td>Earned leave</td><td>14 – 16 Jul</td><td class="num">3.0</td><td><span class="chip ochre">Pending</span></td><td class="muted">Rohan I.</td></tr>
+                  <tr><td>Casual leave</td><td>02 Jun</td><td class="num">1.0</td><td><span class="chip sage">Approved</span></td><td class="muted">Rohan I.</td></tr>
+                  <tr><td>Sick leave</td><td>21 – 22 Apr</td><td class="num">2.0</td><td><span class="chip sage">Approved</span></td><td class="muted">Rohan I.</td></tr>
+                  <tr><td>Comp-off</td><td>09 May</td><td class="num">1.0</td><td><span class="chip brick">Rejected</span></td><td class="muted">Coverage conflict</td></tr>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="hd"><h3>Apply — Earned leave</h3><span class="chip slate">Draft</span></div>
+            <div class="bd">
+              <div class="field"><label>Leave type</label><div class="ctrl"><span>Earned leave · 12.5 available</span><span>▾</span></div></div>
+              <div class="field"><label>Dates</label><div class="ctrl"><span>Mon 14 Jul → Wed 16 Jul · 3 days</span><span>📅</span></div></div>
+              <div class="field"><label>Reason <span class="muted" style="font-weight:400">(optional)</span></label><div class="ctrl"><span class="muted">Family function in Kochi</span></div></div>
+              <div class="sec">Policy check</div>
+              <div class="verdict">
+                <div class="vrow v-ok"><span class="ic">✓</span>Balance after approval: <b>&nbsp;9.5 days</b></div>
+                <div class="vrow v-ok"><span class="ic">✓</span>Notice period — 7 days required, 32 given</div>
+                <div class="vrow v-warn"><span class="ic">!</span>Sat 12 – Sun 13 adjacent <span class="cite">· sandwich rule §4 — not counted for EL</span></div>
+                <div class="vrow v-ok"><span class="ic">✓</span>No blackout window for Engineering</div>
+                <div class="vrow v-warn"><span class="ic">!</span>2 teammates already off on 14 Jul</div>
+              </div>
+              <div class="sec">Approval chain</div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--ink-700)">
+                <span class="chip slate">You</span>→<span class="chip clay">Rohan (Manager)</span>→<span class="chip slate">HR auto-record</span>
+              </div>
+              <div style="display:flex;gap:8px;margin-top:18px">
+                <button class="btn btn-primary">Submit application</button>
+                <button class="btn btn-quiet">Save draft</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ VIEW: PAY & FORM16 ============ -->
+      <section class="view" id="v-pay">
+        <div class="pagehead">
+          <div><h1>My Pay &amp; Tax</h1><div class="sub">Payslips, declarations and Form 16 · FY 2025–26</div></div>
+          <div class="actions"><button class="btn btn-quiet">Tax declarations</button><button class="btn btn-primary">Download payslip</button></div>
+        </div>
+        <hr class="rule"/>
+        <div class="grid cols-3">
+          <div class="card slip">
+            <div class="hd"><h3>Payslip · May 2026</h3><span class="chip sage">Paid 31 May</span></div>
+            <div class="bd">
+              <div class="sec">Earnings</div>
+              <div class="row"><span>Basic</span><b>45,000.00</b></div>
+              <div class="row"><span>House rent allowance</span><b>22,500.00</b></div>
+              <div class="row"><span>Special allowance</span><b>18,300.00</b></div>
+              <div class="row"><span>Internet reimbursement</span><b>1,500.00</b></div>
+              <div class="sec">Deductions</div>
+              <div class="row"><span>Provident fund (12%)</span><b>(5,400.00)</b></div>
+              <div class="row"><span>Professional tax (KA)</span><b>(200.00)</b></div>
+              <div class="row"><span>TDS <span class="cite">· trace ⓘ</span></span><b>(6,470.00)</b></div>
+              <div class="row tot"><span>Net pay</span><b>₹ 84,230.00</b></div>
+              <div class="note">Rupees eighty-four thousand two hundred thirty only · YTD gross ₹10,46,000</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="hd"><h3>Form 16 · FY 2025–26</h3><span class="chip sage">Published</span></div>
+            <div class="bd" style="display:grid;gap:12px">
+              <div style="display:flex;gap:10px;align-items:center">
+                <div style="width:44px;height:54px;border:1px solid var(--line-strong);border-radius:6px;background:var(--paper-2);display:grid;place-items:center;font-family:var(--serif);font-size:11px">16</div>
+                <div><b style="font-size:13.5px">Part A + Part B (merged)</b><div class="muted" style="font-size:12px">Signed · Anita Rao, Director · 28 May 2026</div></div>
+              </div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <span class="chip sage">TRACES Part A ✓</span><span class="chip sage">Part B computed ✓</span><span class="chip sage">DSC signed ✓</span>
+              </div>
+              <button class="btn btn-quiet" style="justify-content:center">Download PDF · 412 KB</button>
+              <div class="note">Need older years? FY 2024–25, FY 2023–24 available below.</div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="hd"><h3>Tax regime</h3><span class="chip slate">Window open till 30 Jun</span></div>
+            <div class="bd slip">
+              <div class="row"><span class="muted">&nbsp;</span><span style="display:flex;gap:26px"><b style="font-family:var(--sans);font-weight:600">Old</b><b style="font-family:var(--sans);font-weight:600;color:var(--clay-700)">New ✓</b></span></div>
+              <div class="row"><span>Taxable income</span><span style="display:flex;gap:14px"><b>11,82,000</b><b>13,46,000</b></span></div>
+              <div class="row"><span>Deductions used</span><span style="display:flex;gap:14px"><b>2,14,000</b><b>75,000</b></span></div>
+              <div class="row"><span>Annual tax</span><span style="display:flex;gap:14px"><b>1,12,840</b><b>1,00,440</b></span></div>
+              <div class="row tot"><span>You save</span><b style="color:var(--sage-600)">₹ 12,400</b></div>
+              <div class="note">Projection uses verified proofs only · 3 proofs still pending</div>
+              <button class="btn btn-primary" style="margin-top:10px">Keep New regime</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ VIEW: PAYROLL RUN ============ -->
+      <section class="view" id="v-pay2">
+        <div class="pagehead">
+          <div><h1>Payroll · June 2026</h1><div class="sub">Run #PR-0061 · 218 employees · SKYLINX Global Solutions</div></div>
+          <div class="actions"><button class="btn btn-quiet">Export register</button><button class="btn btn-primary">Validate &amp; continue</button></div>
+        </div>
+        <hr class="rule"/>
+        <div class="steps">
+          <span class="step done"><span class="n">✓</span>Readiness</span><span class="bar step"></span>
+          <span class="step done"><span class="n">✓</span>Inputs</span><span class="bar step"></span>
+          <span class="step cur"><span class="n">3</span>Preview &amp; validate</span><span class="bar step"></span>
+          <span class="step"><span class="n">4</span>Lock</span><span class="bar step"></span>
+          <span class="step"><span class="n">5</span>Publish &amp; pay</span>
+        </div>
+        <div class="grid cols-4" style="margin-bottom:16px">
+          <div class="card kpi"><div class="bd"><div class="label">Gross</div><div class="val" style="font-size:24px">₹1.84 Cr</div><div class="delta flat">218 paid</div></div></div>
+          <div class="card kpi"><div class="bd"><div class="label">Deductions</div><div class="val" style="font-size:24px">₹31.2 L</div><div class="delta flat">PF · ESI · PT · TDS</div></div></div>
+          <div class="card kpi"><div class="bd"><div class="label">Net payout</div><div class="val" style="font-size:24px">₹1.53 Cr</div><div class="delta up">▲ 2.1% vs May</div></div></div>
+          <div class="card kpi"><div class="bd"><div class="label">Exceptions</div><div class="val" style="font-size:24px;color:var(--brick-600)">3</div><div class="delta down">must resolve to lock</div></div></div>
+        </div>
+        <div class="card">
+          <div class="hd"><h3>Register preview</h3><span class="chip ochre">3 flags</span><span class="more">Variance vs May · Columns ⚙</span></div>
+          <div class="bd" style="padding:0;overflow-x:auto">
+            <table>
+              <tr><th>Employee</th><th style="text-align:right">Gross</th><th style="text-align:right">LOP</th><th style="text-align:right">PF</th><th style="text-align:right">TDS</th><th style="text-align:right">Net</th><th>Δ vs May</th><th>Flag</th></tr>
+              <tr><td><div class="who"><span class="a t1">KS</span><div>Kabir Sethi<small>EMP-0142 · Engineering</small></div></div></td><td class="num">1,12,000.00</td><td class="num">–</td><td class="num">5,400.00</td><td class="num">9,210.00</td><td class="num"><b>95,140.00</b></td><td><span class="chip sage">+0.0%</span></td><td></td></tr>
+              <tr><td><div class="who"><span class="a t3">RV</span><div>Rahul Verma<small>EMP-0096 · Support</small></div></div></td><td class="num">64,000.00</td><td class="num">2.0 d</td><td class="num">3,260.00</td><td class="num">2,110.00</td><td class="num"><b>52,890.00</b></td><td><span class="chip brick">−8.4%</span></td><td><span class="chip ochre">LOP check</span></td></tr>
+              <tr><td><div class="who"><span class="a t2">MN</span><div>Meera Nair<small>EMP-0203 · Sales</small></div></div></td><td class="num">88,500.00</td><td class="num">–</td><td class="num">4,420.00</td><td class="num">—</td><td class="num"><b>79,610.00</b></td><td><span class="chip sage">+1.2%</span></td><td><span class="chip brick">PAN missing</span></td></tr>
+              <tr><td><div class="who"><span class="a t4">DI</span><div>Divya Iyer<small>EMP-0011 · Finance · F&amp;F</small></div></div></td><td class="num">1,46,300.00</td><td class="num">–</td><td class="num">5,400.00</td><td class="num">14,860.00</td><td class="num"><b>1,21,420.00</b></td><td><span class="chip ochre">F&amp;F</span></td><td><span class="chip slate">Encashment +12 d</span></td></tr>
+            </table>
+          </div>
+          <div class="bd note">Every figure opens a formula trace — e.g. TDS = annual projection ÷ remaining months, regime-aware · Locked periods become read-only with audit on unlock.</div>
+        </div>
+      </section>
+
+      <!-- ============ VIEW: PERMISSIONS ============ -->
+      <section class="view" id="v-perm">
+        <div class="pagehead">
+          <div><h1>Roles &amp; permissions</h1><div class="sub">Role · <b>Payroll Officer</b> — 3 members · v7 · last edited by Anita, 2 Jun</div></div>
+          <div class="actions"><button class="btn btn-quiet">View as this role</button><button class="btn btn-primary">Save role</button></div>
+        </div>
+        <hr class="rule"/>
+        <div class="grid cols-2">
+          <div class="card">
+            <div class="hd"><h3>Permission matrix</h3><span class="chip slate">module × action</span></div>
+            <div class="bd" style="padding:0;overflow-x:auto">
+              <table class="matrix">
+                <tr><th>Module</th><th>Read</th><th>Create</th><th>Update</th><th>Approve</th><th>Configure</th><th>Export</th><th>Scope</th></tr>
+                <tr><td><b>payroll</b></td><td><span class="cell y">✓</span></td><td><span class="cell y">✓</span></td><td><span class="cell y">✓</span></td><td><span class="cell y">✓</span></td><td><span class="cell"></span></td><td><span class="cell y">✓</span></td><td><span class="scope">Company</span></td></tr>
+                <tr><td><b>employees</b></td><td><span class="cell y">✓</span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="scope">Company</span></td></tr>
+                <tr><td><b>attendance</b></td><td><span class="cell y">✓</span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="cell y">✓</span></td><td><span class="scope">Company</span></td></tr>
+                <tr><td><b>leave</b></td><td><span class="cell y">✓</span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="scope">Company</span></td></tr>
+                <tr><td><b>compliance</b></td><td><span class="cell y">✓</span></td><td><span class="cell y">✓</span></td><td><span class="cell y">✓</span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="cell y">✓</span></td><td><span class="scope">Company</span></td></tr>
+                <tr><td><b>expenses</b></td><td><span class="cell y">✓</span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="cell y">✓</span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="scope">Company</span></td></tr>
+                <tr><td><b>recruitment</b></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td class="muted">—</td></tr>
+                <tr><td><b>settings</b></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td class="muted">—</td></tr>
+              </table>
+            </div>
+            <div class="bd legend"><span><span class="cell y" style="vertical-align:-5px">✓</span> granted</span><span><span class="cell" style="vertical-align:-5px"></span> not granted</span><span>Space toggles · row/column headers toggle all</span></div>
+          </div>
+
+          <div style="display:grid;gap:16px">
+            <div class="card">
+              <div class="hd"><h3>Field-level security · payroll</h3></div>
+              <div class="bd" style="padding:0">
+                <table>
+                  <tr><th>Field group</th><th>This role</th></tr>
+                  <tr><td>Compensation figures</td><td><span class="chip sage">Read</span></td></tr>
+                  <tr><td>Bank account</td><td><span class="chip ochre">Masked ····6210</span></td></tr>
+                  <tr><td>PAN / Aadhaar</td><td><span class="chip ochre">Masked · reveal logged</span></td></tr>
+                  <tr><td>Tax declarations</td><td><span class="chip sage">Read</span></td></tr>
+                </table>
+              </div>
+            </div>
+            <div class="card">
+              <div class="hd"><h3>Impact</h3><span class="chip ochre">2 warnings</span></div>
+              <div class="bd verdict">
+                <div class="vrow v-ok"><span class="ic">✓</span>3 members affected — Priya, Tarun, Nilesh</div>
+                <div class="vrow v-warn"><span class="ic">!</span><span><b>expenses.approve</b> without <b>expenses.read</b> <span class="cite">— add read?</span></span></div>
+                <div class="vrow v-warn"><span class="ic">!</span>Role cannot see Settings — payroll calendar edits will be blocked</div>
+                <div class="vrow v-ok"><span class="ic">✓</span>No conflict with separation-of-duties policy (run ≠ approve own)</div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="hd"><h3>Recent role changes</h3><span class="more">Audit →</span></div>
+              <div class="bd" style="font-size:12.5px;display:grid;gap:8px">
+                <div><b>v7</b> · Anita · added <code>compliance.export</code> <span class="muted">· 2 Jun 14:02</span></div>
+                <div><b>v6</b> · Anita · scope payroll → Company <span class="muted">· 28 May 11:40</span></div>
+                <div><b>v5</b> · System · cloned from HR_ADMIN <span class="muted">· 12 May</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="footer"><b>Painted Paper</b> · SKYLINX PeopleOS UI v2 preview · docs/redesign · toggle ☾ for Lamplight Ink dark theme</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// theme
+const root=document.documentElement;
+document.getElementById('themeBtn').addEventListener('click',()=>{
+  root.dataset.theme=root.dataset.theme==='light'?'dark':'light';
+});
+// view switcher (demo tabs + sidebar items with data-go)
+const views=[...document.querySelectorAll('.view')];
+const tabs=[...document.querySelectorAll('.demo-tabs button')];
+const crumb=document.getElementById('crumb');
+const names={desk:'My Desk',leave:'Leave',pay:'My Pay & Tax',pay2:'Payroll · June 2026',perm:'Roles & permissions',leave2:'Leave'};
+function go(id){
+  const key=id==='leave2'?'leave':id;
+  views.forEach(v=>v.classList.toggle('on',v.id==='v-'+key));
+  tabs.forEach(t=>t.classList.toggle('on',t.dataset.view===key));
+  crumb.textContent=names[key]||'My Desk';
+}
+tabs.forEach(t=>t.addEventListener('click',()=>go(t.dataset.view)));
+document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.nitem').forEach(n=>n.classList.remove('active'));
+  b.classList.add('active');go(b.dataset.go);
+}));
+// leave balance rings
+function ring(label,used,total,color){
+  const r=26,c=2*Math.PI*r,frac=Math.max(0,Math.min(1,(total-used)/total));
+  return `<div class="ring"><svg width="64" height="64" viewBox="0 0 64 64">
+    <circle class="track" cx="32" cy="32" r="${r}"/>
+    <circle class="arc" cx="32" cy="32" r="${r}" stroke="${color}" stroke-dasharray="${(c*frac).toFixed(1)} ${c.toFixed(1)}"/>
+    <text class="v" x="32" y="37" text-anchor="middle">${(total-used)%1?(total-used).toFixed(1):(total-used)}</text>
+  </svg><span>${label}</span><span style="color:var(--ink-500);font-size:11px">${used} used of ${total}</span></div>`;
+}
+const sets={ 'rings-desk':[['Casual',4,12],['Sick',2,12],['Earned',2.5,15]],
+             'rings-leave':[['Casual',4,12],['Sick',2,12],['Earned',2.5,15],['Comp-off',0,2]]};
+const tones=['var(--clay-500)','var(--slate-600)','var(--sage-600)','var(--plum-600)'];
+for(const [id,rows] of Object.entries(sets)){
+  const el=document.getElementById(id);
+  if(el) el.innerHTML=rows.map((r,i)=>ring(r[0],r[1],r[2],tones[i%tones.length])).join('');
+}
+</script>
+</body>
+</html>

@@ -7,7 +7,7 @@ Screens: `/work/helpdesk`, `/work/grievance`, `/work/travel`, `/work/assets`, `/
 ## 1. Helpdesk (`/work/helpdesk`)
 
 - **ESS:** "Raise a ticket" (category tree: Payroll/Leave/IT/Admin/HR-letter/Other → sub-category sets SLA + assignee group; subject, description, attachments, related-record link picker e.g. payslip month) · My tickets list (status chips Open/In progress/Waiting on you/Resolved/Closed, SLA dot, last reply preview). "Waiting on you" = brick chip + Inbox task.
-- **Agent/HR console:** queue board (Unassigned / Mine / Team; filters category, priority, SLA breach ochre→brick) · ticket room: thread (CommentThread w/ internal-notes toggle), properties rail (assignee, priority, category, linked employee record card, related tickets), canned responses library, escalate (notify + bump priority), merge duplicates, resolve w/ resolution note → CSAT request (1–5 + comment) to requester.
+- **Agent/HR console:** queue board (Unassigned / Mine / Team; filters category, priority, SLA breach gold→brick) · ticket room: thread (CommentThread w/ internal-notes toggle), properties rail (assignee, priority, category, linked employee record card, related tickets), canned responses library, escalate (notify + bump priority), merge duplicates, resolve w/ resolution note → CSAT request (1–5 + comment) to requester.
 - **Admin tab:** categories & routing rules (category → group/agent round-robin), SLA matrix (priority × first-response/resolution hours, business-hours calendar aware), CSAT report, canned responses manage.
 - **Metrics strip:** open, breaching today, avg first-response, CSAT 30d.
 
@@ -26,7 +26,7 @@ Screens: `/work/helpdesk`, `/work/grievance`, `/work/travel`, `/work/assets`, `/
 
 ## 4. Assets (`/work/assets`)
 
-- **Registry:** DataTable: asset code (mono), type/category, model, serial, status (In stock/Assigned/In repair/Retired/Lost), assignee, location, purchase date & value (perm-gated), warranty expiry (ochre <60d). Category masters + custom fields.
+- **Registry:** DataTable: asset code (mono), type/category, model, serial, status (In stock/Assigned/In repair/Retired/Lost), assignee, location, purchase date & value (perm-gated), warranty expiry (gold <60d). Category masters + custom fields.
 - **Assign/return flows:** assign drawer (employee picker, condition checklist + photos, acknowledgment task to employee → signature) ; return (condition diff, damage note → optional recovery line to F&F/payroll); full custody Timeline per asset.
 - **ESS "My assets":** cards + "Report issue" (→ Helpdesk IT prefilled) + acknowledgment pendings.
 - **Maintenance:** repair tickets, AMC vendor fields, downtime log.
@@ -35,7 +35,7 @@ Screens: `/work/helpdesk`, `/work/grievance`, `/work/travel`, `/work/assets`, `/
 
 ## 5. Policies (`/work/policies`)
 
-- **Library (ESS):** category sections (HR/IT/Finance/Conduct), policy cards (title, version chip, updated date, "Acknowledged ✓" sage or "Action needed" ochre). **Reader:** body-l serif-friendly prose layout (TOC rail, print clean), version notice banner when re-ack needed, sticky PolicyAcknowledgeBar (checkbox + typed name or SignaturePad per policy setting).
+- **Library (ESS):** category sections (HR/IT/Finance/Conduct), policy cards (title, version chip, updated date, "Acknowledged ✓" sage or "Action needed" gold). **Reader:** body-l serif-friendly prose layout (TOC rail, print clean), version notice banner when re-ack needed, sticky PolicyAcknowledgeBar (checkbox + typed name or SignaturePad per policy setting).
 - **Admin:** editor (rich text or PDF-attach mode), versioning (draft → publish → previous versions archived, diff view), audience (all/dept/location/grade), **acknowledgment campaign** (deadline, reminders cadence, tracker table: person, status, date, chase column → bulk nudge), ack export (audit evidence). New-joiner auto-assignment via onboarding template hook.
 
 ## 6. Reminders & notification rules (HR utility, surfaces in bell + Inbox)
@@ -67,6 +67,6 @@ Period/entity/dept global filters; every chart: data-table toggle + PNG/CSV expo
 ---
 
 ### Cross-cutting
-- All queues (tickets, travel, bookings) mirror into Inbox; SLA tones unify (ochre warn → brick breach).
+- All queues (tickets, travel, bookings) mirror into Inbox; SLA tones unify (gold warn → brick breach).
 - Confidential modules (grievance) excluded from global search, palette, AI assistant retrieval, and exports by default.
 - Analytics respect data scopes: manager sees team cuts only; salary analytics need `payroll.read` org scope.

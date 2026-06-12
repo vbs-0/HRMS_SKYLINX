@@ -18,7 +18,7 @@ Two-pane: left section rail (sticky, searchable), right content. Sections:
 | **Templates** | Email templates, letter templates, payslip layout, ID card themes — each: list → editor (merge-field palette, preview with sample employee, version history) |
 | **Notifications** | Event × channel matrix (org defaults + lock toggles), reminder rules (doc 09 §6), digest settings |
 | **Modules** | Module on/off per plan (PlanGate aware): toggling off hides nav + blocks routes w/ upgrade/enable note; per-module sub-toggles (e.g., attendance selfie, leave hourly unit, social feed) |
-| **Branding & appearance** | Logo light/dark, accent override (curated palette only — clay/sage/slate; arbitrary hex disallowed to keep contrast), login page welcome text, default theme/density for new users |
+| **Branding & appearance** | Logo light/dark, accent override (curated palette only — indigo/sage/slate; arbitrary hex disallowed to keep contrast), login page welcome text, default theme/density for new users |
 | **Localization** | Date format, first day of week, currency display, language (en-IN now; framework `next-intl` keys from P0) |
 | **Data administration** | §6 below |
 | **Integrations & API** | §7 below |
@@ -27,7 +27,7 @@ Every settings page: change → sticky FormFooter "Save"; saves write `AuditEven
 
 ## 2. Setup wizard (`/setup`, first-run)
 
-Linear Wizard, resumable, progress in sidebar: 1 Company & logo → 2 Locations & departments (quick-add grids) → 3 Designations & grades → 4 Work week & holiday calendar (pick national preset + edit) → 5 Leave types & policy (sensible India defaults CL12/SL12/EL15 prefilled, editable) → 6 Attendance rule basics → 7 Payroll basics (pay day, PF/ESI/PT registrations, default structure template) → 8 Roles & first invites (HR/manager seats) → 9 Review → Launch ("Your HRMS is ready" + next-step cards). Each step skippable with "Set up later" (lands as ochre to-do card on HR Cockpit). Demo-data toggle (load/purge sample set, typed-confirm purge).
+Linear Wizard, resumable, progress in sidebar: 1 Company & logo → 2 Locations & departments (quick-add grids) → 3 Designations & grades → 4 Work week & holiday calendar (pick national preset + edit) → 5 Leave types & policy (sensible India defaults CL12/SL12/EL15 prefilled, editable) → 6 Attendance rule basics → 7 Payroll basics (pay day, PF/ESI/PT registrations, default structure template) → 8 Roles & first invites (HR/manager seats) → 9 Review → Launch ("Your HRMS is ready" + next-step cards). Each step skippable with "Set up later" (lands as gold to-do card on HR Cockpit). Demo-data toggle (load/purge sample set, typed-confirm purge).
 
 ## 3. Roles & permissions (`/admin/security/roles`) — the heart of access control
 
@@ -38,7 +38,7 @@ System roles (OWNER, HR_ADMIN, MANAGER, EMPLOYEE — lock badge, duplicate-to-cu
 - **Grid:** rows = modules (employees, attendance, leave, payroll, expenses, recruitment, …all 30+), columns = actions (`read, create, update, delete, approve, configure, export`). Cell = tri-state painted checkbox (granted sage ✓ / denied empty / inherited faint — for clones). Row header click toggles whole module; column header whole action; sticky headers both axes; keyboard: arrows move, space toggles, shift+space row.
 - **Scope picker per `read`/`update` grant:** Self · Team (reports-to chain) · Department · Location · Company — chip on the cell, default per role archetype. (Backend: existing scope columns; UI finally exposes them.)
 - **Field-level security panel (per module):** sensitive field groups (Compensation, Statutory IDs, Bank, Contact-personal, Documents) → per-role: Hidden / Masked / Read / Edit. Drives PII masking across 360/tables/reports/exports.
-- **Live impact rail (right):** members affected count, "What changes" diff list since open, conflict linter (e.g., `approve` without `read` → auto-suggest fix ochre; `export` on payroll without compensation-read → warning).
+- **Live impact rail (right):** members affected count, "What changes" diff list since open, conflict linter (e.g., `approve` without `read` → auto-suggest fix gold; `export` on payroll without compensation-read → warning).
 - **Test as (§3.5)** button + Save (versioned: every save = role version with author + timestamp; rollback to version).
 
 ### 3.3 Assignment
@@ -53,7 +53,7 @@ Read-only impersonation of a role (or specific user with consent flag per policy
 ## 4. Workflow & approval-chain builder (`/admin/settings/workflows`)
 
 - **List:** per process (Leave request, Regularization, OT, Expense claim, Travel, Loan, Comp revision, Offer, Requisition, Document change-request, Exit approval, Payroll lock) — each with active version chip.
-- **Builder (vertical step canvas, form-driven not free-DAG):** trigger conditions (type/amount/days/grade/dept rules — e.g., "Expense > ₹10,000 AND grade ≤ M2") → ordered steps (approver type: Reporting manager / Manager's manager / Role (HR_ADMIN) / Named person / Department head / Cost-center owner; per-step: SLA hours → escalate-to, allow-delegate?, auto-approve-on-timeout? ochre-flagged) → final actions (notify set, post-functions like "create payroll input"). Condition branches render as parallel labeled lanes (max 3 deep — keeps it form-simple).
+- **Builder (vertical step canvas, form-driven not free-DAG):** trigger conditions (type/amount/days/grade/dept rules — e.g., "Expense > ₹10,000 AND grade ≤ M2") → ordered steps (approver type: Reporting manager / Manager's manager / Role (HR_ADMIN) / Named person / Department head / Cost-center owner; per-step: SLA hours → escalate-to, allow-delegate?, auto-approve-on-timeout? gold-flagged) → final actions (notify set, post-functions like "create payroll input"). Condition branches render as parallel labeled lanes (max 3 deep — keeps it form-simple).
 - **Validation:** unreachable-step linter, self-approval guard (requester ∈ approvers → auto-skip w/ note), cycle detection.
 - **Simulate:** pick sample request (real-shaped form) → shows resolved chain with names ("Asha → Rohan (manager) → Meera (HR)").
 - **Versioning:** publish creates v(n); in-flight requests finish on their started version (chip shows which).
@@ -84,7 +84,7 @@ Cards grid w/ status chips (Connected sage / Not set up / Error brick): **Biomet
 
 ## 9. Billing & SaaS
 
-- **`/admin/billing` (tenant):** current plan card (modules included, seats used meter), invoices table (download), payment method, upgrade/downgrade flow (proration preview), usage (storage, employees vs plan cap ochre at 90%).
+- **`/admin/billing` (tenant):** current plan card (modules included, seats used meter), invoices table (download), payment method, upgrade/downgrade flow (proration preview), usage (storage, employees vs plan cap gold at 90%).
 - **`/admin/saas` (platform OWNER only):** tenants table (company, plan, seats, MRR, status, created), tenant room (subscription edit, module flags, payment history, **support-impersonation with tenant-consent token + full audit**), plans & pricing editor (module bundles, caps), payments reconciliation, platform health (signups, churn chips).
 
 ---

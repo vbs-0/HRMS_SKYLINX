@@ -1,10 +1,10 @@
 # Painted Paper — SKYLINX PeopleOS UI v2
 
-Complete redesign architecture for the new interface: a warm paper-and-ink design language (serif headings, ivory surfaces, clay accent, soft grain — low eye strain, simple surface, enterprise depth underneath).
+Complete redesign architecture for the new interface: an editorial-ledger design language — **Indigo Ink** — with serif headings, warm-grey paper surfaces, deep indigo accent, muted gold highlights, soft grain. Low eye strain, simple surface, enterprise depth underneath.
 
 **Start here:** [`00_REDESIGN_MASTER_PLAN.md`](00_REDESIGN_MASTER_PLAN.md) — vision, principles, full scope matrix, doc index.
 
-**See it:** open [`mockups/painted-paper-preview.html`](mockups/painted-paper-preview.html) in a browser — live preview of the shell, My Desk dashboard, Leave, My Pay & Form 16, the Payroll run room, and the Roles & Permissions matrix, with light/dark (Lamplight Ink) toggle.
+**See it:** open [`mockups/painted-paper-preview.html`](mockups/painted-paper-preview.html) in a browser — live preview of the shell, My Desk dashboard, Leave, My Pay & Form 16, the Payroll run room, and the Roles & Permissions matrix, with light/dark (Midnight Ledger) toggle.
 
 | Doc | Subject |
 |---|---|

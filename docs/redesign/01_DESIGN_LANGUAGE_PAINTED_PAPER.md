@@ -1,6 +1,6 @@
-# 01 · Design Language — *Painted Paper*
+# 01 · Design Language — *Painted Paper · Indigo Ink*
 
-The visual system for SKYLINX PeopleOS v2. Warm paper surfaces, ink typography, a single clay accent, painted (low-chroma) status hues, soft light, and faint grain. Built to be **less eye-straining than any white SaaS dashboard** and to stay legible through an 8-hour payroll day.
+The visual system for SKYLINX PeopleOS v2. Warm-grey paper surfaces, indigo-ink accent, muted gold highlights, painted (low-chroma) status hues, soft light, and faint grain. An **editorial ledger** identity of its own — built to be less eye-straining than any white SaaS dashboard and to stay legible through an 8-hour payroll day.
 
 Everything here is normative. Token names map 1:1 to `assets/tokens.css`.
 
@@ -8,8 +8,8 @@ Everything here is normative. Token names map 1:1 to `assets/tokens.css`.
 
 ## 1. Mood
 
-- **Reference feel:** a well-bound ledger + a modern editorial site. Ink on warm paper; clay stamps for action; sage/ochre/brick wax-seals for status.
-- **Anti-goals:** glassmorphism, neon gradients, pure-white cards on grey, saturated blue links, heavy borders, drop shadows darker than 8% ink.
+- **Reference feel:** a well-bound accounts ledger + a modern editorial site. Indigo ink on warm-grey paper; gold-leaf details used the way a bookbinder would — sparingly; sage/gold/brick wax-seals for status.
+- **Anti-goals:** glassmorphism, neon gradients, electric SaaS blue (`#2563EB`-style glow), pure-white cards on cold grey, heavy borders, drop shadows darker than 8% ink. The indigo here is deep and ink-like, never luminous.
 
 ## 2. Color system
 
@@ -17,54 +17,65 @@ Everything here is normative. Token names map 1:1 to `assets/tokens.css`.
 
 | Token | Hex | Use |
 |---|---|---|
-| `--paper-0` | `#F4F1E8` | App canvas (with grain, §7) |
-| `--paper-1` | `#FBF9F2` | Cards, panels, table rows |
-| `--paper-2` | `#EFEADC` | Wells, table headers, inset areas, hover wash |
-| `--paper-3` | `#E6DFCC` | Pressed states, selected row wash |
-| `--ink-900` | `#211E1A` | Primary text, icons |
-| `--ink-700` | `#524C42` | Secondary text, labels |
-| `--ink-500` | `#7E776A` | Muted text, captions, placeholders¹ |
-| `--ink-300` | `#B3AB9A` | Disabled text, decorative glyphs |
-| `--line-strong` | `#CFC7B2` | Input borders, emphasized dividers |
-| `--line` | `#DFD9C7` | Card borders, table rules |
-| `--line-soft` | `#EBE6D7` | Hairlines inside cards |
+| `--paper-0` | `#F1F0EB` | App canvas (warm-grey fog, with grain §7) |
+| `--paper-1` | `#FAF9F5` | Cards, panels, table rows |
+| `--paper-2` | `#E9E8E0` | Wells, table headers, inset areas, hover wash |
+| `--paper-3` | `#DEDDD2` | Pressed states, selected row wash |
+| `--ink-900` | `#20222B` | Primary text, icons (indigo-tinted near-black) |
+| `--ink-700` | `#474B58` | Secondary text, labels |
+| `--ink-500` | `#6F7280` | Muted text, captions, placeholders¹ |
+| `--ink-300` | `#A9ABB4` | Disabled text, decorative glyphs |
+| `--line-strong` | `#C8C8BF` | Input borders, emphasized dividers |
+| `--line` | `#D9D8D0` | Card borders, table rules |
+| `--line-soft` | `#E6E5DE` | Hairlines inside cards |
 
-¹ `--ink-500` on `--paper-1` = 4.6:1 — the minimum pair allowed for text.
+¹ `--ink-500` on `--paper-1` ≈ 4.6:1 — the minimum pair allowed for text.
 
-### 2.2 Accent — clay
+### 2.2 Accent — indigo ink
 
 | Token | Hex | Use |
 |---|---|---|
-| `--clay-700` | `#9D4A32` | Active/pressed primary |
-| `--clay-600` | `#B85C3E` | **Primary buttons, focused accents** (4.6:1 on paper-1) |
-| `--clay-500` | `#D97757` | Hover, charts, selected glyphs, dark-theme accent |
-| `--clay-300` | `#EBAE92` | Progress tracks, decorative |
-| `--clay-100` | `#F7E4D8` | Tint wash (selected nav, callouts) |
+| `--indigo-700` | `#38437A` | Active/pressed primary |
+| `--indigo-600` | `#43508F` | **Primary buttons, focused accents** (7.0:1 on paper-1) |
+| `--indigo-500` | `#5A68A8` | Hover, charts, selected glyphs |
+| `--indigo-300` | `#AAB3D9` | Progress tracks, selection bg, decorative |
+| `--indigo-100` | `#E8EBF6` | Tint wash (selected nav, callouts) |
 
-Links are **ink, underlined**, turning clay on hover — never blue.
+Links are **ink, underlined**, turning indigo on hover — never default-browser blue.
 
-### 2.3 Painted status hues (each with `-600` fg, `-100` wash, `-300` line)
+### 2.3 Muted gold — highlight + warning family
+
+| Token | Hex | Use |
+|---|---|---|
+| `--gold-600` | `#87671D` | Warning/pending text (AA on paper-1), warning chips |
+| `--gold-500` | `#A8862D` | **Decorative highlight only** — brand monogram, pinned/star stamps, celebration glyphs, "featured" accents. Never body text, never buttons |
+| `--gold-300` | `#D9C684` | Chip borders, underline flourishes |
+| `--gold-100` | `#F3EBD2` | Warning wash, highlight wash |
+
+Gold doubles as the warning family (pending, expiring, on-hold) — warnings always carry an icon or label, so decorative gold stamps and warning chips stay unambiguous.
+
+### 2.4 Painted status hues (each with `-600` fg, `-100` wash, `-300` line)
 
 | Family | 600 | 100 wash | 300 line | Meaning |
 |---|---|---|---|---|
 | **Sage** | `#5E7A57` | `#E8EDDF` | `#BFCFB4` | Success, approved, present, paid, active |
-| **Ochre** | `#996F1F` | `#F3E9CF` | `#DCC98F` | Pending, warning, expiring, on-hold |
+| **Gold** | `#87671D` | `#F3EBD2` | `#D9C684` | Pending, warning, expiring, on-hold |
 | **Brick** | `#A8453A` | `#F4E0DA` | `#DFAF9F` | Rejected, overdue, LOP, errors, danger |
-| **Slate** | `#56718A` | `#E2E8EC` | `#AFC0CD` | Info, drafts, scheduled, neutral process |
+| **Slate** | `#5C6B7C` | `#E4E8ED` | `#B3BFCA` | Info, drafts, scheduled, neutral process (desaturated grey-blue — clearly distinct from accent indigo) |
 | **Plum** | `#7B5E7E` | `#EDE5EE` | `#C9B4CB` | AI/SkyNexus, special states (sabbatical, secondment) |
 
 Rules: washes only behind `-600` text of the same family or `--ink-900`; never place `-600` text on `-300`; status is **never conveyed by color alone** (always icon or label).
 
-### 2.4 Dark theme — "lamplight ink"
+### 2.5 Dark theme — "Midnight Ledger"
 
-Warm dark, not black; same token names, swapped values (see tokens.css `[data-theme="dark"]`):
-canvas `#181612`, surface `#201D18`, raised `#27231D`, well `#131109`, text `#EAE3D4`, secondary `#B5AC9A`, muted `#897F6C`, lines `#3B352A`/`#2E2922`, accent shifts to `--clay-500 #D97757` (7.1:1), status hues lightened one step (e.g., sage `#8FAE85`). Washes become 16% alpha overlays of the family hue. Elevation in dark = lighter surface + 1px line, not bigger shadow.
+Deep ink-blue-grey, not black; same token names, swapped values (see tokens.css `[data-theme="dark"]`):
+canvas `#14151A`, surface `#1C1E25`, raised `#23252E`, well `#2A2D38` (pressed), text `#E7E5DC`, secondary `#B3B2AD`, muted `#85868D`, lines `#3A3C46`/`#2F313B`, accent lightens to `--indigo-600 #8E9CD4` (6.2:1; primary buttons become light-indigo with dark ink text), gold lightens to `#CDB269`, status hues lightened one step (sage `#8FAE85`, brick `#D08A7E`, slate `#93A7BB`). Washes become deep tints of the family hue. Elevation in dark = lighter surface + 1px line, not bigger shadow.
 
 Theme switch: `system | light | dark` in the user menu, stored per user (`settings` module), applied via `data-theme` on `<html>`, no-flash inline script in `app/layout.tsx`.
 
-### 2.5 Data-viz palette (ordered)
+### 2.6 Data-viz palette (ordered)
 
-`clay-500 → slate-600 → sage-600 → ochre-600 → plum-600 → ink-300`, fills at 24% alpha with 600-weight strokes; gridlines `--line-soft`; axis text `--ink-500`. Single-metric charts always clay. Charts must pass grayscale print.
+`indigo-500 → sage-600 → gold-500 → slate-600 → plum-600 → ink-300`, fills at 24% alpha with 600-weight strokes; gridlines `--line-soft`; axis text `--ink-500`. Single-metric charts always indigo. Charts must pass grayscale print.
 
 ## 3. Typography
 
@@ -100,9 +111,9 @@ Global rules: `font-variant-numeric: tabular-nums` on all tables and amount fiel
 - **Radius:** controls 8 (`--r-control`), inputs/buttons 10, cards 14 (`--r-card`), drawers/modals 16, pills 999. Never mix radii within one component.
 - **Borders:** 1px only. Elevation prefers *line + tint* over shadow.
 - **Shadows (ink-tinted, soft):**
-  - `--shadow-1` `0 1px 2px rgba(33,30,26,.05)` — cards
-  - `--shadow-2` `0 2px 6px rgba(33,30,26,.06), 0 8px 24px rgba(33,30,26,.07)` — popovers, drawers
-  - `--shadow-3` `0 4px 12px rgba(33,30,26,.08), 0 16px 48px rgba(33,30,26,.10)` — modals, command palette
+  - `--shadow-1` `0 1px 2px rgba(32,34,43,.05)` — cards
+  - `--shadow-2` `0 2px 6px rgba(32,34,43,.06), 0 8px 24px rgba(32,34,43,.07)` — popovers, drawers
+  - `--shadow-3` `0 4px 12px rgba(32,34,43,.08), 0 16px 48px rgba(32,34,43,.10)` — modals, command palette
 - **Layering (z):** base 0 · sticky table head 10 · sidebar/topbar 20 · drawer 30 · modal 40 · palette 50 · toast 60.
 
 ## 5. Motion
@@ -125,8 +136,9 @@ Skeleton shimmer 1.6s linear. Numbers may count-up once (400ms) on dashboard loa
 1. **Grain:** SVG `feTurbulence` noise (data-URI, ~3% opacity, `background-blend-mode: multiply`) on `--paper-0` canvas ONLY — never on cards, never behind dense tables; disabled in dark theme below 1.5%; excluded from print.
 2. **Deckle rule:** section dividers may use the `.rule-ink` hairline — a 2px asymmetric double line (`--line-strong` over `--line-soft`) evoking a ruled ledger.
 3. **Stamp chips:** status badges are pill chips with wash + 1px family line — like wax seals, not glowing dots.
-4. **Serif numerals:** KPI figures render in Fraunces with old-style feel but `tabular-nums` — the brand moment on every dashboard.
-5. **Cover pages:** printable documents (payslips, Form 16 cover, letters) get a letterhead band: company logo left, serif document title, deckle rule beneath.
+4. **Gold-leaf details:** `--gold-500` reserved for the brand monogram, pinned/star stamps, celebration glyphs and featured markers — the bookbinder's restraint is what keeps it premium.
+5. **Serif numerals:** KPI figures render in Fraunces with old-style feel but `tabular-nums` — the brand moment on every dashboard.
+6. **Cover pages:** printable documents (payslips, Form 16 cover, letters) get a letterhead band: company logo left, serif document title, deckle rule beneath.
 
 ## 8. Voice & microcopy
 
@@ -135,7 +147,7 @@ Sentence case everywhere (buttons, titles, labels). Verbs on buttons ("Run payro
 ## 9. Accessibility (WCAG 2.2 AA — release gate)
 
 - Text contrast ≥ 4.5:1 (≥ 3:1 for ≥18.66px bold/24px); verified token pairs listed in tokens.css comments; CI check via axe in Playwright.
-- Focus: 2px `--clay-600` ring, 2px offset, on **every** interactive element; `:focus-visible` only; never `outline: none` without replacement.
+- Focus: 2px `--indigo-600` ring, 2px offset, on **every** interactive element; `:focus-visible` only; never `outline: none` without replacement.
 - Hit targets ≥ 40×40px (24px minimum spacing exception per 2.2).
 - Full keyboard paths for: table row open, drawer close (Esc), palette (⌘K), approve/reject in Inbox (A/R), date pickers (arrows), matrix editor (doc 10).
 - `aria-live="polite"` for toasts and async table refresh; row count announcements on filter.
@@ -145,7 +157,7 @@ Sentence case everywhere (buttons, titles, labels). Verbs on buttons ("Run payro
 
 ## 10. Print & PDF discipline
 
-`@media print`: grain off, `--paper-*` → white, ink → black, shadows off, sidebar/topbar/actions hidden via existing `.print-hide`, page margins 16mm (keep `globals.css` block). Documents with statutory layouts (payslip, Form 16, F&F statement, offer/relieving letters) use dedicated print stylesheets with the letterhead band (§7.5) and `break-inside: avoid` on tables. Server-side PDFs reuse identical HTML templates for pixel parity.
+`@media print`: grain off, `--paper-*` → white, ink → black, shadows off, sidebar/topbar/actions hidden via existing `.print-hide`, page margins 16mm (keep `globals.css` block). Documents with statutory layouts (payslip, Form 16, F&F statement, offer/relieving letters) use dedicated print stylesheets with the letterhead band (§7.6) and `break-inside: avoid` on tables. Server-side PDFs reuse identical HTML templates for pixel parity.
 
 ## 11. Responsive & density
 

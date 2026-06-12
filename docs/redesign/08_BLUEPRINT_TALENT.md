@@ -13,13 +13,13 @@ Table: req code, title, dept, location, openings, hiring manager, budget range (
 Job posting editor: public description, employment type, experience band, salary range (show/hide on portal toggle), screening questions builder (knock-out rules), apply-form fields config. Channels: internal job board (ESS "Jobs" card + apply/refer), public careers link, **referrals** (ESS refer: upload CV + relationship note → referral bonus tracking chip per policy).
 
 ### 1.3 Pipeline `/talent/recruitment/jobs/[id]`
-KanbanBoard: stages configurable per job (default Sourced → Screening → Interview L1 → L2 → HR round → Offer → Hired; Rejected/Withdrawn swim-collapse). Card: candidate name, current company/exp, rating stars (avg scorecard), days-in-stage (ochre >7), source chip. Bulk move w/ auto-emails (templated, preview before send). Candidate drawer: profile (parsed CV view + original PDF pane), timeline (every touch), screening answers, **scorecards**, emails thread (BCC ingestion later flag), notes (@mention), duplicate detector (same email/phone across jobs → merge tool).
+KanbanBoard: stages configurable per job (default Sourced → Screening → Interview L1 → L2 → HR round → Offer → Hired; Rejected/Withdrawn swim-collapse). Card: candidate name, current company/exp, rating stars (avg scorecard), days-in-stage (gold >7), source chip. Bulk move w/ auto-emails (templated, preview before send). Candidate drawer: profile (parsed CV view + original PDF pane), timeline (every touch), screening answers, **scorecards**, emails thread (BCC ingestion later flag), notes (@mention), duplicate detector (same email/phone across jobs → merge tool).
 
 ### 1.4 Interviews
 Scheduler: round template (panel, duration, mode, ScorecardForm criteria), panel availability hints (calendar), candidate comms (invite template + self-reschedule token page within window), conflict warnings. **Interviewer cockpit** (`/talent/recruitment/interviews` — what a MANAGER sees): my upcoming interviews (today strip), candidate pack (CV, JD, prior rounds' visible-to-me feedback per blind setting), ScorecardForm: per-criterion anchored 1–5 + verdict (Strong hire → Strong no) + notes; submit-by SLA chip (feedback overdue nudges via Inbox).
 
 ### 1.5 Offers
-Offer builder: pick candidate → structure template + CTC (CtcCalculator inline; band breach → approval step ochre) → terms (joining date, location, probation, bonus/relocation) → letter merge preview → approval chain → send (tokened candidate page: view + accept/decline + counter-comment; e-sign-ready slot) → on accept: **convert wizard** (creates employee draft + onboarding runbook, doc 05 §5; carries docs over). Offer tracker table w/ expiry chips. Background-verification checklist tab (statuses per check, vendor fields, doc 09 ties).
+Offer builder: pick candidate → structure template + CTC (CtcCalculator inline; band breach → approval step gold) → terms (joining date, location, probation, bonus/relocation) → letter merge preview → approval chain → send (tokened candidate page: view + accept/decline + counter-comment; e-sign-ready slot) → on accept: **convert wizard** (creates employee draft + onboarding runbook, doc 05 §5; carries docs over). Offer tracker table w/ expiry chips. Background-verification checklist tab (statuses per check, vendor fields, doc 09 ties).
 
 ### 1.6 Recruitment analytics (tab)
 Funnel chart per job/dept (conversion %, drop-off), time-to-fill / time-in-stage, source effectiveness, offer-acceptance rate, interviewer load board. Export.
@@ -41,7 +41,7 @@ GoalTree: company → dept → my goals cascade (alignment links); goal card: ti
 - **HR completion:** queue of finished reviews → validate, normalize letters trigger.
 
 ### 2.4 Calibration (`performance.approve`)
-NineBox: drag people across performance × potential grid (keyboard alternative: select + assign-cell menu); guardrails (forced-distribution targets as ochre meters, not hard blocks unless configured); session log (who moved whom, why — required note); finalize → ratings locked → letters batch (increment/promotion via doc 05 §7 engine).
+NineBox: drag people across performance × potential grid (keyboard alternative: select + assign-cell menu); guardrails (forced-distribution targets as gold meters, not hard blocks unless configured); session log (who moved whom, why — required note); finalize → ratings locked → letters batch (increment/promotion via doc 05 §7 engine).
 
 ### 2.5 Outcomes & ESS view
 My review page: published rating + manager summary, growth plan items (become Inbox tasks), historical ratings sparkline on 360 Performance tab. PIP module: plan template (goals, checkpoints, mentor), confidential flag, outcome record.
@@ -56,7 +56,7 @@ ESS **My learning:** enrolled (upcoming w/ calendar add), in-progress, completed
 Attendance marking sheet (trainer view: roster checklist), assessment results entry (score/pass), feedback form (rating + comments → program score), completion → records on 360 Training tab + skill grants.
 
 ### 3.3 Certifications
-Register: person, certification, issuer, obtained, **expiry** (ochre <60d, brick lapsed → auto reminder rule), proof file, renewal task generation.
+Register: person, certification, issuer, obtained, **expiry** (gold <60d, brick lapsed → auto reminder rule), proof file, renewal task generation.
 
 ### 3.4 Skill matrix
 - **Designation skill maps** (`training.configure`): required skills + target level per designation.
@@ -69,7 +69,7 @@ Hours per employee/dept, completion %, feedback scores by program/trainer, cost 
 ---
 
 ### States & rules
-- Every window/deadline (goal setting, review due, registration close) = ochre banner + Inbox task + reminder rule.
+- Every window/deadline (goal setting, review due, registration close) = gold banner + Inbox task + reminder rule.
 - Blind rules enforced server-side (peer anonymity, interviewer blind-feedback setting).
 - Calibration & scorecards autosave drafts; submit = lock w/ unlock by `performance.approve` + reason.
 - Recruitment candidate PII (CV contact) masked for panel until L1 pass if "blind screening" toggled.

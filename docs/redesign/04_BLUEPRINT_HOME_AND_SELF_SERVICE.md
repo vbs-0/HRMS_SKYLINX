@@ -10,24 +10,24 @@ One route, server-composed widget set per persona; widgets are permission-gated 
 
 ### 1.1 Employee (ESS) layout
 1. **Greeting band** — serif "Good morning, Asha." + date + shift chip ("General · 09:00–18:00") + location.
-2. **PunchButton hero** (left, 4 cols) — state machine: Not in → `Check in` (clay) → working timer → `Check out`; geo/selfie per rule; offline queue note; "Working remotely today?" toggle if policy allows. Below: this week strip (5 `AttendanceDayCell`).
+2. **PunchButton hero** (left, 4 cols) — state machine: Not in → `Check in` (indigo) → working timer → `Check out`; geo/selfie per rule; offline queue note; "Working remotely today?" toggle if policy allows. Below: this week strip (5 `AttendanceDayCell`).
 3. **My balances** (4 cols) — 3 `LeaveBalanceRing` (CL/SL/EL) + "Apply leave" secondary; ring tooltip = accrual math.
 4. **My pay snapshot** (4 cols) — last payslip chip ("May · ₹84,230 · Paid 31 May"), YTD gross, "Tax regime: New" chip, CTAs: Payslip / My Pay & Tax. Amounts masked until hover-reveal (privacy-by-default on shared screens).
 5. **Pending on me** — my requests' statuses (leave/claims/regularization with ApprovalTrail popovers).
 6. **Today around me** — team on leave today, upcoming holidays (next 2), celebrations (CelebrationCard: birthdays/anniversaries with "Send wishes" → Social post).
-7. **Announcements** (latest 3, pinned first) + **Surveys due** chip + **Policies to acknowledge** (ochre banner if pending — blocks nothing but persists).
+7. **Announcements** (latest 3, pinned first) + **Surveys due** chip + **Policies to acknowledge** (gold banner if pending — blocks nothing but persists).
 8. **Quick links** — ID card, Helpdesk, Refer a candidate, Org chart.
 
 ### 1.2 Manager adds
 - **Inbox preview** (top-right, count chip): first 5 approvals with inline Approve/Reject (A/R keys), "Open Inbox →".
 - **Team today** — present/absent/leave/WFH counts + names popover; late arrivals list (anomaly feed).
-- **Team leave calendar** (2-week mini) with coverage-conflict ochre marks.
+- **Team leave calendar** (2-week mini) with coverage-conflict gold marks.
 - **My team's pending reviews / goals due** (cycle-aware).
 
 ### 1.3 HR Admin / Owner adds (HR Cockpit)
 - **Org pulse KpiRow:** Headcount (with joiners/exits delta) · Attendance today % · On leave · Open positions · Attrition (12-mo rolling) · Payroll cost (last run).
 - **Payroll countdown card** — "June run: 6 days to cutoff" + gates checklist mini (Stepper) → run room.
-- **Compliance next-dues** — PF 15 Jul · ESI 15 Jul · TDS 7 Jul · PT 21 Jul as ChallanCards with ochre/brick urgency.
+- **Compliance next-dues** — PF 15 Jul · ESI 15 Jul · TDS 7 Jul · PT 21 Jul as ChallanCards with gold/brick urgency.
 - **Lifecycle strips** — Onboarding in progress (n) / Exits in progress (n) / Probation ending this month (n) → boards.
 - **Anomaly digest** — yesterday's attendance anomalies, pending regularizations aging >3d.
 - **Hiring funnel mini** + offers awaiting acceptance.
@@ -36,8 +36,8 @@ One route, server-composed widget set per persona; widgets are permission-gated 
 
 **Layout:** left filter rail (All · Leave · Attendance · Expenses · Travel · Loans · Payroll · Recruitment offers · Training · Documents · Separations; each with count) · center list · right detail pane (≥xl) or Drawer.
 
-- **List row:** requester Avatar+name, type glyph, one-line summary ("EL · 3 days · 14–16 Jul"), amount if money (₹ mono), age chip (ochre >3d, brick >7d), SLA dot.
-- **Detail pane:** full request, context block (balances for leave; cap/spend for claims; roster impact for shift), policy verdicts (sandwich/blackout checks shown as chips with pass/fail), attachments viewer, ApprovalTrail (who's before/after me), CommentThread (request clarification → notifies requester), actions: Approve (clay) / Reject (requires reason) / Forward (delegate w/ note).
+- **List row:** requester Avatar+name, type glyph, one-line summary ("EL · 3 days · 14–16 Jul"), amount if money (₹ mono), age chip (gold >3d, brick >7d), SLA dot.
+- **Detail pane:** full request, context block (balances for leave; cap/spend for claims; roster impact for shift), policy verdicts (sandwich/blackout checks shown as chips with pass/fail), attachments viewer, ApprovalTrail (who's before/after me), CommentThread (request clarification → notifies requester), actions: Approve (indigo) / Reject (requires reason) / Forward (delegate w/ note).
 - **Bulk:** select-all-in-filter; bulk approve previews list + total amount; per-item failures reported in result toast + list.
 - **Tasks tab:** non-approval to-dos assigned to me (onboarding items, clearance items, proof verification batches, survey to take).
 - **Empty:** "Inbox zero. Nothing waiting on you." with subtle confetti-free sage check.
@@ -45,7 +45,7 @@ One route, server-composed widget set per persona; widgets are permission-gated 
 
 ## 3. `/calendar`
 
-Tabs Me | Team (managers) | Company. Sources toggled in legend: Leave (sage), Holidays (clay outline), Interviews (slate), Reviews (plum), Payroll milestones (ochre), Training (slate), Birthdays (neutral). Month/week views; day peek lists events with deep links; "Add" respects permissions (e.g., HR adds holiday). ICS subscribe per user (read-only feed token).
+Tabs Me | Team (managers) | Company. Sources toggled in legend: Leave (sage), Holidays (indigo outline), Interviews (slate), Reviews (plum), Payroll milestones (gold), Training (slate), Birthdays (neutral). Month/week views; day peek lists events with deep links; "Add" respects permissions (e.g., HR adds holiday). ICS subscribe per user (read-only feed token).
 
 ## 4. My Profile (`/people/[me]` — same 360 as doc 05 §3 with self-permissions)
 
@@ -57,7 +57,7 @@ Template gallery (org-controlled themes; Painted Paper default), live preview fr
 
 ## 6. Announcements (`/work/announcements`)
 
-- **Reader:** card feed, pinned first (clay corner stamp), category chips (General/Policy/Event/Urgent-brick), read receipts ("Seen by 142/220" for HR), reactions optional.
+- **Reader:** card feed, pinned first (indigo corner stamp), category chips (General/Policy/Event/Urgent-brick), read receipts ("Seen by 142/220" for HR), reactions optional.
 - **Composer (HR):** rich text (headings, lists, image), audience picker (company/location/department/custom set with live count), schedule, pin until date, require-acknowledgment toggle (turns it into tracked task in recipients' Inbox).
 
 ## 7. Surveys (`/talent/surveys` for admin; fill-in via Inbox/`/s/[token]`)

@@ -10,7 +10,7 @@ Screens: `/pay/payroll`, `/pay/structures`, `/pay/me`, `/pay/expenses`, `/pay/lo
 DataTable: code (mono), name, kind (Earning/Deduction/Employer cost), calc (Fixed/% of/Formula), taxable?, PF-wage?, ESI-wage?, PT-wage?, prorate?, arrears-eligible?, visible-on-payslip?, status. Editor drawer: FormulaInput with component-token autocomplete + live test against sample employee; rounding rule; statutory flags grid (the existing config-metadata layer); display order. Guard: editing a component used in published runs → versioned ("applies from next run"), never retroactive silently.
 
 ### Tab: Templates
-Structure templates (e.g., "Standard 2026 · Grade M2"): ordered component list with rules (Basic = 40% CTC, HRA = 50% Basic metro…), employer costs (PF employer, gratuity provision), validation panel (sum checks vs CTC, minimum-wage floor per state ochre warning). **CtcCalculator** preview: input CTC → full monthly/annual SalaryBreakupTable + in-hand estimate (after PF/PT/TDS estimate per regime).
+Structure templates (e.g., "Standard 2026 · Grade M2"): ordered component list with rules (Basic = 40% CTC, HRA = 50% Basic metro…), employer costs (PF employer, gratuity provision), validation panel (sum checks vs CTC, minimum-wage floor per state gold warning). **CtcCalculator** preview: input CTC → full monthly/annual SalaryBreakupTable + in-hand estimate (after PF/PT/TDS estimate per regime).
 
 ### Tab: Assignments
 Person × template + CTC + effective date (the existing assign flow, polished): bulk assign by grade/dept; pending-effective chips; assignment history per person.
@@ -28,7 +28,7 @@ Revision wizard (also entry from 360): person/set → new CTC or per-component e
 
 **Step 1 — Inputs:** LOP days table (from attendance, editable w/ audit), additional salary items (bonus, incentives, retention payout, one-time deductions — bulk paste/import), reimbursement payouts pulled from approved claims marked pay-via-payroll, salary withholding flags (existing withholding feature: person + reason + release run), off-cycle items.
 
-**Step 2 — Preview & validate:** virtualized register (person rows: gross, each visible component column-pickable, deductions PF/ESI/PT/TDS, LOP impact, net) — every figure clickable → **formula trace popover** (component tree with values & rule citations). Variance lens: vs last month per person (Δ chips, brick >±20% auto-flag list); validation panel: negative-net (brick, block), missing bank (brick), PAN missing w/ TDS (ochre→20% flag rule), ESI crossed threshold mid-year note. Exceptions tab collects all flags; each resolvable inline or excusable w/ reason.
+**Step 2 — Preview & validate:** virtualized register (person rows: gross, each visible component column-pickable, deductions PF/ESI/PT/TDS, LOP impact, net) — every figure clickable → **formula trace popover** (component tree with values & rule citations). Variance lens: vs last month per person (Δ chips, brick >±20% auto-flag list); validation panel: negative-net (brick, block), missing bank (brick), PAN missing w/ TDS (gold→20% flag rule), ESI crossed threshold mid-year note. Exceptions tab collects all flags; each resolvable inline or excusable w/ reason.
 
 **Step 3 — Review & lock:** summary cards (headcount paid, gross, deductions by family, employer cost, net payout ₹ in serif num-xl + words), approver flow (workflow per doc 10), **Lock** (typed confirm; freezes inputs; unlock = `payroll.configure` + reason, audit).
 
@@ -50,7 +50,7 @@ Revision wizard (also entry from 360): person/set → new CTC or per-component e
 
 ## 4. `/pay/expenses` — Claims & payout (existing grade-cap engine, full UX)
 
-- **Me:** New claim (multi-line: category, date, amount, merchant, receipt per line; mileage type auto-computes km × rate; per-category & grade cap meter inline — exceeds → ochre "needs HR approval" or brick block per policy; advance adjustment picker if travel advance open) → submit → ApprovalTrail. My claims table (status, paid-via chip: Payroll June / Bank transfer).
+- **Me:** New claim (multi-line: category, date, amount, merchant, receipt per line; mileage type auto-computes km × rate; per-category & grade cap meter inline — exceeds → gold "needs HR approval" or brick block per policy; advance adjustment picker if travel advance open) → submit → ApprovalTrail. My claims table (status, paid-via chip: Payroll June / Bank transfer).
 - **Approver:** Inbox detail shows policy verdicts, receipts gallery (zoom, rotate), category spend YTD context; partial-approve line items w/ reason.
 - **Finance/HR:** payout queue (approved claims → batch: add to payroll run OR direct bank file), category admin (categories, limits per grade matrix, receipt-required threshold, mileage rates), claim aging report.
 
@@ -79,7 +79,7 @@ Layout: left rail of statutes (PF · ESI · PT · LWF · TDS · **Form 16** · C
 6. **Tracker:** per-employee status pipeline (Eligible → Part A paired → Part B ready → Signed → Published → Downloaded ✓), exception saved-views, deadline banner (15 Jun) with countdown.
 
 - **Registers:** payroll register, PF/ESI/PT registers, S&E formats per state — print-disciplined exports (doc 01 §10).
-- **Compliance calendar** feeds Home cards + `/calendar` (ochre milestones) — due-date rules per statute editable (`compliance.configure`).
+- **Compliance calendar** feeds Home cards + `/calendar` (gold milestones) — due-date rules per statute editable (`compliance.configure`).
 
 ---
 

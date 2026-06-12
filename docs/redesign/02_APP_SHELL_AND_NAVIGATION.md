@@ -21,9 +21,9 @@ Replaces the flat 34-item sidebar (`components/nav-items.tsx`) and `app-shell-fr
 Overlays: right Drawer (480/720px) · Modal (480/640px) · ⌘K palette · Toasts (bottom-right)
 ```
 
-- **Sidebar:** company logo + tenant name; groups with caption-style headers; items = icon + label (+count chip for Inbox); active item = `--clay-100` wash + 2px clay left rail + ink text. Collapse control persists per user. md → 64px icon rail with tooltips; <md → hamburger + bottom tab bar (Home, Time, Pay, Inbox, Menu).
+- **Sidebar:** company logo + tenant name; groups with caption-style headers; items = icon + label (+count chip for Inbox); active item = `--indigo-100` wash + 2px indigo left rail + ink text. Collapse control persists per user. md → 64px icon rail with tooltips; <md → hamburger + bottom tab bar (Home, Time, Pay, Inbox, Menu).
 - **Topbar:** breadcrumb (`Module / Page / Record`), global search field (placeholder "Search people, pages, actions… ⌘K"), **Quick add (+)** menu (permission-filtered: Add employee, Apply leave, New claim, New ticket, New requisition, Run payroll…), theme toggle, notification bell with unread dot + drawer preview, help (docs + "Ask SkyNexus"), avatar menu (profile, my settings, theme, switch role-view for OWNER, sign out).
-- **Page header:** serif H1 (e.g., *Payroll*), context chips (fiscal year, location filter where relevant), right-aligned action set — exactly one clay primary.
+- **Page header:** serif H1 (e.g., *Payroll*), context chips (fiscal year, location filter where relevant), right-aligned action set — exactly one indigo primary.
 - **Footer (sparse):** environment badge for non-prod, app version, status link.
 
 ## 2. Information architecture — navigation groups
@@ -108,7 +108,7 @@ Bell → drawer (last 30, grouped Today/Earlier; filter chips All | Approvals | 
 ## 9. Shell loading & resilience
 
 - App boot: sidebar + topbar render immediately from session cache; content area shows page skeleton (never full-screen spinner).
-- Offline banner (ochre) with retry; check-in queue stores punches locally and syncs (doc 06).
+- Offline banner (gold) with retry; check-in queue stores punches locally and syncs (doc 06).
 - 403 inside shell: friendly "You don't have access — request it" page that can raise a Helpdesk ticket pre-filled with route + permission needed.
 - Error boundary per page region with reference id + "Report to Helpdesk".
 

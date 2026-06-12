@@ -2,14 +2,14 @@
 
 Replaces the 34-line `ui.tsx`. Built on Radix primitives (a11y) + Tailwind tokens. Every console screen must compose ONLY from this kit — no bespoke tables/forms in feature code. Names below are the exported component names.
 
-Conventions: all components accept `className`; sizes `sm | md (default) | lg`; tones use the painted families `sage | ochre | brick | slate | plum | clay | neutral`; every interactive element has `:focus-visible` ring `--focus-ring`; disabled = 50% opacity + `cursor-not-allowed` + optional `disabledReason` tooltip.
+Conventions: all components accept `className`; sizes `sm | md (default) | lg`; tones use the painted families `sage | gold | brick | slate | plum | indigo | neutral`; every interactive element has `:focus-visible` ring `--focus-ring`; disabled = 50% opacity + `cursor-not-allowed` + optional `disabledReason` tooltip.
 
 ---
 
 ## 1. Primitives
 
 ### Button
-- Variants: `primary` (clay-600 bg, paper-1 text; hover clay-500; active clay-700) · `secondary` (paper-1 bg, line-strong border, ink-900) · `ghost` (transparent, hover paper-2) · `danger` (brick-600) · `link` (ink underline → clay).
+- Variants: `primary` (indigo-600 bg, paper-1 text; hover indigo-500; active indigo-700) · `secondary` (paper-1 bg, line-strong border, ink-900) · `ghost` (transparent, hover paper-2) · `danger` (brick-600) · `link` (ink underline → indigo).
 - Sizes 32/38/44px; icon-left/right slots; `loading` (spinner replaces icon, label stays, width locked); `confirmHold` variant for irreversible micro-actions (hold 600ms).
 - One `primary` per region (lint rule `pp/one-primary`).
 
@@ -17,7 +17,7 @@ Conventions: all components accept `className`; sizes `sm | md (default) | lg`; 
 
 ### Badge / StatusChip
 - Stamp chip: wash bg + 1px `-300` family border + `-600` text + optional 8px glyph; sizes sm (18px) / md (22px).
-- Canonical status→tone map (single source `lib/status-map.ts`): approved/paid/active/present/completed→sage · pending/in-review/on-hold/expiring→ochre · rejected/overdue/failed/lop/terminated→brick · draft/scheduled/processing/info→slate · ai/special→plum · archived/inactive→neutral.
+- Canonical status→tone map (single source `lib/status-map.ts`): approved/paid/active/present/completed→sage · pending/in-review/on-hold/expiring→gold · rejected/overdue/failed/lop/terminated→brick · draft/scheduled/processing/info→slate · ai/special→plum · archived/inactive→neutral.
 
 ### Avatar — initials on deterministic paper-tone bg (hash→6 muted hues), photo when present; sizes 20/24/32/40/64/96; `AvatarGroup` (+N overflow); presence dot only in Social.
 
@@ -31,17 +31,17 @@ Conventions: all components accept `className`; sizes `sm | md (default) | lg`; 
 Label (caption, ink-700) + optional "Required"/"Optional" tag + control + help text (ink-500) + error (brick-600 + icon, `aria-describedby`). Labels ALWAYS visible — no placeholder-as-label.
 
 ### Controls
-- **Input** — 38px, paper-1 bg, line-strong border, focus clay border + ring; prefix/suffix slots (₹, %, @); clearable.
+- **Input** — 38px, paper-1 bg, line-strong border, focus indigo border + ring; prefix/suffix slots (₹, %, @); clearable.
 - **NumberInput** — right-aligned, tabular-nums, stepper optional; `currency` mode renders ₹ prefix + Indian grouping on blur.
 - **Textarea** — autosize 3→12 rows; char counter when `maxLength`.
 - **Select** — Radix; searchable ≥8 options; option = label + optional meta line; groups; async loader.
 - **MultiSelect** — chips-in-field, "Select all in filter", count summary ("4 departments").
 - **Combobox** — async people/master picker: avatar + name + sub-line (designation · dept); recent section; `EmployeePicker`, `DepartmentPicker`, `DesignationPicker`, `LocationPicker` presets.
-- **DatePicker** — paper calendar; serif month title; holidays dotted ochre, week-offs muted; min/max + disabled-dates fn; `fy` mode (Apr–Mar quick ranges). **DateRangePicker** with presets (This month, Last month, This FY, Custom).
+- **DatePicker** — paper calendar; serif month title; holidays dotted gold, week-offs muted; min/max + disabled-dates fn; `fy` mode (Apr–Mar quick ranges). **DateRangePicker** with presets (This month, Last month, This FY, Custom).
 - **TimePicker** (15-min steps + free type) · **MonthPicker** (payroll periods).
 - **Checkbox / Radio / RadioCard** (rich option tiles with title+desc, e.g., tax regime choice) · **Switch** (with inline saving tick).
 - **Slider** — only for weights (KRA %); always paired numeric input.
-- **FileUpload** — drag zone ("Drop files or browse"), type/size rules surfaced upfront, per-file progress, image/pdf thumbnail, virus-scan pending state (ochre), error retry. `documentKind` prop applies PII handling (doc 01 §masking).
+- **FileUpload** — drag zone ("Drop files or browse"), type/size rules surfaced upfront, per-file progress, image/pdf thumbnail, virus-scan pending state (gold), error retry. `documentKind` prop applies PII handling (doc 01 §masking).
 - **SignaturePad** — draw/type/upload for acknowledgments & e-sign-ready letters.
 - **OTPInput** — 6 cells, auto-advance, paste-aware.
 - **SearchInput** — leading glyph, `/` shortcut binding, debounced.
@@ -72,8 +72,8 @@ Label (caption, ink-700) + optional "Required"/"Optional" tag + control + help t
 - **OrgChartView** — zoom/pan tree, node = avatar+name+designation+count, expand-on-demand, dotted-line edges, minimap, export PNG/PDF.
 - **Charts** (Recharts wrapper `pp-charts`): Line/Area/Bar/Stacked/Donut/Funnel/Heatmap(attendance)/Scatter(9-box); tokens-only colors, grid `--line-soft`, tooltip = ink card; every chart has `data table` toggle for a11y.
 - **ProgressRing / ProgressBar** — leave balance rings, profile completeness, run progress.
-- **Stepper** — payroll run gates, onboarding runbook stages: done sage check, current clay, blocked brick with reason link.
-- **CommentThread** — avatar, body, @mentions (notify), attachments, internal-note toggle (HR-only, ochre wash), edited mark.
+- **Stepper** — payroll run gates, onboarding runbook stages: done sage check, current indigo, blocked brick with reason link.
+- **CommentThread** — avatar, body, @mentions (notify), attachments, internal-note toggle (HR-only, gold wash), edited mark.
 - **DiffView** — before/after two-tone rows for audit & approval-of-change screens (CTC revision shows old→new per component).
 - **EmptyState / ErrorState / ForbiddenState** — standardized blocks (serif headline, sentence, action).
 - **Letterhead** — print band (logo, serif title, deckle rule) for payslip/Form 16/letters.
@@ -84,8 +84,8 @@ Label (caption, ink-700) + optional "Required"/"Optional" tag + control + help t
 - **Drawer** (right; 480 standard, 720 wide): header (title + status chip + ⋯), tabbed body, sticky footer actions; stacks max 2; Esc/scrim closes (guarded if dirty). THE pattern for record triage (employee peek, claim review, ticket, candidate).
 - **Modal** (480 confirm / 640 form): for focused commits only — confirmations, single-step forms, bulk previews. Destructive confirm: brick header glyph, consequence sentence, typed `CONFIRM` for irreversible (delete run, purge data).
 - **Popover** — filters, formula trace ("How was this computed?" on every payroll figure: component tree with values), column pickers.
-- **Toast** — bottom-right, 5s, max 3 stacked, action slot ("Undo", "View"), `aria-live=polite`; sage/brick/ochre/slate accents.
-- **Banner** — page-level: ochre (payroll window closing, proofs due), brick (failed disbursement file), slate (scheduled maintenance), plum (AI suggestion). Dismiss persists per user per key.
+- **Toast** — bottom-right, 5s, max 3 stacked, action slot ("Undo", "View"), `aria-live=polite`; sage/brick/gold/slate accents.
+- **Banner** — page-level: gold (payroll window closing, proofs due), brick (failed disbursement file), slate (scheduled maintenance), plum (AI suggestion). Dismiss persists per user per key.
 - **CommandPalette** — per doc 02 §5.
 - **TourSpot** — first-run coach marks (max 3 per page, dismiss-all).
 

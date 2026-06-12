@@ -7,13 +7,13 @@ Screens: `/time/attendance`, `/time/roster`, `/time/leave`, `/time/holidays`. AP
 ## 1. `/time/attendance`
 
 ### Tab: Me (ESS default)
-- **Punch hero** (shared with Home): big Check in/out, current shift chip, geo status (in-fence sage / out-of-fence ochre with policy outcome), selfie capture when required, WFH toggle per policy. Offline: punches queue locally, "Will sync" chip.
-- **Month heatmap** (AttendanceDayCell grid): tone by worked hours; dots: ochre = anomaly, brick = LOP, slate = holiday/week-off, sage = leave (approved). Day click → day drawer: punches list (time, source: web/geo/biometric/kiosk, location), computed (in, out, hours, status), actions: **Request regularization** (missing/wrong punch: proposed times + reason + evidence) · **Request OT** (hours + justification).
+- **Punch hero** (shared with Home): big Check in/out, current shift chip, geo status (in-fence sage / out-of-fence gold with policy outcome), selfie capture when required, WFH toggle per policy. Offline: punches queue locally, "Will sync" chip.
+- **Month heatmap** (AttendanceDayCell grid): tone by worked hours; dots: gold = anomaly, brick = LOP, slate = holiday/week-off, sage = leave (approved). Day click → day drawer: punches list (time, source: web/geo/biometric/kiosk, location), computed (in, out, hours, status), actions: **Request regularization** (missing/wrong punch: proposed times + reason + evidence) · **Request OT** (hours + justification).
 - **My requests strip:** regularizations & OT with status chips + ApprovalTrail.
 - **Summary cards:** present days, late count (vs grace), avg hours, OT approved hours, LOP days MTD.
 
 ### Tab: Team (manager)
-- Today board: Present (with in-times, late flagged ochre) · Not in yet · On leave · WFH · On OT. 
+- Today board: Present (with in-times, late flagged gold) · Not in yet · On leave · WFH · On OT. 
 - **Regularization & OT queue** (also mirrored in Inbox): row = person, date, type, delta, reason; one-click approve/reject; bulk.
 - Member drill-in = their Me view (read).
 
@@ -32,7 +32,7 @@ Screens: `/time/attendance`, `/time/roster`, `/time/leave`, `/time/holidays`. AP
 ## 2. `/time/roster` — Shifts & scheduling
 
 - **Shifts library:** ShiftPill list (code, name, start–end, break, night flag, color tone from painted set); editor with overnight handling preview.
-- **Planner:** virtualized grid (people rows × days columns, week/fortnight/month zoom); cells = ShiftPill; drag to assign, paint-mode for ranges; conflict checks inline (leave overlap brick outline, <11h rest ochre); column summaries (coverage per shift vs required headcount); copy week, apply **rotation patterns** (e.g., 5×Morning→5×Night→2×Off), auto-fill from pattern; publish → notifies team (unpublished = slate hatch).
+- **Planner:** virtualized grid (people rows × days columns, week/fortnight/month zoom); cells = ShiftPill; drag to assign, paint-mode for ranges; conflict checks inline (leave overlap brick outline, <11h rest gold); column summaries (coverage per shift vs required headcount); copy week, apply **rotation patterns** (e.g., 5×Morning→5×Night→2×Off), auto-fill from pattern; publish → notifies team (unpublished = slate hatch).
 - **Shift change requests** (ESS): propose swap (with colleague consent flow) or change; manager approves in Inbox; planner shows pending overlay.
 - **Schedules tab:** recurring assignment table (person, pattern, effective range) — the existing shift schedules model.
 
@@ -40,7 +40,7 @@ Screens: `/time/attendance`, `/time/roster`, `/time/leave`, `/time/holidays`. AP
 
 ### Tab: Me (ESS default)
 - **Balance rings row** — per type: available big, then accrued YTD / used / pending / carry-forward / encashable split on tooltip; ledger link.
-- **Apply leave** (primary clay) → Drawer form: type select (shows balance + rules note per type), range picker (holidays/week-offs auto-excluded display; half-day start/end toggles; hourly if type allows), **live validation panel**: balance after, sandwich rule effect ("Sat–Sun counted: policy §4"), blackout conflict (brick block w/ policy cite), notice-period rule, max-consecutive check, doc requirement (e.g., SL >2d → attach certificate), coverage hint ("2 teammates already off 14 Jul"); approver preview (ApprovalTrail); submit → Inbox routing.
+- **Apply leave** (primary indigo) → Drawer form: type select (shows balance + rules note per type), range picker (holidays/week-offs auto-excluded display; half-day start/end toggles; hourly if type allows), **live validation panel**: balance after, sandwich rule effect ("Sat–Sun counted: policy §4"), blackout conflict (brick block w/ policy cite), notice-period rule, max-consecutive check, doc requirement (e.g., SL >2d → attach certificate), coverage hint ("2 teammates already off 14 Jul"); approver preview (ApprovalTrail); submit → Inbox routing.
 - **My requests:** table w/ status, ApprovalTrail popover, Cancel (pending) / Request cancellation (approved future — goes to approver).
 - **My ledger:** every credit/debit (accrual, used, lapse, encash, adjustment) with running balance — answers "why is my balance X".
 - **Holidays preview** + **Comp-off:** earn requests (worked holiday/week-off date + evidence → approval → credits comp-off balance w/ expiry chip).

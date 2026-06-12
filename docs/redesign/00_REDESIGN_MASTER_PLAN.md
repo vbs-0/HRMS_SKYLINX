@@ -1,6 +1,6 @@
 # SKYLINX PeopleOS — Complete UI Redesign Master Plan
 
-**Codename:** *Painted Paper*
+**Codename:** *Painted Paper · Indigo Ink*
 **Date:** 2026-06-12
 **Status:** Approved design baseline — implementation pending
 **Scope:** Every screen, every component, every permission gate, every state — a full visual + structural redesign of `apps/web`.
@@ -9,7 +9,7 @@
 
 ## 1. What this is
 
-A ground-up redesign of the SKYLINX PeopleOS interface into a calm, warm, *paper-and-ink* design language — editorial serif headings, warm ivory surfaces, clay accent, soft shadows, subtle grain — engineered for **low eye strain over 8-hour HR workdays** while exposing the **full depth of an enterprise HRMS**: from company setup, roles & permission matrices, and approval-chain configuration down to leave accrual rules, payroll runs, PF/ESI/PT/TDS filings, and Form 16 generation & distribution.
+A ground-up redesign of the SKYLINX PeopleOS interface into a calm, *paper-and-ink* design language — editorial serif headings, warm-grey paper surfaces, deep indigo-ink accent with muted gold highlights, soft shadows, subtle grain — engineered for **low eye strain over 8-hour HR workdays** while exposing the **full depth of an enterprise HRMS**: from company setup, roles & permission matrices, and approval-chain configuration down to leave accrual rules, payroll runs, PF/ESI/PT/TDS filings, and Form 16 generation & distribution.
 
 The principle: **simple surface, deep drawers.** Every screen leads with the one thing the user came to do; everything else is one deliberate step away (tabs, drawers, command palette), never deleted, never buried more than two levels deep.
 
@@ -49,9 +49,9 @@ The principle: **simple surface, deep drawers.** Every screen leads with the one
 
 ## 4. Design principles (binding)
 
-1. **Paper, not glass.** Warm ivory surfaces, ink text, clay accent. No pure white (`#FFF`) or pure black (`#000`) anywhere. No saturated SaaS-blue.
+1. **Paper, not glass.** Warm-grey paper surfaces, ink text, deep indigo accent, gold used like leaf — sparingly. No pure white (`#FFF`) or pure black (`#000`) anywhere; no electric SaaS blue — the indigo stays ink-dark, never glowing.
 2. **Calm by default, dense on demand.** Default = comfortable spacing; every table offers a `Compact` density toggle persisted per user.
-3. **One primary action per view.** Exactly one clay button per screen region; everything else is quiet (outline/ghost).
+3. **One primary action per view.** Exactly one indigo button per screen region; everything else is quiet (outline/ghost).
 4. **Progressive depth.** Overview → list → record drawer → full record page. Drawers for triage, pages for deep work. Nothing important lives only in a modal.
 5. **Role-shaped, permission-gated.** The shell renders only what the session's `module.action` permissions allow; within a screen, gated controls render disabled-with-reason only when discoverability helps (e.g., "Requires `payroll.approve`"), otherwise hidden.
 6. **Every state designed.** Loading (skeleton), empty (first-run with CTA), partial, error (retry + reference ID), forbidden, offline. No raw spinners, no blank panes.

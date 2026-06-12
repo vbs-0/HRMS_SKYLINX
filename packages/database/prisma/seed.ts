@@ -308,6 +308,8 @@ async function main() {
     ["tickets", "read"],
     ["tickets", "create"],
     ["holidays", "read"],
+    ["insurance", "read"],
+    ["insurance", "create"],
   ];
   for (const [roleId, specs] of [
     ["role_manager", managerPermissionSpecs],

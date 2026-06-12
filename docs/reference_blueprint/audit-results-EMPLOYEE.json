@@ -59,7 +59,7 @@
     "route": "/insurance",
     "status": "PASS",
     "note": "",
-    "buttons": 15,
+    "buttons": 13,
     "inputs": 4,
     "screenshot": "EMPLOYEE_DEEP/08_insurance.png"
   },

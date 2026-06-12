@@ -233,9 +233,9 @@
   },
   {
     "route": "/documents",
-    "status": "WARN",
-    "note": "console errors: Failed to load resource: net::ERR_CONNECTION_RESET | Failed to load resource: the server responded with a status of 404 (Not Found);",
-    "buttons": 9,
+    "status": "PASS",
+    "note": "",
+    "buttons": 10,
     "inputs": 8,
     "screenshot": "MANAGER_DEEP/30_documents.png"
   },

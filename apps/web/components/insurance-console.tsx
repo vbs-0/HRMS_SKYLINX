@@ -188,12 +188,12 @@ export function InsuranceConsole() {
       )}
 
       {activeTab === "Employee Insurance" && (
-        <Card className="border border-[#e8edf4] text-left">
+        <Card className="border border-[#e8edf4] text-left overflow-hidden">
           <div className="mb-4 flex items-center justify-between gap-3">
             <h2 className="text-lg font-bold text-[#172033]">Employee Insurance Policies</h2>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[980px] border-collapse text-sm text-[#49637f]">
+            <table className="w-full min-w-[900px] border-collapse text-sm text-[#49637f]">
               <thead className="bg-[#f8fafc] text-left text-xs uppercase font-bold text-slate-500 border-b">
                 <tr>
                   <th className="p-3">Employee</th>
@@ -213,12 +213,12 @@ export function InsuranceConsole() {
       )}
 
       {activeTab === "Dependents" && (
-        <Card className="border border-[#e8edf4] text-left">
+        <Card className="border border-[#e8edf4] text-left overflow-hidden">
           <div className="mb-4 flex items-center justify-between gap-3">
             <h2 className="text-lg font-bold text-[#172033]">Registered Insurance Dependents</h2>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[860px] border-collapse text-sm text-[#49637f]">
+            <table className="w-full min-w-[760px] border-collapse text-sm text-[#49637f]">
               <thead className="bg-[#f8fafc] text-left text-xs uppercase font-bold text-slate-500 border-b">
                 <tr>
                   <th className="p-3">Employee</th>
@@ -236,12 +236,12 @@ export function InsuranceConsole() {
       )}
 
       {activeTab === "Claims" && (
-        <Card className="border border-[#e8edf4] text-left">
+        <Card className="border border-[#e8edf4] text-left overflow-hidden">
           <div className="mb-4 flex items-center justify-between gap-3">
             <h2 className="text-lg font-bold text-[#172033]">Insurance Claims & Approvals</h2>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[980px] border-collapse text-sm text-[#49637f]">
+            <table className="w-full min-w-[900px] border-collapse text-sm text-[#49637f]">
               <thead className="bg-[#f8fafc] text-left text-xs uppercase font-bold text-slate-500 border-b">
                 <tr>
                   <th className="p-3">Employee</th>

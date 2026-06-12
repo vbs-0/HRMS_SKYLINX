@@ -49,8 +49,12 @@ export function AppShellFrame({
   });
   const [companyName, setCompanyName] = React.useState("");
   const [logoUrl, setLogoUrl] = React.useState("/skylinx-logo-display.png");
+  const [currentDateStr, setCurrentDateStr] = React.useState("");
+
 
   React.useEffect(() => {
+    setCurrentDateStr(new Date().toLocaleDateString("en-IN", { weekday: "short", day: "2-digit", month: "short", year: "numeric" }));
+
     // Decode owner flag from JWT
     const token = typeof window !== "undefined" ? window.localStorage.getItem("skylinx_peopleos_access_token") : null;
     if (token) {
@@ -228,7 +232,7 @@ export function AppShellFrame({
             <Link className="rounded-full bg-white/10 px-3 py-1 text-xs font-bold uppercase text-white" href="/saas">
               {activePlan} Plan
             </Link>
-            <div className="text-xs font-bold uppercase max-xl:hidden">{new Date().toLocaleDateString("en-IN", { weekday: "short", day: "2-digit", month: "short", year: "numeric" })}</div>
+            <div className="text-xs font-bold uppercase max-xl:hidden">{currentDateStr}</div>
             <Bell className="h-5 w-5" />
             <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#dff7ff] text-sm font-bold text-brand">
               {displayName.substring(0, 2).toUpperCase()}

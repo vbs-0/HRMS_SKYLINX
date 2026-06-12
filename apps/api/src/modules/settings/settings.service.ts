@@ -145,6 +145,11 @@ const DEFAULT_RULES: Required<UpdateClientRulesDto> = {
     fyCutoffDay: 31,
     mandatoryProof: true,
   },
+  bankExport: {
+    format: "GENERIC_CSV",
+    includeHeader: true,
+    narrationPrefix: "SALARY",
+  },
 };
 
 @Injectable()
@@ -333,12 +338,13 @@ export class SettingsService {
   /** Returns the active merged payroll rules for use by payroll calculations */
   async getPayrollRules(): Promise<Record<string, unknown>> {
     const merged = await this.mergedRules();
-    // Payroll consumers also need the top-level taxCalc/declarations sections.
+    // Payroll consumers also need the top-level taxCalc/declarations/bankExport sections.
     // (NOT salaryStructure — payroll.salaryStructure is already a display string.)
     return {
       ...(merged["payroll"] as Record<string, unknown>),
       taxCalc: merged["taxCalc"],
       declarations: merged["declarations"],
+      bankExport: merged["bankExport"],
     };
   }
 

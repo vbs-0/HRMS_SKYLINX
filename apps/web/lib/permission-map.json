@@ -256,6 +256,14 @@
     "permission": "payroll.read"
   },
   {
+    "pattern": "^/payroll/runs/[^/]+/bank-file/skipped$",
+    "permission": "payroll.approve"
+  },
+  {
+    "pattern": "^/payroll/runs/[^/]+/bank-file$",
+    "permission": "payroll.approve"
+  },
+  {
     "pattern": "^/payroll/runs/[^/]+/payslips$",
     "permission": "payroll.read"
   },

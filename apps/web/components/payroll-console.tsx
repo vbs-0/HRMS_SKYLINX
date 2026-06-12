@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { apiFetch } from "../lib/client-api";
 import { useEmployeeOptions } from "../lib/options";
 import { onDataRefresh, requestDataRefresh } from "../lib/refresh-events";
-import { getCurrentCompanyId } from "../lib/session";
+import { getCurrentCompanyId, getAccessToken } from "../lib/session";
 import { ReferenceModuleHeader } from "./reference-module";
 import { ReferenceFlowStrip } from "./reference-sections";
 import { Card } from "./ui";
@@ -97,6 +97,8 @@ export function PayrollConsole() {
   const [error, setError] = useState("");
 
   const [bankExported, setBankExported] = useState<Record<string, boolean>>({});
+  const [showSkippedModal, setShowSkippedModal] = useState(false);
+  const [skippedEmployees, setSkippedEmployees] = useState<any[]>([]);
 
   // Modals state
   const [showCreateRun, setShowCreateRun] = useState(false);
@@ -315,33 +317,47 @@ export function PayrollConsole() {
     setMessage("");
     setError("");
     try {
-      const res = await apiFetch<{ rows: Array<{ employeeCode: string; employeeName: string; netPay: number; bankName: string; ifsc: string }> }>(
-        `/payroll/runs/${selectedRunId}/bank-export`,
-        { method: "POST" }
-      );
-      const rows = res.data?.rows || [];
-      if (!rows.length) {
-        setError("No approved/locked payslips found to export. Verify if the payroll is Locked first.");
+      const skippedRes = await apiFetch<any[]>(`/payroll/runs/${selectedRunId}/bank-file/skipped`);
+      const skipped = skippedRes.data || [];
+      if (skipped.length > 0) {
+        setSkippedEmployees(skipped);
+        setShowSkippedModal(true);
         return;
       }
+      await downloadBankFile();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Export check failed");
+    }
+  }
 
-      // Dynamic CSV Download
-      const headers = ["Employee Code", "Employee Name", "Net Salary", "Bank Name", "IFSC Code"];
-      const csvData = rows.map((r) => [r.employeeCode, r.employeeName, r.netPay, r.bankName, r.ifsc]);
-      const csvContent =
-        "data:text/csv;charset=utf-8," +
-        [headers.join(",")].concat(csvData.map((row) => row.map(val => `"${val}"`).join(","))).join("\n");
+  async function downloadBankFile() {
+    try {
+      const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:4000/api/v1";
+      const token = getAccessToken();
+      const response = await fetch(`${API_BASE_URL}/payroll/runs/${selectedRunId}/bank-file`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      });
+      if (!response.ok) throw new Error("Failed to download bank file");
       
-      const encodedUri = encodeURI(csvContent);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
       const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", `payroll_bank_export_${selectedRun?.month}_${selectedRun?.year}.csv`);
+      link.href = url;
+      const disposition = response.headers.get("Content-Disposition");
+      let filename = `bank-transfer-${selectedRun?.month}-${selectedRun?.year}.csv`;
+      if (disposition && disposition.indexOf('filename="') !== -1) {
+        filename = disposition.split('filename="')[1].split('"')[0];
+      }
+      link.setAttribute("download", filename);
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
 
       setMessage("CSV Bank Export downloaded successfully!");
       setBankExported((prev) => ({ ...prev, [selectedRunId]: true }));
+      setShowSkippedModal(false);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Export failed");
     }
@@ -1322,6 +1338,55 @@ export function PayrollConsole() {
                 className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-dark"
               >
                 Save Component
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* SKIPPED EMPLOYEES MODAL */}
+      {showSkippedModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
+          <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center gap-3 mb-4">
+              <AlertCircle className="h-6 w-6 text-amber-500" />
+              <h3 className="text-lg font-bold text-slate-900">Missing Bank Details</h3>
+            </div>
+            <p className="text-sm text-slate-600 mb-4">
+              The following {skippedEmployees.length} employee(s) have missing or unverified bank details and will be <strong className="text-rose-600">excluded</strong> from the bank export file. Do you want to proceed anyway?
+            </p>
+            <div className="max-h-60 overflow-y-auto mb-6 rounded border border-slate-200">
+              <table className="w-full text-left text-sm">
+                <thead className="bg-slate-50 sticky top-0">
+                  <tr>
+                    <th className="p-2 font-semibold border-b">Employee Name</th>
+                    <th className="p-2 font-semibold border-b">Code</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {skippedEmployees.map(e => (
+                    <tr key={e.employeeCode}>
+                      <td className="p-2">{e.firstName} {e.lastName}</td>
+                      <td className="p-2 font-mono text-xs text-slate-500">{e.employeeCode}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="flex justify-end gap-3">
+              <button
+                className="min-h-10 rounded-lg border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition"
+                onClick={() => setShowSkippedModal(false)}
+              >
+                Cancel Export
+              </button>
+              <button
+                className="min-h-10 rounded-lg bg-amber-500 px-4 text-sm font-semibold text-white hover:bg-amber-600 transition"
+                onClick={() => {
+                  downloadBankFile();
+                }}
+              >
+                Download Anyway
               </button>
             </div>
           </div>

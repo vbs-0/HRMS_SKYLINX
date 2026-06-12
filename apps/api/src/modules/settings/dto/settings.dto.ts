@@ -83,4 +83,8 @@ export class UpdateClientRulesDto {
   @IsOptional()
   @IsObject()
   declarations?: Record<string, unknown>;
+
+  @IsOptional()
+  @IsObject()
+  bankExport?: Record<string, unknown>;
 }

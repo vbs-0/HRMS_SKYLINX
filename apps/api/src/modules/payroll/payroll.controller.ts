@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, UseInterceptors, UploadedFile, Req } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post, UseInterceptors, UploadedFile, Req, Res } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import * as path from "path";
@@ -136,10 +136,23 @@ export class PayrollController {
     return this.payrollService.payslips(id, user);
   }
 
-  @Post("runs/:id/bank-export")
-  @RequirePermissions("payroll.export")
-  bankExport(@Param("id") id: string) {
-    return this.payrollService.bankExport(id);
+  @Get("runs/:id/bank-file")
+  @RequirePermissions("payroll.approve")
+  async bankFile(@Param("id") id: string, @Req() req: any, @Res() res: any) {
+    const csv = await this.payrollService.generateBankFile(id);
+    const run = await this.payrollService.getRunDetails(id);
+    const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+    const monthStr = monthNames[run.month - 1];
+    
+    res.setHeader("Content-Type", "text/csv");
+    res.setHeader("Content-Disposition", `attachment; filename="bank-transfer-${monthStr}-${run.year}.csv"`);
+    res.send(csv);
+  }
+
+  @Get("runs/:id/bank-file/skipped")
+  @RequirePermissions("payroll.approve")
+  skippedBankFile(@Param("id") id: string) {
+    return this.payrollService.getSkippedBankFile(id);
   }
 
   // ==========================================

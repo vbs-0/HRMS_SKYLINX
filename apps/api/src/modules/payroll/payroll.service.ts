@@ -1046,26 +1046,66 @@ export class PayrollService {
     return response("payroll", "payslips", { payrollRunId: id, items: sanitized });
   }
 
-  async bankExport(id: string) {
+  async getRunDetails(id: string) {
+    const run = await this.prisma.payrollRun.findUnique({
+      where: { id },
+    });
+    if (!run) throw new NotFoundException("Payroll run not found");
+    return run;
+  }
+
+  async generateBankFile(id: string) {
+    const run = await this.getRunDetails(id);
+    const payrollRules = await this.settingsService.getPayrollRules();
+    const narrationPrefix = (payrollRules as any).bankExport?.narrationPrefix || "SALARY";
+    
+    const monthNames = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+    const monthStr = monthNames[run.month - 1];
+    
     const payslips = await this.prisma.payslip.findMany({
       where: { payrollRunId: id, status: ApprovalStatus.APPROVED },
       include: { employee: { include: { bankDetails: true } } },
     });
-    return response("payroll", "bankExport", {
-      payrollRunId: id,
-      rows: payslips.map((payslip) => ({
-        employeeCode: payslip.employee.employeeCode,
-        employeeName: `${payslip.employee.firstName} ${payslip.employee.lastName}`,
-        netPay: Number(payslip.netPay),
-        bankName: payslip.employee.bankDetails?.bankName || "",
-        ifsc: payslip.employee.bankDetails?.ifsc || "",
-        // Bank files need the real account number — decrypted only here,
-        // behind the payroll export permission, and audit-logged.
-        accountNumber: payslip.employee.bankDetails?.accountNumberEncrypted
-          ? decrypt(payslip.employee.bankDetails.accountNumberEncrypted)
-          : "",
-      })),
+
+    const rows = payslips
+      .filter((payslip) => payslip.employee.bankDetails?.verificationStatus === "VERIFIED")
+      .map((payslip) => {
+        const bankDetails = payslip.employee.bankDetails!;
+        const beneficiaryName = bankDetails.accountHolderName || `${payslip.employee.firstName} ${payslip.employee.lastName}`;
+        const accountNumber = bankDetails.accountNumberEncrypted ? decrypt(bankDetails.accountNumberEncrypted) : "";
+        const ifsc = bankDetails.ifsc || "";
+        const amount = Number(payslip.netPay).toFixed(2);
+        const narration = `${narrationPrefix} ${monthStr} ${run.year}`;
+        
+        const escapeCsv = (str: string) => `"${str.replace(/"/g, '""')}"`;
+        
+        return `${escapeCsv(beneficiaryName)},${escapeCsv(accountNumber)},${escapeCsv(ifsc)},${escapeCsv(amount)},${escapeCsv(narration)}`;
+      });
+
+    await this.audit("payroll", "run.bank_file_export", "payroll_run", id, { count: rows.length });
+
+    const header = `"Beneficiary Name","Account Number","IFSC","Amount","Narration"`;
+    const csvContent = [header, ...rows].join("\n");
+    return csvContent;
+  }
+
+  async getSkippedBankFile(id: string) {
+    const payslips = await this.prisma.payslip.findMany({
+      where: { payrollRunId: id, status: ApprovalStatus.APPROVED },
+      include: { employee: { include: { bankDetails: true } } },
     });
+
+    const skipped = payslips
+      .filter((payslip) => payslip.employee.bankDetails?.verificationStatus !== "VERIFIED")
+      .map((payslip) => ({
+        employeeId: payslip.employeeId,
+        employeeCode: payslip.employee.employeeCode,
+        firstName: payslip.employee.firstName,
+        lastName: payslip.employee.lastName,
+        reason: payslip.employee.bankDetails ? "Bank details not verified" : "No bank details provided",
+      }));
+
+    return response("payroll", "bankExport.skipped", skipped);
   }
 
   // ==========================================

@@ -2,7 +2,7 @@ import { BadRequestException, Body, Controller, Get, Param, Patch, Post, Query, 
 import { FileInterceptor } from "@nestjs/platform-express";
 import { RequirePermissions } from "../../common/auth/permissions.decorator";
 import { AttendanceService } from "./attendance.service";
-import { CheckInDto, CheckOutDto, DecideAttendanceDto, OvertimeDto, RegularizationDto, BulkRevertPenaltyLogsDto, PenaltyLogFilterDto } from "./dto/attendance.dto";
+import { CheckInDto, CheckOutDto, DecideAttendanceDto, OvertimeDto, RegularizationDto, BulkRevertPenaltyLogsDto, PenaltyLogFilterDto, EvaluateAnomaliesDto, DecideAnomalyDto, AutoClockOutDto, ConvertLopDto } from "./dto/attendance.dto";
 import { AssignShiftDto, BulkAssignShiftDto, RequestShiftDto, DecideShiftRequestDto } from "./dto/roster.dto";
 import { CurrentUser } from "../../common/auth/current-user.decorator";
 import { AuthenticatedUser } from "../../common/auth/auth.types";
@@ -124,5 +124,36 @@ export class AttendanceController {
   @RequirePermissions("attendance.approve")
   bulkRevertPenaltyLogs(@CurrentUser() user: AuthenticatedUser, @Body() body: BulkRevertPenaltyLogsDto) {
     return this.attendanceService.bulkRevertPenaltyLogs(user.sub, body);
+  }
+
+  // ---- Anomaly Engine ----
+  @Post("anomalies/evaluate")
+  @RequirePermissions("attendance.configure")
+  evaluateAnomalies(@Body() body: EvaluateAnomaliesDto) {
+    return this.attendanceService.evaluateAnomalies(body.date);
+  }
+
+  @Get("anomalies")
+  @RequirePermissions("attendance.read")
+  listAnomalies() {
+    return this.attendanceService.listAnomalies();
+  }
+
+  @Patch("anomalies/:id/decide")
+  @RequirePermissions("attendance.approve")
+  decideAnomaly(@Param("id") id: string, @Body() body: DecideAnomalyDto) {
+    return this.attendanceService.decideAnomaly(id, body);
+  }
+
+  @Post("auto-clock-out")
+  @RequirePermissions("attendance.configure")
+  autoClockOut(@Body() body: AutoClockOutDto) {
+    return this.attendanceService.autoClockOut(body.date);
+  }
+
+  @Post("anomalies/convert-lop")
+  @RequirePermissions("attendance.configure")
+  convertLop(@Body() body: ConvertLopDto) {
+    return this.attendanceService.convertAnomaliesToLOP(body.month, body.year);
   }
 }

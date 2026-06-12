@@ -24,6 +24,10 @@
     "permission": "assets.read"
   },
   {
+    "pattern": "^/attendance/anomalies$",
+    "permission": "attendance.read"
+  },
+  {
     "pattern": "^/attendance/logs$",
     "permission": "attendance.read"
   },
@@ -108,7 +112,7 @@
     "permission": "employees.read"
   },
   {
-    "pattern": "^/employees/loans/list/[^/]+$",
+    "pattern": "^/employees/license-info$",
     "permission": "employees.read"
   },
   {
@@ -116,11 +120,19 @@
     "permission": "employees.read"
   },
   {
+    "pattern": "^/employees/queue/verify$",
+    "permission": "employees.approve"
+  },
+  {
     "pattern": "^/employees/separation/templates$",
     "permission": "employees.read"
   },
   {
     "pattern": "^/employees/types/[^/]+$",
+    "permission": "employees.read"
+  },
+  {
+    "pattern": "^/employees/upload/bulk/template$",
     "permission": "employees.read"
   },
   {

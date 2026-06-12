@@ -4,7 +4,7 @@ import { Type } from "class-transformer";
 export class ActivityDto {
   @IsString()
   @IsNotEmpty()
-  title: string;
+  title!: string;
 
   @IsString()
   @IsOptional()
@@ -18,7 +18,7 @@ export class ActivityDto {
 export class CreateOnboardingTemplateDto {
   @IsString()
   @IsNotEmpty()
-  name: string;
+  name!: string;
 
   @IsString()
   @IsOptional()
@@ -31,28 +31,28 @@ export class CreateOnboardingTemplateDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => ActivityDto)
-  activities: ActivityDto[];
+  activities!: ActivityDto[];
 }
 
 export class CreateSeparationTemplateDto {
   @IsString()
   @IsNotEmpty()
-  name: string;
+  name!: string;
 
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => ActivityDto)
-  activities: ActivityDto[];
+  activities!: ActivityDto[];
 }
 
 export class CreateExitInterviewDto {
   @IsDateString()
   @IsNotEmpty()
-  exitDate: string;
+  exitDate!: string;
 
   @IsString()
   @IsNotEmpty()
-  reasonForLeaving: string;
+  reasonForLeaving!: string;
 
   @IsString()
   @IsOptional()
@@ -66,7 +66,7 @@ export class CreateExitInterviewDto {
 export class AssetRecoveryDto {
   @IsString()
   @IsNotEmpty()
-  assetName: string;
+  assetName!: string;
 
   @IsString()
   @IsOptional()
@@ -80,11 +80,11 @@ export class AssetRecoveryDto {
 export class CreateFullAndFinalStatementDto {
   @IsDateString()
   @IsNotEmpty()
-  exitDate: string;
+  exitDate!: string;
 
   @IsDateString()
   @IsNotEmpty()
-  resignationDate: string;
+  resignationDate!: string;
 
   @IsNumber()
   @IsOptional()
@@ -92,7 +92,7 @@ export class CreateFullAndFinalStatementDto {
 
   @IsNumber()
   @IsNotEmpty()
-  lastDrawnSalary: number;
+  lastDrawnSalary!: number;
 
   @IsNumber()
   @IsOptional()
@@ -117,15 +117,33 @@ export class CreateFullAndFinalStatementDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => AssetRecoveryDto)
-  assets: AssetRecoveryDto[];
+  assets!: AssetRecoveryDto[];
 }
 
 export class UpdateFfAssetDto {
   @IsString()
   @IsNotEmpty()
-  returnedStatus: string; // PENDING, RETURNED, RECOVER_COST
+  returnedStatus!: string; // PENDING, RETURNED, RECOVER_COST
 
   @IsNumber()
   @IsOptional()
   recoveryCost?: number;
+}
+
+export class ResignationDto {
+  @IsDateString()
+  @IsNotEmpty()
+  resignationDate!: string;
+
+  @IsDateString()
+  @IsNotEmpty()
+  lastWorkingDay!: string;
+
+  @IsString()
+  @IsNotEmpty()
+  exitReason!: string;
+
+  @IsString()
+  @IsOptional()
+  personalEmail?: string;
 }

@@ -54,6 +54,10 @@ export class CreateEmployeeDto {
 
   @IsOptional()
   @IsString()
+  uan?: string;
+
+  @IsOptional()
+  @IsString()
   gradeId?: string;
 
   @IsOptional()

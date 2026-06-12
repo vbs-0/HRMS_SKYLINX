@@ -116,7 +116,7 @@ async function main() {
     ),
   );
 
-  const permissions = ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "assets", "performance", "mobile", "backup", "testing", "analytics", "saas", "approvals", "notifications", "organization", "reports", "rewards", "settings", "social", "compliance", "recruitment", "training", "travel", "grievance", "policies", "surveys", "tickets"].flatMap((module) =>
+  const permissions = ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "assets", "performance", "mobile", "backup", "testing", "analytics", "saas", "approvals", "notifications", "organization", "reports", "rewards", "settings", "social", "compliance", "recruitment", "training", "travel", "grievance", "policies", "surveys", "tickets", "exit"].flatMap((module) =>
     ["create", "read", "update", "delete", "approve", "export", "configure"].map((action) => ({ module, action })),
   );
 
@@ -131,10 +131,10 @@ async function main() {
   const hrPermissions = await prisma.permission.findMany({
     where: {
       OR: [
-        { module: { in: ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "assets", "performance", "mobile", "backup", "testing", "analytics", "saas", "approvals", "notifications", "organization", "reports", "rewards", "social", "compliance", "recruitment", "training", "travel", "grievance", "policies", "surveys", "tickets"] }, action: "read" },
-        { module: { in: ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "notifications", "rewards", "social", "recruitment", "training", "travel", "grievance", "policies", "surveys", "tickets"] }, action: "create" },
-        { module: { in: ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "notifications", "organization", "recruitment", "training", "travel", "grievance", "policies", "surveys", "tickets"] }, action: "update" },
-        { module: { in: ["leave", "attendance", "expenses", "insurance", "recruitment", "grievance"] }, action: "approve" },
+        { module: { in: ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "assets", "performance", "mobile", "backup", "testing", "analytics", "saas", "approvals", "notifications", "organization", "reports", "rewards", "social", "compliance", "recruitment", "training", "travel", "grievance", "policies", "surveys", "tickets", "exit"] }, action: "read" },
+        { module: { in: ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "notifications", "rewards", "social", "recruitment", "training", "travel", "grievance", "policies", "surveys", "tickets", "exit"] }, action: "create" },
+        { module: { in: ["employees", "attendance", "leave", "payroll", "expenses", "holidays", "insurance", "notifications", "organization", "recruitment", "training", "travel", "grievance", "policies", "surveys", "tickets", "exit"] }, action: "update" },
+        { module: { in: ["leave", "attendance", "expenses", "insurance", "recruitment", "grievance", "exit"] }, action: "approve" },
         { module: "approvals", action: "approve" },
         { module: "employees", action: "approve" },
         { module: "payroll", action: "approve" },
@@ -146,7 +146,7 @@ async function main() {
         { module: "assets", action: "configure" },
         { module: "performance", action: "configure" },
         { module: "settings", action: "configure" },
-        { module: { in: ["leave", "employees", "recruitment", "travel", "training", "grievance", "policies", "surveys", "tickets"] }, action: "configure" },
+        { module: { in: ["leave", "employees", "recruitment", "travel", "training", "grievance", "policies", "surveys", "tickets", "exit", "attendance"] }, action: "configure" },
         { module: "payroll", action: "export" },
         { module: "reports", action: "export" },
         { module: "compliance", action: "export" },
@@ -203,12 +203,18 @@ async function main() {
   ];
 
   for (const [id, employeeCode, firstName, lastName, email, departmentId, designationId, locationId, dob, joining] of seedEmployees) {
+    const isSara = id === "emp_1004";
     await prisma.employee.upsert({
       where: { email },
       update: {
         managerId: id === "emp_1001" ? null : id === "emp_1002" ? "emp_1001" : id === "emp_1005" ? "emp_1001" : "emp_1005",
         dateOfBirth: new Date(dob),
         joiningDate: new Date(joining),
+        status: isSara ? "NOTICE_PERIOD" : "ACTIVE",
+        resignationDate: isSara ? new Date("2026-06-01") : null,
+        lastWorkingDay: isSara ? new Date("2026-07-01") : null,
+        exitReason: isSara ? "Career growth opportunities" : null,
+        personalEmail: isSara ? "sara.khan.personal@gmail.com" : null,
       },
       create: {
         id,
@@ -224,6 +230,11 @@ async function main() {
         designationId,
         locationId,
         managerId: id === "emp_1001" ? null : id === "emp_1002" ? "emp_1001" : id === "emp_1005" ? "emp_1001" : "emp_1005",
+        status: isSara ? "NOTICE_PERIOD" : "ACTIVE",
+        resignationDate: isSara ? new Date("2026-06-01") : null,
+        lastWorkingDay: isSara ? new Date("2026-07-01") : null,
+        exitReason: isSara ? "Career growth opportunities" : null,
+        personalEmail: isSara ? "sara.khan.personal@gmail.com" : null,
       },
     });
 

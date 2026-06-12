@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post, UseInterceptors, UploadedFile, Req, ForbiddenException, Query } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post, UseInterceptors, UploadedFile, Req, ForbiddenException, Query, BadRequestException } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
 import * as path from "path";
@@ -11,6 +11,7 @@ import {
   CreateExitInterviewDto,
   CreateFullAndFinalStatementDto,
   UpdateFfAssetDto,
+  ResignationDto,
 } from "./dto/lifecycle.dto";
 import { CreateEmployeeGradeDto, CreateEmploymentTypeDto } from "./dto/policy.dto";
 import { EmployeesService } from "./employees.service";
@@ -36,6 +37,12 @@ export class EmployeesController {
   @RequirePermissions("employees.read")
   documents() {
     return this.employeesService.documents();
+  }
+
+  @Get("license-info")
+  @RequirePermissions("employees.read")
+  getLicenseInfo() {
+    return this.employeesService.getLicenseInfo();
   }
 
   @Post()
@@ -309,22 +316,86 @@ export class EmployeesController {
     return this.employeesService.createLoan(body);
   }
 
-  @Get("loans/list/:employeeId")
-  @RequirePermissions("employees.read")
-  listLoans(
-    @Param("employeeId") employeeId: string,
-    @CurrentUser() user: AuthenticatedUser,
+
+  // ==========================================
+  // Resignation
+  // ==========================================
+  @Post(":id/resign")
+  @RequirePermissions("employees.update")
+  resign(
+    @Param("id") id: string,
+    @Body() body: ResignationDto,
   ) {
-    const isEmployee = !user.permissions.includes("employees.approve") && !user.permissions.includes("payroll.approve");
-    if (isEmployee && user.employeeId !== employeeId) {
-      throw new ForbiddenException("You can only view your own loans");
-    }
-    return this.employeesService.listLoans(employeeId);
+    return this.employeesService.resign(id, body);
   }
 
-  @Patch("loans/:id/decide")
+  // ==========================================
+  // E-Exit F&F Approval
+  // ==========================================
+  @Post(":id/exit-ff/approve")
   @RequirePermissions("employees.approve")
-  decideLoan(@Param("id") id: string, @Body() body: DecideEmployeeLoanDto) {
-    return this.employeesService.decideLoan(id, body);
+  approveFullAndFinal(@Param("id") employeeId: string) {
+    return this.employeesService.approveFullAndFinal(employeeId);
+  }
+
+  // ==========================================
+  // E-Exit Letters
+  // ==========================================
+  @Post(":id/exit-letters/relieving")
+  @RequirePermissions("employees.update")
+  generateRelievingLetter(@Param("id") id: string) {
+    return this.employeesService.generateExitLetter(id, "RELIEVING");
+  }
+
+  @Post(":id/exit-letters/experience")
+  @RequirePermissions("employees.update")
+  generateExperienceLetter(@Param("id") id: string) {
+    return this.employeesService.generateExitLetter(id, "EXPERIENCE");
+  }
+
+  // ==========================================
+  // Probation Confirmation
+  // ==========================================
+  @Patch(":id/confirm-probation")
+  @RequirePermissions("employees.approve")
+  confirmProbation(@Param("id") id: string) {
+    return this.employeesService.confirmProbation(id);
+  }
+
+  // ==========================================
+  // Resend Invite
+  // ==========================================
+  @Post(":id/resend-invite")
+  @RequirePermissions("employees.update")
+  resendInvite(@Param("id") id: string) {
+    return this.employeesService.resendInvite(id);
+  }
+
+  // ==========================================
+  // Verify Queue
+  // ==========================================
+  @Get("queue/verify")
+  @RequirePermissions("employees.approve")
+  getVerifyQueue() {
+    return this.employeesService.getVerifyQueue();
+  }
+
+  // ==========================================
+  // Bulk Excel Upload
+  // ==========================================
+  @Get("upload/bulk/template")
+  @RequirePermissions("employees.read")
+  getBulkUploadTemplate() {
+    return this.employeesService.getBulkUploadTemplate();
+  }
+
+  @Post("upload/bulk/excel")
+  @RequirePermissions("employees.create")
+  @UseInterceptors(FileInterceptor("file"))
+  bulkUploadExcel(@UploadedFile() file: any) {
+    if (!file || !file.buffer) {
+      throw new BadRequestException("No file uploaded");
+    }
+    return this.employeesService.bulkUploadExcel(file.buffer);
   }
 }

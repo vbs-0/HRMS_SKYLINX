@@ -1,10 +1,11 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { parse } from "csv-parse/sync";
-import { ApprovalStatus, AttendanceStatus } from "@prisma/client";
+import { ApprovalStatus, AttendanceStatus, AnomalyType, AnomalyStatus } from "@prisma/client";
+import { TenantContext } from "../../common/tenant-context";
 import { response } from "../../common/crud-response";
 import { PrismaService } from "../../prisma/prisma.service";
 import { SettingsService } from "../settings/settings.service";
-import { CheckInDto, CheckOutDto, DecideAttendanceDto, OvertimeDto, RegularizationDto, BulkRevertPenaltyLogsDto, PenaltyLogFilterDto } from "./dto/attendance.dto";
+import { CheckInDto, CheckOutDto, DecideAttendanceDto, OvertimeDto, RegularizationDto, BulkRevertPenaltyLogsDto, PenaltyLogFilterDto, DecideAnomalyDto } from "./dto/attendance.dto";
 import { AssignShiftDto, BulkAssignShiftDto, RequestShiftDto, DecideShiftRequestDto } from "./dto/roster.dto";
 
 @Injectable()
@@ -709,5 +710,221 @@ export class AttendanceService {
 
     await this.audit("attendance", "bulk-upload", "attendance_log", "bulk", { count: results.length });
     return response("attendance", "bulkUpload", { count: results.length, items: results });
+  }
+
+  // ==========================================
+  // Attendance Anomaly Engine
+  // ==========================================
+
+  async evaluateAnomalies(dateStr: string) {
+    const targetDate = new Date(dateStr);
+    targetDate.setHours(0, 0, 0, 0);
+
+    const logs = await this.prisma.attendanceLog.findMany({
+      where: { date: targetDate },
+      include: { shift: true },
+    });
+
+    const results = [];
+    const settings = await this.settingsService.rules();
+    const graceMinutes = (settings.data as any).attendance?.graceMinutes || 15;
+    const halfDayMinutes = (settings.data as any).attendance?.halfDayMinutes || 240;
+
+    for (const log of logs) {
+      if (!log.checkInAt || !log.checkOutAt) continue;
+
+      const shift = log.shift || await this.prisma.shift.findFirst({ where: { status: "ACTIVE" } });
+      if (!shift) continue;
+
+      const [shiftStartH, shiftStartM] = (shift.startTime || "09:30").split(":").map(Number);
+      const [shiftEndH, shiftEndM] = (shift.endTime || "18:30").split(":").map(Number);
+      const shiftDurationMinutes = (shiftEndH * 60 + shiftEndM) - (shiftStartH * 60 + shiftStartM);
+
+      // Late check-in
+      const checkInMinutes = log.checkInAt.getHours() * 60 + log.checkInAt.getMinutes();
+      const expectedStartMinutes = shiftStartH * 60 + shiftStartM;
+      if (checkInMinutes > expectedStartMinutes + graceMinutes) {
+        const diff = checkInMinutes - expectedStartMinutes;
+        await this.createAnomalyIfNotExists(log.id, log.employeeId, AnomalyType.LATE, shift.id, shift.startTime, `${Math.floor(checkInMinutes / 60)}:${String(checkInMinutes % 60).padStart(2, "0")}`, diff);
+        results.push({ logId: log.id, type: "LATE", diffMinutes: diff });
+      }
+
+      // Early exit
+      const checkOutMinutes = log.checkOutAt.getHours() * 60 + log.checkOutAt.getMinutes();
+      const expectedEndMinutes = shiftEndH * 60 + shiftEndM;
+      if (checkOutMinutes < expectedEndMinutes - graceMinutes) {
+        const diff = expectedEndMinutes - checkOutMinutes;
+        await this.createAnomalyIfNotExists(log.id, log.employeeId, AnomalyType.EARLY_EXIT, shift.id, shift.endTime, `${Math.floor(checkOutMinutes / 60)}:${String(checkOutMinutes % 60).padStart(2, "0")}`, diff);
+        results.push({ logId: log.id, type: "EARLY_EXIT", diffMinutes: diff });
+      }
+
+      // Short hours: total worked < half-day threshold
+      const workedMinutes = (log.checkOutAt.getTime() - log.checkInAt.getTime()) / 60000;
+      if (workedMinutes < halfDayMinutes) {
+        await this.createAnomalyIfNotExists(log.id, log.employeeId, AnomalyType.SHORT_HOURS, shift.id, `${shiftDurationMinutes}min`, `${Math.round(workedMinutes)}min`, Math.round(shiftDurationMinutes - workedMinutes));
+        results.push({ logId: log.id, type: "SHORT_HOURS", workedMinutes: Math.round(workedMinutes) });
+      }
+    }
+
+    return response("attendance", "anomalies.evaluate", { evaluated: logs.length, anomaliesCreated: results.length, details: results });
+  }
+
+  private async createAnomalyIfNotExists(
+    attendanceLogId: string, employeeId: string, type: AnomalyType,
+    shiftId: string | null, expectedTime: string | null, actualTime: string | null, diffMinutes: number,
+  ) {
+    const existing = await this.prisma.attendanceAnomaly.findFirst({
+      where: { attendanceLogId, type, status: AnomalyStatus.OPEN },
+    });
+    if (existing) return existing;
+
+    return this.prisma.attendanceAnomaly.create({
+      data: { attendanceLogId, employeeId, type, shiftId, expectedTime, actualTime, diffMinutes },
+    });
+  }
+
+  async listAnomalies() {
+    const anomalies = await this.prisma.attendanceAnomaly.findMany({
+      include: { attendanceLog: { include: { employee: true, shift: true } } },
+      orderBy: { createdAt: "desc" },
+    });
+    return response("attendance", "anomalies.list", anomalies);
+  }
+
+  async decideAnomaly(id: string, data: DecideAnomalyDto) {
+    const anomaly = await this.prisma.attendanceAnomaly.findUnique({ where: { id } });
+    if (!anomaly) throw new NotFoundException("Anomaly not found");
+    if (anomaly.status !== AnomalyStatus.OPEN) {
+      throw new BadRequestException("Only open anomalies can be decided");
+    }
+
+    const newStatus = data.status === "OVERRIDDEN" ? AnomalyStatus.OVERRIDDEN : AnomalyStatus.APPROVED;
+    const updated = await this.prisma.attendanceAnomaly.update({
+      where: { id },
+      data: { status: newStatus, decidedBy: data.decidedByUserId, decidedAt: new Date() },
+    });
+
+    await this.audit("attendance", "anomaly.decide", "attendance_anomaly", id, updated);
+    return response("attendance", "anomaly.decide", updated);
+  }
+
+  // ==========================================
+  // Auto Clock-Out
+  // ==========================================
+
+  async autoClockOut(dateStr: string) {
+    const targetDate = new Date(dateStr);
+    targetDate.setHours(0, 0, 0, 0);
+
+    const openLogs = await this.prisma.attendanceLog.findMany({
+      where: {
+        date: targetDate,
+        checkInAt: { not: null },
+        checkOutAt: null,
+        autoClockOut: false,
+      },
+      include: { shift: true },
+    });
+
+    const processed = [];
+    for (const log of openLogs) {
+      const shift = log.shift || await this.prisma.shift.findFirst({ where: { status: "ACTIVE" } });
+      if (!shift) continue;
+
+      const [endH, endM] = (shift.endTime || "18:30").split(":").map(Number);
+      const autoCheckOut = new Date(log.date);
+      autoCheckOut.setHours(endH, endM, 0, 0);
+
+      await this.prisma.$transaction(async (tx) => {
+        await tx.attendanceLog.update({
+          where: { id: log.id },
+          data: {
+            checkOutAt: autoCheckOut,
+            autoClockOut: true,
+            status: AttendanceStatus.AUTO_CLOCK_OUT,
+          },
+        });
+
+        // Create missed-punch anomaly
+        await tx.attendanceAnomaly.create({
+          data: {
+            attendanceLogId: log.id,
+            employeeId: log.employeeId,
+            type: AnomalyType.MISSED_PUNCH,
+            shiftId: shift.id,
+            expectedTime: shift.endTime,
+            actualTime: "auto-closed",
+            diffMinutes: 0,
+          },
+        });
+      });
+
+      processed.push(log.id);
+    }
+
+    await this.audit("attendance", "auto-clock-out", "attendance_log", "batch", { date: dateStr, count: processed.length });
+    return response("attendance", "autoClockOut", { date: dateStr, processed: processed.length });
+  }
+
+  // ==========================================
+  // LOP Conversion (Month-End)
+  // ==========================================
+
+  async convertAnomaliesToLOP(month: number, year: number) {
+    const tenantId = TenantContext.getTenantId();
+    if (!tenantId) throw new UnauthorizedException("Tenant context is required");
+
+    const startDate = new Date(year, month - 1, 1);
+    const endDate = new Date(year, month, 0, 23, 59, 59, 999);
+
+    const openAnomalies = await this.prisma.attendanceAnomaly.findMany({
+      where: {
+        status: AnomalyStatus.OPEN,
+        attendanceLog: {
+          date: { gte: startDate, lte: endDate },
+        },
+      },
+      include: { attendanceLog: true },
+    });
+
+    const results: any[] = [];
+    let totalLopDays = 0;
+
+    await this.prisma.$transaction(async (tx) => {
+      for (const a of openAnomalies) {
+        let deduction = 0;
+        if (a.type === AnomalyType.ABSENT) deduction = 1;
+        else if (a.type === AnomalyType.SHORT_HOURS) deduction = 0.5;
+        else if (a.type === AnomalyType.MISSED_PUNCH) deduction = 0.5;
+        else deduction = 0.5; 
+
+        const penaltyType = deduction === 1 ? "FULL_DAY" : "HALF_DAY";
+
+        await tx.attendanceAnomaly.update({
+          where: { id: a.id },
+          data: { status: AnomalyStatus.CONVERTED_TO_LOP },
+        });
+
+        await tx.penaltyLog.create({
+          data: {
+            companyId: tenantId,
+            employeeId: a.employeeId,
+            anomalyType: a.type,
+            penaltyType,
+            leaveType: "Loss of Pay",
+            deductionDays: deduction,
+            month,
+            year,
+            status: "CONVERTED_LOP"
+          },
+        });
+
+        totalLopDays += deduction;
+        results.push({ anomalyId: a.id, employeeId: a.employeeId, deduction });
+      }
+    });
+
+    await this.audit("attendance", "lop.convert", "attendance_anomaly", "batch", { month, year, anomaliesCount: openAnomalies.length, totalLopDays });
+    return response("attendance", "lop.convert", { anomaliesConverted: openAnomalies.length, totalLopDays, details: results });
   }
 }

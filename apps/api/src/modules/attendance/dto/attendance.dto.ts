@@ -110,3 +110,30 @@ export class PenaltyLogFilterDto {
   @IsString()
   anomalyType?: string;
 }
+
+export class EvaluateAnomaliesDto {
+  @IsDateString()
+  date!: string;
+}
+
+export class DecideAnomalyDto {
+  @IsString()
+  status!: string; // APPROVED | OVERRIDDEN
+
+  @IsOptional()
+  @IsString()
+  decidedByUserId?: string;
+}
+
+export class AutoClockOutDto {
+  @IsDateString()
+  date!: string;
+}
+
+export class ConvertLopDto {
+  @IsNumber()
+  month!: number;
+
+  @IsNumber()
+  year!: number;
+}

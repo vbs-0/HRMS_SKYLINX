@@ -1,3 +1,5 @@
+import * as bcrypt from "bcryptjs";
+import * as XLSX from "xlsx";
 import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
 import { TenantContext } from "../../common/tenant-context";
@@ -1079,6 +1081,283 @@ export class EmployeesService {
     });
     return response("employees", "loan.decide", updated);
   }
+
+  // ==========================================
+  // E-Exit F&F Approval
+  // ==========================================
+  async approveFullAndFinal(employeeId: string) {
+    const statement = await this.prisma.fullAndFinalStatement.findUnique({ where: { employeeId } });
+    if (!statement) throw new NotFoundException("Full & Final statement not found");
+
+    const updated = await this.prisma.fullAndFinalStatement.update({
+      where: { employeeId },
+      data: { status: ApprovalStatus.APPROVED },
+    });
+
+    await this.prisma.employee.update({
+      where: { id: employeeId },
+      data: { status: "EXITED" },
+    });
+
+    await this.audit("employees", "full_and_final.approve", "full_and_final_statement", updated.id, updated);
+    return response("employees", "full_and_final.approve", updated);
+  }
+
+  // ==========================================
+  // E-Exit Letter Generation
+  // ==========================================
+  async generateExitLetter(employeeId: string, type: "RELIEVING" | "EXPERIENCE") {
+    const employee = await this.prisma.employee.findUnique({
+      where: { id: employeeId },
+      include: { designation: true, company: true },
+    });
+    if (!employee) throw new NotFoundException("Employee not found");
+
+    let template = await this.prisma.letterTemplate.findFirst({
+      where: { companyId: employee.companyId, type },
+    });
+
+    if (!template) {
+      const defaultBodies = {
+        RELIEVING: "Dear {{employeeName}},\n\nThis is to confirm that you have been relieved from your duties at {{companyName}} as of {{lastWorkingDay}}. Your service as a {{designation}} was appreciated.",
+        EXPERIENCE: "To Whom It May Concern,\n\nThis is to certify that {{employeeName}} was employed at {{companyName}} from {{joiningDate}} to {{lastWorkingDay}} as a {{designation}}. We wish them success in their future endeavors.",
+      };
+
+      template = await this.prisma.letterTemplate.create({
+        data: {
+          companyId: employee.companyId,
+          type,
+          title: `${type.charAt(0) + type.slice(1).toLowerCase()} Letter Template`,
+          body: defaultBodies[type as keyof typeof defaultBodies],
+        },
+      });
+    }
+
+    const placeholders: Record<string, string> = {
+      employeeName: `${employee.firstName} ${employee.lastName}`,
+      companyName: employee.company.name,
+      joiningDate: employee.joiningDate.toDateString(),
+      lastWorkingDay: employee.lastWorkingDay ? employee.lastWorkingDay.toDateString() : new Date().toDateString(),
+      designation: employee.designation?.title || "Employee",
+      // existing seeded templates use these alternate keys
+      designationTitle: employee.designation?.title || "Employee",
+      employeeCode: employee.employeeCode,
+      relievingDate: employee.lastWorkingDay ? employee.lastWorkingDay.toDateString() : new Date().toDateString(),
+    };
+
+    let renderedBody = template.body;
+    for (const [key, val] of Object.entries(placeholders)) {
+      renderedBody = renderedBody.replace(new RegExp(`\\{\\{${key}\\}\\}`, "g"), String(val));
+    }
+
+    return response("employees", "exit_letter.generate", {
+      type,
+      title: template.title,
+      renderedBody,
+    });
+  }
+
+  // ==========================================
+  // Resignation
+  // ==========================================
+  async resign(employeeId: string, data: any) {
+    const employee = await this.prisma.employee.findUnique({ where: { id: employeeId } });
+    if (!employee) throw new NotFoundException("Employee not found");
+    
+    const updated = await this.prisma.employee.update({
+      where: { id: employeeId },
+      data: {
+        status: "NOTICE_PERIOD",
+        resignationDate: new Date(data.resignationDate),
+        lastWorkingDay: new Date(data.lastWorkingDay),
+        exitReason: data.exitReason ?? data.reason,
+        personalEmail: data.personalEmail,
+      },
+    });
+
+    return response("employees", "resign", updated);
+  }
+
+  // ==========================================
+  // Probation Confirmation
+  // ==========================================
+  async confirmProbation(id: string) {
+    const employee = await this.prisma.employee.findUnique({ where: { id } });
+    if (!employee) throw new NotFoundException("Employee not found");
+    if (employee.status !== "PROBATION") {
+      throw new BadRequestException("Employee is not in PROBATION status");
+    }
+
+    const updated = await this.prisma.employee.update({
+      where: { id },
+      data: {
+        status: "ACTIVE",
+        probationConfirmedAt: new Date(),
+      },
+    });
+
+    await this.audit("employees", "probation.confirm", "employee", id, updated);
+    return response("employees", "probation.confirm", updated);
+  }
+
+  // ==========================================
+  // Resend Invite
+  // ==========================================
+  async resendInvite(id: string) {
+    const employee = await this.prisma.employee.findUnique({ where: { id } });
+    if (!employee) throw new NotFoundException("Employee not found");
+
+    const inviteToken = `inv_${Math.random().toString(36).substring(2, 15)}`;
+    await this.prisma.employee.update({
+      where: { id },
+      data: { inviteToken },
+    });
+
+    const rawTempPassword = `Temp@${Math.floor(100000 + Math.random() * 900000)}`;
+    const passwordHash = await bcrypt.hash(rawTempPassword, 10);
+
+    let user = await this.prisma.user.findFirst({ where: { employeeId: id } });
+    if (user) {
+      user = await this.prisma.user.update({
+        where: { id: user.id },
+        data: { passwordHash },
+      });
+    } else {
+      user = await this.prisma.user.create({
+        data: {
+          employeeId: id,
+          email: employee.email.toLowerCase(),
+          phone: employee.phone || "0000000000",
+          passwordHash,
+          status: "ACTIVE",
+          tenantId: employee.companyId,
+        },
+      });
+
+      const employeeRole = await this.prisma.role.findUnique({
+        where: { name: "EMPLOYEE" },
+      });
+      if (employeeRole) {
+        await this.prisma.userRole.create({
+          data: {
+            userId: user.id,
+            roleId: employeeRole.id,
+          },
+        });
+      }
+    }
+
+    await this.prisma.notification.create({
+      data: {
+        userId: user.id,
+        channel: "EMAIL",
+        title: "Activation Invite Link",
+        body: `Welcome! Your temporary login credentials have been reset. Password: ${rawTempPassword}`,
+      },
+    });
+
+    return response("employees", "invite.resend", { success: true });
+  }
+
+  // ==========================================
+  // License / Seat Tracking
+  // ==========================================
+  async getLicenseInfo() {
+    const tenantId = TenantContext.getTenantId();
+    if (!tenantId) throw new BadRequestException("No tenant context");
+
+    const [activeCount, subscription] = await Promise.all([
+      this.prisma.employee.count({ where: { companyId: tenantId, status: "ACTIVE" } }),
+      this.prisma.subscription.findUnique({
+        where: { tenantId },
+        include: { plan: true },
+      }),
+    ]);
+
+    const employeeLimit = subscription?.plan?.employeeLimit ?? null;
+    return response("employees", "licenseInfo", {
+      activeEmployees: activeCount,
+      employeeLimit,
+      availableSeats: employeeLimit !== null ? Math.max(0, employeeLimit - activeCount) : null,
+      plan: subscription?.plan?.name ?? null,
+    });
+  }
+
+  // ==========================================
+  // Verify Queue
+  // ==========================================
+  async getVerifyQueue() {
+    const queue = await this.prisma.employeeDocument.findMany({
+      where: { verificationStatus: "PENDING" },
+      include: { employee: true },
+      orderBy: { createdAt: "desc" },
+    });
+    return response("employees", "verifyQueue", queue);
+  }
+
+  // ==========================================
+  // Bulk Excel Upload
+  // ==========================================
+  getBulkUploadTemplate() {
+    const headers = [
+      "employeeCode",
+      "firstName",
+      "lastName",
+      "email",
+      "phone",
+      "joiningDate",
+      "companyId",
+      "departmentId",
+      "designationId",
+      "locationId",
+      "gender",
+      "dateOfBirth",
+      "panNumber",
+      "providentFundAccount",
+      "uan",
+    ];
+    return headers.join(",") + "\n";
+  }
+
+  async bulkUploadExcel(fileBuffer: Buffer) {
+    const workbook = XLSX.read(fileBuffer, { type: "buffer" });
+    const sheetName = workbook.SheetNames[0];
+    const sheet = workbook.Sheets[sheetName];
+    const rows: any[] = XLSX.utils.sheet_to_json(sheet);
+
+    const createdEmployees = [];
+    const errors = [];
+
+    for (let i = 0; i < rows.length; i++) {
+      const row = rows[i];
+      const rowNum = i + 2;
+
+      try {
+        const data: any = {
+          employeeCode: String(row.employeeCode || ""),
+          firstName: String(row.firstName || ""),
+          lastName: String(row.lastName || ""),
+          email: String(row.email || ""),
+          joiningDate: row.joiningDate ? new Date(row.joiningDate).toISOString() : new Date().toISOString(),
+          companyId: String(row.companyId || ""),
+          departmentId: row.departmentId ? String(row.departmentId) : undefined,
+          designationId: row.designationId ? String(row.designationId) : undefined,
+          locationId: row.locationId ? String(row.locationId) : undefined,
+          gender: row.gender ? String(row.gender) : undefined,
+          dateOfBirth: row.dateOfBirth ? new Date(row.dateOfBirth).toISOString() : undefined,
+          panNumber: row.panNumber ? String(row.panNumber) : undefined,
+          providentFundAccount: row.providentFundAccount ? String(row.providentFundAccount) : undefined,
+          uan: row.uan ? String(row.uan) : undefined,
+        };
+
+        const res = await this.create(data);
+        createdEmployees.push(res.data);
+      } catch (err: any) {
+        errors.push({ row: rowNum, error: err.message });
+      }
+    }
+
+    return response("employees", "bulkUploadExcel", { imported: createdEmployees.length, errors });
+  }
+
 }
-
-

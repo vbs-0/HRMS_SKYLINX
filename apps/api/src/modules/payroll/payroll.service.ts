@@ -359,6 +359,33 @@ export class PayrollService {
   // Tax Declarations & Proofs
   // ==========================================
   async submitTaxDeclaration(data: CreateTaxDeclarationDto) {
+    const payrollRules = await this.settingsService.getPayrollRules();
+    const declSettings = (payrollRules as any).declarations || {};
+
+    if (declSettings.windowEnabled) {
+      const today = new Date();
+      const currentDay = today.getDate();
+      const currentMonth = today.getMonth() + 1; // 1-12
+
+      const fromDay = Number(declSettings.monthlyFromDay) || 1;
+      const toDay = Number(declSettings.monthlyToDay) || 10;
+      const cutoffMonth = Number(declSettings.fyCutoffMonth) || 1;
+      const cutoffDay = Number(declSettings.fyCutoffDay) || 31;
+
+      if (currentDay < fromDay || currentDay > toDay) {
+        throw new BadRequestException(`Declaration window is only open from day ${fromDay} to ${toDay} of the month.`);
+      }
+
+      // FY cutoff: Indian FY runs Apr–Mar, so a cutoff in Jan–Mar means the
+      // window closes once we pass that date within those end-of-FY months.
+      const inFyTail = (m: number) => m >= 1 && m <= 3;
+      if (inFyTail(cutoffMonth) && inFyTail(currentMonth)) {
+        if (currentMonth > cutoffMonth || (currentMonth === cutoffMonth && currentDay > cutoffDay)) {
+          throw new BadRequestException(`Declaration window is closed for this financial year (cutoff was ${cutoffDay}/${cutoffMonth}).`);
+        }
+      }
+    }
+
     const declaration = await this.prisma.employeeTaxExemptionDeclaration.upsert({
       where: { employeeId: data.employeeId },
       update: {

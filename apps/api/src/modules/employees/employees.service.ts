@@ -559,7 +559,24 @@ export class EmployeesService {
       noticeShortfall = data.noticeShortfall;
     }
 
-    const encashmentDues = data.encashmentDues || 0;
+    let encashmentDues = data.encashmentDues || 0;
+    if (data.encashmentDues === undefined) {
+      const leaveBalances = await this.prisma.leaveBalance.findMany({
+        where: { employeeId },
+        include: { leaveType: true },
+      });
+      let calculatedEncashment = 0;
+      for (const lb of leaveBalances) {
+        const available = Number(lb.available);
+        if (lb.leaveType.encashable && available > 0) {
+          const maxEncashable = lb.leaveType.maxEncashableDays;
+          const encashDays = maxEncashable > 0 ? Math.min(available, maxEncashable) : available;
+          calculatedEncashment += Math.round(encashDays * (data.lastDrawnSalary / 26));
+        }
+      }
+      encashmentDues = calculatedEncashment;
+    }
+    
     const recoveryDues = data.recoveryDues || 0;
     
     const grossDues = Number(data.lastDrawnSalary) + Number(gratuityDues) + Number(encashmentDues) + Number(unpaidSalary);

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { apiFetch } from "../lib/client-api";
 import { ReferenceModuleHeader } from "./reference-module";
 import { ReferenceFlowStrip } from "./reference-sections";
+import { LeaveEncashmentTable } from "./live-tables";
 import { Card } from "./ui";
 import { ClipboardList, UserCheck, UserMinus, FileText, ArrowRight, UserCheck2, Landmark, Plus, Trash2, CheckSquare } from "lucide-react";
 
@@ -825,6 +826,8 @@ export function LifecycleConsole() {
                 </button>
               </form>
             </Card>
+
+            <LeaveEncashmentTable />
 
             <Card>
               <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2 border-b pb-3">

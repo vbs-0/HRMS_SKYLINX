@@ -483,6 +483,9 @@ model LeaveType {
   carryForwardAllowed Boolean                @default(false)
   sandwichRuleEnabled Boolean                @default(false)
   compOffLinked       Boolean                @default(false)
+  encashable          Boolean                @default(false)
+  maxEncashableDays   Int                    @default(0)
+  availableDuringNotice Boolean              @default(true)
   status              String                 @default("ACTIVE")
   compOffConversions  CompOffConversion[]
   accrualSchedules    LeaveAccrualSchedule[]

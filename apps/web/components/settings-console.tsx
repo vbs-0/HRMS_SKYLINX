@@ -32,6 +32,14 @@ interface PayrollRules extends Record<string, unknown> {
   tdsSlabs: TdsSlab[];
 }
 
+interface DeclarationRules {
+  windowEnabled: boolean;
+  monthlyFromDay: number;
+  monthlyToDay: number;
+  currentFiscalYearStart: string;
+  fiscalYearDeadline: string;
+}
+
 interface ClientRules {
   branding: Record<string, string | number | boolean>;
   attendance: Record<string, string | number | boolean>;
@@ -40,6 +48,7 @@ interface ClientRules {
   approvals: Record<string, string | number | boolean>;
   support: Record<string, string | number | boolean>;
   documents: Record<string, string | number | boolean>;
+  declarations?: DeclarationRules;
 }
 
 interface SettingsLog {
@@ -121,6 +130,13 @@ const defaultClientRules: ClientRules = {
   },
   documents: {
     expiryReminderDays: 30,
+  },
+  declarations: {
+    windowEnabled: true,
+    monthlyFromDay: 1,
+    monthlyToDay: 15,
+    currentFiscalYearStart: "2024-04-01",
+    fiscalYearDeadline: "2025-01-31",
   },
 };
 
@@ -456,6 +472,35 @@ export function SettingsConsole() {
       load();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Client rules update failed");
+    }
+  }
+
+  async function saveDeclarations(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (!window.confirm("Are you sure you want to update the Tax Declaration Window settings? This affects active employee tax planning and proof submissions.")) return;
+
+    setMessage("");
+    setError("");
+    const form = new FormData(event.currentTarget);
+    const body = {
+      declarations: {
+        windowEnabled: form.get("windowEnabled") === "on",
+        monthlyFromDay: Number(form.get("monthlyFromDay")),
+        monthlyToDay: Number(form.get("monthlyToDay")),
+        currentFiscalYearStart: String(form.get("currentFiscalYearStart")),
+        fiscalYearDeadline: String(form.get("fiscalYearDeadline")),
+      }
+    };
+    try {
+      await apiFetch("/settings/rules", {
+        method: "PATCH",
+        body: JSON.stringify(body),
+      });
+      setRules((prev) => ({ ...prev, declarations: body.declarations }));
+      setMessage("Declaration settings saved successfully.");
+      load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Declaration settings update failed");
     }
   }
 
@@ -831,6 +876,36 @@ export function SettingsConsole() {
           </section>
 
           <button className="min-h-10 w-fit rounded-lg bg-brand px-6 text-sm font-semibold text-white">💾 Save All Rules</button>
+        </form>
+      </Card>
+
+      {/* ── Tax Declaration Settings ────────────────────────────────────── */}
+      <Card>
+        <div className="mb-4">
+          <h2 className="text-lg font-semibold">Tax Declaration Settings</h2>
+          <p className="mt-1 text-sm text-muted">Configure investment declaration windows and fiscal year deadlines for payroll compliance.</p>
+        </div>
+        <form className="grid gap-6" onSubmit={saveDeclarations}>
+          <div className="grid grid-cols-4 gap-3 max-xl:grid-cols-2 max-md:grid-cols-1">
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-semibold text-muted">Monthly Window Start Day</label>
+              <input type="number" className={inputClass()} name="monthlyFromDay" defaultValue={rules.declarations?.monthlyFromDay ?? 1} min="1" max="31" required />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-semibold text-muted">Monthly Window End Day</label>
+              <input type="number" className={inputClass()} name="monthlyToDay" defaultValue={rules.declarations?.monthlyToDay ?? 15} min="1" max="31" required />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-semibold text-muted">Fiscal Year Start Date</label>
+              <input type="date" className={inputClass()} name="currentFiscalYearStart" defaultValue={rules.declarations?.currentFiscalYearStart ?? "2024-04-01"} required />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-xs font-semibold text-muted">Fiscal Year End Deadline</label>
+              <input type="date" className={inputClass()} name="fiscalYearDeadline" defaultValue={rules.declarations?.fiscalYearDeadline ?? "2025-01-31"} required />
+            </div>
+            {checkbox("windowEnabled", "Declaration Window Enabled globally", Boolean(rules.declarations?.windowEnabled ?? true))}
+          </div>
+          <button className="min-h-10 w-fit rounded-lg bg-brand px-6 text-sm font-semibold text-white">Update Declaration Window</button>
         </form>
       </Card>
 

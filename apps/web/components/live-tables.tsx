@@ -1471,3 +1471,85 @@ export function PenaltyLogsTable({ search = "", month = "" }: { search?: string;
     </Card>
   );
 }
+
+export function LeaveEncashmentTable({ search = "" }: { search?: string }) {
+  const [rows, setRows] = useState<any[]>([]);
+  const [loaded, setLoaded] = useState(false);
+
+  function load() {
+    apiFetch<any[]>("/leave/types")
+      .then((body) => {
+        if (body.data) setRows(body.data);
+      })
+      .finally(() => setLoaded(true));
+  }
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  async function toggleSetting(id: string, field: string, value: boolean | number) {
+    try {
+      await apiFetch(`/leave/types/${id}`, {
+        method: "PATCH",
+        body: JSON.stringify({ [field]: value }),
+      });
+      load();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  const filtered = rows.filter((r) => !search || r.name.toLowerCase().includes(search.toLowerCase()));
+
+  return (
+    <Card>
+      <div className="mb-4">
+        <h2 className="text-lg font-semibold text-slate-800">Leave Encashment (F&F Settings)</h2>
+      </div>
+      <div className="overflow-auto">
+        <table className="w-full min-w-[720px] border-collapse text-sm text-left">
+          <thead className="bg-[#f8fafc] text-xs uppercase text-slate-500 tracking-wider">
+            <tr>
+              <th className="border-b border-[#dce2eb] p-3">Leave Name</th>
+              <th className="border-b border-[#dce2eb] p-3">Max Encashable Days</th>
+              <th className="border-b border-[#dce2eb] p-3">Encashable</th>
+              <th className="border-b border-[#dce2eb] p-3">Available During Notice</th>
+            </tr>
+          </thead>
+          <tbody>
+            {!loaded ? <EmptyRow columns={4} message="Loading..." /> : null}
+            {filtered.map((r) => (
+              <tr key={r.id} className="hover:bg-slate-50 border-b border-slate-100 transition">
+                <td className="p-3 font-semibold text-[#172033]">{r.name}</td>
+                <td className="p-3">
+                  <input
+                    type="number"
+                    min="0"
+                    className="w-20 rounded border border-[#cbd5e1] p-1 text-sm outline-none focus:border-brand"
+                    value={r.maxEncashableDays}
+                    onChange={(e) => toggleSetting(r.id, "maxEncashableDays", Number(e.target.value))}
+                  />
+                </td>
+                <td className="p-3">
+                  <input
+                    type="checkbox"
+                    checked={r.encashable}
+                    onChange={(e) => toggleSetting(r.id, "encashable", e.target.checked)}
+                  />
+                </td>
+                <td className="p-3">
+                  <input
+                    type="checkbox"
+                    checked={r.availableDuringNotice}
+                    onChange={(e) => toggleSetting(r.id, "availableDuringNotice", e.target.checked)}
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Card>
+  );
+}

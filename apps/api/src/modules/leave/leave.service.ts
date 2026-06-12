@@ -96,6 +96,9 @@ export class LeaveService {
         annualQuota: data.annualQuota !== undefined ? Number(data.annualQuota) : undefined,
         carryForwardAllowed: data.carryForwardAllowed !== undefined ? Boolean(data.carryForwardAllowed) : undefined,
         sandwichRuleEnabled: data.sandwichRuleEnabled !== undefined ? Boolean(data.sandwichRuleEnabled) : undefined,
+        encashable: data.encashable !== undefined ? Boolean(data.encashable) : undefined,
+        maxEncashableDays: data.maxEncashableDays !== undefined ? Number(data.maxEncashableDays) : undefined,
+        availableDuringNotice: data.availableDuringNotice !== undefined ? Boolean(data.availableDuringNotice) : undefined,
       },
     });
 

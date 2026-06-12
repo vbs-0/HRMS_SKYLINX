@@ -137,6 +137,14 @@ const DEFAULT_RULES: Required<UpdateClientRulesDto> = {
     // Suggested performance increment fraction (e.g. 0.10 = 10%)
     performanceIncrementPct: 0.10,
   },
+  declarations: {
+    windowEnabled: true,
+    monthlyFromDay: 1,
+    monthlyToDay: 10,
+    fyCutoffMonth: 1, // January
+    fyCutoffDay: 31,
+    mandatoryProof: true,
+  },
 };
 
 @Injectable()
@@ -325,7 +333,13 @@ export class SettingsService {
   /** Returns the active merged payroll rules for use by payroll calculations */
   async getPayrollRules(): Promise<Record<string, unknown>> {
     const merged = await this.mergedRules();
-    return merged["payroll"] as Record<string, unknown>;
+    // Payroll consumers also need the top-level taxCalc/declarations sections.
+    // (NOT salaryStructure — payroll.salaryStructure is already a display string.)
+    return {
+      ...(merged["payroll"] as Record<string, unknown>),
+      taxCalc: merged["taxCalc"],
+      declarations: merged["declarations"],
+    };
   }
 
   private async audit(action: string, entityType: string, entityId: string, data: unknown) {

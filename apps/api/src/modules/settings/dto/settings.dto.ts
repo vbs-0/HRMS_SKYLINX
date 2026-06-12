@@ -79,4 +79,8 @@ export class UpdateClientRulesDto {
   @IsOptional()
   @IsObject()
   salaryStructure?: Record<string, unknown>;
+
+  @IsOptional()
+  @IsObject()
+  declarations?: Record<string, unknown>;
 }

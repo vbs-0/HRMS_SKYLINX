@@ -20,6 +20,7 @@ import { CurrentUser } from "../../common/auth/current-user.decorator";
 import { AuthenticatedUser } from "../../common/auth/auth.types";
 import { CreateLetterTemplateDto, RenderLetterDto } from "./dto/letter-template.dto";
 import { CreateEmployeeLoanDto, DecideEmployeeLoanDto } from "./dto/employee-loan.dto";
+import { UpsertBankDetailDto, VerifyBankDetailDto } from "./dto/bank-detail.dto";
 
 @Controller("employees")
 export class EmployeesController {
@@ -59,6 +60,27 @@ export class EmployeesController {
   @RequirePermissions("employees.update")
   update(@Param("id") id: string, @Body() body: UpdateEmployeeDto) {
     return this.employeesService.update(id, body);
+  }
+
+  // Employee self-service (own record) or HR; ownership enforced in the service
+  @Patch(":id/bank-details")
+  @RequirePermissions("employees.read")
+  upsertBankDetail(
+    @Param("id") id: string,
+    @Body() body: UpsertBankDetailDto,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.employeesService.upsertBankDetail(id, body, user);
+  }
+
+  @Patch(":id/bank-details/verify")
+  @RequirePermissions("employees.approve")
+  verifyBankDetail(
+    @Param("id") id: string,
+    @Body() body: VerifyBankDetailDto,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
+    return this.employeesService.verifyBankDetail(id, body, user);
   }
 
   @Post(":id/documents/upload")

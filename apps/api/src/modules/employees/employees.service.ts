@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
+import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
 import { TenantContext } from "../../common/tenant-context";
 import { response } from "../../common/crud-response";
@@ -15,6 +15,8 @@ import {
 } from "./dto/lifecycle.dto";
 import { encrypt, decrypt, sanitizeBankDetail } from "../../common/crypto.util";
 import { CreatePromotionDto, DecidePromotionDto, CreateTransferDto, DecideTransferDto } from "./dto/career.dto";
+import { UpsertBankDetailDto, VerifyBankDetailDto } from "./dto/bank-detail.dto";
+import { AuthenticatedUser } from "../../common/auth/auth.types";
 import { ApprovalStatus } from "@prisma/client";
 
 @Injectable()
@@ -160,6 +162,69 @@ export class EmployeesService {
     };
 
     return response("employees", "update", decrypted);
+  }
+
+  /**
+   * Employee submits/updates their own bank details (status resets to PENDING),
+   * HR (employees.update) can edit anyone's. Account number stored encrypted.
+   */
+  async upsertBankDetail(id: string, data: UpsertBankDetailDto, user: AuthenticatedUser) {
+    const isHr = user.permissions.includes("employees.update");
+    if (!isHr && user.employeeId !== id) {
+      throw new ForbiddenException("You can only update your own bank details");
+    }
+
+    const employee = await this.prisma.employee.findUnique({ where: { id } });
+    if (!employee) throw new NotFoundException("Employee not found");
+
+    const detail = await this.prisma.employeeBankDetail.upsert({
+      where: { employeeId: id },
+      update: {
+        accountHolderName: data.accountHolderName,
+        bankName: data.bankName,
+        accountNumberEncrypted: encrypt(data.accountNumber),
+        ifsc: data.ifsc,
+        branch: data.branch || null,
+        verificationStatus: "PENDING",
+      },
+      create: {
+        employeeId: id,
+        accountHolderName: data.accountHolderName,
+        bankName: data.bankName,
+        accountNumberEncrypted: encrypt(data.accountNumber),
+        ifsc: data.ifsc,
+        branch: data.branch || null,
+        verificationStatus: "PENDING",
+      },
+    });
+
+    await this.audit("employees", "bankDetail.upsert", "employee_bank_detail", detail.id, {
+      employeeId: id,
+      bankName: detail.bankName,
+      ifsc: detail.ifsc,
+      verificationStatus: detail.verificationStatus,
+    });
+
+    return response("employees", "bankDetail.upsert", sanitizeBankDetail(detail));
+  }
+
+  /** HR verifies or rejects submitted bank details. */
+  async verifyBankDetail(id: string, data: VerifyBankDetailDto, user: AuthenticatedUser) {
+    const detail = await this.prisma.employeeBankDetail.findUnique({ where: { employeeId: id } });
+    if (!detail) throw new NotFoundException("No bank details submitted for this employee");
+
+    const updated = await this.prisma.employeeBankDetail.update({
+      where: { employeeId: id },
+      data: { verificationStatus: data.status },
+    });
+
+    await this.audit("employees", "bankDetail.verify", "employee_bank_detail", updated.id, {
+      employeeId: id,
+      verificationStatus: updated.verificationStatus,
+      decidedBy: user.sub,
+    });
+
+    return response("employees", "bankDetail.verify", sanitizeBankDetail(updated));
   }
 
   async uploadDocument(id: string, data: CreateEmployeeDocumentDto) {

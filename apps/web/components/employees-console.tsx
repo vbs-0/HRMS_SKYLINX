@@ -62,6 +62,7 @@ interface ApiEmployeeDetail {
     accountNumberMasked?: string;
     ifsc: string;
     branch?: string | null;
+    verificationStatus?: string;
   } | null;
 }
 
@@ -111,6 +112,11 @@ export function EmployeesConsole() {
     providentFundAccount: "",
     gradeId: "",
     employmentTypeId: "",
+    accountHolderName: "",
+    bankName: "",
+    accountNumber: "",
+    ifsc: "",
+    branch: "",
   });
 
   const [grades, setGrades] = useState<any[]>([]);
@@ -230,6 +236,11 @@ export function EmployeesConsole() {
             providentFundAccount: res.data.providentFundAccount || "",
             gradeId: res.data.gradeId || "",
             employmentTypeId: res.data.employmentTypeId || "",
+            accountHolderName: res.data.bankDetails?.accountHolderName || "",
+            bankName: res.data.bankDetails?.bankName || "",
+            accountNumber: "",
+            ifsc: res.data.bankDetails?.ifsc || "",
+            branch: res.data.bankDetails?.branch || "",
           });
         }
       })
@@ -329,8 +340,26 @@ export function EmployeesConsole() {
           employmentTypeId: editForm.employmentTypeId || null,
         }),
       });
+      // Bank details go through their own endpoint (encrypted, re-verification flow)
+      if (editForm.accountNumber || editForm.bankName || editForm.ifsc) {
+        if (editForm.accountNumber && editForm.bankName && editForm.ifsc && editForm.accountHolderName) {
+          await apiFetch(`/employees/${selectedEmployeeId}/bank-details`, {
+            method: "PATCH",
+            body: JSON.stringify({
+              accountHolderName: editForm.accountHolderName,
+              bankName: editForm.bankName,
+              accountNumber: editForm.accountNumber,
+              ifsc: editForm.ifsc.toUpperCase(),
+              branch: editForm.branch || undefined,
+            }),
+          });
+        } else if (editForm.accountNumber) {
+          throw new Error("To update bank details, fill account holder name, bank name, account number and IFSC together.");
+        }
+      }
       if (updated.data) {
-        setSelectedEmployee(updated.data);
+        const refreshed = await apiFetch<ApiEmployeeDetail>(`/employees/${selectedEmployeeId}`);
+        setSelectedEmployee(refreshed.data || updated.data);
         setMessage("Profile updated successfully!");
         setIsEditing(false);
         requestDataRefresh("employees");
@@ -803,17 +832,69 @@ export function EmployeesConsole() {
                         <h4 className="text-sm font-bold uppercase tracking-wider text-slate-700">Bank & Accounts</h4>
                       </div>
                       <div className="grid gap-3 text-sm">
+                        {selectedEmployee.bankDetails?.verificationStatus && (
+                          <div className="flex justify-between">
+                            <span className="text-slate-400 font-semibold">Verification</span>
+                            <span className={`rounded px-2 py-0.5 text-[10px] font-bold uppercase ${
+                              selectedEmployee.bankDetails.verificationStatus === "VERIFIED"
+                                ? "bg-emerald-50 text-emerald-700"
+                                : selectedEmployee.bankDetails.verificationStatus === "REJECTED"
+                                ? "bg-rose-50 text-rose-700"
+                                : "bg-amber-50 text-amber-700"
+                            }`}>
+                              {selectedEmployee.bankDetails.verificationStatus}
+                            </span>
+                          </div>
+                        )}
+                        {isEditing && (
+                          <div className="flex justify-between">
+                            <span className="text-slate-400 font-semibold">Account Holder</span>
+                            <input
+                              className="rounded-lg border px-2 py-0.5 text-xs"
+                              value={editForm.accountHolderName}
+                              onChange={(e) => setEditForm(prev => ({ ...prev, accountHolderName: e.target.value }))}
+                              placeholder="Name as per bank"
+                            />
+                          </div>
+                        )}
                         <div className="flex justify-between">
                           <span className="text-slate-400 font-semibold">Bank Name</span>
-                          <span className="font-semibold text-slate-800">{selectedEmployee.bankDetails?.bankName || "HDFC Bank"}</span>
+                          {isEditing ? (
+                            <input
+                              className="rounded-lg border px-2 py-0.5 text-xs"
+                              value={editForm.bankName}
+                              onChange={(e) => setEditForm(prev => ({ ...prev, bankName: e.target.value }))}
+                              placeholder="e.g. HDFC Bank"
+                            />
+                          ) : (
+                            <span className="font-semibold text-slate-800">{selectedEmployee.bankDetails?.bankName || "Not Set"}</span>
+                          )}
                         </div>
                         <div className="flex justify-between">
                           <span className="text-slate-400 font-semibold">IFSC Code</span>
-                          <span className="font-semibold text-slate-800">{selectedEmployee.bankDetails?.ifsc || "HDFC0001242"}</span>
+                          {isEditing ? (
+                            <input
+                              className="rounded-lg border px-2 py-0.5 text-xs uppercase"
+                              value={editForm.ifsc}
+                              onChange={(e) => setEditForm(prev => ({ ...prev, ifsc: e.target.value.toUpperCase() }))}
+                              placeholder="e.g. HDFC0001242"
+                            />
+                          ) : (
+                            <span className="font-semibold text-slate-800">{selectedEmployee.bankDetails?.ifsc || "Not Set"}</span>
+                          )}
                         </div>
                         <div className="flex justify-between">
                           <span className="text-slate-400 font-semibold">Account Number</span>
-                          <span className="font-semibold text-slate-800">{selectedEmployee.bankDetails?.accountNumberMasked || "—"}</span>
+                          {isEditing ? (
+                            <input
+                              className="rounded-lg border px-2 py-0.5 text-xs"
+                              value={editForm.accountNumber}
+                              onChange={(e) => setEditForm(prev => ({ ...prev, accountNumber: e.target.value.replace(/\D/g, "") }))}
+                              placeholder={selectedEmployee.bankDetails?.accountNumberMasked ? `Current: ${selectedEmployee.bankDetails.accountNumberMasked}` : "Enter account number"}
+                            />
+                          ) : (
+                            <span className="font-semibold text-slate-800">{selectedEmployee.bankDetails?.accountNumberMasked || "Not Set"}</span>
+                          )}
                         </div>
                         <div className="flex justify-between">
                           <span className="text-slate-400 font-semibold">PAN Number</span>

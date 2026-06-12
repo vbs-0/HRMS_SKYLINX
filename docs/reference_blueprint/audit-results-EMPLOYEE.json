@@ -11,7 +11,7 @@
     "route": "/employees",
     "status": "PASS",
     "note": "",
-    "buttons": 16,
+    "buttons": 17,
     "inputs": 5,
     "screenshot": "EMPLOYEE_DEEP/02_employees.png"
   },
@@ -123,7 +123,7 @@
     "route": "/reports",
     "status": "PASS",
     "note": "",
-    "buttons": 16,
+    "buttons": 17,
     "inputs": 7,
     "screenshot": "EMPLOYEE_DEEP/16_reports.png"
   },
@@ -204,7 +204,7 @@
     "status": "PASS",
     "note": "",
     "buttons": 32,
-    "inputs": 85,
+    "inputs": 86,
     "screenshot": "EMPLOYEE_DEEP/26_settings.png"
   },
   {
@@ -219,7 +219,7 @@
     "route": "/saas-admin",
     "status": "PASS",
     "note": "",
-    "buttons": 4,
+    "buttons": 5,
     "inputs": 1,
     "screenshot": "EMPLOYEE_DEEP/28_saas-admin.png"
   },
@@ -227,8 +227,8 @@
     "route": "/cards",
     "status": "PASS",
     "note": "",
-    "buttons": 5,
-    "inputs": 1,
+    "buttons": 25,
+    "inputs": 2,
     "screenshot": "EMPLOYEE_DEEP/29_cards.png"
   },
   {

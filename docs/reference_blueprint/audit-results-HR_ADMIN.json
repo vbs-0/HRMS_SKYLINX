@@ -11,7 +11,7 @@
     "route": "/employees",
     "status": "PASS",
     "note": "",
-    "buttons": 16,
+    "buttons": 17,
     "inputs": 5,
     "screenshot": "HR_ADMIN_DEEP/02_employees.png"
   },
@@ -123,7 +123,7 @@
     "route": "/reports",
     "status": "PASS",
     "note": "",
-    "buttons": 16,
+    "buttons": 17,
     "inputs": 7,
     "screenshot": "HR_ADMIN_DEEP/16_reports.png"
   },
@@ -204,7 +204,7 @@
     "status": "PASS",
     "note": "",
     "buttons": 32,
-    "inputs": 85,
+    "inputs": 86,
     "screenshot": "HR_ADMIN_DEEP/26_settings.png"
   },
   {
@@ -251,7 +251,7 @@
     "route": "/reminders",
     "status": "PASS",
     "note": "",
-    "buttons": 3,
+    "buttons": 4,
     "inputs": 3,
     "screenshot": "HR_ADMIN_DEEP/32_reminders.png"
   }

@@ -95,4 +95,8 @@ export class UpdateClientRulesDto {
 
   @IsOptional()
   coupons?: any[];
+
+  @IsOptional()
+  @IsObject()
+  exitRules?: Record<string, unknown>;
 }

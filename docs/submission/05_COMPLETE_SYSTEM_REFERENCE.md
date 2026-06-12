@@ -57,10 +57,10 @@ Permissions are `module × action` pairs stored in `Permission`, linked via `Rol
 **Login accounts (all created by `npm run db:seed`):**
 | Role | Email | Password |
 |---|---|---|
-| OWNER (super admin) | skylinxcode@gmail.com | password123 |
-| HR_ADMIN | hr.admin@skylinx.local | Skylinx@123 |
-| MANAGER | rohan.iyer@skylinx.local | Skylinx@123 |
-| EMPLOYEE | kabir.sethi@skylinx.local | Skylinx@123 |
+| OWNER (super admin) | manager@example.com | password123 |
+| HR_ADMIN | hr.admin@example.com | Skylinx@123 |
+| MANAGER | rohan.iyer@example.com | Skylinx@123 |
+| EMPLOYEE | kabir.sethi@example.com | Skylinx@123 |
 
 ---
 

@@ -51,6 +51,14 @@ const DEFAULT_RULES: Required<UpdateClientRulesDto> = {
     geofenceRadiusMeters: 200,
     biometricRequired: false,
     overtimeEnabled: true,
+    penaltyMapping: {
+      ABSENT: "FULL_DAY",
+      LATE: "HALF_DAY",
+      EARLY_EXIT: "HALF_DAY",
+      MISSED_PUNCH: "HALF_DAY",
+      OUT_TIME: "HALF_DAY",
+      SHORT_HOURS: "HALF_DAY",
+    },
   },
   leave: {
     approvalFlow: "Manager then HR",
@@ -107,6 +115,8 @@ const DEFAULT_RULES: Required<UpdateClientRulesDto> = {
     slaHighHours: 24,
     slaMediumHours: 48,
     slaLowHours: 72,
+    defaultQueue: "HR Helpdesk",
+    ticketPrefix: "TKT",
   },
   documents: {
     expiryReminderDays: 30,
@@ -168,6 +178,9 @@ const DEFAULT_RULES: Required<UpdateClientRulesDto> = {
     { code: "ANNUAL15", discountPercent: 15 },
     { code: "LAUNCH20", discountPercent: 20 },
   ],
+  exitRules: {
+    defaultNoticeDays: 90,
+  },
 };
 
 @Injectable()

@@ -3,7 +3,7 @@
     "route": "/dashboard",
     "status": "PASS",
     "note": "",
-    "buttons": 5,
+    "buttons": 4,
     "inputs": 1,
     "screenshot": "HR_ADMIN_DEEP/01_dashboard.png"
   },
@@ -19,7 +19,7 @@
     "route": "/attendance",
     "status": "PASS",
     "note": "",
-    "buttons": 12,
+    "buttons": 13,
     "inputs": 4,
     "screenshot": "HR_ADMIN_DEEP/03_attendance.png"
   },
@@ -35,7 +35,7 @@
     "route": "/payroll",
     "status": "PASS",
     "note": "",
-    "buttons": 29,
+    "buttons": 24,
     "inputs": 5,
     "screenshot": "HR_ADMIN_DEEP/05_payroll.png"
   },
@@ -99,7 +99,7 @@
     "route": "/approvals",
     "status": "PASS",
     "note": "",
-    "buttons": 19,
+    "buttons": 16,
     "inputs": 5,
     "screenshot": "HR_ADMIN_DEEP/13_approvals.png"
   },
@@ -129,17 +129,14 @@
   },
   {
     "route": "/rewards",
-    "status": "PASS",
-    "note": "",
-    "buttons": 14,
-    "inputs": 14,
-    "screenshot": "HR_ADMIN_DEEP/17_rewards.png"
+    "status": "FAIL",
+    "note": "navigation error: Error: UNKNOWN: unknown error, open 'C:\\Users\\chbha\\Desktop\\skylinx\\HRMS\\Hrms\\docs\\reference_blueprint\\images\\HR_ADMIN_DEEP\\17_rewards.png'"
   },
   {
     "route": "/social",
     "status": "PASS",
     "note": "",
-    "buttons": 25,
+    "buttons": 12,
     "inputs": 8,
     "screenshot": "HR_ADMIN_DEEP/18_social.png"
   },
@@ -147,7 +144,7 @@
     "route": "/notifications",
     "status": "PASS",
     "note": "",
-    "buttons": 13,
+    "buttons": 9,
     "inputs": 4,
     "screenshot": "HR_ADMIN_DEEP/19_notifications.png"
   },
@@ -155,30 +152,27 @@
     "route": "/compliance",
     "status": "PASS",
     "note": "",
-    "buttons": 16,
+    "buttons": 10,
     "inputs": 4,
     "screenshot": "HR_ADMIN_DEEP/20_compliance.png"
   },
   {
     "route": "/assets",
-    "status": "PASS",
-    "note": "",
-    "buttons": 27,
-    "inputs": 7,
-    "screenshot": "HR_ADMIN_DEEP/21_assets.png"
+    "status": "FAIL",
+    "note": "navigation error: TimeoutError: page.goto: Timeout 90000ms exceeded.\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:3000/assets\", waiting until \"domcontentloaded\"\u001b[22m\n"
   },
   {
     "route": "/support",
     "status": "PASS",
     "note": "",
-    "buttons": 19,
+    "buttons": 18,
     "inputs": 4,
     "screenshot": "HR_ADMIN_DEEP/22_support.png"
   },
   {
     "route": "/grievance",
-    "status": "PASS",
-    "note": "",
+    "status": "WARN",
+    "note": "console errors: A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:\n\n- A server/client branch `if (typeof window !== 'undefined')`.\n- Variable input such as `Date.now()` or `Math.random()` wh;",
     "buttons": 7,
     "inputs": 5,
     "screenshot": "HR_ADMIN_DEEP/23_grievance.png"
@@ -203,8 +197,8 @@
     "route": "/settings",
     "status": "PASS",
     "note": "",
-    "buttons": 32,
-    "inputs": 86,
+    "buttons": 33,
+    "inputs": 91,
     "screenshot": "HR_ADMIN_DEEP/26_settings.png"
   },
   {

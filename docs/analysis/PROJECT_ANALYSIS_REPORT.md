@@ -339,10 +339,10 @@
 
 | Role | Email | Password | Employee |
 |---|---|---|---|
-| OWNER (super admin) | skylinxcode@gmail.com | password123 | — |
-| HR_ADMIN | hr.admin@skylinx.local | Skylinx@123 | Aarav Mehta (EMP-1001) |
-| MANAGER | rohan.iyer@skylinx.local | Skylinx@123 | Rohan Iyer (EMP-1005) |
-| EMPLOYEE | kabir.sethi@skylinx.local | Skylinx@123 | Kabir Sethi (EMP-1003) |
+| OWNER (super admin) | manager@example.com | password123 | — |
+| HR_ADMIN | hr.admin@example.com | Skylinx@123 | Aarav Mehta (EMP-1001) |
+| MANAGER | rohan.iyer@example.com | Skylinx@123 | Rohan Iyer (EMP-1005) |
+| EMPLOYEE | kabir.sethi@example.com | Skylinx@123 | Kabir Sethi (EMP-1003) |
 
 ### 7.2 Seeded Data Summary
 

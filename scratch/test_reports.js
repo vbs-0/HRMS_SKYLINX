@@ -49,7 +49,7 @@ async function run() {
   const authRes = await request(`${API_BASE}/auth/login`, {
     method: "POST",
     body: {
-      email: "hr.admin@skylinx.local",
+      email: "hr.admin@example.com",
       password: "Skylinx@123",
     },
   });

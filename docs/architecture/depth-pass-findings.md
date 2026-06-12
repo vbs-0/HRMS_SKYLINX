@@ -10,7 +10,7 @@ This document summarizes the manual and automated verification walkthroughs perf
 
 ---
 
-## 1. HR Admin Role Verification (`hr.admin@skylinx.local`)
+## 1. HR Admin Role Verification (`hr.admin@example.com`)
 
 ### Actions & Flows Audited:
 - **Authentication**: Verified both standard form submission and quick login options.
@@ -30,7 +30,7 @@ This document summarizes the manual and automated verification walkthroughs perf
 
 ---
 
-## 2. Manager Role Verification (`rohan.iyer@skylinx.local`)
+## 2. Manager Role Verification (`rohan.iyer@example.com`)
 
 ### Actions & Flows Audited:
 - **Authentication**: Logged in successfully.
@@ -40,7 +40,7 @@ This document summarizes the manual and automated verification walkthroughs perf
 
 ---
 
-## 3. Employee Role Verification (`kabir.sethi@skylinx.local`)
+## 3. Employee Role Verification (`kabir.sethi@example.com`)
 
 ### Actions & Flows Audited:
 - **Authentication**: Logged in successfully.

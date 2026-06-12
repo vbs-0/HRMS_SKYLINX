@@ -4,11 +4,11 @@ async function runTests() {
   console.log("=== STARTING PAYROLL ENDPOINT VERIFICATION ===");
   
   // 1. Authenticate
-  console.log("\n1. Authenticating as hr.admin@skylinx.local...");
+  console.log("\n1. Authenticating as hr.admin@example.com...");
   const loginRes = await fetch(`${API_URL}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email: "hr.admin@skylinx.local", password: "Skylinx@123" })
+    body: JSON.stringify({ email: "hr.admin@example.com", password: "Skylinx@123" })
   });
   
   if (!loginRes.ok) {

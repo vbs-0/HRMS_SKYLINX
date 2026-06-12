@@ -4,10 +4,10 @@ This log documents every action, mouse click, text input, visual transition, and
 
 ---
 
-## 1. HR_ADMIN Audit Log (`hr.admin@skylinx.local`)
+## 1. HR_ADMIN Audit Log (`hr.admin@example.com`)
 
 ### Step 1.1: Authentication & Dashboard
-* **Action**: Entered email `hr.admin@skylinx.local` and password `Skylinx@123` into the sign-in form. Clicked the **"Sign In"** button.
+* **Action**: Entered email `hr.admin@example.com` and password `Skylinx@123` into the sign-in form. Clicked the **"Sign In"** button.
 * **UI Reaction**: Successful login. Redirected to the primary dashboard (`/`).
 * **Visuals Verified**: Metric widgets loaded successfully: Active workforce count (5), Present today (0), Pending leaves (2), Net payroll value (INR 1,04,033), and Approvals (2).
 * **Screenshot Reference**: `docs/reference_blueprint/images/HR_ADMIN/01_dashboard.png`
@@ -57,10 +57,10 @@ This log documents every action, mouse click, text input, visual transition, and
 
 ---
 
-## 2. MANAGER Audit Log (`rohan.iyer@skylinx.local`)
+## 2. MANAGER Audit Log (`rohan.iyer@example.com`)
 
 ### Step 2.1: Login & Dashboard
-* **Action**: Entered email `rohan.iyer@skylinx.local` and password `Skylinx@123` into the login screen. Clicked **"Sign In"**.
+* **Action**: Entered email `rohan.iyer@example.com` and password `Skylinx@123` into the login screen. Clicked **"Sign In"**.
 * **UI Reaction**: Successfully loaded manager profile. Redirected to the dashboard page (`/`).
 * **Visuals Verified**: Metric counters filtered to department scope.
 * **Screenshot Reference**: `docs/reference_blueprint/images/MANAGER/01_dashboard.png`
@@ -82,10 +82,10 @@ This log documents every action, mouse click, text input, visual transition, and
 
 ---
 
-## 3. EMPLOYEE Audit Log (`kabir.sethi@skylinx.local`)
+## 3. EMPLOYEE Audit Log (`kabir.sethi@example.com`)
 
 ### Step 3.1: Login & Dashboard
-* **Action**: Entered email `kabir.sethi@skylinx.local` and password `Skylinx@123` on login page. Clicked **"Sign In"**.
+* **Action**: Entered email `kabir.sethi@example.com` and password `Skylinx@123` on login page. Clicked **"Sign In"**.
 * **UI Reaction**: Redirected to employee dashboard with self-service panels.
 * **Screenshot Reference**: `docs/reference_blueprint/images/EMPLOYEE/01_dashboard.png`
 

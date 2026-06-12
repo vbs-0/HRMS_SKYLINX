@@ -28,6 +28,28 @@ export class AttendanceService {
     return response("attendance", "logs", logs);
   }
 
+  async getAttendanceDefaults() {
+    const rulesRes = await this.settingsService.rules();
+    const rule = (rulesRes.data as any).attendance || {};
+    return {
+      workWeek: rule.workWeek || "Monday to Saturday",
+      shiftStart: rule.shiftStart || "09:30",
+      shiftEnd: rule.shiftEnd || "18:30",
+      graceMinutes: rule.graceMinutes ?? 10,
+      halfDayMinutes: rule.halfDayMinutes || 240,
+      geoAttendance: rule.geoAttendance ?? true,
+      geofenceRadiusMeters: rule.geofenceRadiusMeters ?? 200,
+      penaltyMapping: rule.penaltyMapping || {
+        ABSENT: "FULL_DAY",
+        LATE: "HALF_DAY",
+        EARLY_EXIT: "HALF_DAY",
+        MISSED_PUNCH: "HALF_DAY",
+        OUT_TIME: "HALF_DAY",
+        SHORT_HOURS: "HALF_DAY",
+      }
+    };
+  }
+
   async checkIn(data: CheckInDto) {
     const checkInAt = data.checkInAt ? new Date(data.checkInAt) : new Date();
     const date = this.startOfDay(checkInAt);
@@ -44,8 +66,7 @@ export class AttendanceService {
       : await this.prisma.shift.findFirst({ where: { status: "ACTIVE" } });
     if (!shift) throw new BadRequestException("Active shift is not configured");
 
-    const rulesRes = await this.settingsService.rules();
-    const attendanceRule = (rulesRes.data as any).attendance;
+    const attendanceRule = await this.getAttendanceDefaults();
 
     const shiftLocations = await this.prisma.shiftLocation.findMany({
       where: { shiftId: shift.id },
@@ -81,7 +102,7 @@ export class AttendanceService {
             Number(sl.location.latitude),
             Number(sl.location.longitude),
           );
-          const radius = (attendanceRule?.geofenceRadiusMeters as number) || 200;
+          const radius = attendanceRule.geofenceRadiusMeters;
           if (distance <= radius) {
             inRange = true;
             break;
@@ -94,7 +115,7 @@ export class AttendanceService {
       }
     }
 
-    const status = this.calculateStatus(checkInAt, shift.startTime || attendanceRule?.shiftStart || "09:30", shift.graceMinutes ?? attendanceRule?.graceMinutes ?? 10);
+    const status = this.calculateStatus(checkInAt, shift.startTime || attendanceRule.shiftStart, shift.graceMinutes ?? attendanceRule.graceMinutes);
     const log = await this.prisma.attendanceLog.upsert({
       where: {
         employeeId_date: {
@@ -552,9 +573,8 @@ export class AttendanceService {
       },
     });
 
-    const rulesRes = await this.settingsService.rules();
-    const attendanceRule = (rulesRes.data as any).attendance;
-    const workWeek = attendanceRule?.workWeek || "Monday to Friday";
+    const attendanceRule = await this.getAttendanceDefaults();
+    const workWeek = attendanceRule.workWeek;
 
     const processed = [];
 
@@ -603,7 +623,7 @@ export class AttendanceService {
         processed.push(newLog);
       } else if (log.checkInAt && log.status === AttendanceStatus.PRESENT) {
         // Check if actually late
-        const status = this.calculateStatus(log.checkInAt, shift.startTime || attendanceRule?.shiftStart || "09:30", shift.graceMinutes ?? attendanceRule?.graceMinutes ?? 10);
+        const status = this.calculateStatus(log.checkInAt, shift.startTime || attendanceRule.shiftStart, shift.graceMinutes ?? attendanceRule.graceMinutes);
         if (status !== log.status) {
           const updatedLog = await this.prisma.attendanceLog.update({
             where: { id: log.id },
@@ -727,9 +747,9 @@ export class AttendanceService {
     });
 
     const results = [];
-    const settings = await this.settingsService.rules();
-    const graceMinutes = (settings.data as any).attendance?.graceMinutes || 15;
-    const halfDayMinutes = (settings.data as any).attendance?.halfDayMinutes || 240;
+    const attendanceRule = await this.getAttendanceDefaults();
+    const graceMinutes = attendanceRule.graceMinutes;
+    const halfDayMinutes = attendanceRule.halfDayMinutes;
 
     for (const log of logs) {
       if (!log.checkInAt || !log.checkOutAt) continue;
@@ -827,12 +847,14 @@ export class AttendanceService {
       include: { shift: true },
     });
 
+    const attendanceRule = await this.getAttendanceDefaults();
+
     const processed = [];
     for (const log of openLogs) {
       const shift = log.shift || await this.prisma.shift.findFirst({ where: { status: "ACTIVE" } });
       if (!shift) continue;
 
-      const [endH, endM] = (shift.endTime || "18:30").split(":").map(Number);
+      const [endH, endM] = (shift.endTime || attendanceRule.shiftEnd).split(":").map(Number);
       const autoCheckOut = new Date(log.date);
       autoCheckOut.setHours(endH, endM, 0, 0);
 
@@ -888,18 +910,14 @@ export class AttendanceService {
       include: { attendanceLog: true },
     });
 
+    const attendanceRule = await this.getAttendanceDefaults();
     const results: any[] = [];
     let totalLopDays = 0;
 
     await this.prisma.$transaction(async (tx) => {
       for (const a of openAnomalies) {
-        let deduction = 0;
-        if (a.type === AnomalyType.ABSENT) deduction = 1;
-        else if (a.type === AnomalyType.SHORT_HOURS) deduction = 0.5;
-        else if (a.type === AnomalyType.MISSED_PUNCH) deduction = 0.5;
-        else deduction = 0.5; 
-
-        const penaltyType = deduction === 1 ? "FULL_DAY" : "HALF_DAY";
+        const penaltyType = (attendanceRule.penaltyMapping as any)[a.type] || "HALF_DAY";
+        const deduction = penaltyType === "FULL_DAY" ? 1 : 0.5;
 
         await tx.attendanceAnomaly.update({
           where: { id: a.id },

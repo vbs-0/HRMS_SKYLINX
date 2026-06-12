@@ -88,7 +88,7 @@ function render() {
     <div class="app">
       <aside class="sidebar">
         <div class="brand">
-          <img class="brand-logo" src="assets/skylinx-logo-display.png" alt="SKYLINX Global Solutions" />
+          <img class="brand-logo" src="assets/skylinx-logo-display.png" alt="Acme Corp" />
           <div class="brand-text">
             <strong>${state.company?.name || "SKYLINX HR"}</strong>
             <span>HRMS & Payroll</span>

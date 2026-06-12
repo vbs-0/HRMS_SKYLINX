@@ -19,10 +19,10 @@ PostgreSQL must be running locally (database `skylinx_peopleos`).
 **Credentials**
 | Role | Email | Password |
 |---|---|---|
-| HR_ADMIN | hr.admin@skylinx.local | Skylinx@123 |
-| MANAGER | rohan.iyer@skylinx.local | Skylinx@123 |
-| EMPLOYEE | kabir.sethi@skylinx.local | Skylinx@123 |
-| OWNER (super admin) | skylinxcode@gmail.com | password123 |
+| HR_ADMIN | hr.admin@example.com | Skylinx@123 |
+| MANAGER | rohan.iyer@example.com | Skylinx@123 |
+| EMPLOYEE | kabir.sethi@example.com | Skylinx@123 |
+| OWNER (super admin) | manager@example.com | password123 |
 
 The login page has **Quick Access buttons** ("HR Admin", "System Owner") that pre-fill credentials — handy on stage.
 
@@ -30,7 +30,7 @@ The login page has **Quick Access buttons** ("HR Admin", "System Owner") that pr
 
 ## 1. HR_ADMIN walkthrough (the main act, ~15 min)
 
-Login as `hr.admin@skylinx.local`.
+Login as `hr.admin@example.com`.
 
 ### 1.1 Dashboard (`/dashboard`)
 Loads live admin metrics (headcount, attendance, pending approvals). Point out the left nav = the full module map.
@@ -38,7 +38,7 @@ Loads live admin metrics (headcount, attendance, pending approvals). Point out t
 ### 1.2 Employee Directory (`/employees`)
 - Roster table with all 5 seeded employees. Click **Kabir Sethi** → profile drawer opens (personal, job, bank, documents).
 - Click **Edit Profile** → change **Grade** dropdown to *Grade L1* → **Save Profile** → success; drawer reflects new grade. *(This grade drives the expense cap demo below.)*
-- **Add Employee** panel: Employee Code `EMP-1006`, First/Last name, email `demo.user@skylinx.local`, joining date today → **Add Employee** → "Employee created" message; table refreshes automatically.
+- **Add Employee** panel: Employee Code `EMP-1006`, First/Last name, email `demo.user@example.com`, joining date today → **Add Employee** → "Employee created" message; table refreshes automatically.
 - **Documents**: pick employee, type *Aadhaar*, choose any file → **Add Document** → appears with verification status; **Verify** toggles it.
 
 ### 1.3 Attendance & Roster (`/attendance`)
@@ -100,7 +100,7 @@ Top-right **Logout** → token cleared → back to `/login`.
 
 ---
 
-## 2. MANAGER walkthrough (~4 min) — `rohan.iyer@skylinx.local`
+## 2. MANAGER walkthrough (~4 min) — `rohan.iyer@example.com`
 
 1. Dashboard shows **manager-scoped** metrics (his team).
 2. `/leave` → Leave Requests → **Approve** a pending request (employee's balance updates).
@@ -110,7 +110,7 @@ Top-right **Logout** → token cleared → back to `/login`.
 6. **Boundary demo:** open `/payroll` or `/settings` → panels show permission-denied/empty states; the API returns 403 "Missing required permission". *This is correct RBAC, not an error.*
 7. Logout.
 
-## 3. EMPLOYEE walkthrough (~4 min) — `kabir.sethi@skylinx.local`
+## 3. EMPLOYEE walkthrough (~4 min) — `kabir.sethi@example.com`
 
 1. Dashboard = self-service view.
 2. `/attendance` → **Check In** (self).

@@ -3,9 +3,9 @@
 This log details the step-by-step verification and interactions across the UNVERIFIED modules.
 
 ## Roles Used:
-- HR_ADMIN: hr.admin@skylinx.local
-- MANAGER: rohan.iyer@skylinx.local
-- EMPLOYEE: kabir.sethi@skylinx.local
+- HR_ADMIN: hr.admin@example.com
+- MANAGER: rohan.iyer@example.com
+- EMPLOYEE: kabir.sethi@example.com
 
 ## PHASE 1: Demo-Critical Flow Testing (HR_ADMIN)
 

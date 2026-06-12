@@ -23,7 +23,7 @@ async function main() {
 
   // Ensure Sara Khan has the two approved expenses in May 2026
   const sara = await prisma.employee.findFirst({
-    where: { email: "sara.khan@skylinx.local" }
+    where: { email: "sara.khan@example.com" }
   });
   if (!sara) {
     throw new Error("Sara Khan not found");
@@ -50,7 +50,7 @@ async function main() {
   const loginRes = await fetch(`${API_URL}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email: "hr.admin@skylinx.local", password: "Skylinx@123" })
+    body: JSON.stringify({ email: "hr.admin@example.com", password: "Skylinx@123" })
   });
   if (!loginRes.ok) {
     throw new Error(`Login failed: ${await loginRes.text()}`);

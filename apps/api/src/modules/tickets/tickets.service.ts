@@ -23,14 +23,15 @@ export class TicketsService {
       throw new BadRequestException("User must be associated with a tenant to create a ticket.");
     }
 
-    const ticketNumber = `TKT-${Math.floor(100000 + Math.random() * 900000)}`;
-
-    const queue = dto.queue || "HR Helpdesk";
-    const priority = dto.priority || "Medium";
-
     const rulesRes = await this.settingsService.rules();
     const rules = rulesRes.data as any;
     const supportRules = rules.support || { slaHighHours: 24, slaMediumHours: 48, slaLowHours: 72 };
+
+    const prefix = supportRules.ticketPrefix || "TKT";
+    const ticketNumber = `${prefix}-${Math.floor(100000 + Math.random() * 900000)}`;
+
+    const queue = dto.queue || supportRules.defaultQueue || "HR Helpdesk";
+    const priority = dto.priority || "Medium";
 
     // Calculate SLA Deadline based on priority
     const slaDeadline = new Date();

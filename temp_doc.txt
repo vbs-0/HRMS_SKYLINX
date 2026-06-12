@@ -1,0 +1,738 @@
+HRMS Platform
+Complete Feature Reference
+Based on a live demo of Kredily — blueprint for building your own HRMS
+
+1. Roles & Permissions
+The platform is role-based: every user sees only the screens and actions their role allows. Getting this layer right is the foundation of the whole system, because it governs who can move money, approve time, and see sensitive personal data.
+Standard roles
+CEO / Owner — the highest-privilege role. Sees everything HR Admin sees, and can additionally delete employee records. Used sparingly.
+HR Admin — full operational control over employees, attendance, leave, payroll setup and letters. The day-to-day power user.
+Financial / Payroll Admin — payroll processing, payouts, statutory data and bank files. Same core access as HR Admin for money-related modules.
+HR Executive — limited role scoped to Attendance and Payroll operations only.
+Employee — self-service only: own dashboard, clock-in/out, leave and expense requests, payslips and declarations.
+Permission matrix
+✓ = full access   ~ = limited   — = none
+
+Capability
+CEO
+HR
+Fin
+Exec
+Emp
+Manage employees
+✓
+✓
+✓
+—
+—
+Delete employees
+✓
+—
+—
+—
+—
+Attendance & rules
+✓
+✓
+✓
+✓
+—
+Leave approvals
+✓
+✓
+✓
+~
+—
+Payroll & payouts
+✓
+✓
+✓
+~
+—
+Statutory / bank data
+✓
+✓
+✓
+—
+—
+Letters & assets
+✓
+✓
+—
+—
+—
+Self-service (own data)
+✓
+✓
+✓
+✓
+✓
+
+2. Announcements
+A company-wide notice board on the home dashboard. Admins post messages — policy updates, holidays, events, payroll dates — that appear to all employees the moment they log in.
+Controls: target an announcement to everyone or a specific department/location, pin notices to the top, schedule a publish date.
+3. Statutory & Company Data
+The vault for the organisation's legally sensitive information that payroll and compliance depend on. Access is restricted to the highest roles.
+What lives here
+Company bank account(s) used to disburse salary
+Statutory registration identifiers (India: PF, ESI, PT, TAN/PAN)
+Office locations and their working-day calendars
+Salary structure templates and statutory contribution rules (employer/employee PF & ESI percentages, professional tax slabs)
+Why it matters: every payroll run reads these values. A wrong PF percentage or bank detail propagates to every payslip and the bank transfer file.
+4. Employee Directory & Onboarding
+The master record of everyone in the company. Every other module — attendance, leave, payroll — keys off the employee record created here.
+Employee directory
+A searchable list of all employees with profile, role, department, reporting manager, joining date, salary structure, documents and bank details.
+
+
+Screen 2 — Employee Directory  (edutec.kredily.com/company/emp_list/?tab=1)
+
+▸ Screen data (extracted from screenshot)
+Page header:  DIRECTORY  [Getting Started button]
+Number of Employees: 9
+Tabs:  Directory  |  Verify (⚠)  |  Settings
+─── Plan badge (top-right) ───────────────────────────────
+Your Plan: Enterprise
+Available Licenses: 11
+[Purchase Licenses] button
+─── Action buttons ──────────────────────────────────────
+[+ Add Employee]  [CONFIRM PROBATION]  [RESEND ACTIVATION]
+─── Status filter chips ─────────────────────────────────
+✉ Invalid Email: 1    📱 Mobile Users: 2    ✅ Signed In: 2    🔴 Not Signed In: 7
+─── Toolbar ─────────────────────────────────────────────
+[ ] Include Inactive Employees
+[Bulk Edit]  [Mail]  [🔴 Delete]  [Import]  [Export]  Show [10 ▾]
+─── Filters ─────────────────────────────────────────────
+Signed In ▾  |  Manager ▾  |  Grade ▾  |  Department ▾  |  Work Location ▾  |  Sort By ↕
+─── Selection banner ────────────────────────────────────
+1 Employee selected.  [Select All 9 Employees in your Directory]
+─── Column headers ──────────────────────────────────────
+[ ]  ID  |  Employee Name  |  Signed In  |  Date of Birth  |  UAN  |  Emplo[yee Type — truncated]
+─── Rows ────────────────────────────────────────────────
+[✓] 1234  Manish Babu        Signed In: No   [RE-INVITE ⚑]
+[ ]  8   Mayuk Sinha         Signed In: No   [RE-INVITE ⚑]
+[ ]  5   Naga V              Signed In: Yes  DOB: 08 Feb 2000
+[ ]  edut.  Nagababu Vaiboyina  Signed In: Yes  DOB: 09 Jan 2001  [VERIFY 🔏]
+
+Onboarding a single employee
+Add the new hire and capture personal, job and salary details.
+Assign role, department, reporting manager, work location and shift/calendar.
+Attach the salary structure and the attendance, leave and payroll rule sets.
+Trigger welcome / offer documents from the letter module if required.
+
+
+Screen 1 — Onboard Employee  (edutec.kredily.com/employee/add_employee/#optional)
+
+▸ Screen data (extracted from screenshot)
+Page title:  ONBOARDING,
+Tabs:  [Mandatory Info]  |  Optional Info
+─── Left sidebar (navigation) ───────────────────────────
+Home  |  Company Profile  |  My Profile  |  Directory  |  Attendance  |  Leave  |  Payroll  |  Rewards
+─── Company card ────────────────────────────────────────
+Logo placeholder: "Your Company Logo comes here."
+Company name: edutec
+Social icons: LinkedIn  Facebook  Twitter
+─── Mandatory Info form ─────────────────────────────────
+PRE-ONBOARDING toggle: [ OFF / No ]
+First Name        [text field — empty]
+Middle Name       [text field — empty]
+Last Name         [text field — empty, placeholder: "."]
+Official Email ID [text field — empty]
+Phone Number      [text field — empty]
+UAN               [text field — empty]   ⚠ This field is required.
+Employment Type1  [dropdown ▾]           ⚠ This field is required.
+─── Validation messages ─────────────────────────────────
+* Please enter either Email ID or Phone number.
+─── Buttons ─────────────────────────────────────────────
+[✕ CANCEL]   [NEXT →]
+
+Bulk onboarding
+Download the Excel template, fill in one row per employee, upload. The platform validates and creates all records at once.
+Design note: the employee record is the central entity. Most fields become foreign keys referenced by attendance logs, leave balances, payslips and assets.
+5. Attendance Management
+Records when each employee starts and stops work, flags anything irregular, and feeds the result into payroll. Clock-in can come from the web/mobile app, a selfie/face check, GPS location or a biometric device.
+Core concepts
+Grace time — a buffer past the official start time during which an employee is still on time (e.g. 9:00 start, grace until 9:15).
+Anomalies — any deviation from rules: late arrival, early exit, missed punch, short hours, working outside the geo-fence.
+Half-day duration — worked-hours threshold below which a day is counted as a half-day.
+Breaks — configurable break allowances (e.g. one hour total); time beyond treated as an anomaly.
+Attendance log — per-employee, per-day record of every punch and the system's verdict (present, half-day, late, auto clock-out).
+Auto clock-out (auto logout)
+If an employee forgets to clock out, the system closes their day automatically. The log marks the entry as an auto clock-out so an admin can spot genuine missed punches.
+Assigning attendance rules
+Rules are defined once (start time, grace, half-day threshold, breaks, week-offs, holidays via a calendar) then assigned to employees in bulk or individually.
+Regularisation & approval flow
+When someone breaks a rule but has a valid reason, they request approval instead of taking the hit. Example: grace runs to 9:30 but employee arrives at 9:45.
+Employee opens the Actions page and clicks Ask Approval / Regularise on the flagged entry.
+The request with the reason goes to HR for review.
+If HR accepts, the day is on-time; if rejected, the anomaly stands and may flow to payroll as LOP.
+Key link to payroll: an unresolved anomaly that HR never approves converts to LOP at month-end.
+6. Leave Management
+Lets employees request time off and lets HR define exactly how leave is earned, spent and carried — then approve or reject requests against those rules.
+Leave types
+HR creates any number of leave types — Casual, Sick, Earned/Privilege, Maternity, Comp-off, Unpaid etc. — each with its own rule set.
+Rules you can attach to a leave type
+Annual entitlement — how many days are allowed per year.
+Accrual frequency — up front or split monthly / weekly / quarterly / half-yearly.
+Sandwich rule — whether week-offs/holidays between two leave days are also counted.
+Carry-forward — whether unused leave rolls into the next year, and any cap.
+Notice-period restrictions — whether the type can be taken while serving notice.
+Consumption pattern controls — e.g. max 5 consecutive days, then a 1-day gap before re-applying.
+Half-day leave — allows booking in half-day units.
+Applying, approving & bulk approval
+Employees apply from their dashboard with dates and a reason. HR can approve/reject individually or use bulk approval.
+Emergency / back-dated leave
+HR can apply or approve leave on behalf of an employee the next day (pre-/back-dated), keeping the record accurate without penalising a real emergency.
+Link to payroll: leave only affects salary when the employee has no balance left, making the day Loss of Pay.
+7. Payroll — Setup & Processing
+The financial heart of the system. Payroll reads attendance, leave, expenses and the salary structure, applies tax and statutory rules, and produces payslips and a bank transfer file.
+Salary component types
+
+Component Type
+Behaviour
+Examples
+Base
+Fixed core; foundation other calculations build on
+Basic, HRA, fixed allowances
+Recurring
+Paid every pay cycle at a set amount
+Conveyance, special allowance, meal allowance
+Variable
+Amount can change each cycle; tied to performance
+Incentives, commission, production bonus
+Adhoc
+One-off addition or deduction for a single payslip
+Joining bonus, arrears, one-time deduction
+
+Payroll → Advanced Settings → Component tab (Screen 3)
+
+Screen 3 — Payroll Component List  (edutec.kredily.com/payroll/admin/settings/?tab=9&cmp=1)
+
+▸ Screen data (extracted from screenshot)
+Module header:  PAYROLL  [Getting Started]   Mode: [Basic] [Expert★]
+Top tabs:  Run Payroll  |  Setup Payroll ⚠  |  Declaration  |  Advanced Settings★  |  Audit History  |  Statutory ⚠ ✕
+Sub-tabs:  Payroll Settings  |  PF & ESI Settings  |  PT Settings  |  Declaration Settings  |  Component★  |  Payout Settings  |  Payslip Settings  |  Bank Integration  |  Hide Advanced Settings
+Component sub-tabs:  Base  |  Recurring★  |  Variable  |  Adhoc
+─── Column headers ───────────────────────────────────────
+Component Name 🔍  |  Type  |  Taxable  |  Annual Limit  |  Individual Override  |  Proof Required  |  ESI Applicable  |  Included in CTC  |  Applied To  |  [toggle]
+─── Recurring components (all rows) ──────────────────────
+Conveyance Allowance   Allowance   Taxable:Yes   Limit:19200   IndOverride:Yes   ProofReq:No    ESI:Yes   InCTC:Yes   AppliedTo:3    [ON]
+Medical Allowance      Allowance   Taxable:Yes   Limit:15000   IndOverride:Yes   ProofReq:Yes   ESI:Yes   InCTC:Yes   AppliedTo:0    [ON]
+Vehicle Allowance      Allowance   Taxable:Yes   Limit:12000   IndOverride:Yes   ProofReq:No    ESI:Yes   InCTC:Yes   AppliedTo:0    [ON]
+Phone Reimbursement    Reimburse.  Taxable:Yes   Limit:14400   IndOverride:Yes   ProofReq:Yes   ESI:Yes   InCTC:Yes   AppliedTo:0    [ON]
+IN                     Allowance   Taxable:Yes   Limit:12430   IndOverride:Yes   ProofReq:Yes   ESI:Yes   InCTC:Yes   AppliedTo:0    [ON] 🗑
+TDS1                   Allowance   Taxable:No    Limit:0       IndOverride:Yes   ProofReq:No    ESI:No    InCTC:Yes   AppliedTo:0    [ON] 🗑
+Variable Pay           Allowance   Taxable:No    Limit:CTC*0.1 IndOverride:No    ProofReq:No    ESI:Yes   InCTC:Yes   AppliedTo:0    [ON] 🗑
+
+Setup Payroll → Create Structure (Screen 19)
+
+Screen 19 — Create Salary Structure  (edutec.kredily.com/payroll/admin_view_wrapper/?tab=1&ptab=2&setab=1)
+
+▸ Screen data (extracted from screenshot)
+Module:  PAYROLL | MAY 2026  [Getting Started]   Mode: [Basic] [Expert★]
+Top tabs:  Run Payroll  |  Setup Payroll★⚠  |  Declaration  |  Advanced Settings  |  Audit History  |  Statutory ⚠✕
+Sub-tabs:  Payroll Settings  |  Assign Structure  |  Create Structure★  |  Payroll AI Payroll Setup Wizard
+─── Left panel — existing structures ─────────────────────
+Sample Salary Structure 2      No Employees
+Job based Wage                 No Employees
+Contractor Salary Structure(10%)  1 Employee
+Daily Wage_1 / Advanced        0 | 1 Employees
+Hourly Wage_1 / Advanced       No Employees
+Structure 1                    No Employees
+─── Right panel — structure detail ───────────────────────
+Salary Structure Name:  Sample Salary Structure 1
+Description:            [empty]
+─── Earnings table ───────────────────────────────────────
+Earnings               Calculation
+Basic                  CTC * 0.5
+HRA                    CTC * 0.2
+Conveyance Allowance   19,200
+Book and periodicals   12,000
+Gratuity               0
+─── Deductions table ─────────────────────────────────────
+Deductions             Calculation
+PF Employer            System Calculated
+ESI Employer           System Calculated
+
+Setup Payroll → Assign Structure (Screen 20)
+
+Screen 20 — Assign Salary Structure  (edutec.kredily.com/payroll/admin_view_wrapper/?tab=1&ptab=2&setab=0)
+
+▸ Screen data (extracted from screenshot)
+Sub-tab active:  Assign Structure
+Toggle:  Annual [●ON]
+Toolbar buttons:  [⬆ Import]  [⬆ Export]  [+]
+─── Structure picker (dropdown open) ─────────────────────
+Select Structure:
+  ● Sample Salary Structure 1  (selected)
+  ○ Sample Salary Structure 2
+  ○ Daily Wage
+  ○ Hourly Wage
+  ○ Job based Wage
+  ○ Contractor Salary Structure(10%)
+Effective Date:  01/06/2026
+Buttons:  [Create]  [✕ CANCEL]  [✓ APPLY]
+─── Employee table (7 employees shown, 1–7 of 7) ─────────
+Location      Designation      Rules Applied                CTC     Action
+[blank]       CEO              S Sample Salary Structure 1  13,2[xx]  Edit
+Bangalore     Sr. Executive    D Daily Wage_1 (Auto)        5,500   Edit
+[blank]       [blank]          S Sample Salary Structure 2  12,0[xx]  Edit
+[blank]       [blank]          C Contractor Salary Struct.  4,0[xx]  Edit
+[blank]       [blank]          C Contractor Salary Struct.  3,8[xx]  Edit
+Page:  1 to 7 of 7   |<  <  Page 1 of 1  >  >|
+
+Salary Structure Assignment result (Screen 21)
+
+Screen 21 — Salary Structure Assignment Result dialog
+
+▸ Screen data (extracted from screenshot)
+─── Modal: "Salary Structure Assignment Failed for below Employees." ───
+Status    Employees
+Passed    Nagababu Vaiboyina, Satish Padala, Prasad Choudary, Sriram T, Shbham222n Rrr
+Failed    Naga V, Syed A   (highlighted in blue)
+Button:  [OK]
+─── Background employee list (visible behind modal) ──────
+Columns: [ ]  ID  |  Employee Name  |  Rules Applied  |  CTC  |  Action
+edut.  Nagababu Vaiboyy.  ple Salary Structure  13,2[xx]  Edit
+5      Naga V             y Wage_1 (Auto)        5,500    Edit
+2      Sriram T           mple Salary Structure  12,0[xx]  Edit
+4      Prasad choudary    ntractor Salary Struct. 4,0[xx]  Edit
+6      Satish Padala      ntractor Salary Struct. 3,8[xx]  Edit
+
+Payout settings & payslips
+Payout settings define the pay cycle, pay date, rounding and the order in which components and deductions are applied. Payslips are generated from pre-defined templates and can be downloaded individually or in bulk.
+Payroll — Pay Register, May 2026 (Screen 18)
+
+Screen 18 — Pay Register May 2026  (edutec.kredily.com/payroll/admin_view_wrapper/?ptab=1&tab=1&step=0&month=May&year=2026)
+
+▸ Screen data (extracted from screenshot)
+Module:  PAYROLL | MAY 2026  [Getting Started]   Mode: [Basic] [Expert★]
+Month navigator: ← [May 2026 ★ Pending:1] →
+Top tabs:  Run Payroll★  |  Setup Payroll ⚠  |  Declaration  |  Advanced Settings  |  Audit History  |  Statutory ⚠✕
+Sub-tabs:  Run Payroll  |  Pay Register★⚠  |  Payout  |  Statutory and Reports ⚠  |  JV Output ⚠
+Step tabs:  ① Overview⚠  |  ② Attendance & Leave⚠  |  ③ Variable & Adhoc⚠  |  ④ Salary Revision⚠  |  ⑤ Tax Override⚠  |  Salary on Hold >
+─── Toolbar ──────────────────────────────────────────────
+⚠ Warning banner: "There are changes in Employee Data. Please Check Filters"
+[Filter Employees ▾]  [⬆ LOP Import]  [⬆ Export]
+─── Column headers ───────────────────────────────────────
+Employee Name  |  ID  |  Payment Mode  |  Total Working Days / Days Worked  |  Payout Status  |  LOP  |  Net Pay  |  Payroll Status
+─── Rows ─────────────────────────────────────────────────
+shbham...   KR16   [blank]          31/31    Pay        LOP:3   83,333    Processing (yellow row)
+Prasad c.   4      [blank]          31/30.0  Pay        LOP:1   31,550    Completed ✅
+Sriram T    2      [blank]          31/29.0  Pay        LOP:2   92,299    Completed ✅
+Nagaba...   edut.  Bank Transfer    31/31    Pay        LOP:0   1,03,295  Completed ✅
+Satish P.   6      [blank]          31/31    On Hold    LOP:0 ✎  30,969  On Hold (grey row)
+
+Income tax & declarations
+The system computes income tax on each employee's projected annual earnings and spreads the liability across the year (TDS projection). Employees submit declarations; the projection updates automatically.
+Employee Income Tax view (Screen 5)
+
+Screen 5 — Employee Income Tax  (edutec.kredily.com/payroll/user_view_wrapper/?tab=3&uu=...)
+
+▸ Screen data (extracted from screenshot)
+Employee header:  Payroll | Nagababu Vaiboyina
+Profile tabs:  Pay Slip  |  Salary Structure  |  Income Tax★  |  Declaration  |  Bank Account
+Employee card:  Hr team  |  CEO  |  vaboyinunaga@gmail.c[om]
+─── Income Tax computation table ─────────────────────────
+Row label                                    Value
+iv. Other deduction under Section VI-A       0
+I. Total Income (G-H)                        12,12,421
+J. Tax on Income                             61,860
+K. Less: rebate u/s 87A(a)                   0
+L. Less: relief u/s 87A(b)                   49,443
+M. Add Surcharge @10%                        0
+N. Add Education cess @4%                    497
+O. Total Tax payable                         12,917
+P. Tax paid to previous employer             0
+Q. Tax deductable/refundable                 12,917
+─── Action button ────────────────────────────────────────
+[DOWNLOAD TAX COMPUTATION]
+─── Footer ───────────────────────────────────────────────
+© PeopleProsper Technologies Pvt. Ltd. 2026   Terms & Conditions   Privacy Policy
+
+Declaration Settings — Action Confirmation modal (Screen 4)
+
+Screen 4 — Declaration Settings  (edutec.kredily.com/payroll/admin/settings/?tab=3&cmp=3&pfesi=1&pt=0)
+
+▸ Screen data (extracted from screenshot)
+Module:  PAYROLL  [Getting Started]   Mode: [Basic] [Expert★]
+Active sub-tab:  Declaration Settings
+─── Declaration Window settings ──────────────────────────
+Declaration Window:  ●ON  toggle
+Monthly sub-panel:
+  Monthly Declaration Window:  Yes  From [01 ▾] to [01 ▾]
+  Cutoff Declaration Date for Financial Year:  January ▾  [01 ▾]  To [blank]
+Yearly sub-panel:  [partially visible]
+  Apply to Select Employees: [sh babo / A — partially visible]
+Mandatory Proof Submission: ●ON
+─── Buttons ─────────────────────────────────────────────
+[✕ CANCEL]  [✓ SAVE]
+─── Modal: Action Confirmation ───────────────────────────
+Title: "Action Confirmation"
+Body:  "This edit will overwrite any previous setting with regards to Declaration. Are you sure you want to continue?"
+Buttons: [YES] (active/focused)  [NO]
+
+Bank transfer file
+After a run, the platform generates the salary disbursement file in the bank's format. HR uploads it to the company bank account to pay everyone in one batch — no manual spreadsheet keying.
+Reimbursements
+Approved employee reimbursements flow into payroll so they are paid alongside salary and appear on the payslip.
+Access & location controls
+IP restrictions — limit clock-in / portal access to whitelisted office networks.
+Geo-fencing — capture and display where an employee clocked in; only allow attendance within a defined radius.
+Holding & releasing salary
+HR can place an individual's salary on hold for disputes or pending clearances, then release it later. The held amount is paid in a subsequent run without re-keying.
+8. Payroll Rules, Deductions & Loss of Pay (LOP)
+This is where attendance and leave turn into money. Rules from leave and attendance modules, plus dedicated payroll rules, decide how much is deducted from each salary.
+Three rule sets, one assignment model
+Leave rules, Attendance rules and Payroll/Salary rules are all created centrally then assigned to employees — either in bulk or per person. The same employee can sit under different combinations.
+How a deduction is triggered
+Loss of Pay (LOP) — when an employee has no balance left and still takes leave, that day is detected by payroll as LOP and deducted.
+Attendance-based deductions — rules can deduct based on patterns, e.g. late on 4+ days in a month triggers a deduction.
+Every deduction is itemised on the payslip, with full traceability from the rupee deducted back to the day in the attendance log.
+The anomaly-to-LOP lifecycle
+A single late arrival (or similar anomaly) is flagged for that day.
+HR must approve the anomaly to forgive it. If approved — no deduction.
+If not approved, the unresolved anomaly converts to LOP at month-end and is deducted.
+Even after conversion, HR can manually edit the LOP — add, remove or adjust days before finalising the run.
+Penalty logs
+An audit trail of every deduction, LOP conversion and manual override, visible to both HR and the employee.
+Attendance → Penalty Logs (Screen 17)
+
+Screen 17 — Penalty Logs  (edutec.kredily.com/attendanceLog/penaltyLog/?tab=0)
+
+▸ Screen data (extracted from screenshot)
+Module:  Attendance  [Getting Started]
+Top tabs:  Logs  |  Automation Logs ⚠★  |  Approvals  |  Rules  |  Analytics  |  Settings  |  Bio-Metric Integration
+Sub-tabs:  Penalty Logs★  |  Comp Off Logs  |  Overtime Requires Approval
+Toolbar:  [0] Search [🔍]   [BULK REVERT]  [⬆ Export]  Show [20 ▾]
+─── Column headers ───────────────────────────────────────
+[ ]  ID  |  Employee Name  |  Anomaly Type ▾  |  Penalty T[ype] ▾  |  Leave Type ▾  |  Deduction  |  Month ▾  |  Applied On
+─── Rows ─────────────────────────────────────────────────
+edutec01  Nagababu Vaiboyina  Out Time   Half Day   Casual Leave   0.5    Mar 2026  25-03-2026
+6         Satish Padala       Absent     Full Day   Loss of Pay    23.0   Mar 2025  02-04-2025
+4         Prasad Choudary     Absent     Full Day   Loss of Pay    23.0   Mar 2025  02-04-2025
+2         Sriram T            Absent     Full Day   Loss of Pay    23.0   Mar 2025  02-04-2025
+1234      Manish Babu         Absent     Full Day   Loss of Pay    23.0   Mar 2025  02-04-2025
+3         Hari                Absent     Full Day   Loss of Pay    23.0   Mar 2025  02-04-2025
+[more rows below fold]
+
+Design note: model anomalies as their own records with a status (open / approved / converted-to-LOP / overridden). Payroll reads them at run time; the penalty log is this table's history.
+9. Expense Management
+Lets employees claim money they spent on the company's behalf — travel, client meals, supplies — and routes each claim through approval before it is paid.
+How it works
+Employees raise a claim with amount, category and a receipt attachment.
+Claims are grouped by category and sub-category (e.g. Travel → Cab, Travel → Flight).
+Each claim goes through an approval flow; the approver reviews the receipt and approves or rejects.
+Approved claims are paid out directly or folded into payroll as a reimbursement.
+Expense Categories (Screen 11)
+
+Screen 11 — Expense Category  (edutec.kredily.com/expense_management/?tab=2)
+
+▸ Screen data (extracted from screenshot)
+Module:  EXPENSE  [Getting Started]
+Top tabs:  Expenses ⚠  |  Payout  |  Expense Category★✅  |  Settings
+Toolbar:  [+ Import]
+─── Table ────────────────────────────────────────────────
+CATEGORIES     SUB CATEGORIES     ACTIONS
+Travel         [none]             ✎ 🗑
+Food Allowance [none]             ✎ 🗑
+[⊕ Add]  (link at bottom of table)
+
+Add Expense modal (Screen 12)
+
+Screen 12 — Add Expense modal  (edutec.kredily.com/expense_management/?tab=0&ref=userview)
+
+▸ Screen data (extracted from screenshot)
+Modal title:  Add Expense
+─── Form fields ──────────────────────────────────────────
+Expense date:      01/06/2026  [📅 calendar icon]
+Category:          Travel  [✕ ▾]  (selected)
+Sub Category:      [Select Sub Category ▾]  (empty)
+Amount:            1000  (entered, highlighted in blue)
+Description:       [empty text field]
+─── Receipt upload area ──────────────────────────────────
+Dashed box: "Drag and drop receipt to upload"
+[BROWSE] button (blue)
+─── Buttons ─────────────────────────────────────────────
+[✕ CANCEL]   [✓ SAVE]
+─── Background page (partially visible) ──────────────────
+Active tab:  Approvals  |  Logs
+Year: 2026  Month: Jun[e]
+[ADD NEW EXPENSE] button
+Column headers: Expense Date  |  [Category]  |  Status
+
+Expense Approvals (Screen 13)
+
+Screen 13 — Expense Approvals  (edutec.kredily.com/expense_management/?tab=0)
+
+▸ Screen data (extracted from screenshot)
+Module:  EXPENSE  [Getting Started]
+Top tabs:  Expenses★⚠  |  Payout  |  Expense Category✅  |  Settings
+Active sub-tab:  Approvals★  |  Logs
+Filter:  Year: 2026  Month: June
+Toolbar:  [0] Search [🔍]   [⬆ Export All]   [BULK APPROVE]
+Filter dropdowns:  Department ▾  |  Designation ▾  |  Category ▾  |  Sub Category ▾
+Sort By: ↕
+─── Column headers ───────────────────────────────────────
+[ ]  ID  |  Employee Name  |  Department  |  Designation  |  Category  |  Action
+─── Row ──────────────────────────────────────────────────
+edutec01  [avatar] Nagababu Vaiboyina   Hr team   CEO   Travel   [✅ approve] [❌ reject]
+
+Separating categories from sub-categories lets finance report at both a high level and a detailed level without re-tagging claims.
+10. Full & Final Settlement (F&F) / E-Exit
+Handles everything when an employee leaves — voluntary resignation or termination — settling all dues in one final calculation.
+The exit flow
+Initiation — HR initiates the exit and records the last working day. Termination uses the same flow.
+Approvals — the exit moves through an approval chain.
+Leave encashment — unused encashable leave is converted to money and added to the settlement.
+Salary hold / dues — held salary, pending reimbursements, recoverable advances and notice-period adjustments are netted in.
+F&F summary — single settlement statement showing all earnings, deductions and net payable.
+Exit letters — relieving and experience letters are generated from templates as part of the same flow.
+E-Exit → Termination form (Screen 6)
+
+Screen 6 — E-Exit Termination  (edutec.kredily.com/employee-exit/exit-requests/)
+
+▸ Screen data (extracted from screenshot)
+Module:  E-Exit [beta]  |  Nagababu Vaiboyina  (admin logged in)
+Top tabs:  Approvals  |  Termination★  |  Logs  |  Settings
+─── Form fields ──────────────────────────────────────────
+Employee Name:                  Arabinda K   [▾]
+Official Notice Period (Days):  30
+Reason for Termination:         Resignation  [▾]
+Date of Termination:            01/06/2026   [📅]
+Requested Notice Period (Days): 10
+Last working Day:               01/06/2026   [📅]  (calendar open — Jun 2026, today=12 highlighted)
+Personal Email:                 [empty]
+Termination Letter:             Letter  [text area, empty]
+─── Buttons ─────────────────────────────────────────────
+[Cancel]  (outlined)   [Terminate]  (red filled)
+─── Calendar widget visible ──────────────────────────────
+Jun 2026    Su Mo Tu We Th Fr Sa
+            31  1  2  3  4  5  6
+             7  8  9 10 11 12★ 13
+            14 15 16 17 18 19 20
+            21 22 23 24 25 26 27
+            28 29 30  1  2  3  4
+             5  6  7  8  9 10 11
+[Today] link at bottom
+
+E-Exit → Approvals tab (Screen 7)
+
+Screen 7 — E-Exit Approvals  (edutec.kredily.com/employee-exit/exit-requests/)
+
+▸ Screen data (extracted from screenshot)
+Module:  E-Exit [beta]  |  Nagababu Vaiboyina
+Active tab:  Approvals★  |  Termination  |  Logs  |  Settings
+Toolbar:  Search [🔍]
+─── Table ────────────────────────────────────────────────
+Columns: ID  |  Employee Name  |  Employee Designation  |  Status  |  Applied On  |  Last Working Date Requested  |  Reason for Le[aving]
+Body:  "No data found."
+Pagination: 0 to 0 of 0   |<  <  Page 0 of 0  >  >|
+
+F&F → Leave Encashment tab (Screen 9)
+
+Screen 9 — F&F Leave Encashment  (edutec.kredily.com/employee-exit/exit-requests/)
+
+▸ Screen data (extracted from screenshot)
+Module:  E-Exit [beta]  |  Nagababu Vaiboyina  (Admin)
+Active tab:  Logs
+─── Employee summary bar ─────────────────────────────────
+ID: edutec01  |  Employee Name: Nagababu Vaiboyina  |  Department: Hr team
+Joining Date: 01/01/2024  |  Probation End Date: --  |  Employee Type: Full Time  |  Notice Period: -
+─── F&F tabs ─────────────────────────────────────────────
+Resignation Details  |  Leave Encashment★  |  Salary On Hold  |  Asset Checklist  |  Summary
+─── Leave Encashment table ───────────────────────────────
+Leave Name       Balance   Max leave encashable   Encashment Available   Encash   Available During Notice
+Casual Leave     3.5       1                      No (toggle)            1        Yes✅ (toggle)
+Earned Leave     3         1                      No (toggle)            1        Yes✅ (toggle)
+Leave Type 3     15        1                      No (toggle)            1        No (toggle)
+Sick Leave       1.5       1                      No (toggle)            1        Yes✅ (toggle)
+WHH              0         1                      No (toggle)            0        No (toggle)
+
+F&F → Salary On Hold tab (Screen 10)
+
+Screen 10 — F&F Salary On Hold  (edutec.kredily.com/employee-exit/exit-requests/)
+
+▸ Screen data (extracted from screenshot)
+Module:  E-Exit [beta]  |  Nagababu Vaiboyina  (Admin)
+─── Employee summary bar ─────────────────────────────────
+ID: edutec01  |  Name: Nagababu Vaiboyina  |  Dept: Hr team
+Joining Date: 01/01/2024  |  Probation End Date: --  |  Employee Type: Full Time  |  Notice Period: -
+─── Active F&F tab ───────────────────────────────────────
+Resignation Details  |  Leave Encashment  |  Salary On Hold★  |  Asset Checklist  |  Summary
+─── Salary On Hold section ───────────────────────────────
+Label:  Salary On Hold
+Toggle: ●ON (blue)
+From:   Jun 2026  [📅]  (month picker open)
+─── Month picker (open) ──────────────────────────────────
+2026
+Jan   Feb   Mar
+Apr   May   Jun★
+Jul   Aug   Sep
+Oct   Nov   Dec
+Buttons visible:  [Cancel]
+
+F&F → Summary tab (Screen 8)
+
+Screen 8 — F&F Summary / Final Settlement  (edutec.kredily.com/employee-exit/exit-requests/)
+
+▸ Screen data (extracted from screenshot)
+─── Employee summary bar ─────────────────────────────────
+ID: edutec01  |  Employee Name: Nagababu Vaiboyina  |  Department: Hr team
+Joining Date: 01/01/2024  |  Probation End Date: --  |  Employee Type: Full Time  |  Notice Period: -
+─── F&F tabs ─────────────────────────────────────────────
+Resignation Details  |  Leave Encashment  |  Salary On Hold  |  Asset Checklist  |  Summary★
+─── Settlement document (letterhead) ─────────────────────
+[companyLogo]
+Company:        Edutech
+                ..                (CIN partially visible)
+Document title: FINAL SETTLEMENT
+─── Settlement fields ────────────────────────────────────
+Employee ID                    : edutec01
+Name                           : Nagababu Vaiboyina
+Department                     : Hr team
+Designation                    : CEO
+Location                       : [blank]
+Date of Joining                : 01/01/2024
+Last Date of Working           : 20/12/2025
+Last Salary Paid               : NA
+Notice Period as per Application: 1
+Letter Notice Period Adjustable : 0
+PL Dates Payable               : 0
+[document continues below fold — edit icon visible top-right]
+
+Because F&F pulls from leave, attendance, payroll and assets at once, it is effectively a mini payroll run for one person.
+11. Letter Generation
+Produces formal documents from pre-built templates rather than hand-typed documents.
+Common letters: offer, appointment, confirmation, increment/revision, promotion, warning, relieving and experience letters.
+Templates use merge fields (name, designation, salary, dates) that auto-fill from the employee record.
+AI assistance can draft or refine letter wording. The finished letter is saved to the employee's document file.
+Generate Letter screen (Screen 14)
+
+Screen 14 — Generate Letter  (edutec.kredily.com/letterGeneratorV2/generate_letter)
+
+▸ Screen data (extracted from screenshot)
+Breadcrumb:  Letter Management  >  Generate Letter
+Heading:  "Welcome, Nagababbu !"
+Sub-text:  "Streamline letter generation for employees through manual processes or intelligent AI workflows"
+Timestamp shown top-right:  12 June, 2026  11:51 AM   [Admin ●ON]
+─── Form fields ──────────────────────────────────────────
+Letter Type:      Offer Letter
+Template:         Template 1
+Select Employees: [Select... ▾]  (dropdown open)
+─── Employee dropdown options visible ─────────────────────
+Search [🔍]
+Mayuk Sinha
+Nagababu
+Hari
+hello
+Aishwarys 2
+shubham111 mm
+shbham222n rrr
+Arabinda K
+Syed A
+─── Button ───────────────────────────────────────────────
+[Create]  (red filled)
+─── Left sidebar navigation (partial) ────────────────────
+Company Profile  |  Profile  |  Attendance  |  Leave  |  [Letter Management section expanded]
+Generate Letter★  |  Letter Requests  |  Settings (ngs)
+
+Manual Letter editor (Screen 15)
+
+Screen 15 — Manual Letter  (edutec.kredily.com/letterGeneratorV2/generate_letter/manual_letter)
+
+▸ Screen data (extracted from screenshot)
+Breadcrumb:  Letter Management  >  Generate Letter  >  Manual Letter
+Page title:  Letter Management
+Subtitle:    "Effortlessly generate and oversee all employee letters, with manual workflows"
+Timestamp:   12 June, 2026  11:51 AM   [Admin ●ON]
+─── Action buttons (top-right) ───────────────────────────
+[📋 copy icon]   [👁 preview icon]   [Save Template ▾]   [another button — partially cut]
+─── AI banner ────────────────────────────────────────────
+✦ Ask our AI for Smart Template  (blue/purple gradient banner)
+─── Rich text toolbar ────────────────────────────────────
+↩ ↪  🖊  Paragraph ▾  Default ▾  B  I  U  S  🔗  A▾  🖌▾  ≡  #  </>  =  ≡  ─  □  🖾
+─── Letter body (template content visible) ───────────────
+{{ date }}
+
+{{ salutation }}, {{ full name }}
+{{ address line 1 }}
+{{ address line 2 }}
+{{ city }}
+{{ state }} - {{ pincode }}
+
+Subject: Offer of Employment
+[rest of letter below fold]
+
+12. Asset Management
+Tracks company property issued to employees — laptops, phones, SIM cards, access cards, vehicles — so nothing is lost and everything is recovered at exit.
+Each asset has a record (type, serial/tag, value, condition) and an assignment history.
+Assets are issued on joining and marked returned at exit; unreturned assets can be flagged into F&F for recovery.
+Assets list (Screen 16)
+
+Screen 16 — Asset Management  (edutec.kredily.com/asset-management/)
+
+▸ Screen data (extracted from screenshot)
+Module header:  ASSETS  [⚠ red dot]
+Tabs:  Asset Management★  |  Assets
+Toolbar:  Search [🔍]   [⬇ Import]   [⬇ Export]
+─── Column headers ───────────────────────────────────────
+Device Type  |  Device Name  |  Serial Number  |  Employee Name  |  Employee Id  |  Assigned St[atus]  |  Action
+─── Rows ─────────────────────────────────────────────────
+💻 Laptop   laptop   33333[partially obscured]   Arabinda K   KR17   Assigned ✅   ✎ 🗑
+
+13. Employee Self-Service (ESS)
+The employee-facing side of everything above — the dashboard a normal staff member sees. Self-service keeps HR's workload down by letting employees handle routine actions themselves.
+From their dashboard an employee can:
+Clock in / out (selfie or GPS) and view their own attendance log
+Apply for leave and see leave balances
+Raise expense claims and reimbursements
+Download payslips and tax documents
+Submit investment/exemption declarations
+Read company announcements and request approvals (the actions page)
+Available on web and mobile app, so field and remote employees have the same access from their phone.
+14. Notes for Building Your Own HRMS
+The recurring lesson is that an HRMS is not many separate apps — it is one employee record with modules layered on top, and payroll is the consumer that reads from all of them.
+Core entities
+
+Entity
+Purpose
+Connects to
+Organisation / Statutory
+Company, locations, bank, statutory IDs, contribution rules
+Everything (source of truth)
+Employee
+Central record: profile, role, salary structure, documents
+All modules
+Role / Permission
+What each user can see and do
+Auth on every action
+Attendance record
+Per-day clock-in/out, source, location, anomalies
+Payroll, Leave
+Leave type & balance
+Rules, entitlement, accrual, request + balance
+Attendance, Payroll (LOP)
+Salary component
+Base / Recurring / Variable / Adhoc building blocks
+Payroll
+Payroll run
+Per-cycle calculation producing payslips + bank file
+Reads all of the above
+Anomaly / Penalty log
+Status-tracked deviations and their pay impact
+Attendance, Payroll
+Expense / Reimbursement
+Claims with category + approval
+Payroll
+Exit / F&F
+Final settlement referencing all modules
+Reads all of the above
+
+Design principles worth copying
+One employee record, many modules — never duplicate employee data per module; reference it.
+Rules are data, not code — leave/attendance/payroll rules are configurable records assigned to employees, so policy changes don't require redeployment.
+Make pay explainable — every deduction should trace back to a dated, status-tracked anomaly or LOP entry. The penalty log is your audit trail.
+Approvals everywhere — leave, expenses, anomalies, exits all share an approval pattern; build it once and reuse.
+Self-service first — push routine actions to employees; HR only handles exceptions and approvals.
+Statutory rules change — keep tax slabs, PF/ESI rates and challan formats in configuration so a regulation change is a settings update.

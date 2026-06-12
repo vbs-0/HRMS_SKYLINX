@@ -560,9 +560,12 @@ export class EmployeesService {
 
     const unpaidSalary = data.unpaidSalary || 0;
 
+    const rulesRes = await this.settingsService.rules();
+    const defaultNoticeDays = (rulesRes.data as any).exitRules?.defaultNoticeDays || 90;
+
     // Notice pay shortfall calculation: ((noticeDays - actualNoticeDays) * lastDrawnSalary / 30)
     let noticeShortfall = 0;
-    const noticeDays = data.noticeDays || 90;
+    const noticeDays = data.noticeDays || defaultNoticeDays;
     const diffTime = exitDate.getTime() - resignationDate.getTime();
     const actualNoticeDays = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
     if (actualNoticeDays < noticeDays) {
@@ -919,7 +922,10 @@ export class EmployeesService {
 
     const exitDateStr = query?.exitDate || exitInterview?.exitDate?.toISOString() || new Date().toISOString();
     const resignDateStr = query?.resignationDate || exitInterview?.createdAt?.toISOString() || new Date().toISOString();
-    const noticeDays = Number(query?.noticeDays || 90);
+    
+    const rulesRes = await this.settingsService.rules();
+    const defaultNoticeDays = (rulesRes.data as any).exitRules?.defaultNoticeDays || 90;
+    const noticeDays = Number(query?.noticeDays || defaultNoticeDays);
 
     const exitDate = new Date(exitDateStr);
     const resignDate = new Date(resignDateStr);

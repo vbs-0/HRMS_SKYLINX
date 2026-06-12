@@ -44,38 +44,17 @@ export class SaasService {
     ]);
 
     const selectedPlan = this.resolveSelectedPlan(subscriptionSetting?.settingsJson);
-    const plans = [
-      {
-        name: "Basic",
-        employees: 5,
-        monthlyPrice: 0,
-        additionalEmployeePrice: 0,
-        modules: 8,
-        status: selectedPlan === "Basic" ? "ACTIVE" : "AVAILABLE",
-        accessLevel: "Free Forever",
-        features: ["No hidden charges", "No credit card required", "Employee directory", "Documents", "Web attendance", "Leave basics", "Holiday calendar", "Email support"],
-      },
-      {
-        name: "Standard",
-        employees: 25,
-        monthlyPrice: 1749,
-        additionalEmployeePrice: 70,
-        modules: 18,
-        status: selectedPlan === "Standard" ? "ACTIVE" : "AVAILABLE",
-        accessLevel: "Professional HR access",
-        features: ["Everything in Basic", "Payroll", "Expenses", "Insurance", "ID & visiting cards", "Organization chart", "Notifications", "Phone support"],
-      },
-      {
-        name: "Pro",
-        employees: 25,
-        monthlyPrice: 3750,
-        additionalEmployeePrice: 150,
-        modules: 30,
-        status: selectedPlan === "Pro" ? "ACTIVE" : "AVAILABLE",
-        accessLevel: "Enterprise access",
-        features: ["Everything in Standard", "Rewards", "Analytics", "Compliance", "Security", "SaaS controls"],
-      },
-    ];
+    const dbPlans = await this.prisma.plan.findMany({ orderBy: { monthlyPrice: 'asc' } });
+    const plans = dbPlans.map(p => ({
+      name: p.name,
+      employees: p.employeeLimit,
+      monthlyPrice: Number(p.monthlyPrice),
+      additionalEmployeePrice: Number(p.additionalEmployeePrice),
+      modules: p.moduleCount,
+      status: selectedPlan === p.name ? 'ACTIVE' : 'AVAILABLE',
+      accessLevel: p.accessLevel,
+      features: p.features
+    }));
     const planMatrix = [
       { section: "HR Management", feature: "Announcements", basic: "Included", standard: "Included", pro: "Included" },
       { section: "HR Management", feature: "Reminders and alerts", basic: "Included", standard: "Included", pro: "Included" },
@@ -492,11 +471,25 @@ export class SaasService {
     });
   }
 
+  async plans() {
+    await this.ensurePlansSeeded();
+    const dbPlans = await this.prisma.plan.findMany({ orderBy: { monthlyPrice: "asc" } });
+    return dbPlans.map(p => ({
+      name: p.name,
+      employees: p.employeeLimit,
+      monthlyPrice: Number(p.monthlyPrice),
+      additionalEmployeePrice: Number(p.additionalEmployeePrice),
+      modules: p.moduleCount,
+      accessLevel: p.accessLevel,
+      features: p.features
+    }));
+  }
+
   private async ensurePlansSeeded() {
     const planDetails = [
-      { name: "Basic", monthlyPrice: 0, annualPrice: 0, employeeLimit: 5, features: ["No hidden charges", "No credit card required", "Employee directory", "Documents", "Web attendance", "Leave basics", "Holiday calendar", "Email support"] },
-      { name: "Standard", monthlyPrice: 1749, annualPrice: 17490, employeeLimit: 25, features: ["Everything in Basic", "Payroll", "Expenses", "Insurance", "ID & visiting cards", "Organization chart", "Notifications", "Phone support"] },
-      { name: "Pro", monthlyPrice: 3750, annualPrice: 37500, employeeLimit: 250, features: ["Everything in Standard", "Rewards", "Analytics", "Compliance", "Security", "SaaS controls"] }
+      { name: "Basic", monthlyPrice: 0, annualPrice: 0, employeeLimit: 5, additionalEmployeePrice: 0, moduleCount: 8, accessLevel: "Free Forever", features: ["No hidden charges", "No credit card required", "Employee directory", "Documents", "Web attendance", "Leave basics", "Holiday calendar", "Email support"] },
+      { name: "Standard", monthlyPrice: 1749, annualPrice: 17490, employeeLimit: 25, additionalEmployeePrice: 70, moduleCount: 18, accessLevel: "Professional HR access", features: ["Everything in Basic", "Payroll", "Expenses", "Insurance", "ID & visiting cards", "Organization chart", "Notifications", "Phone support"] },
+      { name: "Pro", monthlyPrice: 3750, annualPrice: 37500, employeeLimit: 25, additionalEmployeePrice: 150, moduleCount: 30, accessLevel: "Enterprise access", features: ["Everything in Standard", "Rewards", "Analytics", "Compliance", "Security", "SaaS controls"] }
     ];
 
     for (const p of planDetails) {
@@ -506,6 +499,9 @@ export class SaasService {
           monthlyPrice: p.monthlyPrice,
           annualPrice: p.annualPrice,
           employeeLimit: p.employeeLimit,
+          additionalEmployeePrice: p.additionalEmployeePrice,
+          moduleCount: p.moduleCount,
+          accessLevel: p.accessLevel,
           features: p.features,
         },
         create: {
@@ -513,6 +509,9 @@ export class SaasService {
           monthlyPrice: p.monthlyPrice,
           annualPrice: p.annualPrice,
           employeeLimit: p.employeeLimit,
+          additionalEmployeePrice: p.additionalEmployeePrice,
+          moduleCount: p.moduleCount,
+          accessLevel: p.accessLevel,
           features: p.features,
         }
       });

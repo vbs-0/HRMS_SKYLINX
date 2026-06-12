@@ -38,9 +38,16 @@ export class SaasController {
       status: "success",
       data: {
         coupons: rules["coupons"] || [],
-        supportEmail: branding?.supportEmail || "support@example.com"
+        supportEmail: branding?.supportEmail || "support@skylinx.com"
       }
     };
+  }
+
+  @Public()
+  @Get("plans")
+  async plans() {
+    const data = await this.saasService.plans();
+    return { status: "success", data };
   }
 
   @Get("logs")

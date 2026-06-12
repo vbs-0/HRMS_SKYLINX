@@ -86,9 +86,9 @@ Full evidence in `docs/reference_blueprint/` (screenshots in `images/HR_ADMIN/`,
 
 | Role | Email | Password |
 |---|---|---|
-| OWNER (super admin) | skylinxcode@gmail.com | password123 |
-| HR_ADMIN | hr.admin@skylinx.local | Skylinx@123 |
-| MANAGER | rohan.iyer@skylinx.local | Skylinx@123 |
-| EMPLOYEE | kabir.sethi@skylinx.local | Skylinx@123 |
+| OWNER (super admin) | manager@example.com | password123 |
+| HR_ADMIN | hr.admin@example.com | Skylinx@123 |
+| MANAGER | rohan.iyer@example.com | Skylinx@123 |
+| EMPLOYEE | kabir.sethi@example.com | Skylinx@123 |
 
 > Note: MANAGER/EMPLOYEE accounts and their role permissions are now created by `db:seed` (fixed 2026-06-11 — previously they had been patched into the database manually during testing).

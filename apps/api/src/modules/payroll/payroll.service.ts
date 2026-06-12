@@ -1462,10 +1462,13 @@ export class PayrollService {
     });
     if (!employee) throw new NotFoundException("Employee not found");
 
-    // FY: April of financialYear to March of financialYear+1  (months 4..12 of FY, then 1..3 of FY+1)
+    const rulesRes = await this.settingsService.rules();
+    const startMonth = Number((rulesRes.data as any).payroll?.fiscalYearStartMonth) || 4;
+    
+    // FY: startMonth of financialYear to (startMonth-1) of financialYear+1
     const fyMonths: Array<{ month: number; year: number }> = [];
-    for (let m = 4; m <= 12; m++) fyMonths.push({ month: m, year: financialYear });
-    for (let m = 1; m <= 3; m++) fyMonths.push({ month: m, year: financialYear + 1 });
+    for (let m = startMonth; m <= 12; m++) fyMonths.push({ month: m, year: financialYear });
+    for (let m = 1; m < startMonth; m++) fyMonths.push({ month: m, year: financialYear + 1 });
 
     // Fetch all payslips in the FY months
     const payslips = await this.prisma.payslip.findMany({

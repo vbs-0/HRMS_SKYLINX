@@ -3,6 +3,7 @@ import { ConfigService } from "@nestjs/config";
 import * as nodemailer from "nodemailer";
 import type { Transporter } from "nodemailer";
 import { PrismaService } from "../../prisma/prisma.service";
+import { SettingsService } from "../../modules/settings/settings.service";
 
 export interface MailPayload {
   to: string;
@@ -21,6 +22,7 @@ export class MailService implements OnModuleInit {
   constructor(
     private readonly config: ConfigService,
     private readonly prisma: PrismaService,
+    private readonly settingsService: SettingsService,
   ) {}
 
   async onModuleInit() {
@@ -79,7 +81,11 @@ export class MailService implements OnModuleInit {
       return false;
     }
 
-    const from = `"SKYLINX Support" <${this.config.get<string>("EMAIL_FROM") || this.config.get<string>("SMTP_USER")}>`;
+    const rulesRes = await this.settingsService.rules();
+    const branding = (rulesRes.data as any).branding || {};
+    const brandName = branding.platformBrand || "SKYLINX PeopleOS";
+
+    const from = `"${brandName} Support" <${this.config.get<string>("EMAIL_FROM") || this.config.get<string>("SMTP_USER")}>`;
 
     for (let attempt = 1; attempt <= this.maxRetries; attempt++) {
       try {
@@ -134,7 +140,10 @@ export class MailService implements OnModuleInit {
     queue: string;
     createdAt: Date;
   }): Promise<boolean> {
-    const recipient = this.config.get<string>("SUPPORT_EMAIL") || "support@example.com";
+    const rulesRes = await this.settingsService.rules();
+    const branding = (rulesRes.data as any).branding || {};
+    const brandName = branding.platformBrand || "SKYLINX PeopleOS";
+    const recipient = branding.supportEmail || this.config.get<string>("SUPPORT_EMAIL") || "support@example.com";
     const timestamp = params.createdAt.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
 
     const textContent = [
@@ -158,7 +167,7 @@ export class MailService implements OnModuleInit {
       <div style="font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; max-width: 600px; margin: 0 auto;">
         <div style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); padding: 24px 30px; border-radius: 12px 12px 0 0;">
           <h2 style="margin: 0; color: #ffffff; font-size: 20px; font-weight: 700;">🎫 New Support Ticket</h2>
-          <p style="margin: 6px 0 0; color: rgba(255,255,255,0.85); font-size: 13px;">${params.ticketNumber} — raised via SKYLINX PeopleOS</p>
+          <p style="margin: 6px 0 0; color: rgba(255,255,255,0.85); font-size: 13px;">${params.ticketNumber} — raised via ${brandName}</p>
         </div>
         <div style="background: #ffffff; border: 1px solid #e2e8f0; border-top: none; padding: 28px 30px;">
           <table style="width: 100%; border-collapse: collapse; font-size: 14px; color: #334155;">
@@ -211,6 +220,9 @@ export class MailService implements OnModuleInit {
     senderName: string;
     ticketNumber: string;
   }): Promise<boolean> {
+    const rulesRes = await this.settingsService.rules();
+    const branding = (rulesRes.data as any).branding || {};
+    const brandName = branding.platformBrand || "SKYLINX PeopleOS";
     const recipient = this.config.get<string>("SUPPORT_EMAIL") || "support@example.com";
     const timestamp = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
 

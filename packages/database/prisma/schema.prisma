@@ -1043,15 +1043,18 @@ model ClientRule {
 }
 
 model Plan {
-  id            String         @id @default(cuid())
-  name          String         @unique
-  monthlyPrice  Decimal
-  annualPrice   Decimal
-  employeeLimit Int
-  features      Json?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-  subscriptions Subscription[]
+  id                      String         @id @default(cuid())
+  name                    String         @unique
+  monthlyPrice            Decimal
+  annualPrice             Decimal
+  employeeLimit           Int
+  additionalEmployeePrice Decimal        @default(0)
+  moduleCount             Int            @default(0)
+  accessLevel             String?
+  features                Json?
+  createdAt               DateTime       @default(now())
+  updatedAt               DateTime       @updatedAt
+  subscriptions           Subscription[]
 }
 
 model Subscription {

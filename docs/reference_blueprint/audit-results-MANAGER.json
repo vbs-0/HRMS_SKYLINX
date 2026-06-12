@@ -19,7 +19,7 @@
     "route": "/attendance",
     "status": "PASS",
     "note": "",
-    "buttons": 12,
+    "buttons": 13,
     "inputs": 4,
     "screenshot": "MANAGER_DEEP/03_attendance.png"
   },
@@ -35,7 +35,7 @@
     "route": "/payroll",
     "status": "PASS",
     "note": "",
-    "buttons": 22,
+    "buttons": 24,
     "inputs": 5,
     "screenshot": "MANAGER_DEEP/05_payroll.png"
   },
@@ -89,9 +89,9 @@
   },
   {
     "route": "/performance",
-    "status": "PASS",
-    "note": "",
-    "buttons": 12,
+    "status": "WARN",
+    "note": "console errors: PermissionDeniedError: Missing required permission: performance.read\n    at apiFetch (webpack-internal:///(app-pages-browser)/./lib/client-api.ts:37:19)\n    at loadCycles (webpack-internal:///(app-pages-browser)/./components/performance-console.tsx:115:88)\n    at load (webpack-internal:///(app-pages | PermissionDeniedError: Missing required permission: performance.read\n    at apiFetch (webpack-internal:///(app-pages-browser)/./lib/client-api.ts:37:19)\n    at loadTemplates (webpack-internal:///(app-pages-browser)/./components/performance-console.tsx:123:88)\n    at load (webpack-internal:///(app-pa | PermissionDeniedError: Missing required permission: performance.read\n    at apiFetch (webpack-internal:///(app-pages-browser)/./lib/client-api.ts:37:19)\n    at loadAppraisals (webpack-internal:///(app-pages-browser)/./components/performance-console.tsx:131:88)\n    at load (webpack-internal:///(app-p;",
+    "buttons": 14,
     "inputs": 4,
     "screenshot": "MANAGER_DEEP/12_performance.png"
   },
@@ -131,8 +131,8 @@
     "route": "/rewards",
     "status": "PASS",
     "note": "",
-    "buttons": 14,
-    "inputs": 14,
+    "buttons": 9,
+    "inputs": 4,
     "screenshot": "MANAGER_DEEP/17_rewards.png"
   },
   {
@@ -155,7 +155,7 @@
     "route": "/compliance",
     "status": "PASS",
     "note": "",
-    "buttons": 16,
+    "buttons": 11,
     "inputs": 4,
     "screenshot": "MANAGER_DEEP/20_compliance.png"
   },
@@ -203,8 +203,8 @@
     "route": "/settings",
     "status": "PASS",
     "note": "",
-    "buttons": 32,
-    "inputs": 86,
+    "buttons": 33,
+    "inputs": 91,
     "screenshot": "MANAGER_DEEP/26_settings.png"
   },
   {

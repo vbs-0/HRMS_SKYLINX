@@ -6,6 +6,7 @@ import { RequirePermissions } from "../../common/auth/permissions.decorator";
 import { CurrentUser } from "../../common/auth/current-user.decorator";
 import { AuthenticatedUser } from "../../common/auth/auth.types";
 import { PayrollService } from "./payroll.service";
+import { SettingsService } from "../settings/settings.service";
 import { CreatePayrollRunDto, CreateSalaryStructureDto } from "./dto/payroll.dto";
 import { CreateComponentConfigDto, UpdateComponentConfigDto, ToggleComponentConfigDto } from "./dto/component-config.dto";
 import {
@@ -32,7 +33,10 @@ import { Delete } from "@nestjs/common";
 
 @Controller("payroll")
 export class PayrollController {
-  constructor(private readonly payrollService: PayrollService) {}
+  constructor(
+    private readonly payrollService: PayrollService,
+    private readonly settingsService: SettingsService,
+  ) {}
 
   @Get("salary-structures")
   @RequirePermissions("payroll.read")
@@ -397,15 +401,16 @@ export class PayrollController {
   // ==========================================
   // Form 16 - Annual Tax Summary
   // ==========================================
-  @Get("form16/:employeeId")
+  @Get(":employeeId/form16")
   @RequirePermissions("payroll.read")
-  getForm16(
+  async getForm16(
     @Param("employeeId") employeeId: string,
     @CurrentUser() user: AuthenticatedUser,
   ) {
     const now = new Date();
-    // FY runs April–March; if current month is Jan–March it's still the previous FY start year
-    const fy = now.getMonth() < 3 ? now.getFullYear() - 1 : now.getFullYear();
+    const rulesRes = await this.settingsService.rules();
+    const startMonth = Number((rulesRes.data as any).payroll?.fiscalYearStartMonth) || 4;
+    const fy = now.getMonth() < (startMonth - 1) ? now.getFullYear() - 1 : now.getFullYear();
     return this.payrollService.getForm16(employeeId, fy, user);
   }
 }

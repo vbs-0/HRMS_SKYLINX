@@ -126,7 +126,7 @@ test.describe('Leave Application Window E2E Flow', () => {
   test.beforeEach(async ({ page }) => {
     // 1. Login
     await page.goto('http://localhost:3000/login');
-    await page.fill('input[type="email"]', 'employee.one@skylinx.local');
+    await page.fill('input[type="email"]', 'employee.one@example.com');
     await page.fill('input[type="password"]', 'Employee@123');
     await page.click('button:has-text("Sign In")');
     await expect(page).toHaveURL('http://localhost:3000/dashboard');

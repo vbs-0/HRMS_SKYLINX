@@ -5,7 +5,7 @@ async function main() {
   const prisma = new PrismaClient();
   const passwordHash = await hash("password123", 12);
   const updatedUser = await prisma.user.update({
-    where: { email: "skylinxcode@gmail.com" },
+    where: { email: "manager@example.com" },
     data: { passwordHash }
   });
   console.log("SUCCESS: Password updated for user:", updatedUser.email);

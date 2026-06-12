@@ -27,7 +27,7 @@ Generated: 2026-06-04 10:45 IST
 ## Local HR Admin Login
 
 ```text
-hr.admin@skylinx.local
+hr.admin@example.com
 Skylinx@123
 ```
 

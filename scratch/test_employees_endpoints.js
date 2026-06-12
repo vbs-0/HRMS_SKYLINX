@@ -4,11 +4,11 @@ async function runTests() {
   console.log("=== STARTING EMPLOYEE DIRECTORY API TESTS ===");
 
   // 1. Authenticate as HR Admin
-  console.log("\n1. Authenticating as hr.admin@skylinx.local...");
+  console.log("\n1. Authenticating as hr.admin@example.com...");
   const loginRes = await fetch(`${API_URL}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email: "hr.admin@skylinx.local", password: "Skylinx@123" })
+    body: JSON.stringify({ email: "hr.admin@example.com", password: "Skylinx@123" })
   });
   if (!loginRes.ok) throw new Error(`Login failed: ${await loginRes.text()}`);
   const loginData = await loginRes.json();
@@ -28,7 +28,7 @@ async function runTests() {
 
   // 3. Create a New Employee
   const employeeCode = `EMP-${Math.floor(1000 + Math.random() * 9000)}`;
-  const email = `test.employee.${employeeCode.toLowerCase()}@skylinx.local`;
+  const email = `test.employee.${employeeCode.toLowerCase()}@example.com`;
   console.log(`\n3. Creating new employee: Code=${employeeCode}, Email=${email}...`);
   const createRes = await fetch(`${API_URL}/employees`, {
     method: "POST",
@@ -91,7 +91,7 @@ async function runTests() {
   const verifyRes = await fetch(`${API_URL}/employees/${employeeId}/documents/${documentId}/verify`, {
     method: "PATCH",
     headers,
-    body: JSON.stringify({ verifiedBy: "hr.admin@skylinx.local" })
+    body: JSON.stringify({ verifiedBy: "hr.admin@example.com" })
   });
   if (!verifyRes.ok) throw new Error(`Verification failed: ${await verifyRes.text()}`);
   const verifyData = await verifyRes.json();

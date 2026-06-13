@@ -731,7 +731,23 @@ export class EmployeesService {
       where: { employeeId },
       orderBy: { effectiveDate: "desc" },
     });
-    return response("employees", "promotions.list", promotions);
+
+    // The model stores only designation/grade FK ids (no Prisma relations),
+    // so resolve their titles here for the timeline UI (from/toDesignation.title).
+    const desigIds = [
+      ...new Set(promotions.flatMap((p) => [p.fromDesignationId, p.toDesignationId]).filter(Boolean)),
+    ] as string[];
+    const designations = desigIds.length
+      ? await this.prisma.designation.findMany({ where: { id: { in: desigIds } }, select: { id: true, title: true } })
+      : [];
+    const titleById = new Map(designations.map((d) => [d.id, d.title]));
+
+    const enriched = promotions.map((p) => ({
+      ...p,
+      fromDesignation: p.fromDesignationId ? { title: titleById.get(p.fromDesignationId) ?? null } : null,
+      toDesignation: p.toDesignationId ? { title: titleById.get(p.toDesignationId) ?? null } : null,
+    }));
+    return response("employees", "promotions.list", enriched);
   }
 
   async createPromotion(employeeId: string, data: CreatePromotionDto) {
@@ -853,7 +869,29 @@ export class EmployeesService {
       where: { employeeId },
       orderBy: { effectiveDate: "desc" },
     });
-    return response("employees", "transfers.list", transfers);
+
+    // Resolve department/location names for the timeline UI (from/to*.name).
+    const deptIds = [
+      ...new Set(transfers.flatMap((t) => [t.fromDepartmentId, t.toDepartmentId]).filter(Boolean)),
+    ] as string[];
+    const locIds = [
+      ...new Set(transfers.flatMap((t) => [t.fromLocationId, t.toLocationId]).filter(Boolean)),
+    ] as string[];
+    const [departments, locations] = await Promise.all([
+      deptIds.length ? this.prisma.department.findMany({ where: { id: { in: deptIds } }, select: { id: true, name: true } }) : [],
+      locIds.length ? this.prisma.location.findMany({ where: { id: { in: locIds } }, select: { id: true, name: true } }) : [],
+    ]);
+    const deptById = new Map(departments.map((d) => [d.id, d.name]));
+    const locById = new Map(locations.map((l) => [l.id, l.name]));
+
+    const enriched = transfers.map((t) => ({
+      ...t,
+      fromDepartment: t.fromDepartmentId ? { name: deptById.get(t.fromDepartmentId) ?? null } : null,
+      toDepartment: t.toDepartmentId ? { name: deptById.get(t.toDepartmentId) ?? null } : null,
+      fromLocation: t.fromLocationId ? { name: locById.get(t.fromLocationId) ?? null } : null,
+      toLocation: t.toLocationId ? { name: locById.get(t.toLocationId) ?? null } : null,
+    }));
+    return response("employees", "transfers.list", enriched);
   }
 
   async createTransfer(employeeId: string, data: CreateTransferDto) {

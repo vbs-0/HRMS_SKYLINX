@@ -78,3 +78,33 @@ Two-pane: searchable section rail + content. **Every DEFAULT_RULES key (rbac-set
 - Settings search indexes every label + helper line.
 - All changes versioned or audited (with real actor); history one click away.
 - **Highest-impact backend fixes (platform.md §12)**: verify JWT (not decode) + stop trusting `x-tenant-id` blindly; add Company/Payment/ErrorLog/Notification to tenant allowlist; signup grants HR_ADMIN not SUPER_ADMIN; remove saas.configure from tenant HR; JWT refresh; real roles/permissions API (§B); reconcile module vocabularies; declarations/support/coupons key fixes; audit actor stamping; real payment gateway or honest "simulated" labeling.
+
+---
+
+## J. Post-critique remediations (98 §D + §F)
+
+### J1. Workflows — `/settings/workflows` (**resolves the §10→§08 orphan**, critique 98 §F-B5)
+The approval-chain **builder UI lives here** (§10 B owns only the runtime engine/resolver). **Roles** `settings.configure`. Per-process chains (Leave, Regularization, OT, Expense, Travel, Loan, Comp revision, Offer, Requisition, Document change, Exit, Payroll lock): trigger conditions (type/amount/grade/dept) → ordered steps (approver type Reporting-manager / Manager's-manager / Role / Named / Dept-head / Cost-center-owner; per-step SLA→escalate, allow-delegate, auto-approve-on-timeout) → post-functions. Validation: unreachable-step linter, self-approval guard, cycle detection. Simulate with a sample request → resolved chain w/ names. Versioned; in-flight requests finish on their started version. **NEW** `GET/POST /workflows`. Until built, the `approvals.*` ClientRule routing strings (rbac B1) stay decorative.
+
+### J2. Company Health settings (**registers the `companyHealth.weights` key**, critique 98 §F-B4/B5)
+Add a **Company Health** section to the Settings tree (§A): per-signal weight sliders (attrition, attendance health, leave-burnout, engagement, payroll-cost, hiring-velocity) feeding the §09 A4 composite. **NEW** settings category `companyHealth` (key `weights`) — not in rbac B1 today; add to DEFAULT_RULES. Consumed by **NEW** `GET /dashboard/company-health` (`settings.configure`).
+
+### J3. Register other NEW settings keys
+- `attendance.ipAllowlist` (§04 A5 IP-restriction) → add to the Attendance settings row as NEW (not in rbac B1).
+- Confirm exact-name keys per rbac B1 elsewhere (declarations `fyCutoff*`, support `defaultQueue`/`ticketPrefix`, taxCalc `cessPct`/`surchargePct`).
+
+### J4. Plan enforcement (**P0 coverage gap**, critique 98 §D-3)
+Plan tiers are **cookie-only today (platform.md §0.3)** — every page's "Plan Basic/Standard/Pro" badge is cosmetic, not a security boundary. **Decision required (escalate):** either enforce plan entitlement **server-side** on gated endpoints, or state explicitly in-product that plan is UX-gating only. Do not rely on the nav lock for access control.
+
+### J5. Permissions-matrix fork — **decided** (critique 98 §D-6)
+The decorative `permissions` ClientRule category + the Setup-Wizard "Roles & Permissions" matrix are **dropped**; the wizard's Step 8 instead calls the real `/roles` API (§B). Remove the `permissions` ClientRule write from setup (§12 F) so no dead key is written.
+
+### J6. Tenant-scoping is necessary-but-insufficient (critique 98 §D-1/2)
+Adding models to the Prisma allowlist (SEC-02) does **not** close cross-tenant access while TenantMiddleware still `decode()`s (not verifies) the JWT and trusts the `x-tenant-id` header (SEC-01). Both must land together; §09/§10 data reads depend on this.
+
+### J7. Remove dead endpoints
+- `GET /security/notifications` (cross-tenant, unused — console uses §10 `/notifications/mine`) → remove.
+- Wire or remove `GET /notifications/recipients` (API-only) — reuse it for the §10 C2 audience picker or delete.
+
+### J8. MFA ownership
+§D owns MFA **policy/enforcement**; §12 D owns MFA **enrollment** (profile). Reciprocal cross-refs added.

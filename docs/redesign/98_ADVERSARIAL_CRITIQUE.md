@@ -96,8 +96,30 @@
 4. **Route registry completeness** — §01 is the canonical sitemap; 6 routes referenced elsewhere were missing and are now added.
 5. **Path/permission precision** — full `/payroll/runs/...` prefixes, exact `…/:id/decide` paths, exact DEFAULT_RULES key names, and correct permission verbs matter for an implementation spec; fixed where wrong, addendum'd where shorthand.
 
-## F. §01/§02/§11 + global consistency (agent 5) — re-running
-First run died on a session-limit reset. Re-launched; findings + dispositions appended here on completion. Provisional global items already surfaced by agents 2–4 (missing routes, workflow ownership, notification-prefs ownership) are fixed in §01/§08.
+## F. §01/§02/§11 + global consistency (agent 5) — complete
+Re-run succeeded (verdict: **no P0s** — no permission string violates the action/module universe, no route *conflicts* the sitemap; all issues are omissions/precision). Findings + dispositions:
+
+### Job A — foundation
+| ID | Sev | Finding | Disposition |
+|---|---|---|---|
+| A-a | P1 | §01 sitemap missing `/settings/notifications`, `/settings/workflows`, `/performance/goals`, `/announcements` (referenced as real pages by §06/§07/§10) | ✅ fixed inline (§01 — all added) |
+| A-a | P2 | Auth routes `/forgot`,`/reset/[token]`,`/activate/[token]` (§12) absent from sitemap | ✅ fixed inline (§01) |
+| A-a | P2 | `/settings/*` wildcard should be explicit subroute rows; `/inbox` Tasks tab + `GET /tasks` unstated | ✅ fixed inline (§01) |
+| A-b | P2 | Nav gates for ESS "My Expenses"/"My Assets" contradict the seed unless A7 grants land; §01 didn't flag the dependency like §07 does | ✅ fixed inline (§01 §12 note) |
+| **A-c** | **P1** | **§02 component library omits composites referenced elsewhere: NineBox, GoalTree, CommentThread, AssetTag, InsuranceCard** (+ SignaturePad, DiffView, MoneyText, OrgChartView) | ✅ fixed inline (§02 §9 — all 10 added) |
+| A-d | P2 | §11 keyboard list omits NineBox-drag + Kanban move-to; OTP login not in the e2e gate; chart series-1 contrast on brand override | ✅ fixed inline (§11 E) |
+| A-e | P1 | §02 Drawer "720 wide" not in blueprint (450 only); §02 §4 dropped tablet gutter 20; seed default `branding.primaryColor` `#078ced` silently overrides the new Indigo identity | ✅ fixed inline (§02 — drawer/gutter reconciled; brand seed-default change mandated) |
+
+### Job B — global consistency sweep
+| ID | Sev | Finding | Disposition |
+|---|---|---|---|
+| B1 | — | **Permission reality: no hard violations** — every action ∈ the 7-set, every gate module ∈ the 30 seeded; `saas.admin` only appears as the *broken legacy gate* §08 already flags | ✓ confirmed |
+| B2 | P1 | Routes referenced-but-unregistered (same as A-a) | ✅ fixed inline (§01) |
+| B3 | P2 | Cross-section boundaries unstated: workflow engine §10 vs builder §08; F&F §03 vs §05; Form 16 §05 B vs C; expense payout ordering; tax-proof single owner | ✅ fixed inline (§05 F + §08 J1 + §10 F set the boundaries) |
+| B4 | P2 | Unregistered settings keys `companyHealth.weights` (§09) and `attendance.ipAllowlist` (§04); `incrementPct` duplicated across `performance` + `salaryStructure` categories | ✅ fixed inline (§08 J2/J3 register both; cite `performance.incrementPct`) |
+| B5 | P1 | **Orphans**: workflow-builder UI (referenced, specced nowhere) and `companyHealth.weights` control (referenced, specced nowhere); announcements-vs-SkyNexus + letter-e-sign owners unnamed | ✅ fixed inline (§08 J1 owns builder, J2 owns companyHealth; announcements canonical = §07 B entity; e-sign owner = §03/§07 SignaturePad in §02) |
+
+**Net (agent 5):** the two material gaps — §02's missing composites and the orphaned workflow-builder/companyHealth controls — are now closed; all referenced routes are registered; no permission/module violations exist.
 
 ---
 

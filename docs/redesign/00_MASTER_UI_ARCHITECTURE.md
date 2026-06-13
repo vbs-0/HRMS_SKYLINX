@@ -225,8 +225,7 @@ destructive walkthrough verification (the leave-types standard).
 
 - [x] 3 inventories: `shell.md`, `rbac-settings.md`, `blueprint.md` — done
 - [x] 12 section specs in `docs/redesign/sections/` (01–12, exhaustive per-screen) — done
-- [ ] Adversarial critique (coverage / enterprise-parity / consistency) + remediation
-- [ ] `99_IMPLEMENTATION_ROADMAP.md` (phased plan, consolidated correctness backlog, risk register, build-vs-review split)
+- [x] Adversarial critique (coverage / enterprise-parity / consistency) + remediation — `98_ADVERSARIAL_CRITIQUE.md` (5 reviewer agents; findings remediated across §01–§11)
+- [x] `99_IMPLEMENTATION_ROADMAP.md` (phased plan P0–P5, consolidated SEC/UX/ENG/PAR backlog, risk register, build-vs-review split)
 
-These can be produced incrementally — one domain section per working session keeps cost bounded and
-each section reviewable, rather than a single large fan-out.
+**The architecture set is complete.** Reading order: this file → `inventory/*` (9, code-grounded) → `sections/01–12` (per-screen specs) → `98_ADVERSARIAL_CRITIQUE.md` (QA pass) → `99_IMPLEMENTATION_ROADMAP.md` (build program). Implementation proceeds on the code branch against `99`'s phases + backlog IDs.

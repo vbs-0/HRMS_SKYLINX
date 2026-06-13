@@ -140,6 +140,9 @@ const DEFAULT_RULES: Required<UpdateClientRulesDto> = {
     surchargePct: 0.10,
     // Surcharge applies above this annual taxable income (₹)
     surchargeThreshold: 5000000,
+    // 87A rebate threshold (₹) — below this taxable income, tax is rebated to 0
+    rebateLimitNew: 700000,
+    rebateLimitOld: 500000,
   },
   salaryStructure: {
     // Basic as fraction of annual CTC (e.g. 0.40 = 40%)

@@ -786,7 +786,9 @@ export class PayrollService {
             orderBy: { fromAmount: "asc" },
           });
 
-          const rebateLimit = regime === "NEW" ? 700000 : 500000;
+          const rebateLimit = regime === "NEW"
+            ? Number(taxCfg.rebateLimitNew ?? 700000)
+            : Number(taxCfg.rebateLimitOld ?? 500000);
 
           if (taxableIncome > rebateLimit && dbSlabs.length > 0) {
             for (const slab of dbSlabs) {
@@ -838,8 +840,8 @@ export class PayrollService {
             }
           }
 
-          // Cess calculation (4% cess on tax liability)
-          const cess = taxLiability * 0.04;
+          // Health & education cess (admin-configurable; defaults to 4%)
+          const cess = taxLiability * Number(taxCfg.cessPct ?? 0.04);
           const totalAnnualTax = taxLiability + cess;
           tds = Math.round(totalAnnualTax / 12);
         } else {

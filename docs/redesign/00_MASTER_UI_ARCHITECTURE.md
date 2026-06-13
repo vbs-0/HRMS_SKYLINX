@@ -3,8 +3,8 @@
 > Status: **living document**. Domain inventories (raw, exhaustive, with file:line refs) live in
 > `docs/redesign/inventory/`. This file is the synthesis: product vision, information
 > architecture, design language, domain screen plan, and the phased migration roadmap.
-> Six of nine inventories are complete (core-hr, time, money, talent, engagement, platform).
-> Pending inventories — **shell/nav**, **rbac-settings (full DEFAULT_RULES key map)**, **Kredily blueprint catalog** — are noted inline where they block detail.
+> All nine inventories are complete (core-hr, time, money, talent, engagement, platform, **shell**, **rbac-settings**, **blueprint**)
+> and all twelve per-screen section specs live in `docs/redesign/sections/` (01–12). Remaining: adversarial critique + `99_IMPLEMENTATION_ROADMAP.md` (§9).
 
 ---
 
@@ -52,8 +52,8 @@ Navigation groups (sidebar), independent of the 33 backend modules:
 - **Insights** (Manager+ / role-scoped): Dashboards, Analytics, Reports
 - **Platform Admin** (HR_ADMIN / SUPER_ADMIN): Settings, Permissions, Users & Access, Audit Log, Integrations, Notifications, Subscription & Billing, SaaS Owner Console, Setup Wizard
 
-> **Pending shell inventory** will confirm the exact current route list (`apps/web/app/**/page.tsx`)
-> and the nav definition. Every route in the final spec carries: route → page → permission → personas → plan tier.
+> The **shell inventory** (`inventory/shell.md`) confirms the current route list (`apps/web/app/**/page.tsx`)
+> and nav definition; the **§01 spec** carries every route → page → permission → personas → plan tier.
 
 Plan gating (Basic/Standard/Pro) overlays this: locked modules render with an upgrade affordance,
 driven by `lib/plan-access.ts`.
@@ -62,7 +62,7 @@ driven by `lib/plan-access.ts`.
 
 ## 4. Design language (direction)
 
-The full token spec is a dedicated section (pending `02-design-system`). Direction decided:
+The full token spec is the dedicated section `sections/02-design-system.md`. Direction decided:
 
 - **Differentiate from Kredily**: move off the current `#078ced` Kredily-adjacent blue as the sole
   identity; adopt a distinct brand hue + a refined neutral ramp, more whitespace, lighter chrome.
@@ -160,8 +160,8 @@ validation, settings-key source, EXISTS/NEW API mapping) is the Phase-2 delivera
   preferences matrix (event × channel), **Reports builder** (server-side whitelist), **Setup Wizard**
   (first-run: company → locations → departments → leave types → shifts → payroll statutory → invite).
 
-> **Pending rbac-settings inventory** will produce the authoritative DEFAULT_RULES key → UI control →
-> consuming-screens table that section 08 must implement against.
+> The **rbac-settings inventory** (`inventory/rbac-settings.md`) is the authoritative seed matrix + DEFAULT_RULES
+> key map; **§08** implements every key as a labeled control against it.
 
 ### 5.7 Dashboards & Analytics
 - Role-specific home dashboards (§2). **Company Health Dashboard** for CEO: composite index with
@@ -223,10 +223,10 @@ destructive walkthrough verification (the leave-types standard).
 
 ## 9. What remains to complete this architecture set
 
-- [ ] 3 inventories: `shell.md`, `rbac-settings.md`, `blueprint.md`
-- [ ] 12 section specs in `docs/redesign/sections/` (exhaustive per-screen)
+- [x] 3 inventories: `shell.md`, `rbac-settings.md`, `blueprint.md` — done
+- [x] 12 section specs in `docs/redesign/sections/` (01–12, exhaustive per-screen) — done
 - [ ] Adversarial critique (coverage / enterprise-parity / consistency) + remediation
-- [ ] `99_IMPLEMENTATION_ROADMAP.md` (phased plan, risk register, Antigravity-vs-review split)
+- [ ] `99_IMPLEMENTATION_ROADMAP.md` (phased plan, consolidated correctness backlog, risk register, build-vs-review split)
 
 These can be produced incrementally — one domain section per working session keeps cost bounded and
 each section reviewable, rather than a single large fan-out.

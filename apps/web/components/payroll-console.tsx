@@ -499,8 +499,8 @@ export function PayrollConsole() {
         ]}
         stats={[
           { label: "Active Run", value: selectedRun ? `${selectedRun.month}/${selectedRun.year}` : "None", note: selectedRun?.status || "Ready" },
-          { label: "Gross Payout", value: `₹${(totalGross/12000).toFixed(1)}L`, note: `${payslips.length} Employees` },
-          { label: "Audit State", value: "Verified", note: "Compliance ready" },
+          { label: "Gross Payout", value: `₹${(totalGross/100000).toFixed(1)}L`, note: `${payslips.length} Employees` },
+          { label: "Audit State", value: selectedRun?.status || "Not Started", note: "Run status" },
         ]}
       />
 

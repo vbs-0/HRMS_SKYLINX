@@ -530,7 +530,7 @@ export function EmployeesConsole() {
         stats={[
           { label: "Total Headcount", value: String(companyStats.totalCount), note: "Registered" },
           { label: "Active Staff", value: String(companyStats.activeCount), note: "Database list" },
-          { label: "Locations", value: String(companyStats.locs.length || 5), note: "Offices" },
+          { label: "Locations", value: String(companyStats.locs.length), note: "Offices" },
         ]}
       />
 

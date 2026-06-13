@@ -411,8 +411,10 @@ export function ComplianceDash() {
                     onChange={(e) => setDecYear(e.target.value)}
                     required
                   >
-                    <option value="2026-2027">2026-2027</option>
-                    <option value="2025-2026">2025-2026</option>
+                    {Array.from({ length: 5 }, (_, i) => {
+                      const yr = new Date().getFullYear() - 1 + i;
+                      return <option key={yr} value={`${yr}-${yr + 1}`}>{yr}-{yr + 1}</option>;
+                    })}
                   </select>
                 </div>
                 <div>

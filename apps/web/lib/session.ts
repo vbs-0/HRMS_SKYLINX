@@ -19,13 +19,16 @@ export function getCurrentCompanyId(): string {
   const token = getAccessToken();
   if (!token) {
     console.warn("[session] No access token — tenantId unavailable");
-    return "company_skylinx";
+    return "";
   }
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));
-    return payload.tenantId || "company_skylinx";
+    // No hardcoded tenant fallback: a missing tenantId must surface as a failed
+    // request (the API derives the real tenant from the JWT), never silently
+    // resolve to some other company's id.
+    return payload.tenantId || "";
   } catch {
-    return "company_skylinx";
+    return "";
   }
 }
 

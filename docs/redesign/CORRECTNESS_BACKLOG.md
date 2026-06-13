@@ -4,61 +4,76 @@
 > code-confirmed defect** (not a redesign wish). Severity-ranked; each tagged with
 > a suggested owner — **[Claude]** = security/RBAC/payroll/tenant logic (verify by hand),
 > **[AG]** = mechanical UI route/DTO mismatch (safe to hand Antigravity, Claude verifies).
-> Status: ☐ open · ☑ done.
+> Status: ☐ open · ☑ done. **Reconciled 2026-06-13** against shipped commits.
 
 ---
 
-## P0 — Security (exploitable)
+## P0 — Security (exploitable) — ALL CLOSED ✅
 
-- ☑ **Cross-tenant breach via `x-tenant-id` header** — middleware read tenant from client header before JWT. *Fixed in `77005f4`.* [Claude]
-- ☑ **Public signup granted SUPER_ADMIN** (owner role, bypasses tenant scoping). Now grants HR_ADMIN. *Fixed in `77005f4`.* [Claude]
-- ☐ **HR_ADMIN can suspend any tenant.** `PATCH /saas/companies/:id/status` needs `saas.configure`, which seed grants to HR_ADMIN, and `Company` is not tenant-scoped → any tenant admin can set another company's status by id. Fix: gate to owners only, or scope to own tenant. (platform.md §137) [Claude]
-- ☐ **Anonymous grievance leaks identity.** `GET /grievance` returns the full employee object even when `anonymous: true`, to any `grievance.read` holder. Fix: strip employee identity when anonymous. (engagement.md) [Claude]
-- ☐ **Unverified JWT decode in middleware.** `TenantMiddleware` uses `jwtService.decode` (no signature check) to derive tenant/owner. A forged token could assert `isOwner`. Fix: `verify` not `decode`. (platform.md §327) [Claude]
-- ☐ **Social post author spoofing** — create accepts a client-supplied author id. Fix: force author = current user. (engagement.md) [Claude]
+- ☑ **Cross-tenant breach via `x-tenant-id` header** — JWT-first, header override owner-only. *`77005f4`.* [Claude]
+- ☑ **Public signup granted SUPER_ADMIN** — now grants HR_ADMIN. *`77005f4`.* [Claude]
+- ☑ **HR_ADMIN can suspend any tenant** — `updateCompanyStatus` now rejects cross-tenant unless owner. *`saas.service.ts`, S1.* [Claude]
+- ☑ **Anonymous grievance leaks identity** — employee stripped + `employeeId="ANON"` when anonymous, in list + detail. *S2, live-verified.* [Claude]
+- ☑ **Unverified JWT decode in middleware** — `jwtService.verify` (signature check), not `decode`. *S3, live-verified.* [Claude]
+- ☑ **Social post author spoofing** — `authorUserId = user.sub` forced server-side. *S4, live-verified.* [Claude]
 
-## P0 — Tenant isolation (data leakage in real multi-tenant; masked today by single-company seed)
+## P0 — Tenant isolation — ALL CLOSED ✅
 
-- ☐ **Models missing from Prisma tenant allowlist** → unscoped `findMany` leaks across tenants once there's >1 company:
-  `SocialPost/Like/Comment`, `Grievance`, `EmployeeInsurance/InsuranceDependent/InsuranceClaim`, `Survey/SurveyQuestion/SurveyResponse`, `AnnouncementRead`, `PolicyAcknowledgment`, `Notification`, `Company`, `EmployeeDocument`, `EmployeeBankDetail`, exit/promotion/transfer/loan models. (core-hr §0.2, engagement.md, platform.md) [Claude]
-- ☐ **Onboarding/Separation templates have no `companyId` column at all** — globally shared across tenants. Needs schema change. (core-hr §0.2) [Claude]
+- ☑ **Models missing from Prisma tenant allowlist** — Social*/Grievance/Insurance*/Survey*/AnnouncementRead/PolicyAcknowledgment/Notification/EmployeeDocument/EmployeeBankDetail/promotion/transfer/loan added to `companyModels`. *T1.* [Claude]
+- ☑ **Onboarding/Separation templates have no `companyId`** — added `companyId String?` + relation; `prisma db push` run + backfilled. *T3, DB-verified.* [Claude]
 
-## P1 — Functionally broken (UI hits routes that 404 or DTOs that 400 — feature unusable)
+## P1 — Functionally broken (UI hits routes that 404 or DTOs that 400)
 
-- ☐ **Surveys create FK-crashes.** `surveys.service.ts` hardcodes `companyId: ""` expecting middleware to stamp it, but `Survey` isn't in the allowlist → Postgres FK violation on every `POST /surveys`. Fix: add Survey(+children) to allowlist. (engagement.md) [Claude]
-- ☐ **Regularization approve 404s.** UI calls `PATCH /attendance/regularizations/:id/approve`; real route is `PATCH /attendance/regularize/:id`. Also no Reject button exists. (time.md §80) [AG]
-- ☐ **Grievance resolve 404s + console crashes.** UI PATCHes `/grievance/:id/resolve` with `{resolutionDetails}` — route & field don't exist; console also crashes rendering a non-empty list (contract mismatch). (engagement.md §175) [AG]
-- ☐ **Custom field create always 400s.** UI sends `{name,label,type,required}`; API requires `{fieldKey,fieldType,...}`. (core-hr) [AG]
-- ☐ **Recruitment requisition create always 400s.** UI omits required `designationId`; also `requestedById` fails for users with no employee record. Blocks staffing-plan budget flow too. (talent.md §104) [AG]
-- ☐ **Referral "Mark Hired" throws.** UI sends status `"HIRED"`, not in `ApprovalStatus` enum → Prisma error; "Release Bonus" + the APPROVED→payroll-bonus branch never reachable. (talent.md §153) [AG]
-- ☐ **Employee loans 404.** UI calls `GET /employees/loans/list/all` + `PATCH /employees/loans/:id/decide`; neither route exists → list permanently empty, EMI never flows to payroll/F&F. (core-hr §1.17) [Claude]
-- ☐ **Manager appraisal step unreachable.** `performance.approve` granted to nobody in seed; SUPER_ADMIN bypasses guard but has `employeeId=null` so manager-rate throws. Appraisals stall at SELF_DONE. Fix: grant `performance.approve` appropriately. (talent.md §75) [Claude]
-- ☐ **SaaS Owner console gate broken for everyone.** Client checks lowercase `super_admin` / nonexistent `isSuperAdmin` / `saas.admin`; real role is `SUPER_ADMIN` → "Owner Credentials Required" shown to all. (platform.md §160) [AG]
-- ☐ **Bulk upload UI broken** — decorative drop-zone, no `<input type="file">`; handler always errors. Excel endpoint + template have no UI. (core-hr §1.2) [AG]
-- ☐ **Employee edit drops fields** — drawer binds name/code/email + addresses/education/family but `handleSaveProfile` never sends them. (core-hr §1.1) [AG]
+- ☑ **Surveys create FK-crashes** — Survey(+children) added to allowlist so companyId stamps. *T2.* [Claude]
+- ☑ **Regularization approve 404s + no Reject** — route reconciled; Approve+Reject buttons wired & browser-verified. *F1 + `d758dc5`.* [AG]
+- ☐ **Grievance resolve 404s + console crashes.** UI PATCHes `/grievance/:id/resolve` with `{resolutionDetails}`; real route is `@Patch(":id")` and the field doesn't exist. Console may also crash on a non-empty list (contract mismatch). (engagement.md §175) [AG]
+- ☑ **Custom field create always 400s** — DTO reconciled (`fieldKey`/`fieldType`). *F3, live 201.* [AG]
+- ☐ **Recruitment requisition create always 400s.** Backend DTO requires `designationId` + `requestedById`; confirm UI sends them and handles users with no employee record. Blocks staffing-plan budget flow too. (talent.md §104) [AG]
+- ☐ **Referral "Mark Hired" throws.** Backend keys off `ApprovalStatus.APPROVED`; if UI sends `"HIRED"` it's not in the enum → Prisma error. Verify UI status value; "Release Bonus" + APPROVED→payroll-bonus branch depend on it. (talent.md §153) [AG]
+- ☑ **Employee loans 404** — routes exist with correct `employees.*` permissions. *F9, live 200.* [Claude]
+- ☑ **Manager appraisal step unreachable** — `performance.approve` granted appropriately. *F10, live 200.* [Claude]
+- ☑ **SaaS Owner console gate broken for everyone** — gate now grants by SUPER_ADMIN/SYSTEM_OWNER role / saas.admin perm (no false `!tenantId` precondition). *F6, `d758dc5`, browser-verified.* [AG→Claude]
+- ☑ **Bulk upload UI broken** — real `<input type="file">` added + filename feedback. *F7, `d758dc5`, browser-verified.* [AG→Claude]
+- ☑ **Employee edit drops fields** — PATCH now sends firstName/lastName/email (+ addresses/education/family already wired). *F8, `d758dc5`, browser-verified.* [AG→Claude]
 
-## P2 — Dead workflows & data integrity (works but logically wrong)
+## P2 — Dead workflows & data integrity
 
-- ☐ **Documents auto-VERIFY on create** → verify queue is decorative; no reject path. (core-hr §1.3) [Claude]
-- ☐ **Insurance claims auto-APPROVED on create** → approval UI only ever works on the one seeded PENDING row. (engagement.md §234) [Claude]
-- ☐ **Assets self-seed 5 demo rows when empty** → register can never be empty; deleting all + refresh resurrects mock data; new tenant fabricates inventory. (engagement.md §259) [Claude]
+- ☑ **Documents auto-VERIFY on create** → now defaults PENDING (both create paths). *D1, live-verified.* [Claude]
+- ☑ **Insurance claims auto-APPROVED on create** → now PENDING. *D2, live-verified.* [Claude]
+- ☑ **Assets self-seed 5 demo rows** → seed block removed + 5 rows purged. *D3, live-verified.* [Claude]
 - ☐ **Asset assign silent fallback** to "first active employee" when none supplied. (engagement.md) [Claude]
 - ☐ **Probation confirm always 400s** — nothing ever sets status PROBATION (create defaults ACTIVE); INACTIVE/PRE_ONBOARDING also unreachable. (core-hr §1.12) [Claude]
 - ☐ **Promotion/transfer timeline shows placeholder names** — list endpoints don't `include` the from/to designation/grade relations. (core-hr) [Claude]
 - ☐ **employer PF always 0** in template-assign (name-keyword match never maps it). (money.md) [Claude]
-- ☐ **Declarations key mismatch** — UI writes `currentFiscalYearStart`/`fiscalYearDeadline`; DEFAULT_RULES defines `fyCutoffMonth`/`fyCutoffDay`. Both coexist in ClientRule; reconcile to what payroll reads. (platform.md §119) [Claude]
-- ☐ **Payroll console fake stats** — "Audit State: Verified" hardcoded; "Gross Payout" uses `/12000` (wrong lakh math); wizard step-4 completion is client-only, lost on reload. (money.md) [AG]
+- ☐ **Declarations key mismatch** — UI writes `currentFiscalYearStart`/`fiscalYearDeadline`; DEFAULT_RULES defines `fyCutoffMonth`/`fyCutoffDay`. Reconcile to what payroll reads. (platform.md §119) [Claude]
+- ☐ **Payroll console fake stats** — "Audit State: Verified" hardcoded; "Gross Payout" uses `/12000` (wrong lakh math); wizard step-4 completion client-only, lost on reload. (money.md) [AG]
 - ☐ **Company Profile "Locations" stat hardcoded `5`** (`companyStats.locs.length || 5`). (core-hr §54) [AG]
 - ☐ **No employee delete/deactivate** endpoint anywhere. (core-hr §1.1) [Claude]
-- ☐ **F&F approve / exit endpoints API-only** — no UI buttons (resign, exit letters, F&F approve). Covered by the planned Exit Management center, but flag until built. (core-hr) [AG]
+- ☐ **F&F approve / exit endpoints API-only** — no UI buttons. Covered by the planned Exit Management center, but flag until built. (core-hr) [AG]
 
 ---
 
-## Suggested execution order
+## Hardcode externalization (12-Factor / config audit — see plan file)
 
-1. **P0 security** (the 4 open ones) — Claude, immediately; small and exploitable.
-2. **P0 tenant isolation** — Claude; one focused pass adding models to the Prisma allowlist + the templates schema change. Highest blast radius before you onboard a 2nd tenant.
-3. **P1 broken features** — batch the **[AG]** route/DTO fixes into one Antigravity prompt (regularize route, grievance resolve, custom-field DTO, requisition designationId, referral enum, owner-console gate, bulk-upload input, employee-edit save); Claude takes the **[Claude]** ones (surveys allowlist, loans routes, performance.approve seed).
-4. **P2** — clean up dead workflows; several disappear naturally during the UI rebuild.
+- ☐ **Tenant-id fallbacks** — `|| "company_skylinx"` / `"comp_skylinx"` in assets, saas, auth, payroll(×3), organization(×3), holidays, leave, web/session. Replace with throw-on-missing. [Claude]
+- ☐ **Brand strings in `lib/fallback-data.ts`** — "SKYLINX *" leaks to customer UI on API failure; letter-template signature; localStorage key. [AG]
+- ☐ **Payroll calc constants** — standard deduction, 80C/80D/24b caps, cess, surcharge, TDS slabs, promotion basic/HRA ratios, perf increment % → move to DEFAULT_RULES + read via getPayrollRules(). [Claude]
+- ☐ **Dynamic date defaults** — `"2026-06"` state inits + payroll year dropdown → derive from `new Date()`. [AG]
+- ☐ **Seed passwords** — externalize to env. [AG] *(partly done — DEMO_PASSWORD already env-gated in seed.ts)*
 
-Each fix follows the project DoD: both `tsc` clean, permission map regenerated if routes change, e2e green, live smoke per the leave-types standard.
+## Parked (needs user input / separate track)
+
+- ☐ **SMTP/email wiring** — built but dormant (no creds → OTP/password-reset broken). Needs user-supplied secrets; will wire config + test-email button. [user + Claude]
+- ☐ **WhatsApp/SMS** — WhatsApp disabled stub; SMS doesn't exist. [later]
+- ☐ **UI rebuild execution** — per `00_MASTER_UI_ARCHITECTURE.md` + `99_IMPLEMENTATION_ROADMAP.md`. [separate track]
+
+---
+
+## Remaining execution order (as of 2026-06-13)
+
+1. **P1 still-open** (grievance resolve, requisition, referral) — [AG] mechanical, Claude verifies.
+2. **Hardcode externalization** — [Claude] tenant-id fallbacks (highest blast radius) + payroll constants; [AG] brand strings + dates.
+3. **P2 data-integrity** — [Claude] probation/timeline/PF/declarations; [AG] payroll stats, locations stat.
+4. **SMTP** — once user supplies credentials.
+
+DoD per item: both `tsc` clean, permission map regenerated if routes change, e2e green, live smoke.

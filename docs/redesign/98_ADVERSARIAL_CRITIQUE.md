@@ -3,7 +3,7 @@
 > Method: 5 parallel read-only reviewer agents cross-checked each section spec against its source-of-truth inventory + the actual API controllers/DTOs/seed on branch `2.0`. Each finding = {severity, location, problem, fix}. This doc records **every** finding and its **disposition**; spec edits are applied in follow-up `docs(redesign): remediate …` commits.
 > Agent verdict (4 of 5): the specs are "unusually accurate — every EXISTS endpoint and permission string checked matches the inventory." Findings are mostly precision (permission verbs, path prefixes), missing route registrations, dangling cross-refs, and coverage adds. A few real errors (wrong permission verbs, one propagated inventory error) are fixed inline.
 > Disposition key: **✅ fixed inline** · **📝 addendum** (added to the spec's remediation note) · **✓ confirmed** (agent verified my spec was already correct — no change) · **➕ roadmap** (added to `99` backlog) · **⏸ deferred** (Wave 5+/product decision).
-> Coverage: §03/§04 (agent 2), §05 (agent 1), §06/§07 (agent 3), §08/§09/§10/§12 (agent 4). **§01/§02/§11 + global sweep (agent 5) re-running** (first run died on a session-limit reset) — appended in §F when it returns.
+> Coverage: §03/§04 (agent 2), §05 (agent 1), §06/§07 (agent 3), §08/§09/§10/§12 (agent 4), **§01/§02/§11 + global sweep (agent 5)** — all 5 complete (agent 5 re-ran after a session-limit reset; findings in §F). Remediations applied across §01–§11; dispositions below.
 
 ---
 

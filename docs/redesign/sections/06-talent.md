@@ -95,3 +95,8 @@ Offer builder (CtcCalculator + joining date; **NEW**: editable terms — today h
 - Scorecards/appraisals autosave; submit = lock (unlock `performance.approve` + reason).
 - Every list: skeleton/empty/filtered-empty/error+ref/forbidden; mobile RecordCards; kanban keyboard move-to.
 - **Backend backlog**: seed re-grants (rbac-settings A7); requisition designationId fix; referral enum fix; offer lifecycle + convert; job-posting close/edit; performance read/approve/create grants + server team-scope + read-360; calibration endpoints; goals endpoints; training event status + enrollment + show outcomes; travel approved-only itinerary + advance/payroll integration; rewards redemption + CRUD; tenant-scope candidate/interview/referral/travel/reward models (talent.md cross-cutting).
+
+## G. Post-critique remediations (98 §C)
+- **Scoring model (T-12):** weight **self + 360** into `finalScore` (today `finalScore = managerScore` only, talent.md §1.4) — make the weights cycle-configurable; surface the computed weighted score in §A5 HR-Finalize.
+- **TrainingEvent (T-1):** see §C inline — status field exists (`@default("SCHEDULED")`); the gaps are free-string status + no lifecycle PATCH.
+- **HR grant gaps (T-2/T-9):** see §A5/§D inline — HR_ADMIN needs `performance.create`/`approve` and `travel.approve` re-granted (rbac A7).

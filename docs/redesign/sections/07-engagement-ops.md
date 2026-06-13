@@ -66,3 +66,10 @@
 - Tenant-scope the unscoped models: SocialPost/Like/Comment, Grievance, EmployeeInsurance/Dependent/Claim, Survey/Question/Response, AnnouncementRead, PolicyAcknowledgment (engagement.md §0).
 - Every list: skeleton/empty/filtered-empty/error+ref/forbidden; mobile RecordCards.
 - **Backend backlog**: add Survey to tenant allowlist (fixes create); grievance DTO/route/status/anonymity fixes; ticket status UI + assignment + sequence + persist support settings; insurance PENDING-on-create + self-scope + payroll linkage; assets remove auto-seed + dynamic categories + tenant-scope tag; announcements UI + `pinned` field fix + unify with social; policy XSS sanitize + versioning + outstanding-ack report; social media storage + real birthdays + moderation + tenant-scope + author spoof fix.
+
+## J. Post-critique remediations (98 §C)
+- **Policy XSS (E-12) — elevate to P1:** `contentHtml` via `dangerouslySetInnerHTML` is a **stored XSS** for any `policies.create` holder (§D). Sanitize (DOMPurify) or render markdown; treat as a P1 security item, not a mid-section note.
+- **Manager `surveys.configure` over-scope (E-3):** managers seed-hold `surveys.configure` → any manager can view **all** survey results and close **any** survey company-wide. Confirm intended vs. scope-to-own-surveys; flag as a governance decision (→ rbac A7 / §08 permissions).
+- **Survey schedule window (E-14):** enforce `startsAt`/`endsAt` on submit (today submit only checks `status==="ACTIVE"`, engagement.md §3); also add the "activate DRAFT" transition.
+- **Legacy cleanup (E-13):** delete the unused `social-feed.tsx` component (orphaned, never mounted, engagement.md §1) during the §A SkyNexus rebuild.
+- **Confirmed accurate (E-1…E-9, E-11):** grievance rebuild, survey-create FK (add Survey to tenant allowlist), announcements `pinned` field, ticket status UI, insurance auto-approve, assets auto-seed, social Base64/birthdays/author-spoof, route consistency — all verified against source; specced as-is.

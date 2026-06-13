@@ -1,12 +1,16 @@
-import { Body, Controller, Get, Param, Patch } from "@nestjs/common";
+import { Body, Controller, Get, Param, Patch, Post } from "@nestjs/common";
 import { Public } from "../../common/auth/public.decorator";
 import { RequirePermissions } from "../../common/auth/permissions.decorator";
 import { UpdateClientRulesDto, UpdateCompanyDto, UpdateModuleDto } from "./dto/settings.dto";
 import { SettingsService } from "./settings.service";
+import { MailService } from "../../common/mail/mail.service";
 
 @Controller("settings")
 export class SettingsController {
-  constructor(private readonly settingsService: SettingsService) {}
+  constructor(
+    private readonly settingsService: SettingsService,
+    private readonly mailService: MailService,
+  ) {}
 
   @Public()
   @Get("public-profile")
@@ -54,5 +58,22 @@ export class SettingsController {
   @RequirePermissions("settings.configure")
   logs() {
     return this.settingsService.logs();
+  }
+
+  @Post("test-email")
+  @RequirePermissions("settings.configure")
+  async testEmail(@Body() body: { to: string }) {
+    const success = await this.mailService.send({
+      to: body.to,
+      subject: "Test Email from PeopleOS",
+      text: "If you are reading this, your SMTP configuration is working correctly.",
+      html: "<p>If you are reading this, your <strong>SMTP configuration</strong> is working correctly.</p>",
+    });
+
+    if (!success) {
+      throw new Error("Failed to send test email. Check the server console or system logs for SMTP errors.");
+    }
+    
+    return { success: true, message: "Test email sent successfully." };
   }
 }

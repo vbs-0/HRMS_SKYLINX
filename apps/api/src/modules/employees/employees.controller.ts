@@ -70,6 +70,15 @@ export class EmployeesController {
     return this.employeesService.update(id, body);
   }
 
+  // Soft, reversible status change (→ INACTIVE) — semantically an update, not a
+  // hard delete. Gated with employees.update (which HR_ADMIN holds); the seed
+  // intentionally grants no "delete" action to any non-owner role.
+  @Patch(":id/deactivate")
+  @RequirePermissions("employees.update")
+  deactivate(@Param("id") id: string) {
+    return this.employeesService.deactivate(id);
+  }
+
   // Employee self-service (own record) or HR; ownership enforced in the service
   @Patch(":id/bank-details")
   @RequirePermissions("employees.read")

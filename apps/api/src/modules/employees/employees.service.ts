@@ -317,6 +317,16 @@ export class EmployeesService {
     return response("employees", "update", decrypted);
   }
 
+  async deactivate(id: string) {
+    const existing = await this.prisma.employee.findUnique({ where: { id } });
+    if (!existing) throw new NotFoundException("Employee not found");
+    const employee = await this.prisma.employee.update({
+      where: { id },
+      data: { status: "INACTIVE" },
+    });
+    return response("employees", "deactivate", employee);
+  }
+
   /**
    * Employee submits/updates their own bank details (status resets to PENDING),
    * HR (employees.update) can edit anyone's. Account number stored encrypted.

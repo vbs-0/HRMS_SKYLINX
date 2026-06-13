@@ -753,7 +753,7 @@ export function EmployeesConsole() {
                       </div>
                     </div>
                     {/* Edit Profile Button (for HR or for employee) */}
-                    <div className="ml-auto">
+                    <div className="ml-auto flex items-center gap-2">
                       {isEditing ? (
                         <button
                           className="inline-flex min-h-10 items-center gap-1.5 rounded-lg bg-emerald-600 px-4 text-sm font-semibold text-white hover:bg-emerald-700 transition"
@@ -762,12 +762,34 @@ export function EmployeesConsole() {
                           <Save className="h-4 w-4" /> Save Profile
                         </button>
                       ) : (
-                        <button
-                          className="inline-flex min-h-10 items-center gap-1.5 rounded-lg border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition"
-                          onClick={() => setIsEditing(true)}
-                        >
-                          <Edit3 className="h-4 w-4" /> Edit Profile
-                        </button>
+                        <>
+                          <button
+                            className="inline-flex min-h-10 items-center gap-1.5 rounded-lg border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition"
+                            onClick={() => setIsEditing(true)}
+                          >
+                            <Edit3 className="h-4 w-4" /> Edit Profile
+                          </button>
+                          {selectedEmployee.status !== "INACTIVE" && activeTab !== "My Profile" && (
+                            <button
+                              className="inline-flex min-h-10 items-center gap-1.5 rounded-lg border border-rose-300 px-4 text-sm font-semibold text-rose-700 hover:bg-rose-50 transition"
+                              onClick={async () => {
+                                if (confirm("Are you sure you want to deactivate this employee?")) {
+                                  try {
+                                    await apiFetch(`/employees/${selectedEmployee.id}/deactivate`, { method: "PATCH" });
+                                    setMessage("Employee deactivated.");
+                                    const refreshed = await apiFetch<ApiEmployeeDetail>(`/employees/${selectedEmployee.id}`);
+                                    setSelectedEmployee(refreshed.data || selectedEmployee);
+                                    requestDataRefresh("employees");
+                                  } catch (err: any) {
+                                    setError(err.message || "Failed to deactivate");
+                                  }
+                                }
+                              }}
+                            >
+                              <X className="h-4 w-4" /> Deactivate
+                            </button>
+                          )}
+                        </>
                       )}
                     </div>
                   </div>

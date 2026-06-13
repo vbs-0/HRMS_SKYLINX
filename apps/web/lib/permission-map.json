@@ -116,6 +116,10 @@
     "permission": "employees.read"
   },
   {
+    "pattern": "^/employees/loans/list/all$",
+    "permission": "employees.read"
+  },
+  {
     "pattern": "^/employees/onboarding/templates$",
     "permission": "employees.read"
   },
@@ -232,6 +236,10 @@
     "permission": "organization.read"
   },
   {
+    "pattern": "^/payroll/[^/]+/form16$",
+    "permission": "payroll.read"
+  },
+  {
     "pattern": "^/payroll/additional-salary$",
     "permission": "payroll.approve"
   },
@@ -250,10 +258,6 @@
   {
     "pattern": "^/payroll/corrections$",
     "permission": "payroll.approve"
-  },
-  {
-    "pattern": "^/payroll/form16/[^/]+$",
-    "permission": "payroll.read"
   },
   {
     "pattern": "^/payroll/gratuity/[^/]+/calculate$",

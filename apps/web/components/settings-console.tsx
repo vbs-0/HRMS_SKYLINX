@@ -517,6 +517,27 @@ export function SettingsConsole() {
     }
   }
 
+  const [testingEmail, setTestingEmail] = useState(false);
+
+  async function handleTestEmail() {
+    const to = prompt("Enter email address to send test email to:");
+    if (!to) return;
+    setTestingEmail(true);
+    setMessage("");
+    setError("");
+    try {
+      const res = await apiFetch<any>("/settings/test-email", {
+        method: "POST",
+        body: JSON.stringify({ to }),
+      });
+      setMessage(res?.message || "Test email sent successfully.");
+    } catch (err: any) {
+      setError(err.message || "Failed to send test email.");
+    } finally {
+      setTestingEmail(false);
+    }
+  }
+
   function downloadSettings() {
     const payload = encodeURIComponent(JSON.stringify({ company, rules, modules }, null, 2));
     const anchor = document.createElement("a");
@@ -618,6 +639,16 @@ export function SettingsConsole() {
               <div className="flex flex-col gap-1">
                 <label className="text-xs font-semibold text-muted">Support Phone</label>
                 <input className={inputClass()} name="supportPhone" defaultValue={String(rules.branding.supportPhone || "+91-800-PeopleOS")} placeholder="+91-800-PeopleOS" type="tel" />
+              </div>
+              <div className="flex flex-col justify-end gap-1">
+                <button
+                  type="button"
+                  onClick={handleTestEmail}
+                  disabled={testingEmail}
+                  className="min-h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+                >
+                  {testingEmail ? "Sending..." : "Test SMTP Config"}
+                </button>
               </div>
               {checkbox("showPoweredBy", "Show Powered By Badge", Boolean(rules.branding.showPoweredBy))}
             </div>

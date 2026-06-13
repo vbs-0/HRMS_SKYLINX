@@ -90,15 +90,24 @@ Today 10 hrefs bypass permission filtering → users see pages then 403 on data 
 | `/grievance`,`/grievance/[id]` | grievance | `grievance.read` | Pro¹ | §07 | EXISTS+**NEW** |
 | `/support`,`/support/[id]` | helpdesk | `tickets.read` | Basic | §07 | EXISTS+**NEW** |
 | `/assets` | assets | `assets.read` | Standard | §07 | EXISTS |
-| `/analytics` | analytics | `analytics.read` | Pro | §09 | EXISTS |
+| `/announcements` | announcements (reader + composer + read-receipts) | `employees.read` (view) / `employees.configure` (manage) | Standard | §07 | **NEW** (today API-only) |
+| `/analytics`,`/analytics/[domain]` | analytics (Workforce/Attendance/Payroll/Recruitment/Performance/Engagement tabs) | `analytics.read` | Pro | §09 | EXISTS+**NEW** |
 | `/reports`,`/reports/[id]` | reports + builder | `reports.read` | Basic | §09 | EXISTS+**NEW** |
 | `/notifications`,`/reminders` | notifications + rules | `notifications.read`/`settings.configure` | Standard | §10 | EXISTS |
-| `/settings/*` | settings tree | `settings.configure` | Basic | §08 | EXISTS+**NEW subroutes** |
+| `/settings` | settings hub | `settings.configure`² | Basic | §08 | EXISTS |
+| `/settings/permissions` | roles & permission matrix | `settings.configure`² | Basic | §08 | **NEW** |
+| `/settings/users` | users & access | `settings.configure`² | Basic | §08 | **NEW** |
+| `/settings/workflows` | approval-chain builder | `settings.configure`² | Basic | §08/§10 | **NEW** |
+| `/settings/notifications` | notification preferences matrix | `settings.configure`² (org) / session (own) | Standard | §08/§10 | **NEW** |
+| `/settings/integrations` | SMTP/SSO/biometric/webhooks/API keys | `settings.configure`² | Basic | §08 | **NEW** |
+| `/settings/data` | import/export/backup/retention | `settings.configure`² | Basic | §08 | **NEW** |
+| `/settings/custom-fields` | custom fields studio | `employees.configure` | Basic | §03/§08 | EXISTS (aliased) |
 | `/security` | audit/security | `settings.configure` | Pro | §08 | EXISTS |
 | `/saas` | billing | `saas.read` | Pro | §08 | EXISTS |
 | `/saas-admin` | tenant console | owner | Pro | §08 | EXISTS |
 | `/setup` | setup wizard | `settings.configure` | Basic | §12 | EXISTS |
 ¹ recruitment/policies/grievance default to "Pro" plan only because they're absent from `modulePlanAccess` (shell.md §2.1 note ¹) — **NEW**: add them to the plan map at their intended tier.
+² **Settings read-gate (critique D-5):** HR_ADMIN has `settings.configure` but **not `settings.read`** (rbac-settings A3). The client `permission-map.json` GET-precheck for `settings.*` MUST accept `settings.configure`, or HR loses the entire settings tree client-side. Regenerate the map accordingly.
 **Legacy redirects**: `/approvals`→`/inbox`; keep all current routes 301-aliased so bookmarks survive.
 
 ## 6. Command palette (⌘K, NEW — §02)

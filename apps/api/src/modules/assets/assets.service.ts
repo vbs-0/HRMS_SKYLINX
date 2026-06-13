@@ -122,17 +122,18 @@ export class AssetsService {
       throw new NotFoundException(`Asset tag "${assetTag}" not found.`);
     }
 
-    let targetEmployeeId = employeeId;
-    if (!targetEmployeeId) {
-      // Fallback: assign to the first active employee of the tenant
-      const firstEmp = await this.prisma.employee.findFirst({
-        where: { companyId: tenantId, status: "ACTIVE" },
-      });
-      if (!firstEmp) {
-        throw new BadRequestException("No active employees found to assign this asset to.");
-      }
-      targetEmployeeId = firstEmp.id;
+    // An explicit assignee is required — never silently assign to an arbitrary
+    // "first active employee" (that hands hardware to whoever happens to sort first).
+    if (!employeeId) {
+      throw new BadRequestException("Select an employee to assign this asset to.");
     }
+    const targetEmployee = await this.prisma.employee.findFirst({
+      where: { id: employeeId, companyId: tenantId },
+    });
+    if (!targetEmployee) {
+      throw new NotFoundException(`Employee "${employeeId}" not found in this organization.`);
+    }
+    const targetEmployeeId = employeeId;
 
     const updated = await this.prisma.companyAsset.update({
       where: { id: asset.id },

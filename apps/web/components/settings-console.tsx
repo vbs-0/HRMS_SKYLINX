@@ -306,11 +306,11 @@ export function SettingsConsole() {
   function load() {
     const token = getAccessToken();
     if (token) {
-      try {
-        const payload = JSON.parse(atob(token.split(".")[1]));
-        const roles: string[] = payload.roles || [];
-        setIsOwner(roles.includes("SUPER_ADMIN") || roles.includes("SYSTEM_OWNER"));
-      } catch {
+        try {
+          const payload = JSON.parse(atob(token.split(".")[1]));
+          const roles: string[] = payload.roles || [];
+          setIsOwner(!payload.tenantId && (roles.includes("super_admin") || roles.includes("SUPER_ADMIN") || roles.includes("SYSTEM_OWNER") || payload.isSuperAdmin === true));
+        } catch {
         // ignore
       }
     }

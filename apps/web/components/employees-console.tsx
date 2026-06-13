@@ -394,6 +394,9 @@ export function EmployeesConsole() {
           maritalStatus: editForm.maritalStatus || null,
           emergencyContactName: editForm.emergencyContactName || null,
           emergencyContactPhone: editForm.emergencyContactPhone || null,
+          addresses: editForm.addresses,
+          educationHistory: editForm.educationHistory,
+          familyDetails: editForm.familyDetails,
         }),
       });
       // Bank details go through their own endpoint (encrypted, re-verification flow)
@@ -2117,7 +2120,7 @@ function CustomFieldsPanel() {
     try {
       await apiFetch("/custom-fields/definitions", {
         method: "POST",
-        body: JSON.stringify({ name: fieldName, label: fieldLabel, type: fieldType, required: fieldRequired }),
+        body: JSON.stringify({ fieldKey: fieldName, label: fieldLabel, fieldType: fieldType, required: fieldRequired }),
       });
       setMessage("Custom field created!");
       setFieldName("");
@@ -2240,10 +2243,10 @@ function CustomFieldsPanel() {
             <div className="space-y-1.5">
               {definitions.map((def) => (
                 <div key={def.id} className="flex items-center gap-2 text-xs rounded bg-slate-50 px-2 py-1.5">
-                  <span className="font-mono text-slate-500">{def.name}</span>
+                  <span className="font-mono text-slate-500">{def.fieldKey}</span>
                   <span className="text-slate-400">→</span>
                   <span className="font-semibold text-slate-700">{def.label}</span>
-                  <span className="ml-auto text-[10px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded">{def.type}</span>
+                  <span className="ml-auto text-[10px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded">{def.fieldType}</span>
                   {def.required && <span className="text-[10px] bg-red-100 text-red-600 px-1 py-0.5 rounded">req</span>}
                 </div>
               ))}
@@ -2287,9 +2290,9 @@ function CustomFieldsPanel() {
                     <label className="block text-xs font-semibold text-slate-500 mb-1">
                       {def.label}
                       {def.required && <span className="text-red-500 ml-0.5">*</span>}
-                      <span className="ml-1 text-[10px] text-slate-400">({def.type})</span>
+                      <span className="ml-1 text-[10px] text-slate-400">({def.fieldType})</span>
                     </label>
-                    {def.type === "BOOLEAN" ? (
+                    {def.fieldType === "BOOLEAN" ? (
                       <select
                         value={editing}
                         onChange={(e) => setEditValue((prev) => ({ ...prev, [def.id]: e.target.value }))}
@@ -2303,7 +2306,7 @@ function CustomFieldsPanel() {
                       </select>
                     ) : (
                       <input
-                        type={def.type === "DATE" ? "date" : def.type === "NUMBER" ? "number" : "text"}
+                        type={def.fieldType === "DATE" ? "date" : def.fieldType === "NUMBER" ? "number" : "text"}
                         id={`cf-val-${def.id}`}
                         name={`cf-val-${def.id}`}
                         value={editing}

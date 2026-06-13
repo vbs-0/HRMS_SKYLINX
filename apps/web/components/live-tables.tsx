@@ -1061,12 +1061,12 @@ export function RegularizationsTable({ search = "", status = "All" }: { search?:
     return onDataRefresh("attendance", load);
   }, []);
 
-  async function approve(id: string) {
-    await apiFetch(`/attendance/regularizations/${id}/approve`, {
+  async function decide(id: string, action: "approve" | "reject") {
+    await apiFetch(`/attendance/regularize/${id}`, {
       method: "PATCH",
-      body: JSON.stringify({}),
+      body: JSON.stringify({ action }),
     });
-    setMessage("Regularization approved.");
+    setMessage(`Regularization ${action}d.`);
     requestDataRefresh("attendance");
   }
 
@@ -1099,7 +1099,12 @@ export function RegularizationsTable({ search = "", status = "All" }: { search?:
             </div>
             <div className="flex items-center gap-2">
               <StatusPill tone={row.status === "PENDING" ? "yellow" : "green"}>{row.status}</StatusPill>
-              {row.status === "PENDING" ? <button className="rounded-lg bg-brand px-3 py-2 text-sm font-semibold text-white" onClick={() => approve(row.id)}>Approve</button> : null}
+              {row.status === "PENDING" ? (
+                <>
+                  <button className="rounded-lg border border-[#dce2eb] px-3 py-2 text-sm font-semibold hover:bg-slate-50 transition" onClick={() => decide(row.id, "reject")}>Reject</button>
+                  <button className="rounded-lg bg-brand px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand/90 transition" onClick={() => decide(row.id, "approve")}>Approve</button>
+                </>
+              ) : null}
             </div>
           </div>
         ))}

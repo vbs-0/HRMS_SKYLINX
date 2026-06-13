@@ -9,14 +9,22 @@ class PrismaFieldsHelper {
     "GratuityRule", "AppraisalCycle", "AppraisalTemplate", "Appraisal", "RetentionBonus",
     "SalaryWithholding", "CompanyPolicy", "Announcement", "CustomFieldDefinition", "CompanyAsset",
     "LeavePolicy", "LeaveBlockList", "EmployeeGrade", "EmploymentType", "LetterTemplate", "StaffingPlan",
-    "SalaryStructureTemplate", "PayrollComponentConfig", "PenaltyLog"
+    "SalaryStructureTemplate", "PayrollComponentConfig", "PenaltyLog",
+    "SocialPost", "SocialLike", "SocialComment", "Grievance",
+    "EmployeeInsurance", "InsuranceDependent", "InsuranceClaim",
+    "Survey", "SurveyQuestion", "SurveyResponse", "AnnouncementRead",
+    "PolicyAcknowledgment", "EmployeeDocument", "EmployeeBankDetail",
+    "EmployeePromotion", "EmployeeTransfer", "EmployeeLoan", "LoanRepayment",
+    "ExitInterview", "FullAndFinalStatement", "FullAndFinalAsset",
+    "EmployeeOnboardingTemplate", "EmployeeSeparationTemplate"
   ]);
 
   private static tenantModels = new Set([
-    "User", "Role", "AuditLog", "Ticket", "Subscription"
+    "User", "Role", "AuditLog", "Ticket", "Subscription", "Notification"
   ]);
 
-  static getTenantField(modelName: string): "companyId" | "tenantId" | null {
+  static getTenantField(modelName: string): string | null {
+    if (modelName === "Company") return "id";
     if (this.companyModels.has(modelName)) {
       return "companyId";
     }

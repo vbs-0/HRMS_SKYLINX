@@ -13,7 +13,7 @@ export class SaasService {
 
   async summary(user: AuthenticatedUser) {
     await this.ensurePlansSeeded();
-    const isOwner = user.roles.includes("SUPER_ADMIN") || user.roles.includes("SYSTEM_OWNER");
+    const isOwner = user.tenantId == null && (user.roles.includes("SUPER_ADMIN") || user.roles.includes("SYSTEM_OWNER"));
     const tenantId = user.tenantId ?? undefined;
 
     const [companies, employees, moduleSettings, billingLogs, subscriptionSetting] = await Promise.all([
@@ -541,7 +541,12 @@ export class SaasService {
     });
   }
 
-  async updateCompanyStatus(companyId: string, status: string) {
+  async updateCompanyStatus(user: AuthenticatedUser, companyId: string, status: string) {
+    const isOwner = user.tenantId == null && (user.roles.includes("SUPER_ADMIN") || user.roles.includes("SYSTEM_OWNER"));
+    if (!isOwner && user.tenantId !== companyId) {
+      throw new BadRequestException("You can only update your own company status");
+    }
+
     const company = await this.prisma.company.update({
       where: { id: companyId },
       data: { status },

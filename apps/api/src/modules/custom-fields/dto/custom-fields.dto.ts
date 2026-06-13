@@ -11,7 +11,7 @@ export class CreateCustomFieldDto {
 
   @IsString()
   @IsNotEmpty()
-  @IsEnum(["TEXT", "NUMBER", "DATE", "SELECT"])
+  @IsEnum(["TEXT", "NUMBER", "DATE", "SELECT", "BOOLEAN"])
   fieldType: string;
 
   @IsString()
@@ -30,7 +30,7 @@ export class UpdateCustomFieldDto {
 
   @IsString()
   @IsOptional()
-  @IsEnum(["TEXT", "NUMBER", "DATE", "SELECT"])
+  @IsEnum(["TEXT", "NUMBER", "DATE", "SELECT", "BOOLEAN"])
   fieldType?: string;
 
   @IsString()

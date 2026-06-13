@@ -262,9 +262,26 @@ export class PerformanceService {
   // Appraisals Flow
   // ==========================================
   async listAppraisals(user: AuthenticatedUser) {
-    const isEmployee = !user.permissions.includes("performance.configure") && !user.permissions.includes("performance.approve");
+    const isHR = user.permissions.includes("performance.configure") || user.roles.includes("HR_ADMIN");
+    const isManager = user.permissions.includes("performance.approve");
+
+    let whereClause: any = undefined;
+
+    if (!isHR) {
+      if (isManager && user.employeeId) {
+        whereClause = {
+          OR: [
+            { employeeId: user.employeeId },
+            { employee: { managerId: user.employeeId } }
+          ]
+        };
+      } else if (user.employeeId) {
+        whereClause = { employeeId: user.employeeId };
+      }
+    }
+
     const list = await this.prisma.appraisal.findMany({
-      where: isEmployee && user.employeeId ? { employeeId: user.employeeId } : undefined,
+      where: whereClause,
       include: {
         employee: true,
         cycle: true,

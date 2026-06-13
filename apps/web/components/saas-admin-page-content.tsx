@@ -61,9 +61,11 @@ export function SaasAdminPageContent() {
         const payload = JSON.parse(atob(token.split(".")[1]));
         // Check isSuperAdmin flag OR saas.admin permission OR super_admin role
         const ownerCheck =
-          payload?.isSuperAdmin === true ||
-          (Array.isArray(payload?.permissions) && payload.permissions.includes("saas.admin")) ||
-          (Array.isArray(payload?.roles) && payload.roles.includes("super_admin"));
+          !payload?.tenantId && (
+            payload?.isSuperAdmin === true ||
+            (Array.isArray(payload?.permissions) && payload.permissions.includes("saas.admin")) ||
+            (Array.isArray(payload?.roles) && payload.roles.includes("SUPER_ADMIN"))
+          );
         setIsOwner(ownerCheck);
       }
     } catch (err) {

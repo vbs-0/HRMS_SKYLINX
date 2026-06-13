@@ -18,36 +18,28 @@ export class SocialController {
   @Post("posts")
   @RequirePermissions("social.create")
   createPost(@Body() body: CreateSocialPostDto, @CurrentUser() user: AuthenticatedUser) {
-    if (!body.authorUserId) {
-      body.authorUserId = user.sub;
-    }
+    body.authorUserId = user.sub;
     return this.socialService.createPost(body);
   }
 
   @Post("posts/:id/like")
   @RequirePermissions("social.create")
   like(@Param("id") id: string, @Body() body: SocialActorDto, @CurrentUser() user: AuthenticatedUser) {
-    if (!body.userId) {
-      body.userId = user.sub;
-    }
+    body.userId = user.sub;
     return this.socialService.like(id, body);
   }
 
   @Delete("posts/:id/like")
   @RequirePermissions("social.create")
   unlike(@Param("id") id: string, @Body() body: SocialActorDto, @CurrentUser() user: AuthenticatedUser) {
-    if (!body.userId) {
-      body.userId = user.sub;
-    }
+    body.userId = user.sub;
     return this.socialService.unlike(id, body);
   }
 
   @Post("posts/:id/comments")
   @RequirePermissions("social.create")
   comment(@Param("id") id: string, @Body() body: CreateSocialCommentDto, @CurrentUser() user: AuthenticatedUser) {
-    if (!body.userId) {
-      body.userId = user.sub;
-    }
+    body.userId = user.sub;
     return this.socialService.comment(id, body);
   }
 }

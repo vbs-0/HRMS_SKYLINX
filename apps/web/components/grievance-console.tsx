@@ -7,15 +7,13 @@ import { AlertTriangle, Plus, Search, ShieldAlert, CheckCircle, Eye, X, Send } f
 
 interface Grievance {
   id: string;
-  subject: string;
+  title: string;
   description: string;
   anonymous: boolean;
-  status: string; // PENDING, INVESTIGATING, RESOLVED, CLOSED
-  againstEmployeeId?: string | null;
-  againstEmployee?: { firstName: string; lastName: string } | null;
-  reporter?: { firstName: string; lastName: string } | null;
-  resolutionDetails?: string | null;
-  resolvedAt?: string | null;
+  status: string; // PENDING, INVESTIGATING, APPROVED, REJECTED
+  assignedToId?: string | null;
+  employee?: { firstName: string; lastName: string } | null;
+  resolution?: string | null;
   createdAt: string;
 }
 
@@ -78,10 +76,11 @@ export function GrievanceConsole() {
       await apiFetch("/grievance", {
         method: "POST",
         body: JSON.stringify({
-          subject: String(form.get("subject")),
+          employeeId: currentUser?.employeeId || "",
+          title: String(form.get("title")),
+          category: "GENERAL",
           description: String(form.get("description")),
           anonymous: form.get("anonymous") === "true",
-          againstEmployeeId: String(form.get("againstEmployeeId")) || undefined,
         }),
       });
       setMessage("Grievance logged successfully. HR team has been notified.");
@@ -100,13 +99,14 @@ export function GrievanceConsole() {
     setError("");
     setLoading(true);
     try {
-      await apiFetch(`/grievance/${id}/resolve`, {
+      await apiFetch(`/grievance/${id}`, {
         method: "PATCH",
         body: JSON.stringify({
-          resolutionDetails: resolutionText,
+          status: "APPROVED",
+          resolution: resolutionText,
         }),
       });
-      setMessage("Grievance status marked as RESOLVED.");
+      setMessage("Grievance status marked as APPROVED.");
       setSelectedGrievance(null);
       setResolutionText("");
       loadGrievances();
@@ -118,9 +118,9 @@ export function GrievanceConsole() {
   }
 
   const filtered = grievances.filter(g =>
-    g.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    g.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    g.status.toLowerCase().includes(searchQuery.toLowerCase())
+    (g.title || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (g.description || "").toLowerCase().includes(searchQuery.toLowerCase()) ||
+    (g.status || "").toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const isHrOrAdmin = currentUser?.roles?.includes("SUPER_ADMIN") || currentUser?.roles?.includes("HR_ADMIN");
@@ -154,7 +154,7 @@ export function GrievanceConsole() {
             <ShieldAlert className="h-6 w-6" />
           </div>
           <div>
-            <div className="text-2xl font-bold">{grievances.filter(g => g.status !== "RESOLVED" && g.status !== "CLOSED").length}</div>
+            <div className="text-2xl font-bold">{grievances.filter(g => g.status !== "APPROVED" && g.status !== "REJECTED").length}</div>
             <div className="text-xs text-slate-500 font-semibold">Active investigations</div>
           </div>
         </Card>
@@ -163,7 +163,7 @@ export function GrievanceConsole() {
             <CheckCircle className="h-6 w-6" />
           </div>
           <div>
-            <div className="text-2xl font-bold">{grievances.filter(g => g.status === "RESOLVED").length}</div>
+            <div className="text-2xl font-bold">{grievances.filter(g => g.status === "APPROVED").length}</div>
             <div className="text-xs text-slate-500 font-semibold">Resolved cases</div>
           </div>
         </Card>
@@ -203,7 +203,7 @@ export function GrievanceConsole() {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-xs font-semibold text-slate-500 mb-1">Subject / Title</label>
-                <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="subject" placeholder="Workplace policy violation..." required />
+                <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="title" placeholder="Workplace policy violation..." required />
               </div>
               <div>
                 <label className="block text-xs font-semibold text-slate-500 mb-1">Filing Anonymity</label>
@@ -213,15 +213,7 @@ export function GrievanceConsole() {
                 </select>
               </div>
             </div>
-            <div>
-              <label className="block text-xs font-semibold text-slate-500 mb-1">Against Employee (Optional)</label>
-              <select className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white" name="againstEmployeeId">
-                <option value="">Select Employee (Optional)</option>
-                {employees.map(emp => (
-                  <option key={emp.id} value={emp.id}>{emp.firstName} {emp.lastName} ({emp.employeeCode})</option>
-                ))}
-              </select>
-            </div>
+
             <div>
               <label className="block text-xs font-semibold text-slate-500 mb-1">Detailed Description of incident</label>
               <textarea
@@ -247,7 +239,6 @@ export function GrievanceConsole() {
               <tr>
                 <th className="border-b border-[#dce2eb] p-3">Grievance Details</th>
                 <th className="border-b border-[#dce2eb] p-3">Filer Identity</th>
-                <th className="border-b border-[#dce2eb] p-3">Accused Party</th>
                 <th className="border-b border-[#dce2eb] p-3">Log Date</th>
                 <th className="border-b border-[#dce2eb] p-3">Status</th>
                 <th className="border-b border-[#dce2eb] p-3 text-right">Actions</th>
@@ -264,21 +255,18 @@ export function GrievanceConsole() {
                 filtered.map((g) => (
                   <tr key={g.id} className="hover:bg-slate-50 transition">
                     <td className="border-b border-[#eef2f6] p-3">
-                      <div className="font-semibold text-slate-850">{g.subject}</div>
+                      <div className="font-semibold text-slate-850">{g.title}</div>
                       <div className="text-xs text-slate-400 truncate max-w-sm mt-0.5">{g.description}</div>
                     </td>
                     <td className="border-b border-[#eef2f6] p-3 font-semibold text-slate-600">
-                      {g.anonymous ? <span className="italic text-slate-400">Anonymous</span> : `${g.reporter?.firstName || "System"} ${g.reporter?.lastName || "Filer"}`}
-                    </td>
-                    <td className="border-b border-[#eef2f6] p-3 text-slate-500 font-semibold">
-                      {g.againstEmployee ? `${g.againstEmployee.firstName} ${g.againstEmployee.lastName}` : "None / Other"}
+                      {g.anonymous ? <span className="italic text-slate-400">Anonymous</span> : `${g.employee?.firstName || "System"} ${g.employee?.lastName || "Filer"}`}
                     </td>
                     <td className="border-b border-[#eef2f6] p-3 text-xs text-slate-400">
                       {new Date(g.createdAt).toLocaleDateString("en-IN")}
                     </td>
                     <td className="border-b border-[#eef2f6] p-3">
-                      <StatusPill tone={g.status === "RESOLVED" ? "green" : g.status === "CLOSED" ? "red" : "yellow"}>
-                        {g.status}
+                      <StatusPill tone={g.status === "APPROVED" ? "green" : g.status === "REJECTED" ? "red" : "yellow"}>
+                        {g.status === "APPROVED" ? "RESOLVED" : g.status === "REJECTED" ? "CLOSED" : g.status}
                       </StatusPill>
                     </td>
                     <td className="border-b border-[#eef2f6] p-3 text-right">
@@ -316,7 +304,7 @@ export function GrievanceConsole() {
             <div className="space-y-3">
               <div>
                 <span className="text-xs text-slate-400 font-semibold block">Subject:</span>
-                <span className="text-sm font-semibold text-slate-800">{selectedGrievance.subject}</span>
+                <span className="text-sm font-semibold text-slate-800">{selectedGrievance.title}</span>
               </div>
               <div>
                 <span className="text-xs text-slate-400 font-semibold block">Description:</span>
@@ -326,15 +314,15 @@ export function GrievanceConsole() {
                 <div>Filer Identity: <span className="text-slate-700">{selectedGrievance.anonymous ? "Anonymous" : "Identified"}</span></div>
                 <div>Log Date: <span className="text-slate-700">{new Date(selectedGrievance.createdAt).toLocaleString("en-IN")}</span></div>
               </div>
-              {selectedGrievance.resolutionDetails && (
+              {selectedGrievance.resolution && (
                 <div className="mt-2 border-t pt-2">
                   <span className="text-xs text-emerald-600 font-bold block">Resolution Logged:</span>
-                  <p className="text-sm text-emerald-800 bg-emerald-50 rounded-lg p-3 border border-emerald-100 mt-1">{selectedGrievance.resolutionDetails}</p>
+                  <p className="text-sm text-emerald-800 bg-emerald-50 rounded-lg p-3 border border-emerald-100 mt-1">{selectedGrievance.resolution}</p>
                 </div>
               )}
             </div>
 
-            {isHrOrAdmin && selectedGrievance.status !== "RESOLVED" && (
+            {isHrOrAdmin && selectedGrievance.status !== "APPROVED" && (
               <div className="border-t pt-4 space-y-3">
                 <h5 className="text-xs font-bold uppercase tracking-wider text-slate-700">Submit Dispute Resolution</h5>
                 <div className="flex gap-2">

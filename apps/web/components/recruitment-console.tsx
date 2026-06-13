@@ -310,6 +310,7 @@ export function RecruitmentConsole() {
         body: JSON.stringify({
           title: String(form.get("title")),
           departmentId: String(form.get("departmentId")),
+          designationId: String(form.get("designationId")),
           openings: Number(form.get("openings")),
           requestedById: currentUser?.employeeId || undefined,
         }),
@@ -1076,6 +1077,13 @@ export function RecruitmentConsole() {
                   </select>
                 </div>
                 <div>
+                  <label className="block text-xs font-semibold text-slate-500 mb-1">Target Designation</label>
+                  <select className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white" name="designationId" required>
+                    <option value="">Select Designation</option>
+                    {designationsList.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                  </select>
+                </div>
+                <div>
                   <label className="block text-xs font-semibold text-slate-500 mb-1">Number of Openings</label>
                   <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="openings" type="number" defaultValue={1} min={1} required />
                 </div>
@@ -1565,7 +1573,7 @@ export function RecruitmentConsole() {
                         </td>
                         <td className="border-b border-[#eef2f6] p-3 font-semibold">INR {ref.bonusAmount.toLocaleString("en-IN")}</td>
                         <td className="border-b border-[#eef2f6] p-3">
-                          <StatusPill tone={ref.status === "HIRED" || ref.status === "PAID" ? "green" : "yellow"}>
+                          <StatusPill tone={ref.status === "APPROVED" || ref.status === "PAID" ? "green" : "yellow"}>
                             {ref.status}
                           </StatusPill>
                         </td>
@@ -1574,12 +1582,12 @@ export function RecruitmentConsole() {
                             {ref.status === "PENDING" && (
                               <button
                                 className="rounded bg-emerald-600 text-white font-semibold text-xs px-2.5 py-1.5 hover:bg-emerald-700 transition"
-                                onClick={() => handleDecideReferral(ref.id, "HIRED")}
+                                onClick={() => handleDecideReferral(ref.id, "APPROVED")}
                               >
                                 Mark Hired
                               </button>
                             )}
-                            {ref.status === "HIRED" && (
+                            {ref.status === "APPROVED" && (
                               <button
                                 className="rounded bg-indigo-600 text-white font-semibold text-xs px-2.5 py-1.5 hover:bg-indigo-700 transition"
                                 onClick={() => handleDecideReferral(ref.id, "PAID")}

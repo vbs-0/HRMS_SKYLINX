@@ -62,9 +62,11 @@ export function AppShellFrame({
         const payload = JSON.parse(atob(token.split(".")[1]));
         // Support isSuperAdmin flag in token, OR saas.admin permission, OR super_admin role
         const isSuperAdmin =
-          payload?.isSuperAdmin === true ||
-          (Array.isArray(payload?.permissions) && payload.permissions.includes("saas.admin")) ||
-          (Array.isArray(payload?.roles) && payload.roles.includes("super_admin"));
+          (!payload?.tenantId && (
+            payload?.isSuperAdmin === true ||
+            (Array.isArray(payload?.permissions) && payload.permissions.includes("saas.admin")) ||
+            (Array.isArray(payload?.roles) && payload.roles.includes("super_admin"))
+          ));
         if (isSuperAdmin) {
           setIsOwner(true);
         }

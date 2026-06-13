@@ -21,6 +21,10 @@ export class GrievanceService {
         employee: true,
       },
     });
+    if (grievance.anonymous) {
+      (grievance as any).employee = null;
+      grievance.employeeId = "ANON";
+    }
     return response("grievance", "create", grievance);
   }
 
@@ -31,7 +35,13 @@ export class GrievanceService {
       },
       orderBy: { createdAt: "desc" },
     });
-    return response("grievance", "list", grievances);
+    const sanitized = grievances.map((g) => {
+      if (g.anonymous) {
+        return { ...g, employee: null, employeeId: "ANON" };
+      }
+      return g;
+    });
+    return response("grievance", "list", sanitized);
   }
 
   async findOne(id: string) {
@@ -43,6 +53,10 @@ export class GrievanceService {
     });
     if (!grievance) {
       throw new NotFoundException(`Grievance with ID ${id} not found`);
+    }
+    if (grievance.anonymous) {
+      (grievance as any).employee = null;
+      grievance.employeeId = "ANON";
     }
     return response("grievance", "detail", grievance);
   }
@@ -66,6 +80,10 @@ export class GrievanceService {
         employee: true,
       },
     });
+    if (updated.anonymous) {
+      (updated as any).employee = null;
+      updated.employeeId = "ANON";
+    }
     return response("grievance", "update", updated);
   }
 }

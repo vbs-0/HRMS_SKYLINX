@@ -61,8 +61,8 @@ export class SaasController {
 
   @Patch("companies/:id/status")
   @RequirePermissions("saas.configure")
-  updateCompanyStatus(@Param("id") id: string, @Body("status") status: string) {
-    return this.saasService.updateCompanyStatus(id, status);
+  updateCompanyStatus(@CurrentUser() user: AuthenticatedUser, @Param("id") id: string, @Body("status") status: string) {
+    return this.saasService.updateCompanyStatus(user, id, status);
   }
 
   @Post("invoice")

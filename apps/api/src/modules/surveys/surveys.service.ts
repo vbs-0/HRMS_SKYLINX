@@ -3,6 +3,7 @@ import { PrismaService } from "../../prisma/prisma.service";
 import { response } from "../../common/crud-response";
 import { CreateSurveyDto, SubmitSurveyResponseDto } from "./dto/surveys.dto";
 import { AuthenticatedUser } from "../../common/auth/auth.types";
+import { TenantContext } from "../../common/tenant-context";
 
 @Injectable()
 export class SurveysService {
@@ -24,6 +25,7 @@ export class SurveysService {
             kind: q.kind,
             optionsJson: q.optionsJson,
             order: i,
+            companyId: TenantContext.getTenantId() || "",
           }))
         }
       },

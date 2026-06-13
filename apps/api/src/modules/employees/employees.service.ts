@@ -174,6 +174,14 @@ export class EmployeesService {
     const companyId = TenantContext.getTenantId();
     if (!companyId) throw new ForbiddenException("No tenant context");
 
+    const departments = await this.prisma.department.findMany({ where: { companyId } });
+    const designations = await this.prisma.designation.findMany({ where: { companyId } });
+    const locations = await this.prisma.location.findMany({ where: { companyId } });
+
+    const getDeptId = (name?: string) => name ? departments.find(d => d.name.toLowerCase() === name.toLowerCase())?.id : null;
+    const getDesigId = (title?: string) => title ? designations.find(d => d.title.toLowerCase() === title.toLowerCase())?.id : null;
+    const getLocId = (name?: string) => name ? locations.find(l => l.name.toLowerCase() === name.toLowerCase())?.id : null;
+
     for (let i = 1; i < lines.length; i++) {
       const parts = lines[i].split(",").map((p: string) => p.trim().replace(/^["']|["']$/g, ''));
       const row: any = {};
@@ -195,9 +203,9 @@ export class EmployeesService {
           phone: row.phone || null,
           joiningDate: row.joiningDate ? new Date(row.joiningDate) : new Date(),
           status: "ACTIVE",
-          departmentId: row.departmentId || null,
-          designationId: row.designationId || null,
-          locationId: row.locationId || null,
+          departmentId: getDeptId(row.departmentName) || null,
+          designationId: getDesigId(row.designationName) || null,
+          locationId: getLocId(row.locationName) || null,
         },
       });
       imported++;
@@ -237,23 +245,23 @@ export class EmployeesService {
   }
 
   async update(id: string, data: UpdateEmployeeDto) {
-    const encryptedPan = data.panNumber ? encrypt(data.panNumber) : undefined;
-    const encryptedPf = data.providentFundAccount ? encrypt(data.providentFundAccount) : undefined;
+    const encryptedPan = data.panNumber === null ? null : data.panNumber ? encrypt(data.panNumber) : undefined;
+    const encryptedPf = data.providentFundAccount === null ? null : data.providentFundAccount ? encrypt(data.providentFundAccount) : undefined;
 
     const { addresses, educationHistory, familyDetails, ...coreData } = data;
 
     const updatePayload: any = {
       ...coreData,
-      joiningDate: coreData.joiningDate ? new Date(coreData.joiningDate) : undefined,
-      dateOfBirth: coreData.dateOfBirth ? new Date(coreData.dateOfBirth) : undefined,
+      joiningDate: coreData.joiningDate === null ? null : coreData.joiningDate ? new Date(coreData.joiningDate) : undefined,
+      dateOfBirth: coreData.dateOfBirth === null ? null : coreData.dateOfBirth ? new Date(coreData.dateOfBirth) : undefined,
       panNumber: encryptedPan,
       providentFundAccount: encryptedPf,
     };
 
-    if (addresses) {
+    if (addresses !== undefined) {
       updatePayload.addresses = {
         deleteMany: {},
-        create: addresses.map(a => ({
+        create: (addresses || []).map(a => ({
           type: a.type,
           addressLine1: a.addressLine1,
           addressLine2: a.addressLine2,
@@ -265,10 +273,10 @@ export class EmployeesService {
       };
     }
 
-    if (educationHistory) {
+    if (educationHistory !== undefined) {
       updatePayload.educationHistory = {
         deleteMany: {},
-        create: educationHistory.map(e => ({
+        create: (educationHistory || []).map(e => ({
           degree: e.degree,
           institution: e.institution,
           yearOfPassing: Number(e.yearOfPassing),
@@ -277,10 +285,10 @@ export class EmployeesService {
       };
     }
 
-    if (familyDetails) {
+    if (familyDetails !== undefined) {
       updatePayload.familyDetails = {
         deleteMany: {},
-        create: familyDetails.map(f => ({
+        create: (familyDetails || []).map(f => ({
           name: f.name,
           relationship: f.relationship,
           dateOfBirth: f.dateOfBirth ? new Date(f.dateOfBirth) : undefined,
@@ -408,6 +416,7 @@ export class EmployeesService {
   async createOnboardingTemplate(data: CreateOnboardingTemplateDto) {
     const template = await this.prisma.employeeOnboardingTemplate.create({
       data: {
+        companyId: "", // Overwritten by middleware
         name: data.name,
         departmentId: data.departmentId,
         designationId: data.designationId,
@@ -457,6 +466,7 @@ export class EmployeesService {
   async createSeparationTemplate(data: CreateSeparationTemplateDto) {
     const template = await this.prisma.employeeSeparationTemplate.create({
       data: {
+        companyId: "", // Overwritten by middleware
         name: data.name,
         activities: {
           create: data.activities.map((a) => ({
@@ -1350,9 +1360,9 @@ export class EmployeesService {
       "phone",
       "joiningDate",
       "companyId",
-      "departmentId",
-      "designationId",
-      "locationId",
+      "departmentName",
+      "designationName",
+      "locationName",
       "gender",
       "dateOfBirth",
       "panNumber",
@@ -1371,6 +1381,21 @@ export class EmployeesService {
     const createdEmployees = [];
     const errors = [];
 
+    const companyId = TenantContext.getTenantId();
+    let departments: any[] = [];
+    let designations: any[] = [];
+    let locations: any[] = [];
+
+    if (companyId) {
+      departments = await this.prisma.department.findMany({ where: { companyId } });
+      designations = await this.prisma.designation.findMany({ where: { companyId } });
+      locations = await this.prisma.location.findMany({ where: { companyId } });
+    }
+
+    const getDeptId = (name?: string) => name ? departments.find(d => d.name.toLowerCase() === String(name).toLowerCase())?.id : undefined;
+    const getDesigId = (title?: string) => title ? designations.find(d => d.title.toLowerCase() === String(title).toLowerCase())?.id : undefined;
+    const getLocId = (name?: string) => name ? locations.find(l => l.name.toLowerCase() === String(name).toLowerCase())?.id : undefined;
+
     for (let i = 0; i < rows.length; i++) {
       const row = rows[i];
       const rowNum = i + 2;
@@ -1382,10 +1407,10 @@ export class EmployeesService {
           lastName: String(row.lastName || ""),
           email: String(row.email || ""),
           joiningDate: row.joiningDate ? new Date(row.joiningDate).toISOString() : new Date().toISOString(),
-          companyId: String(row.companyId || ""),
-          departmentId: row.departmentId ? String(row.departmentId) : undefined,
-          designationId: row.designationId ? String(row.designationId) : undefined,
-          locationId: row.locationId ? String(row.locationId) : undefined,
+          companyId: String(row.companyId || companyId || ""),
+          departmentId: getDeptId(row.departmentName),
+          designationId: getDesigId(row.designationName),
+          locationId: getLocId(row.locationName),
           gender: row.gender ? String(row.gender) : undefined,
           dateOfBirth: row.dateOfBirth ? new Date(row.dateOfBirth).toISOString() : undefined,
           panNumber: row.panNumber ? String(row.panNumber) : undefined,

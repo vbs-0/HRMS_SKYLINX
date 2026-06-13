@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en-IN" data-theme="light">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PeopleOS UI v2 — visual mockup (sections/02 design system)</title>
+<style>
+/* tokens mirror of docs/redesign/assets/tokens.css (§02) */
+:root{
+  --b50:#eef0ff;--b100:#e0e3ff;--b300:#a9b0f5;--b500:#6366f1;--b600:#4f46e5;--b700:#4338ca;--b900:#312e81;
+  --canvas:#f7f8fa;--raised:#fff;--sunken:#f1f3f6;--hover:#f3f4f7;--selected:#eef0ff;
+  --bd-subtle:#ebedf1;--bd:#dde1e7;--bd-strong:#c5cbd4;
+  --t1:#161a20;--t2:#4b5563;--tm:#6b7280;--tdis:#9aa2ae;--on-brand:#fff;
+  --su-fg:#0f7a4d;--su-bg:#e6f6ee;--su-bd:#a7e0c2;
+  --wa-fg:#9a6700;--wa-bg:#fbf1d9;--wa-bd:#ebd08a;
+  --da-fg:#b42318;--da-bg:#fce9e7;--da-bd:#f0b3ae;
+  --in-fg:#1357c4;--in-bg:#e7f0fe;--in-bd:#aecbf5;
+  --viz1:#4f46e5;--viz2:#0ea5a4;--viz3:#f59e0b;--viz4:#8b5cf6;--viz5:#ec4899;
+  --sans:"Inter",system-ui,"Segoe UI",Roboto,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --r-ctl:8px;--r-card:12px;--r-pill:999px;
+  --e1:0 1px 2px rgba(16,20,30,.06);--e2:0 4px 12px rgba(16,20,30,.08);--e3:0 12px 32px rgba(16,20,30,.12);
+  --ease:cubic-bezier(.2,.6,.2,1);
+}
+[data-theme="dark"]{
+  --canvas:#0e1116;--raised:#171b22;--sunken:#0a0d11;--hover:#1e232b;--selected:#1b2030;
+  --bd-subtle:#232932;--bd:#2c333d;--bd-strong:#3a424e;
+  --t1:#e8ebf0;--t2:#aeb6c2;--tm:#8b95a3;--tdis:#5a6472;--b50:#1b2030;
+  --su-fg:#56c98a;--su-bg:#10271c;--su-bd:#1e4332;
+  --wa-fg:#e0b341;--wa-bg:#2a2210;--wa-bd:#4a3c16;
+  --da-fg:#f0817a;--da-bg:#2b1614;--da-bd:#52211c;
+  --in-fg:#6ba6f5;--in-bg:#11203a;--in-bd:#1e3a63;
+  --e1:0 1px 2px rgba(0,0,0,.4);--e2:0 4px 12px rgba(0,0,0,.5);--e3:0 12px 32px rgba(0,0,0,.6);
+}
+*{box-sizing:border-box;margin:0}
+body{font-family:var(--sans);font-size:14px;line-height:1.45;color:var(--t1);background:var(--canvas);transition:background .24s var(--ease),color .24s var(--ease)}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+:focus-visible{outline:none;box-shadow:0 0 0 2px var(--raised),0 0 0 4px var(--b500);border-radius:8px}
+.app{display:grid;grid-template-columns:260px 1fr;min-height:100vh}
+@media(max-width:920px){.app{grid-template-columns:1fr}.sidebar{display:none}}
+
+/* sidebar */
+.sidebar{background:var(--raised);border-right:1px solid var(--bd);position:sticky;top:0;height:100vh;overflow:auto;padding:14px 12px}
+.brand{display:flex;align-items:center;gap:10px;padding:6px 8px 14px}
+.logo{width:30px;height:30px;border-radius:8px;background:var(--b600);color:#fff;display:grid;place-items:center;font-weight:800;font-size:15px}
+.brand b{font-size:15px;letter-spacing:.01em}.brand span{display:block;font-size:11px;color:var(--tm)}
+.ng{margin:14px 8px 4px;font-size:10.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--tm)}
+.ni{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:7px 10px;border-radius:8px;color:var(--t2);font-size:13.5px;position:relative;transition:background .12s var(--ease)}
+.ni:hover{background:var(--hover);color:var(--t1)}
+.ni.on{background:var(--selected);color:var(--b700);font-weight:600}
+.ni.on::before{content:"";position:absolute;left:-12px;top:7px;bottom:7px;width:3px;border-radius:3px;background:var(--b600)}
+.ni svg{width:17px;height:17px;stroke:currentColor;stroke-width:1.75;fill:none;stroke-linecap:round;stroke-linejoin:round;flex:none;opacity:.9}
+.ni .ct{margin-left:auto;background:var(--b600);color:#fff;font-size:10.5px;font-weight:700;border-radius:999px;padding:1px 7px}
+
+/* topbar */
+.main{display:flex;flex-direction:column;min-width:0}
+.top{height:64px;display:flex;align-items:center;gap:14px;padding:0 24px;border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--canvas) 86%,transparent);backdrop-filter:blur(8px)}
+.crumb{font-size:13px;color:var(--tm)}.crumb b{color:var(--t1);font-weight:600}
+.search{margin-left:auto;display:flex;align-items:center;gap:8px;border:1px solid var(--bd-strong);background:var(--raised);border-radius:8px;padding:8px 12px;color:var(--tm);font-size:13px;min-width:230px}
+.kbd{font-family:var(--mono);font-size:10.5px;border:1px solid var(--bd-strong);background:var(--sunken);border-radius:5px;padding:1px 5px;color:var(--t2);margin-left:auto}
+.tb{width:36px;height:36px;border-radius:8px;display:grid;place-items:center;color:var(--t2);position:relative}
+.tb:hover{background:var(--hover)}.tb svg{width:18px;height:18px;stroke:currentColor;stroke-width:1.75;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.dot{position:absolute;top:8px;right:9px;width:7px;height:7px;border-radius:50%;background:var(--b600);border:2px solid var(--canvas)}
+.av{width:32px;height:32px;border-radius:50%;background:var(--su-bg);color:var(--su-fg);display:grid;place-items:center;font-size:12px;font-weight:700;border:1px solid var(--su-bd)}
+
+/* page */
+.page{padding:24px;max-width:1320px;width:100%;margin:0 auto}
+.ph{display:flex;align-items:flex-end;gap:14px;margin-bottom:18px}
+h1{font-size:24px;line-height:1.2;font-weight:600;letter-spacing:-.01em}
+.sub{color:var(--tm);font-size:13px;margin-top:3px}
+.ph .act{margin-left:auto;display:flex;gap:8px}
+.tabs{display:flex;gap:4px;background:var(--sunken);border:1px solid var(--bd);padding:4px;border-radius:10px;width:max-content;margin:0 auto 18px}
+.tabs button{padding:6px 14px;border-radius:7px;font-size:13px;color:var(--t2)}
+.tabs button.on{background:var(--raised);box-shadow:var(--e1);color:var(--t1);font-weight:600}
+.view{display:none}.view.on{display:block;animation:f .24s var(--ease)}
+@keyframes f{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+/* primitives */
+.btn{display:inline-flex;align-items:center;gap:7px;border-radius:8px;padding:8px 14px;font-size:13.5px;font-weight:600;transition:background .12s var(--ease)}
+.btn-pri{background:var(--b600);color:#fff}.btn-pri:hover{background:var(--b700)}
+.btn-sec{border:1px solid var(--bd-strong);background:var(--raised);color:var(--t1)}.btn-sec:hover{background:var(--hover)}
+.btn-gh{color:var(--t2)}.btn-gh:hover{background:var(--hover)}
+.card{background:var(--raised);border:1px solid var(--bd);border-radius:var(--r-card);box-shadow:var(--e1)}
+.card .hd{display:flex;align-items:center;gap:8px;padding:13px 18px;border-bottom:1px solid var(--bd-subtle)}
+.card .hd h3{font-size:14px;font-weight:600}.card .hd .more{margin-left:auto;color:var(--tm);font-size:12px}
+.card .bd{padding:16px 18px}
+.grid{display:grid;gap:16px}.c4{grid-template-columns:repeat(4,1fr)}.c2{grid-template-columns:1.6fr 1fr}
+@media(max-width:1050px){.c4{grid-template-columns:repeat(2,1fr)}.c2{grid-template-columns:1fr}}
+.kpi .lab{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--tm)}
+.kpi .val{font-size:28px;font-weight:650;margin-top:6px;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.kpi .d{font-size:12px;margin-top:3px}.up{color:var(--su-fg)}.dn{color:var(--da-fg)}.fl{color:var(--tm)}
+.chip{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:2px 9px;font-size:11.5px;font-weight:600;border:1px solid}
+.su{background:var(--su-bg);color:var(--su-fg);border-color:var(--su-bd)}
+.wa{background:var(--wa-bg);color:var(--wa-fg);border-color:var(--wa-bd)}
+.da{background:var(--da-bg);color:var(--da-fg);border-color:var(--da-bd)}
+.inf{background:var(--in-bg);color:var(--in-fg);border-color:var(--in-bd)}
+.bra{background:var(--b50);color:var(--b700);border-color:var(--b300)}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--tm);text-align:left;padding:9px 12px;background:var(--sunken);border-bottom:1px solid var(--bd)}
+td{padding:11px 12px;border-bottom:1px solid var(--bd-subtle)}tr:hover td{background:var(--hover)}
+.num{font-variant-numeric:tabular-nums;text-align:right;font-family:var(--mono);font-size:12.5px}
+.who{display:flex;align-items:center;gap:9px}.who small{display:block;color:var(--tm);font-size:11.5px}
+.a{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:700;flex:none}
+.a1{background:var(--in-bg);color:var(--in-fg)}.a2{background:var(--b50);color:var(--b700)}.a3{background:var(--wa-bg);color:var(--wa-fg)}.a4{background:var(--su-bg);color:var(--su-fg)}
+.mini{padding:5px 10px;border-radius:7px;font-size:12px;font-weight:600;border:1px solid var(--bd-strong);background:var(--raised)}
+.mini.ok{background:var(--su-bg);border-color:var(--su-bd);color:var(--su-fg)}.mini.no{color:var(--da-fg)}
+.muted{color:var(--tm)}.rowact{display:flex;gap:6px;justify-content:flex-end}
+.rings{display:flex;gap:18px;flex-wrap:wrap}
+.ring{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:12px;color:var(--t2)}
+.ring .v{font-size:16px;font-weight:650;fill:var(--t1);transform:rotate(90deg);transform-origin:center;font-variant-numeric:tabular-nums}
+.punch{display:flex;align-items:center;gap:18px}
+.pbtn{width:96px;height:96px;border-radius:50%;background:var(--b600);color:#fff;font-weight:700;font-size:14px;display:grid;place-items:center;box-shadow:0 0 0 6px var(--b50),var(--e2);transition:transform .12s var(--ease)}
+.pbtn:hover{transform:scale(1.03)}
+.week{display:flex;gap:6px;margin-top:10px}
+.dc{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;font-size:10.5px;font-weight:600;border:1px solid var(--bd-subtle);color:var(--t2)}
+.dc.f{background:var(--su-bg);border-color:var(--su-bd);color:var(--su-fg)}.dc.w{background:var(--wa-bg);border-color:var(--wa-bd);color:var(--wa-fg)}.dc.o{background:var(--sunken);color:var(--tdis)}
+.steps{display:flex;align-items:center;flex-wrap:wrap;margin:2px 0 14px}
+.st{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--tm);padding:6px 0}
+.st .n{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;border:1.5px solid var(--bd-strong);background:var(--raised)}
+.st.dn2 .n{background:var(--su-bg);border-color:var(--su-bd);color:var(--su-fg)}.st.cur{color:var(--t1);font-weight:600}.st.cur .n{background:var(--b600);border-color:var(--b600);color:#fff}
+.st .bar{width:30px;height:1px;background:var(--bd-strong);margin:0 9px}
+.mx th,.mx td{text-align:center;padding:8px 6px}.mx td:first-child,.mx th:first-child{text-align:left;padding-left:12px}
+.cell{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--bd-strong);display:inline-grid;place-items:center;background:var(--raised);cursor:pointer;font-size:12px;transition:.12s var(--ease)}
+.cell.y{background:var(--su-bg);border-color:var(--su-fg);color:var(--su-fg)}.cell:hover{transform:scale(1.1)}
+.scope{font-size:10px;border-radius:5px;padding:1px 6px;background:var(--in-bg);color:var(--in-fg);border:1px solid var(--in-bd);font-weight:600}
+.note{font-size:12px;color:var(--tm);display:flex;gap:6px;margin-top:10px}
+.foot{padding:24px;text-align:center;color:var(--tm);font-size:12px}
+.bars{display:flex;align-items:flex-end;gap:8px;height:90px;padding-top:6px}
+.bars span{flex:1;background:var(--b300);border-radius:4px 4px 0 0}.bars span:nth-child(6){background:var(--b600)}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="logo">P</div><div><b>PeopleOS</b><span>Acme Pvt Ltd</span></div></div>
+    <button class="ni on" data-go="desk"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>My Desk</button>
+    <button class="ni"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10"/><path d="m16 16 2 2 4-4"/></svg>Inbox<span class="ct">4</span></button>
+    <div class="ng">People</div>
+    <button class="ni"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c.8-3.4 3.4-5 6.5-5s5.7 1.6 6.5 5"/></svg>Directory</button>
+    <button class="ni"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="19" r="2.5"/><circle cx="19" cy="19" r="2.5"/><path d="M12 7.5V13m0 0-5.5 4M12 13l5.5 4"/></svg>Org chart</button>
+    <div class="ng">Money</div>
+    <button class="ni" data-go="pay"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="2"/><path d="M3 11h18M8 16h4"/></svg>Payroll</button>
+    <button class="ni"><svg viewBox="0 0 24 24"><path d="M4 21V9l8-5.5L20 9v12"/><path d="M9 21v-6h6v6"/></svg>Compliance</button>
+    <div class="ng">Insights</div>
+    <button class="ni"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16M8 16l3-4 3 2 4-6"/></svg>Analytics</button>
+    <div class="ng">Admin</div>
+    <button class="ni" data-go="perm"><svg viewBox="0 0 24 24"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 14v3"/></svg>Permissions</button>
+    <button class="ni"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 4.5v2m0 11v2m7.5-7.5h-2m-11 0h-2"/></svg>Settings</button>
+  </aside>
+
+  <div class="main">
+    <div class="top">
+      <span class="crumb">Acme · <b id="crumb">My Desk</b></span>
+      <div class="search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Search people, pages, actions…<span class="kbd">⌘K</span></div>
+      <button class="tb" title="Quick add"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+      <button class="tb" id="theme" title="Toggle theme"><svg viewBox="0 0 24 24"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4 7 7 0 0 0 20 14.5Z"/></svg></button>
+      <button class="tb" title="Notifications"><svg viewBox="0 0 24 24"><path d="M6 9.5a6 6 0 0 1 12 0c0 5 1.7 6 1.7 6H4.3S6 14.5 6 9.5"/><path d="M10.3 19.5a2 2 0 0 0 3.4 0"/></svg><span class="dot"></span></button>
+      <div class="av">AR</div>
+    </div>
+
+    <div class="page">
+      <div class="tabs" role="tablist">
+        <button class="on" data-v="desk">My Desk (HR)</button>
+        <button data-v="pay">Payroll Run Room</button>
+        <button data-v="perm">Permissions matrix</button>
+      </div>
+
+      <!-- MY DESK -->
+      <section class="view on" id="v-desk">
+        <div class="ph"><div><h1>Good morning, Asha.</h1><div class="sub">Sat 13 Jun 2026 · HR Cockpit · Acme Pvt Ltd</div></div>
+          <div class="act"><button class="btn btn-sec">Run payroll</button><button class="btn btn-pri">+ Quick add</button></div></div>
+        <div class="grid c4" style="margin-bottom:16px">
+          <div class="card kpi"><div class="bd"><div class="lab">Headcount</div><div class="val">218</div><div class="d up">▲ 6 vs May · 3 joining</div></div></div>
+          <div class="card kpi"><div class="bd"><div class="lab">Present today</div><div class="val">91.7%</div><div class="d fl">187 in · 9 leave · 4 WFH</div></div></div>
+          <div class="card kpi"><div class="bd"><div class="lab">June payroll</div><div class="val">6 days</div><div class="d dn">to cutoff · 3 gates open</div></div></div>
+          <div class="card kpi"><div class="bd"><div class="lab">Attrition 12-mo</div><div class="val">8.4%</div><div class="d up">▼ 1.1 pt vs FY25</div></div></div>
+        </div>
+        <div class="grid c2">
+          <div class="grid" style="align-content:start">
+            <div class="card"><div class="hd"><h3>Waiting on you</h3><span class="chip bra">4 approvals</span><span class="more">Open Inbox →</span></div>
+              <div class="bd" style="padding:0"><table>
+                <tr><td><div class="who"><span class="a a1">KS</span><div>Kabir Sethi<small>Earned leave · 3 days · 14–16 Jul</small></div></div></td><td><span class="chip su">Balance OK</span></td><td><div class="rowact"><button class="mini ok">Approve</button><button class="mini no">Reject</button></div></td></tr>
+                <tr><td><div class="who"><span class="a a2">MN</span><div>Meera Nair<small>Expense · client travel · ₹8,420</small></div></div></td><td><span class="chip wa">Over cap ₹6k</span></td><td><div class="rowact"><button class="mini ok">Approve</button><button class="mini no">Reject</button></div></td></tr>
+                <tr><td><div class="who"><span class="a a3">RV</span><div>Rahul Verma<small>Regularization · missed out-punch</small></div></div></td><td><span class="chip inf">Evidence ✓</span></td><td><div class="rowact"><button class="mini ok">Approve</button><button class="mini no">Reject</button></div></td></tr>
+              </table></div></div>
+            <div class="card"><div class="hd"><h3>Compliance — next dues</h3><span class="more">Calendar →</span></div>
+              <div class="bd" style="display:flex;gap:10px;flex-wrap:wrap"><span class="chip wa">TDS · 7 Jul · ₹4,82,110</span><span class="chip inf">PF ECR · 15 Jul</span><span class="chip inf">ESI · 15 Jul</span><span class="chip su">PT (KA) · paid ✓</span><span class="chip da">Form 16 · 3 days left</span></div></div>
+            <div class="card"><div class="hd"><h3>Headcount trend</h3><span class="muted" style="font-size:11px">data-table toggle ⓘ</span></div><div class="bd"><div class="bars"><span style="height:48%"></span><span style="height:55%"></span><span style="height:52%"></span><span style="height:64%"></span><span style="height:70%"></span><span style="height:82%"></span></div><div class="muted" style="font-size:11px;margin-top:6px">Jan → Jun · joiners vs exits</div></div></div>
+          </div>
+          <div class="grid" style="align-content:start">
+            <div class="card"><div class="hd"><h3>My day</h3><span class="chip su">In 09:02 · geo ✓</span></div>
+              <div class="bd"><div class="punch"><button class="pbtn">Check out</button><div><div style="font-size:24px;font-weight:650">06:41</div><div class="muted" style="font-size:12px">worked today</div><div class="week"><span class="dc f">M</span><span class="dc f">T</span><span class="dc w">W</span><span class="dc f">T</span><span class="dc" style="border-color:var(--b600);color:var(--b700)">F</span><span class="dc o">S</span><span class="dc o">S</span></div></div></div></div></div>
+            <div class="card"><div class="hd"><h3>Leave balances</h3><span class="more">Ledger →</span></div><div class="bd rings" id="rings"></div></div>
+            <div class="card"><div class="hd"><h3>Around you</h3></div><div class="bd" style="font-size:13px;display:grid;gap:9px">
+              <div>🌿 <b>2 on leave</b> today — Nikhil, Sana</div><div>🎂 <b>Priya</b>'s birthday tomorrow · <a href="#" style="color:var(--b700)">send wishes</a></div><div>🗓 Next holiday — <b>Independence Day</b>, 15 Aug</div></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAYROLL RUN ROOM -->
+      <section class="view" id="v-pay">
+        <div class="ph"><div><h1>Payroll · June 2026</h1><div class="sub">Run #PR-0061 · 218 employees · Acme Pvt Ltd</div></div>
+          <div class="act"><button class="btn btn-sec">Export register</button><button class="btn btn-pri">Validate &amp; continue</button></div></div>
+        <div class="steps">
+          <span class="st dn2"><span class="n">✓</span>Readiness</span><span class="bar"></span>
+          <span class="st dn2"><span class="n">✓</span>Inputs</span><span class="bar"></span>
+          <span class="st cur"><span class="n">3</span>Preview &amp; validate</span><span class="bar"></span>
+          <span class="st"><span class="n">4</span>Lock</span><span class="bar"></span>
+          <span class="st"><span class="n">5</span>Publish &amp; pay</span>
+        </div>
+        <div class="grid c4" style="margin-bottom:16px">
+          <div class="card kpi"><div class="bd"><div class="lab">Gross</div><div class="val" style="font-size:23px">₹1.84 Cr</div><div class="d fl">218 paid</div></div></div>
+          <div class="card kpi"><div class="bd"><div class="lab">Deductions</div><div class="val" style="font-size:23px">₹31.2 L</div><div class="d fl">PF·ESI·PT·TDS</div></div></div>
+          <div class="card kpi"><div class="bd"><div class="lab">Net payout</div><div class="val" style="font-size:23px">₹1.53 Cr</div><div class="d up">▲ 2.1% vs May</div></div></div>
+          <div class="card kpi"><div class="bd"><div class="lab">Exceptions</div><div class="val" style="font-size:23px;color:var(--da-fg)">3</div><div class="d dn">resolve to lock</div></div></div>
+        </div>
+        <div class="card"><div class="hd"><h3>Register preview</h3><span class="chip wa">3 flags</span><span class="more">Variance vs May · Columns ⚙</span></div>
+          <div class="bd" style="padding:0;overflow-x:auto"><table>
+            <tr><th>Employee</th><th style="text-align:right">Gross</th><th style="text-align:right">LOP</th><th style="text-align:right">PF</th><th style="text-align:right">TDS</th><th style="text-align:right">Net</th><th>Δ</th><th>Flag</th></tr>
+            <tr><td><div class="who"><span class="a a1">KS</span><div>Kabir Sethi<small>EMP-0142 · Eng</small></div></div></td><td class="num">1,12,000.00</td><td class="num">–</td><td class="num">5,400.00</td><td class="num">9,210.00</td><td class="num"><b>95,140.00</b></td><td><span class="chip su">+0.0%</span></td><td></td></tr>
+            <tr><td><div class="who"><span class="a a3">RV</span><div>Rahul Verma<small>EMP-0096 · Support</small></div></div></td><td class="num">64,000.00</td><td class="num">2.0 d</td><td class="num">3,260.00</td><td class="num">2,110.00</td><td class="num"><b>52,890.00</b></td><td><span class="chip da">−8.4%</span></td><td><span class="chip wa">LOP check</span></td></tr>
+            <tr><td><div class="who"><span class="a a2">MN</span><div>Meera Nair<small>EMP-0203 · Sales</small></div></div></td><td class="num">88,500.00</td><td class="num">–</td><td class="num">4,420.00</td><td class="num">—</td><td class="num"><b>79,610.00</b></td><td><span class="chip su">+1.2%</span></td><td><span class="chip da">PAN missing</span></td></tr>
+          </table></div>
+          <div class="bd note">Every figure opens a formula-trace popover (regime-aware TDS = annual projection ÷ remaining months) · locked periods become read-only with audit on unlock.</div>
+        </div>
+      </section>
+
+      <!-- PERMISSIONS -->
+      <section class="view" id="v-perm">
+        <div class="ph"><div><h1>Roles &amp; permissions</h1><div class="sub">Role · <b>Payroll Officer</b> — 3 members · v7 · edited by Anita</div></div>
+          <div class="act"><button class="btn btn-sec">View as this role</button><button class="btn btn-pri">Save role</button></div></div>
+        <div class="grid c2">
+          <div class="card"><div class="hd"><h3>Permission matrix</h3><span class="chip inf">module × action</span></div>
+            <div class="bd" style="padding:0;overflow-x:auto"><table class="mx">
+              <tr><th>Module</th><th>Read</th><th>Create</th><th>Update</th><th>Approve</th><th>Config</th><th>Export</th><th>Scope</th></tr>
+              <tr><td><b>payroll</b></td><td><span class="cell y">✓</span></td><td><span class="cell y">✓</span></td><td><span class="cell y">✓</span></td><td><span class="cell y">✓</span></td><td><span class="cell"></span></td><td><span class="cell y">✓</span></td><td><span class="scope">Company</span></td></tr>
+              <tr><td><b>employees</b></td><td><span class="cell y">✓</span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="scope">Company</span></td></tr>
+              <tr><td><b>compliance</b></td><td><span class="cell y">✓</span></td><td><span class="cell y">✓</span></td><td><span class="cell y">✓</span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="cell y">✓</span></td><td><span class="scope">Company</span></td></tr>
+              <tr><td><b>expenses</b></td><td><span class="cell y">✓</span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="cell y">✓</span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="scope">Company</span></td></tr>
+              <tr><td><b>recruitment</b></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td><span class="cell"></span></td><td class="muted">—</td></tr>
+            </table></div>
+            <div class="bd muted" style="font-size:12px">Space toggles · row/column headers toggle all · scope per read/update grant</div></div>
+          <div class="grid" style="align-content:start">
+            <div class="card"><div class="hd"><h3>Field-level security · payroll</h3></div><div class="bd" style="padding:0"><table>
+              <tr><th>Field group</th><th>This role</th></tr>
+              <tr><td>Compensation figures</td><td><span class="chip su">Read</span></td></tr>
+              <tr><td>Bank account</td><td><span class="chip wa">Masked ····6210</span></td></tr>
+              <tr><td>PAN / Aadhaar</td><td><span class="chip wa">Masked · logged</span></td></tr>
+            </table></div></div>
+            <div class="card"><div class="hd"><h3>Impact</h3><span class="chip wa">2 warnings</span></div><div class="bd" style="font-size:13px;display:grid;gap:9px">
+              <div>✅ 3 members affected — Priya, Tarun, Nilesh</div>
+              <div>⚠️ <b>expenses.approve</b> without <b>expenses.read</b> — add read?</div>
+              <div>⚠️ No <b>settings</b> access — payroll calendar edits blocked</div></div></div>
+          </div>
+        </div>
+      </section>
+
+      <div class="foot"><b>PeopleOS UI v2</b> · Indigo design system (docs/redesign §02) · toggle ☾ for dark · mockup, not production</div>
+    </div>
+  </div>
+</div>
+<script>
+const root=document.documentElement;
+document.getElementById('theme').onclick=()=>root.dataset.theme=root.dataset.theme==='dark'?'light':'dark';
+const views=[...document.querySelectorAll('.view')],tabs=[...document.querySelectorAll('.tabs button')],crumb=document.getElementById('crumb');
+const names={desk:'My Desk',pay:'Payroll · June 2026',perm:'Roles & permissions'};
+function go(v){views.forEach(s=>s.classList.toggle('on',s.id==='v-'+v));tabs.forEach(t=>t.classList.toggle('on',t.dataset.v===v));crumb.textContent=names[v]||'My Desk';}
+tabs.forEach(t=>t.onclick=()=>go(t.dataset.v));
+document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>{document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));b.classList.add('on');go(b.dataset.go);});
+// leave rings
+const C=2*Math.PI*26;
+document.getElementById('rings').innerHTML=[['Casual',8,12,'var(--viz1)'],['Sick',10,12,'var(--viz2)'],['Earned',12.5,15,'var(--viz4)']].map(([l,a,t,c])=>{
+ const frac=a/t;return `<div class="ring"><svg width="64" height="64" viewBox="0 0 64 64"><circle cx="32" cy="32" r="26" fill="none" stroke="var(--sunken)" stroke-width="7"/><circle cx="32" cy="32" r="26" fill="none" stroke="${c}" stroke-width="7" stroke-linecap="round" stroke-dasharray="${(C*frac).toFixed(1)} ${C.toFixed(1)}" transform="rotate(-90 32 32)"/><text class="v" x="32" y="37" text-anchor="middle">${a%1?a.toFixed(1):a}</text></svg><span>${l}</span><span class="muted" style="font-size:11px">${t} total</span></div>`;}).join('');
+</script>
+</body>
+</html>

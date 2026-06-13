@@ -1,0 +1,148 @@
+/* ============================================================================
+   PeopleOS UI v2 — Design Tokens (reference implementation of sections/02)
+   Drop-in for apps/web/app/tokens.css; mapped into tailwind.config.ts per §02 §14.
+   Light + dark (data-theme) + density (data-density). Values are NORMATIVE — they
+   match sections/02-design-system.md §1–§5 exactly. White-label overrides
+   --color-brand-600 at runtime (§02 §7) and re-derives the ramp.
+   ============================================================================ */
+
+:root {
+  /* ---- Brand: Indigo (§02 §1) ---- */
+  --color-brand-50:  #eef0ff;
+  --color-brand-100: #e0e3ff;
+  --color-brand-300: #a9b0f5;
+  --color-brand-500: #6366f1;
+  --color-brand-600: #4f46e5;   /* primary action — AA on white */
+  --color-brand-700: #4338ca;
+  --color-brand-900: #312e81;
+
+  /* ---- Neutral ramp: warm graphite (§02 §2.1) ---- */
+  --surface-canvas:   #f7f8fa;
+  --surface-raised:   #ffffff;
+  --surface-sunken:   #f1f3f6;
+  --surface-hover:    #f3f4f7;
+  --surface-selected: var(--color-brand-50);
+  --border-subtle:    #ebedf1;
+  --border-default:   #dde1e7;
+  --border-strong:    #c5cbd4;
+  --text-primary:     #161a20;
+  --text-secondary:   #4b5563;
+  --text-muted:       #6b7280;   /* AA ≥4.5:1 on raised */
+  --text-disabled:    #9aa2ae;
+  --text-on-brand:    #ffffff;
+
+  /* ---- Semantic (fg / bg / border) (§02 §2.2 + status map §2.3) ---- */
+  --success-fg: #0f7a4d;  --success-bg: #e6f6ee;  --success-border: #a7e0c2;
+  --warning-fg: #9a6700;  --warning-bg: #fbf1d9;  --warning-border: #ebd08a;
+  --danger-fg:  #b42318;  --danger-bg:  #fce9e7;  --danger-border:  #f0b3ae;
+  --info-fg:    #1357c4;  --info-bg:    #e7f0fe;  --info-border:    #aecbf5;
+  --neutral-fg: var(--text-secondary); --neutral-bg: var(--surface-sunken); --neutral-border: var(--border-default);
+
+  /* ---- Data-viz ordered palette (§02 §2.4) ---- */
+  --viz-1: var(--color-brand-600); --viz-2: #0ea5a4; --viz-3: #f59e0b;
+  --viz-4: #8b5cf6; --viz-5: #ec4899; --viz-6: #64748b;
+
+  /* ---- Type (§02 §3) ---- */
+  --font-sans: "Inter", system-ui, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --fs-display: 30px; --lh-display: 36px;
+  --fs-h1: 24px; --lh-h1: 32px;
+  --fs-h2: 20px; --lh-h2: 28px;
+  --fs-h3: 16px; --lh-h3: 24px;
+  --fs-body: 14px; --lh-body: 20px;
+  --fs-body-sm: 13px; --lh-body-sm: 18px;
+  --fs-caption: 12px; --lh-caption: 16px;
+  --fs-num-kpi: 28px;
+
+  /* ---- Space scale (§02 §4) ---- */
+  --space-0: 0; --space-1: 2px; --space-2: 4px; --space-3: 8px; --space-4: 12px;
+  --space-5: 16px; --space-6: 20px; --space-7: 24px; --space-8: 32px;
+  --space-9: 40px; --space-10: 48px; --space-11: 64px;
+  --card-pad: var(--space-6); --section-gap: var(--space-7);
+
+  /* ---- Radius (§02 §4) ---- */
+  --radius-control: 8px; --radius-input: 8px; --radius-card: 12px;
+  --radius-overlay: 16px; --radius-pill: 999px;
+
+  /* ---- Elevation (§02 §4) ---- */
+  --elev-1: 0 1px 2px rgba(16,20,30,.06);
+  --elev-2: 0 4px 12px rgba(16,20,30,.08);
+  --elev-3: 0 12px 32px rgba(16,20,30,.12);
+
+  /* ---- Z-index (§02 §4) ---- */
+  --z-sticky: 10; --z-chrome: 20; --z-drawer: 30; --z-modal: 40; --z-palette: 50; --z-toast: 60;
+
+  /* ---- Motion (§02 §4) ---- */
+  --ease-standard: cubic-bezier(.2,.6,.2,1);
+  --dur-fast: 120ms; --dur-base: 180ms; --dur-slow: 240ms;
+
+  /* ---- Focus (§02 §8 / §11) ---- */
+  --focus-ring: 0 0 0 2px var(--surface-raised), 0 0 0 4px var(--color-brand-500);
+
+  /* ---- Layout ---- */
+  --sidebar-w: 260px; --sidebar-rail: 72px; --topbar-h: 64px;
+  --row-h: 48px; --control-h: 40px;
+}
+
+/* ---- Dark theme (§02 §2.1/§6) ---- */
+[data-theme="dark"] {
+  --surface-canvas:   #0e1116;
+  --surface-raised:   #171b22;
+  --surface-sunken:   #0a0d11;
+  --surface-hover:    #1e232b;
+  --surface-selected: #1b2030;
+  --border-subtle:    #232932;
+  --border-default:   #2c333d;
+  --border-strong:    #3a424e;
+  --text-primary:     #e8ebf0;
+  --text-secondary:   #aeb6c2;
+  --text-muted:       #8b95a3;
+  --text-disabled:    #5a6472;
+
+  --success-fg: #56c98a; --success-bg: #10271c; --success-border: #1e4332;
+  --warning-fg: #e0b341; --warning-bg: #2a2210; --warning-border: #4a3c16;
+  --danger-fg:  #f0817a; --danger-bg:  #2b1614; --danger-border:  #52211c;
+  --info-fg:    #6ba6f5; --info-bg:    #11203a; --info-border:    #1e3a63;
+
+  /* brand stays legible on dark surfaces; primary buttons keep brand-600 + light text */
+  --color-brand-50: #1b2030;
+
+  --elev-1: 0 1px 2px rgba(0,0,0,.4);
+  --elev-2: 0 4px 12px rgba(0,0,0,.5);
+  --elev-3: 0 12px 32px rgba(0,0,0,.6);
+  --focus-ring: 0 0 0 2px var(--surface-raised), 0 0 0 4px var(--color-brand-500);
+}
+
+/* ---- Density: compact (§02 §5) ---- */
+[data-density="compact"] {
+  --row-h: 36px; --control-h: 34px;
+  --card-pad: var(--space-4); --section-gap: var(--space-5);
+}
+
+/* ---- Reduced motion (§02 §4 / §11 B5) ---- */
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-fast: 1ms; --dur-base: 1ms; --dur-slow: 1ms; }
+}
+
+/* ---- Print (§02 §12) ---- */
+@media print {
+  :root, [data-theme="dark"] {
+    --surface-canvas: #fff; --surface-raised: #fff; --surface-sunken: #fff;
+    --text-primary: #000; --text-secondary: #222; --text-muted: #444;
+    --elev-1: none; --elev-2: none; --elev-3: none;
+  }
+}
+
+/* ============================================================================
+   tailwind.config.ts mapping (§02 §14):
+   theme.extend.colors = {
+     brand:{50:'var(--color-brand-50)',…,900:'var(--color-brand-900)'},
+     surface:{canvas,raised,sunken,hover,selected},
+     border:{subtle,DEFAULT:'var(--border-default)',strong},
+     text:{primary,secondary,muted,disabled,'on-brand'},
+     success/warning/danger/info/neutral:{fg,bg,border},
+   }
+   borderRadius:{control,input,card,overlay,pill}; boxShadow:{1,2,3}
+   fontFamily:{sans:'var(--font-sans)',mono:'var(--font-mono)'}
+   darkMode:['selector','[data-theme="dark"]']
+   ============================================================================ */

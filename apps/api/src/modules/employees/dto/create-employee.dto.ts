@@ -1,5 +1,6 @@
 import { Type } from "class-transformer";
-import { IsDateString, IsEmail, IsNumber, IsOptional, IsString, IsArray, ValidateNested } from "class-validator";
+import { IsDateString, IsEmail, IsEnum, IsNumber, IsOptional, IsString, IsArray, ValidateNested } from "class-validator";
+import { EmployeeStatus } from "@prisma/client";
 
 export class CreateEmployeeDto {
   @IsString()
@@ -20,6 +21,13 @@ export class CreateEmployeeDto {
 
   @IsDateString()
   joiningDate!: string;
+
+  // Optional initial status. Omitted → schema default ACTIVE. Set to PROBATION
+  // for new hires so the confirm-probation flow becomes reachable (it requires
+  // status === PROBATION). Validated against the EmployeeStatus enum.
+  @IsOptional()
+  @IsEnum(EmployeeStatus)
+  status?: EmployeeStatus;
 
   @IsString()
   companyId!: string;

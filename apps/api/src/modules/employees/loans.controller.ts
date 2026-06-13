@@ -7,7 +7,7 @@ export class LoansController {
   constructor(private readonly prisma: PrismaService) {}
 
   @Get("list/all")
-  @RequirePermissions("employee.read")
+  @RequirePermissions("employees.read")
   async getAllLoans() {
     return this.prisma.employeeLoan.findMany({
       include: {
@@ -20,7 +20,7 @@ export class LoansController {
   }
 
   @Post()
-  @RequirePermissions("employee.update")
+  @RequirePermissions("employees.update")
   async createLoan(
     @Body()
     body: {
@@ -46,7 +46,7 @@ export class LoansController {
   }
 
   @Patch(":id/decide")
-  @RequirePermissions("employee.update")
+  @RequirePermissions("employees.approve")
   async decideLoan(
     @Param("id") id: string,
     @Body() body: { status: "APPROVED" | "REJECTED" }

@@ -29,80 +29,9 @@ export class AssetsService {
       orderBy: { assetTag: "asc" },
     });
 
-    // 2. If table is empty, auto-seed default mock assets linked to active employees
-    if (assets.length === 0) {
-      const employees = await this.prisma.employee.findMany({
-        where: { companyId: tenantId, status: "ACTIVE" },
-        include: { department: true },
-        orderBy: { employeeCode: "asc" },
-        take: 3,
-      });
-
-      if (employees.length > 0) {
-        const defaultAssets = [
-          {
-            assetTag: "SKY-LAP-001",
-            type: "Laptop",
-            item: "HP EliteBook",
-            assignedToId: employees[0].id,
-            status: "ASSIGNED",
-            condition: "GOOD",
-          },
-          {
-            assetTag: "SKY-LAP-002",
-            type: "Laptop",
-            item: "Dell Latitude",
-            assignedToId: employees[1] ? employees[1].id : employees[0].id,
-            status: "ASSIGNED",
-            condition: "GOOD",
-          },
-          {
-            assetTag: "SKY-ID-001",
-            type: "ID Card",
-            item: "Employee ID Card",
-            assignedToId: employees[0].id,
-            status: "ASSIGNED",
-            condition: "GOOD",
-          },
-          {
-            assetTag: "SKY-PHN-001",
-            type: "Phone",
-            item: "iPhone 13",
-            assignedToId: null,
-            status: "AVAILABLE",
-            condition: "GOOD",
-          },
-          {
-            assetTag: "SKY-ACC-001",
-            type: "Accessories",
-            item: "Logitech Keyboard & Mouse",
-            assignedToId: null,
-            status: "AVAILABLE",
-            condition: "GOOD",
-          },
-        ];
-
-        for (const item of defaultAssets) {
-          await this.prisma.companyAsset.create({
-            data: {
-              companyId: tenantId,
-              ...item,
-            },
-          });
-        }
-
-        // Re-query newly created assets
-        assets = await this.prisma.companyAsset.findMany({
-          where: { companyId: tenantId },
-          include: {
-            assignedTo: {
-              include: { department: true },
-            },
-          },
-          orderBy: { assetTag: "asc" },
-        });
-      }
-    }
+    // The asset register reflects real data only — no mock self-seeding.
+    // (Previously fabricated 5 demo assets when empty, which meant the
+    // register could never be empty and deleted assets resurrected.)
 
     // 3. Fetch audit logs
     const auditLogs = await this.prisma.auditLog.findMany({

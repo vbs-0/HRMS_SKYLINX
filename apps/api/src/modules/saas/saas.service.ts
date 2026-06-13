@@ -387,25 +387,28 @@ export class SaasService {
       },
     });
 
-    // 7. Get or Create SUPER_ADMIN role (global)
-    let superAdminRole = await this.prisma.role.findUnique({
-      where: { name: "SUPER_ADMIN" },
+    // 7. The signup admin is a TENANT admin (HR_ADMIN) — NOT SUPER_ADMIN.
+    // SUPER_ADMIN/SYSTEM_OWNER are platform-owner roles that bypass tenant
+    // scoping (see TenantMiddleware.isOwner); granting them via public signup
+    // would make every new tenant a cross-tenant owner.
+    let hrAdminRole = await this.prisma.role.findUnique({
+      where: { name: "HR_ADMIN" },
     });
-    if (!superAdminRole) {
-      superAdminRole = await this.prisma.role.create({
+    if (!hrAdminRole) {
+      hrAdminRole = await this.prisma.role.create({
         data: {
-          name: "SUPER_ADMIN",
-          description: "Super Administrator with full access",
+          name: "HR_ADMIN",
+          description: "Tenant HR Administrator with full operational access",
           isSystemRole: true,
         },
       });
     }
 
-    // Associate admin user with SUPER_ADMIN role
+    // Associate admin user with the tenant HR_ADMIN role
     await this.prisma.userRole.create({
       data: {
         userId: user.id,
-        roleId: superAdminRole.id,
+        roleId: hrAdminRole.id,
       },
     });
 

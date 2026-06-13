@@ -47,7 +47,7 @@ export function AttendanceConsole() {
       <ReferenceModuleHeader
         eyebrow="Attendance"
         title="Attendance Dashboard"
-        summary="Review daily presence, exceptions, regularization requests and attendance rules from one Skylinx PeopleOS control desk."
+        summary="Review daily presence, exceptions, regularization requests and attendance rules from one PeopleOS control desk."
         tabs={["Dashboard", "Attendance Log", "Regularization", "Penalty Logs", "Shift & Rules", "Bulk Upload"]}
         activeTab={activeTab}
         onTabChange={setActiveTab}

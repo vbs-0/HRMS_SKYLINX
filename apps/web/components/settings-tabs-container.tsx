@@ -27,7 +27,7 @@ export function SettingsTabsContainer() {
           { label: "Export", icon: Download },
         ]}
         stats={[
-          { label: "Branding", value: "SKYLINX", note: "Logo locked" },
+          { label: "Branding", value: "PeopleOS", note: "Logo locked" },
           { label: "Access", value: "RBAC", note: "Permissions" },
           { label: "Modules", value: "Live", note: "Controls" },
         ]}

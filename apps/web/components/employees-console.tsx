@@ -1725,7 +1725,7 @@ function LetterTemplatesPanel() {
             {renderedLetter ? (
               <div className="print-area border border-dashed border-slate-350 p-8 bg-white rounded-lg min-h-[300px] shadow-inner print:border-none print:shadow-none" id="print-area">
                 <div className="text-center mb-6">
-                  <h2 className="text-xl font-bold uppercase tracking-wider text-slate-800">Skylinx PeopleOS</h2>
+                  <h2 className="text-xl font-bold uppercase tracking-wider text-slate-800">PeopleOS</h2>
                   <p className="text-[10px] text-slate-400">121 Innovation Way, Tech District, Mumbai</p>
                   <hr className="my-3 border-slate-200" />
                 </div>

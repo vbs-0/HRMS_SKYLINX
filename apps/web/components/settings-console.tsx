@@ -101,7 +101,7 @@ const defaultClientRules: ClientRules = {
     showPoweredBy: true,
     primaryColor: "#078ced",
     supportEmail: "support@example.com",
-    supportPhone: "+91-800-SKYLINX",
+    supportPhone: "+91-800-PeopleOS",
   },
   attendance: {
     workWeek: "Monday to Saturday",
@@ -606,7 +606,7 @@ export function SettingsConsole() {
               </div>
               <div className="flex flex-col gap-1">
                 <label className="text-xs font-semibold text-muted">Support Phone</label>
-                <input className={inputClass()} name="supportPhone" defaultValue={String(rules.branding.supportPhone || "+91-800-SKYLINX")} placeholder="+91-800-SKYLINX" type="tel" />
+                <input className={inputClass()} name="supportPhone" defaultValue={String(rules.branding.supportPhone || "+91-800-PeopleOS")} placeholder="+91-800-PeopleOS" type="tel" />
               </div>
               {checkbox("showPoweredBy", "Show Powered By Badge", Boolean(rules.branding.showPoweredBy))}
             </div>

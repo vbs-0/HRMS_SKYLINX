@@ -120,7 +120,7 @@ export function SetupBrandingForm() {
         method: "PATCH",
         body: JSON.stringify({
           branding: {
-            platformBrand: "SKYLINX PeopleOS",
+            platformBrand: "PeopleOS",
             clientDisplayName: cleanCompany.name || cleanCompany.legalName || "Client Company",
             logoDataUrl,
             linkedinUrl: linkedinUrl.trim(),

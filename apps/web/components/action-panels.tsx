@@ -444,7 +444,7 @@ export function InsuranceActionPanel({ defaultAction = "policy" }: { defaultActi
         <option value="">Select policy for dependent/claim</option>
         {policies.map((policy) => <option key={policy.value} value={policy.value}>{policy.label}</option>)}
       </select>
-      <input className={inputClass()} name="provider" defaultValue="SKYLINX Group Health" placeholder="Provider" />
+      <input className={inputClass()} name="provider" defaultValue="" placeholder="Provider" />
       <input className={inputClass()} name="policyNumber" placeholder="Policy Number" />
       <input className={inputClass()} name="policyType" defaultValue="Group Mediclaim" placeholder="Policy Type" />
       <input className={inputClass()} name="coverageAmount" min="1" placeholder="Coverage Amount" type="number" />

@@ -22,7 +22,7 @@ export function SaasPageContent() {
           { label: "Refresh", icon: RefreshCcw },
         ]}
         stats={[
-          { label: "Tenant", value: "SKYLINX", note: "Company" },
+          { label: "Tenant", value: "PeopleOS", note: "Company" },
           { label: "Plan", value: "Standard", note: "Active" },
           { label: "Modules", value: "Plan-based", note: "Access" },
         ]}

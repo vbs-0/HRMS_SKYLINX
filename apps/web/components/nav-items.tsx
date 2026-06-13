@@ -58,7 +58,7 @@ export const nav: Array<{ href: Route; label: string; icon: LucideIcon; group?: 
   { href: "/support", label: "Support", icon: CircleHelp },
   { href: "/grievance" as any, label: "Grievances", icon: AlertTriangle },
   { href: "/notifications", label: "Notifications", icon: Megaphone },
-  { href: "/social", label: "SkyNexus", icon: MessageSquareText },
+  { href: "/social", label: "Social", icon: MessageSquareText },
   { href: "/rewards", label: "Rewards", icon: Trophy },
   { href: "/reports", label: "Reports", icon: FileText },
   { href: "/security", label: "Security", icon: ShieldCheck },

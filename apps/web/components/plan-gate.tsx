@@ -22,7 +22,7 @@ export async function PlanGate({ children, moduleName, requiredPlan }: { childre
       </div>
       <h2 className="mt-5 text-2xl font-semibold text-[#172033]">{moduleName} is locked</h2>
       <p className="mx-auto mt-2 max-w-xl text-sm text-muted">
-        This module is part of the {requiredPlan} plan. Upgrade your SKYLINX PeopleOS subscription to unlock the full workflow.
+        This module is part of the {requiredPlan} plan. Upgrade your PeopleOS subscription to unlock the full workflow.
       </p>
       <div className="mt-6 flex flex-wrap justify-center gap-3">
         <Link className="inline-flex min-h-10 items-center rounded-lg bg-brand px-5 text-sm font-semibold text-white" href="/saas">

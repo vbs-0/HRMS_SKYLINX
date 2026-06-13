@@ -117,7 +117,7 @@ export default function SignupPage() {
         <div className="flex justify-center items-center gap-2 mb-3">
           <Sparkles className="h-8 w-8 text-indigo-400 animate-pulse" />
           <span className="text-2xl font-black tracking-wider bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
-            SKYLINX PeopleOS
+            PeopleOS
           </span>
         </div>
         <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
@@ -205,7 +205,7 @@ export default function SignupPage() {
                     <input
                       required
                       type="text"
-                      placeholder="e.g. Skylinx"
+                      placeholder="e.g. PeopleOS"
                       value={companyName}
                       onChange={(e) => {
                         setCompanyName(e.target.value);
@@ -225,7 +225,7 @@ export default function SignupPage() {
                     <input
                       required
                       type="text"
-                      placeholder="e.g. Skylinx Pvt Ltd"
+                      placeholder="e.g. PeopleOS Pvt Ltd"
                       value={companyLegalName}
                       onChange={(e) => setCompanyLegalName(e.target.value)}
                       className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-slate-700 bg-slate-900 text-sm outline-none focus:border-indigo-500"

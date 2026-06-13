@@ -19,7 +19,7 @@ export default async function DashboardPage() {
   );
 
   return (
-    <AppShell title="SKYLINX PeopleOS" subtitle="Company workspace, employee operations and HR workflows.">
+    <AppShell title="PeopleOS" subtitle="Company workspace, employee operations and HR workflows.">
       <LiveMetrics initial={metrics} />
 
       <section className="mt-6 grid grid-cols-[280px_1fr_300px] gap-6 max-2xl:grid-cols-[260px_1fr] max-xl:grid-cols-1">
@@ -51,10 +51,10 @@ export default async function DashboardPage() {
           </div>
 
           <div className="overflow-hidden rounded-lg border border-[#38a7f4] bg-white shadow-sm">
-            <div className="bg-[#38a7f4] p-2 text-center font-bold text-white">SKYLINX HR Desk</div>
+            <div className="bg-[#38a7f4] p-2 text-center font-bold text-white">HR Desk</div>
             <div className="grid gap-1 p-4 text-xs">
               <div><strong>Company</strong> {companyProfile.legalName}</div>
-              <div><strong>HR Owner</strong> SKYLINX HR</div>
+              <div><strong>HR Owner</strong> HR</div>
               <div><strong>Support</strong> support@example.com</div>
               <div><strong>Queries</strong> 555-0199</div>
             </div>

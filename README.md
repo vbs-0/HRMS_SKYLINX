@@ -35,7 +35,7 @@ This repository now includes the real product scaffold:
 - `packages/database`: PostgreSQL Prisma schema
 - `packages/shared`: shared module, role, and dashboard types
 - `docker-compose.yml`: local PostgreSQL and Redis services
-- `assets/skylinx-logo.png`: original SKYLINX Global Solutions logo
+- `assets/skylinx-logo.png`: original Acme Corp logo
 - `assets/skylinx-logo-display.png`: cropped display copy made from the original logo for clean UI placement
 
 ## Full-stack run plan
@@ -58,8 +58,8 @@ API docs: `http://localhost:4000/api/docs`
 
 Default seeded HR login placeholder:
 
-- Email: `hr.admin@skylinx.local`
-- Password: `Skylinx@123`
+- Email: `admin@example.com` (or whatever `HR_ADMIN_EMAIL` is set to in `.env`)
+- Password: `password123` (or `HR_ADMIN_PASSWORD` in `.env`)
 
 Use this only for local development and change it before any real deployment.
 
@@ -77,8 +77,8 @@ Login body:
 
 ```json
 {
-  "email": "hr.admin@skylinx.local",
-  "password": "Skylinx@123"
+  "email": "admin@example.com",
+  "password": "password123"
 }
 ```
 

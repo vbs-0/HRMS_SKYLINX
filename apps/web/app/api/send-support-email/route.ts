@@ -83,7 +83,7 @@ export async function POST(request: Request) {
             <div style="background-color: #f8fafc; border: 1px solid #eef2f7; padding: 18px; border-radius: 6px;">
               <p style="white-space: pre-wrap; margin: 0; color: #34465f; line-height: 1.6; font-size: 14px;">${description.replace(/\n/g, "<br/>")}</p>
             </div>
-            <p style="font-size: 11px; color: #8ca0bf; margin-top: 25px; border-top: 1px solid #eef2f7; padding-top: 15px;">Sent via SKYLINX PeopleOS Support Desk at: ${timestamp}</p>
+            <p style="font-size: 11px; color: #8ca0bf; margin-top: 25px; border-top: 1px solid #eef2f7; padding-top: 15px;">Sent via PeopleOS Support Desk at: ${timestamp}</p>
           </div>
         </div>
       `
@@ -115,7 +115,7 @@ export async function POST(request: Request) {
             <div style="background-color: #f8fafc; border: 1px solid #eef2f7; padding: 18px; border-radius: 6px; margin-bottom: 25px;">
               <p style="white-space: pre-wrap; margin: 0; color: #34465f; line-height: 1.6; font-size: 14px;">${description.replace(/\n/g, "<br/>")}</p>
             </div>
-            <p style="font-size: 11px; color: #8ca0bf; margin-top: 25px; border-top: 1px solid #eef2f7; padding-top: 15px;">Sent via SKYLINX PeopleOS Support Desk at: ${timestamp}</p>
+            <p style="font-size: 11px; color: #8ca0bf; margin-top: 25px; border-top: 1px solid #eef2f7; padding-top: 15px;">Sent via PeopleOS Support Desk at: ${timestamp}</p>
           </div>
         </div>
       `;
@@ -128,7 +128,7 @@ export async function POST(request: Request) {
     await cachedTransporter.verify();
 
     const mailOptions = {
-      from: `"SKYLINX Support" <${emailFrom}>`,
+      from: `"PeopleOS Support" <${emailFrom}>`,
       to: hrEmail,
       subject,
       text: textContent,

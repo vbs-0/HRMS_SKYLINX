@@ -112,7 +112,7 @@ export function PayrollConsole() {
   const [showSalaryModal, setShowSalaryModal] = useState(false);
   const [salaryForm, setSalaryForm] = useState({
     employeeId: "",
-    effectiveFrom: "2026-06-01",
+    effectiveFrom: new Date().toISOString().slice(0, 10),
     annualCtc: 600000,
     basic: 300000,
     hra: 120000,
@@ -884,7 +884,7 @@ export function PayrollConsole() {
               onClick={() => {
                 setSalaryForm({
                   employeeId: "",
-                  effectiveFrom: "2026-06-01",
+                  effectiveFrom: new Date().toISOString().slice(0, 10),
                   annualCtc: 600000,
                   basic: 300000,
                   hra: 120000,
@@ -943,7 +943,7 @@ export function PayrollConsole() {
                           onClick={() => {
                             setSalaryForm({
                               employeeId: s.employeeId,
-                              effectiveFrom: s.effectiveFrom ? s.effectiveFrom.slice(0, 10) : "2026-06-01",
+                              effectiveFrom: s.effectiveFrom ? s.effectiveFrom.slice(0, 10) : new Date().toISOString().slice(0, 10),
                               annualCtc: Number(s.annualCtc),
                               basic: Number(s.basic),
                               hra: Number(s.hra),

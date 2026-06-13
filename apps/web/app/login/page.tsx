@@ -6,7 +6,7 @@ export default function LoginPage() {
       <section className="w-full max-w-md rounded-lg border border-[#dce2eb] bg-white p-6 shadow-sm">
         <img src="/skylinx-logo-display.png" alt="Acme Corp" className="mb-6 h-16 w-44 object-contain" />
         <h1 className="text-2xl font-semibold">Sign in to PeopleOS</h1>
-        <p className="mt-1 text-sm text-muted">Use your SKYLINX HRMS account to continue.</p>
+        <p className="mt-1 text-sm text-muted">Use your PeopleOS account to continue.</p>
         <LoginForm />
       </section>
     </main>

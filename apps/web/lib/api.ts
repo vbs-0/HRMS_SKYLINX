@@ -48,7 +48,7 @@ function formatInrShort(value: number) {
 
 export async function getCompanyProfile(): Promise<CompanyProfile> {
   const fallback = {
-    name: "SKYLINX",
+    name: "PeopleOS",
     legalName: "Acme Corp",
     logoUrl: "/skylinx-logo-display.png",
     linkedinUrl: "",

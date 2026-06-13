@@ -2,7 +2,7 @@ import { AppShell } from "../../components/app-shell";
 import { PoliciesConsole } from "../../components/policies-console";
 
 export const metadata = {
-  title: "Policy Center · Skylinx PeopleOS",
+  title: "Policy Center · PeopleOS",
   description: "Company policies — view, acknowledge, and manage HR, Leave, Conduct, POSH, and IT policies.",
 };
 

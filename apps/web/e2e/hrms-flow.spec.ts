@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("SKYLINX PeopleOS HRMS E2E Suite", () => {
+test.describe("PeopleOS HRMS E2E Suite", () => {
   test.beforeEach(async ({ page }) => {
     // Navigate to login page
     await page.goto("/login");

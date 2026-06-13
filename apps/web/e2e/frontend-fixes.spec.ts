@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+test.use({ baseURL: 'http://localhost:3000' });
 
 async function login(page: any, email: string, pass: string) {
   await page.goto('/login');

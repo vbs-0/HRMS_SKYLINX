@@ -248,7 +248,7 @@ export function SaasConsole() {
 <body>
   <div class="top">
     <div>
-      <h1>SKYLINX PeopleOS Quote</h1>
+      <h1>PeopleOS Quote</h1>
       <div class="muted">Invoice No. ${escapeHtml(invoiceNumber)}</div>
     </div>
     <div>
@@ -259,7 +259,7 @@ export function SaasConsole() {
   <div class="box">
     <strong>Billed From</strong><br />
     Acme Corp<br />
-    SKYLINX PeopleOS HRMS<br />
+    PeopleOS HRMS<br />
     ${escapeHtml(supportEmail)} | +1-800-555-0199
   </div>
   <div class="box">
@@ -630,7 +630,7 @@ export function SaasConsole() {
           <div className="rounded-lg border border-[#dce2eb] p-4">
             <div className="text-xs font-bold uppercase text-muted">Billed From</div>
             <div className="mt-2 text-lg font-semibold text-[#172033]">Acme Corp</div>
-            <div className="mt-1 text-sm text-muted">SKYLINX PeopleOS HRMS</div>
+            <div className="mt-1 text-sm text-muted">PeopleOS HRMS</div>
             <div className="mt-3 text-sm text-[#34465f]">{supportEmail}</div>
             <div className="text-sm text-[#34465f]">+1-800-555-0199</div>
           </div>

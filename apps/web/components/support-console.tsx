@@ -416,7 +416,7 @@ export function SupportConsole() {
             <Card className="p-0">
               <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#dce2eb] p-5">
                 <div>
-                  <h2 className="text-lg font-semibold text-[#172033]">SKYLINX HR Support Departments</h2>
+                  <h2 className="text-lg font-semibold text-[#172033]">HR Support Departments</h2>
                   <p className="mt-1 text-sm text-muted">Direct queues routing payroll, attendance, onboarding and software operations.</p>
                 </div>
                 <button

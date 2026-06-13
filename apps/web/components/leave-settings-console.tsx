@@ -150,7 +150,7 @@ export function LeaveSettingsConsole() {
   const [selectedEmpIds, setSelectedEmpIds] = useState<string[]>([]);
   const [showAssignPopup, setShowAssignPopup] = useState(false);
   const [selectedAssignTypes, setSelectedAssignTypes] = useState<string[]>([]);
-  const [assignEffectiveDate, setAssignEffectiveDate] = useState("2026-06-06");
+  const [assignEffectiveDate, setAssignEffectiveDate] = useState(() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}`; });
 
   function loadAssignments() {
     apiFetch<any[]>("/leave/assignments")

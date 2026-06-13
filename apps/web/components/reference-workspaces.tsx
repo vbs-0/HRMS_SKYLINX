@@ -494,7 +494,7 @@ export function SecurityAdminWorkflowWorkspace() {
         <FieldGrid rows={[["Payroll", "Sensitive fields"], ["Documents", "Secure storage"], ["Audit Logs", "All actions"], ["Access", "Controlled"]]} />
       </MiniCard>
       <MiniCard title="Admin Controls">
-        <FieldGrid rows={[["Branding", "SKYLINX"], ["Modules", "Enable/disable"], ["Import/Export", "Controlled"], ["License", "Subscription ready"]]} />
+        <FieldGrid rows={[["Branding", "PeopleOS"], ["Modules", "Enable/disable"], ["Import/Export", "Controlled"], ["License", "Subscription ready"]]} />
       </MiniCard>
     </section>
   );
@@ -525,7 +525,7 @@ export function SaasBillingWorkflowWorkspace() {
   return (
     <section className="mb-5 grid grid-cols-3 gap-5 max-xl:grid-cols-1">
       <MiniCard title="Company Tenant">
-        <FieldGrid rows={[["Company", "SKYLINX"], ["Active Plan", "Standard"], ["Employee Limit", "100"], ["Upgrade Path", "Basic to Standard to Pro"]]} />
+        <FieldGrid rows={[["Company", "PeopleOS"], ["Active Plan", "Standard"], ["Employee Limit", "100"], ["Upgrade Path", "Basic to Standard to Pro"]]} />
       </MiniCard>
       <MiniCard title="Billing">
         <FieldGrid rows={[["Invoice", "Monthly"], ["Standard", "₹1,749/month"], ["Pro", "₹3,750/month"], ["Add-on User", "₹70 / ₹150"]]} />

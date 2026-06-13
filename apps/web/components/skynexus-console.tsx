@@ -455,7 +455,7 @@ export function SkyNexusConsole() {
                   />
                   <textarea
                     rows={3}
-                    placeholder="Share something with your team at SKYLINX..."
+                    placeholder="Share something with your team at PeopleOS..."
                     value={postBody}
                     onChange={(e) => setPostBody(e.target.value)}
                     required

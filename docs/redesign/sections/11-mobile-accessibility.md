@@ -81,3 +81,8 @@ Backend already stateless-JWT-REST. Native app (BLoC/Dio/Secure-Storage/FCM/Geol
 
 ## D. Backlog (this section)
 Bottom tab bar; table→card + modal→sheet transforms; swipe actions w/ button fallback; camera receipt upload (needs §05 receipt endpoint); `lang="en-IN"` + no-flash theme script; autocomplete attrs; focus-trap utilities; axe + keyboard e2e gate; per-payslip/PDF endpoint for mobile payslip.
+
+## E. Post-critique remediations (98 §F-A(d))
+- **Keyboard alternatives (B4):** add **NineBox drag** (§06 A7) and **KanbanBoard move-to** (§06 recruitment, §03 onboarding) to the keyboard-operability list — both must be fully operable without drag.
+- **Keyboard e2e gate (B6):** add **OTP login** (§12 B, OTPInput paste/auto-advance) to the top-flows keyboard-path test set.
+- **Chart contrast (B1):** when a tenant overrides `--color-brand-600` (§02 §7), re-validate **data-viz series-1** contrast too (series 1 = brand.600), not only text-on-brand.

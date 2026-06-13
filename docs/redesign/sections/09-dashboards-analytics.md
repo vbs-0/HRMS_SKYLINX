@@ -57,3 +57,10 @@ Domain dashboard pages (each = KpiRow + 2–4 charts + insight list, all click-t
 - No fabricated values anywhere (the recurring inventory sin) — every figure is real + tenant-scoped + period-bounded, or the widget shows EmptyState.
 - Mobile: dashboards stack to single column; charts → data tables; reports run desktop-first.
 - **Backend backlog**: per-panel + tenant-scoped + self-scoped dashboard metrics; real Company Health composite + tunable weights; analytics domain endpoints w/ aggregates + filters + real trends; report scheduler/worker (or drop fake export); custom-builder schema endpoint; report period filters + uncap attendance; tenant-scope analytics/dashboard/report source models (platform.md §0.2).
+
+## E. Post-critique remediations (98 §D)
+- **Tenant-scoping is insufficient alone (D-1):** the cross-tenant fixes here (scope attendanceLog/leaveRequest/payslip aggregates) depend on the §08/§12 TenantMiddleware fix (verify JWT, stop trusting `x-tenant-id`) — model-level scoping is bypassable without it.
+- **`pendingApprovals` (D-10):** is a duplicate of `pendingLeaves` today — compute a real approval count.
+- **SkyNexus birthday widget:** the fabricated-dates fix belongs to §07 (the social console owns that component); §09 only wires `GET /dashboard/celebrations`. Cross-ref, don't double-own.
+- **`companyHealth.weights`:** the tunable signal weights (A4) are registered as a settings control in §08 J2 (`GET /dashboard/company-health`, `settings.configure`).
+- **`/analytics/[domain]`** registered in §01; domains are routed pages, not just tabs.

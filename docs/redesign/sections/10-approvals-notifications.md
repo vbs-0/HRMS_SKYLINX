@@ -62,3 +62,9 @@ Last 30, grouped Today/Earlier; filter chips All | Approvals | Mentions | System
 - Tenant-scope Notification + approval source models (platform.md §0.2/§9).
 - Mobile: Inbox swipe approve/reject (reference §5.3); bell drawer full-height sheet; bottom-tab "Inbox" badge.
 - **Backend backlog**: extend `GET /approvals` to all modules + tenant-scope + real leave-balance flow; workflow engine + resolver; `GET /notifications/mine` + count + mark-read; real channel dispatch; notification preferences endpoints; implement all reminder event types + placeholder substitution + scheduler; tasks endpoint; manager approvals seed grant.
+
+## F. Post-critique remediations (98 §D)
+- **Tenant-scoping insufficient alone (D-2):** the inbox `decide` cross-tenant-by-id fix needs the §08/§12 TenantMiddleware fix (verify JWT + stop trusting `x-tenant-id`), not just a `companyId` filter.
+- **Workflow ownership boundary (D-15):** §10 B owns the **runtime engine/resolver + ApprovalTrail**; the **builder UI is owned by §08 J1** (`/settings/workflows`). The earlier "builder lives in §08" pointer now resolves to a real §08 section.
+- **`GET /notifications/recipients` (D-11):** wire it to the §C2 send-panel audience picker (today API-only) or remove it.
+- **Shared scheduler (D-16):** the reminders scheduler (§D) and the §09 report scheduler must share **one** job-runner/cron substrate (no cron exists today, platform.md §8.2) — build one primitive, not two.

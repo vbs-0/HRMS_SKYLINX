@@ -55,6 +55,7 @@ Today 10 hrefs bypass permission filtering → users see pages then 403 on data 
 | Route | Page | Permission | Plan | § | State |
 |---|---|---|---|---|---|
 | `/login`,`/signup` | auth | public | — | §12 | EXISTS |
+| `/forgot`,`/reset/[token]`,`/activate/[token]` | password reset + employee activation | public | — | §12 | **NEW** |
 | `/dashboard` | role home | session | Basic | §09 | EXISTS |
 | `/inbox` | unified approvals | `approvals.read`∥approver | Standard | §10 | **NEW** (today `/approvals`) |
 | `/me` | my profile | `employees.read` self | Basic | §03 | **NEW** |
@@ -80,6 +81,7 @@ Today 10 hrefs bypass permission filtering → users see pages then 403 on data 
 | `/expenses` | expenses | `expenses.read/create` | Standard | §05 | EXISTS |
 | `/insurance` | insurance | `insurance.read` | Standard | §07 | EXISTS |
 | `/performance` | PMS | `performance.read` | — | §06 | EXISTS |
+| `/performance/goals` | goals/OKR tree | `performance.read` | — | §06 | **NEW** |
 | `/recruitment`,`/recruitment/jobs/[id]`,`/candidates/[id]` | ATS | `recruitment.read` | Pro¹ | §06 | EXISTS+**NEW** |
 | `/training` | training/skills | `training.read` | Standard | §06 | EXISTS |
 | `/travel` | travel desk | `travel.read` | Standard | §06 | EXISTS |
@@ -131,3 +133,8 @@ Boot: sidebar+topbar from session cache, content skeleton (never full-screen spi
 
 ## 11. Backend backlog (this section)
 Federated search endpoint; saved-views CRUD; add recruitment/policies/grievance to plan map; server-side nav permission completeness (seed grants for all-hands reads, rbac-settings A7); notification count endpoint (§10).
+
+## 12. Post-critique remediations (98 §F)
+- Added missing routes: `/announcements`, `/analytics/[domain]`, `/settings/{permissions,users,workflows,notifications,integrations,data,custom-fields}`, `/performance/goals`, and the public auth routes `/forgot`,`/reset/[token]`,`/activate/[token]`.
+- **ESS nav dependency:** "My Expenses" and "My Assets" (My Space group) are gated `expenses.create`/`assets.read`, but EMPLOYEE lacks `assets.read` and self-`expenses.read` today — these items stay hidden until the rbac A7 seed re-grants land (same dependency §07 flags). Annotate Company-group items (Social/Surveys/Policies/Grievance) with their A7 grant dependency too.
+- **`/inbox` Tasks tab** backed by NEW `GET /tasks` (session) — non-approval to-dos (§10 A).

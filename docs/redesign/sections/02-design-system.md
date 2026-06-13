@@ -79,7 +79,7 @@ Replaces per-console tone guesses (shell.md §4). Every status string in the app
 | `num.cell` | 13/18 · 500 tabular | amounts/IDs in tables |
 
 ## 4. Space · radius · elevation · motion
-- **Space scale (px):** `0,2,4,8,12,16,20,24,32,40,48,64` → tokens `space.0…space.16`. Card padding `space.5` (20); section gap `space.6` (24); page gutter 24/16 (blueprint.md §5.1).
+- **Space scale (px):** `0,2,4,8,12,16,20,24,32,40,48,64` → tokens `space.0…space.16`. Card padding `space.5` (20); section gap `space.6` (24); **page gutter 24/20/16** (desktop/tablet/mobile, blueprint.md §5.1 — matches §11 A1; the tablet 20 was previously dropped, critique 98 §F-A(e)).
 - **Radius:** `radius.control` 8 · `radius.input` 8 · `radius.card` 12 (reference) · `radius.overlay` 16 · `radius.pill` 999.
 - **Elevation (shadow):** `elev.1` `0 1px 2px rgba(16,20,30,.06)` (cards) · `elev.2` `0 4px 12px rgba(16,20,30,.08)` (popover/drawer) · `elev.3` `0 12px 32px rgba(16,20,30,.12)` (modal/palette). Dark mode: lighter surface + border, not bigger shadow.
 - **Z-index:** sticky-table-head 10 · sidebar/topbar 20 · drawer 30 · modal 40 · palette 50 · toast 60.
@@ -93,6 +93,7 @@ Two modes via `data-density` on `<html>`, persisted per user (NEW user-pref): **
 
 ## 7. White-label theming
 On load (or SSR from `/settings/public-profile`), write `branding.primaryColor → --color-brand-600` and derive 50–900 (HSL lightness steps); `branding.logoDataUrl`, `platformBrand`, `clientDisplayName`, `showPoweredBy` flow to the shell. Fixes shell.md §0.4 (single brand source; kill the `#176b87` vs `#078ced` split — both replaced by `--color-brand-*`).
+> **Seed-default reconciliation (critique 98 §F-A(e)):** the rbac default `branding.primaryColor` is still `#078ced` (Kredily-adjacent) — so a tenant on defaults silently overrides the new Indigo identity back to the old blue. **Change the seed default `branding.primaryColor` to the §1 Indigo `#4F46E5`** (a settings/seed change) so the off-Kredily identity is the out-of-box default. Contrast of the re-derived `--color-brand-600` must re-validate **both** text-on-brand and the **data-viz series-1** color (§2.4), since chart series 1 = brand.600.
 
 ---
 
@@ -116,7 +117,7 @@ Input · Textarea (autosize + counter when `maxLength`) · **NumberInput** (righ
 - **DescriptionList** (label/value pairs, copyable IDs) · **RecordCard** (mobile/board) · **Timeline** (actor+action+time+diff popover — §03 career/audit) · **KanbanBoard** (DnD + keyboard move-to; §06 recruitment, §03 onboarding) · **CalendarView / MonthGrid** (§04 leave/holiday/roster; reference drag specs §5.3) · **OrgChartNode** (§03 org chart) · **ProgressRing / ProgressBar** (leave balances, completeness) · **Stepper** (§05 payroll, §03 lifecycle) · **Charts** wrapper (recharts, tokens-only, data-table toggle for a11y).
 
 ### 8.5 Overlays
-- **Drawer** (right; 450 standard / 720 wide per reference §5.1): header (title + StatusPill + ⋯), tabbed body, sticky footer; Esc/scrim close (guarded if dirty); stacks max 2. The pattern for record triage (employee, claim, candidate, ticket).
+- **Drawer** (right; **450 standard** per reference §5.1 / 100vw mobile; an optional **720 wide** variant for dense record triage like the run-room exception drawer — flagged as an extension beyond the reference, critique 98 §F-A(e)): header (title + StatusPill + ⋯), tabbed body, sticky footer; Esc/scrim close (guarded if dirty); stacks max 2.
 - **Modal** (600 dialog / 800 wizard per reference): focused commits only; destructive confirm = danger header + consequence sentence + typed `CONFIRM` for irreversible (delete run, purge).
 - **Popover** (filters, formula-trace "How computed?" for every payroll figure — §05) · **Tooltip** (Radix, 320ms) · **Toast** (bottom-right, 5s, max 3, action slot, `aria-live=polite`) · **Banner** (page-level: warning/danger/info, dismiss persists per key — e.g. declaration window closing) · **CommandPalette** (⌘K, NEW — §01) · **ConfirmDialog** (standardized destructive confirm).
 
@@ -127,7 +128,7 @@ Input · Textarea (autosize + counter when `maxLength`) · **NumberInput** (righ
 **Sidebar** (grouped, collapsible, active state, count badges) · **Topbar** (breadcrumb + global search + quick-add + notifications + theme + avatar menu) · **Breadcrumbs** · **Tabs** (Radix, keyboard) · **Pagination** · **PageHeader** (serif/h1 title + subtitle + context chips + one primary action).
 
 ## 9. Domain composites (`components/domain/*`, built from §8 — referenced by §03–§09)
-`SalaryBreakupTable`, `CtcCalculator`, `PayslipDocument` (web+print twin, replaces fabricated breakdown money.md §1.2), `Form16Card`, `TaxRegimeCompare`, `LeaveBalanceRing`, `AttendanceDayCell`, `PunchWidget` (single, geofence-aware — replaces the 2 overlapping widgets time.md §1), `ApprovalTrail`, `PermissionMatrix` (§08 grid), `ClearanceMatrix` (§03 exits), `ScorecardForm` (§06), `ChallanCard` (§05 compliance), `PolicyAcknowledgeBar`, `OnboardingChecklist`.
+`SalaryBreakupTable`, `CtcCalculator`, `PayslipDocument` (web+print twin, replaces fabricated breakdown money.md §1.2), `Form16Card`, `TaxRegimeCompare`, `LeaveBalanceRing`, `AttendanceDayCell`, `PunchWidget` (single, geofence-aware — replaces the 2 overlapping widgets time.md §1), `ApprovalTrail`, `PermissionMatrix` (§08 grid), `ClearanceMatrix` (§03 exits), `ScorecardForm` (§06), `ChallanCard` (§05 compliance), `PolicyAcknowledgeBar`, `OnboardingChecklist`, **`NineBox`** (§06 calibration), **`GoalTree`** (§06 OKR/goals), **`CommentThread`** (§07 social/grievance/helpdesk, §10 inbox), **`AssetTag`** (§03/§07 assets), **`InsuranceCard`** (§07), **`SignaturePad`** (policy/letter e-sign — §03/§07), **`DiffView`** (§05 revision, §08 audit/permissions before/after), **`MoneyText`** (read-only ₹ display, Indian grouping + words — distinct from the `MoneyInput` control), **`OrgChartView`** (§03 — container around `OrgChartNode`). *(Added per critique 98 §F-A(c): these were referenced by §03/§06/§07/§08/§10 but absent from the original list.)*
 
 ## 10. Iconography
 `lucide-react` (already in stack), 16/18/20px, stroke 1.75, inherits text color. One fixed glyph per module (the §01 nav registry) reused in cards/palette/empty states. Icon-only allowed only with tooltip + `aria-label`. Remove dead `Link2` import (shell.md §2.4).

@@ -36,8 +36,8 @@ interface DeclarationRules {
   windowEnabled: boolean;
   monthlyFromDay: number;
   monthlyToDay: number;
-  currentFiscalYearStart: string;
-  fiscalYearDeadline: string;
+  currentFiscalYearStart?: string;
+  fiscalYearDeadline?: string;
 }
 
 interface ClientRules {
@@ -100,6 +100,8 @@ const defaultClientRules: ClientRules = {
     clientDisplayName: "My Company",
     showPoweredBy: true,
     primaryColor: "#078ced",
+    supportEmail: "support@example.com",
+    supportPhone: "+91-800-SKYLINX",
   },
   attendance: {
     workWeek: "Monday to Saturday",
@@ -135,8 +137,6 @@ const defaultClientRules: ClientRules = {
     windowEnabled: true,
     monthlyFromDay: 1,
     monthlyToDay: 15,
-    currentFiscalYearStart: "2024-04-01",
-    fiscalYearDeadline: "2025-01-31",
   },
 };
 
@@ -414,6 +414,8 @@ export function SettingsConsole() {
         clientDisplayName: String(form.get("clientDisplayName")),
         showPoweredBy: form.get("showPoweredBy") === "on",
         primaryColor: String(form.get("primaryColor")),
+        supportEmail: String(form.get("supportEmail")),
+        supportPhone: String(form.get("supportPhone")),
       },
       attendance: {
         workWeek: String(form.get("attendanceWorkWeek")),
@@ -597,6 +599,14 @@ export function SettingsConsole() {
                   <input className="h-10 w-12 cursor-pointer rounded-lg border border-[#dce2eb] p-1" name="primaryColor" defaultValue={String(rules.branding.primaryColor)} type="color" />
                   <input className={`${inputClass()} flex-1`} defaultValue={String(rules.branding.primaryColor)} readOnly />
                 </div>
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-muted">Support Email</label>
+                <input className={inputClass()} name="supportEmail" defaultValue={String(rules.branding.supportEmail || "support@example.com")} placeholder="support@company.com" type="email" />
+              </div>
+              <div className="flex flex-col gap-1">
+                <label className="text-xs font-semibold text-muted">Support Phone</label>
+                <input className={inputClass()} name="supportPhone" defaultValue={String(rules.branding.supportPhone || "+91-800-SKYLINX")} placeholder="+91-800-SKYLINX" type="tel" />
               </div>
               {checkbox("showPoweredBy", "Show Powered By Badge", Boolean(rules.branding.showPoweredBy))}
             </div>
@@ -897,13 +907,13 @@ export function SettingsConsole() {
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-xs font-semibold text-muted">Fiscal Year Start Date</label>
-              <input type="date" className={inputClass()} name="currentFiscalYearStart" defaultValue={rules.declarations?.currentFiscalYearStart ?? "2024-04-01"} required />
+              <input type="date" className={inputClass()} name="currentFiscalYearStart" defaultValue={rules.declarations?.currentFiscalYearStart} required />
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-xs font-semibold text-muted">Fiscal Year End Deadline</label>
-              <input type="date" className={inputClass()} name="fiscalYearDeadline" defaultValue={rules.declarations?.fiscalYearDeadline ?? "2025-01-31"} required />
+              <input type="date" className={inputClass()} name="fiscalYearDeadline" defaultValue={rules.declarations?.fiscalYearDeadline} required />
             </div>
-            {checkbox("windowEnabled", "Declaration Window Enabled globally", Boolean(rules.declarations?.windowEnabled ?? true))}
+            {checkbox("windowEnabled", "Declaration Window Enabled globally", Boolean(rules.declarations?.windowEnabled))}
           </div>
           <button className="min-h-10 w-fit rounded-lg bg-brand px-6 text-sm font-semibold text-white">Update Declaration Window</button>
         </form>

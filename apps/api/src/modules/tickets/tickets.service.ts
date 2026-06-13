@@ -25,22 +25,22 @@ export class TicketsService {
 
     const rulesRes = await this.settingsService.rules();
     const rules = rulesRes.data as any;
-    const supportRules = rules.support || { slaHighHours: 24, slaMediumHours: 48, slaLowHours: 72 };
+    const supportRules = rules.support;
 
-    const prefix = supportRules.ticketPrefix || "TKT";
+    const prefix = supportRules.ticketPrefix;
     const ticketNumber = `${prefix}-${Math.floor(100000 + Math.random() * 900000)}`;
 
-    const queue = dto.queue || supportRules.defaultQueue || "HR Helpdesk";
+    const queue = dto.queue || supportRules.defaultQueue;
     const priority = dto.priority || "Medium";
 
     // Calculate SLA Deadline based on priority
     const slaDeadline = new Date();
     if (priority === "High") {
-      slaDeadline.setHours(slaDeadline.getHours() + (Number(supportRules.slaHighHours) || 24));
+      slaDeadline.setHours(slaDeadline.getHours() + Number(supportRules.slaHighHours));
     } else if (priority === "Medium") {
-      slaDeadline.setHours(slaDeadline.getHours() + (Number(supportRules.slaMediumHours) || 48));
+      slaDeadline.setHours(slaDeadline.getHours() + Number(supportRules.slaMediumHours));
     } else {
-      slaDeadline.setHours(slaDeadline.getHours() + (Number(supportRules.slaLowHours) || 72));
+      slaDeadline.setHours(slaDeadline.getHours() + Number(supportRules.slaLowHours));
     }
 
     const ticket = await this.prisma.ticket.create({

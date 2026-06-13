@@ -33,12 +33,15 @@ export class SaasController {
   async getCoupons() {
     // SaaS frontend needs coupons without authentication during signup
     const rules = await this.settingsService.mergedRules();
-    const branding = rules.branding as Record<string, unknown>;
+    const branding = rules.branding as Record<string, unknown> || {};
     return {
       status: "success",
       data: {
         coupons: rules["coupons"] || [],
-        supportEmail: branding?.supportEmail || "support@skylinx.com"
+        quoteAddOns: rules["quoteAddOns"] || [],
+        supportEmail: branding.supportEmail || "support@skylinx.com",
+        clientDisplayName: branding.clientDisplayName || "SkyLinx HRMS",
+        supportPhone: branding.supportPhone || "+91-800-SKYLINX"
       }
     };
   }

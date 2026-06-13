@@ -71,13 +71,20 @@ interface AdditionalSalary {
   };
 }
 
+// Indian financial year (Apr–Mar) for the current date
+function currentFinancialYear() {
+  const d = new Date();
+  const y = d.getFullYear();
+  return d.getMonth() >= 3 ? `${y}-${y + 1}` : `${y - 1}-${y}`;
+}
+
 export function ComplianceDash() {
   const [activeTab, setActiveTab] = useState("Declarations");
   const [employees, setEmployees] = useState<EmployeeOption[]>([]);
-  
+
   // Tax Declarations states
   const [decEmp, setDecEmp] = useState("");
-  const [decYear, setDecYear] = useState("2026-2027");
+  const [decYear, setDecYear] = useState(currentFinancialYear);
   const [decRegime, setDecRegime] = useState("NEW");
   const [dec80C, setDec80C] = useState("0");
   const [dec80D, setDec80D] = useState("0");
@@ -87,7 +94,7 @@ export function ComplianceDash() {
 
   // Proof Submissions states
   const [proofEmp, setProofEmp] = useState("");
-  const [proofYear, setProofYear] = useState("2026-2027");
+  const [proofYear, setProofYear] = useState(currentFinancialYear);
   const [proofSection, setProofSection] = useState("80C");
   const [proofDeclared, setProofDeclared] = useState("0");
   const [proofActual, setProofActual] = useState("0");

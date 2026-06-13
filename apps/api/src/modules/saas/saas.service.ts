@@ -89,9 +89,9 @@ export class SaasService {
       { section: "Additional Features", feature: "ESS portal", basic: "Included", standard: "Included", pro: "Included" },
       { section: "Additional Features", feature: "Letter generation", basic: "Not included", standard: "Add-on \u20B930/user/month", pro: "Included" },
       { section: "Additional Features", feature: "Asset management", basic: "Not included", standard: "Add-on \u20B910/user/month", pro: "Included" },
-      { section: "Additional Features", feature: "SKYLINX Prime benefits", basic: "Included", standard: "Included", pro: "Included" },
+      { section: "Additional Features", feature: "Prime benefits", basic: "Included", standard: "Included", pro: "Included" },
       { section: "Additional Features", feature: "Analytics and reports", basic: "Not included", standard: "Included", pro: "Included" },
-      { section: "Additional Features", feature: "SkyNexus employee social network", basic: "Not included", standard: "Included", pro: "Included" },
+      { section: "Additional Features", feature: "Employee social network", basic: "Not included", standard: "Included", pro: "Included" },
       { section: "Additional Features", feature: "Automated ID / visiting card", basic: "Included", standard: "Included", pro: "Included" },
       { section: "Additional Features", feature: "Multicity calendar", basic: "Not included", standard: "Included", pro: "Included" },
       { section: "Additional Features", feature: "Realtime biometric integration", basic: "Not included", standard: "Included", pro: "Included" },
@@ -156,11 +156,13 @@ export class SaasService {
   }
 
   async createInvoice(user: AuthenticatedUser) {
-    return this.audit(user, "invoice.queue", "PENDING", 1749);
+    const sub = await this.prisma.subscription.findFirst({ where: { tenantId: user.tenantId ?? undefined, status: "ACTIVE" }, include: { plan: true } });
+    return this.audit(user, "invoice.queue", "PENDING", sub ? Number(sub.plan.monthlyPrice) : 0);
   }
 
   async refreshLicense(user: AuthenticatedUser) {
-    return this.audit(user, "license.refresh", "ACTIVE", 1749);
+    const sub = await this.prisma.subscription.findFirst({ where: { tenantId: user.tenantId ?? undefined, status: "ACTIVE" }, include: { plan: true } });
+    return this.audit(user, "license.refresh", "ACTIVE", sub ? Number(sub.plan.monthlyPrice) : 0);
   }
 
   async selectPlan(user: AuthenticatedUser, planName: PlanName, paymentMethod?: string, amount?: number) {

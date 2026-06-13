@@ -29,15 +29,6 @@ interface PaymentReceipt {
   status: string;
 }
 
-const quoteAddOns = [
-  { key: "multicompany", label: "Multicompany Support", monthlyPrice: 20 },
-  { key: "live-tracking", label: "Live Tracking", monthlyPrice: 50 },
-  { key: "rewards", label: "Rewards and Recognition", monthlyPrice: 30 },
-  { key: "roster", label: "Roster / Rotational Shift", monthlyPrice: 30 },
-  { key: "performance", label: "Performance Management", monthlyPrice: 40 },
-  { key: "attendance-ai", label: "Advanced Attendance System", monthlyPrice: 50 },
-];
-
 function money(value: number) {
   return `\u20B9${Number(value || 0).toLocaleString("en-IN")}`;
 }
@@ -71,7 +62,7 @@ function writePlanCookie(planName: string) {
   document.cookie = `peopleos_plan=${encodeURIComponent(planName)}; path=/; max-age=31536000; SameSite=Lax`;
 }
 
-function billingSummaryForPlan(plan: Plan, current: SaasData["billingSummary"], employees?: number, years = 1, selectedAddOnKeys: string[] = [], couponKey = "none", quoteCoupons: { key: string; label: string; discountPercent: number }[] = [{ key: "none", label: "No Coupons", discountPercent: 0 }]): SaasData["billingSummary"] {
+function billingSummaryForPlan(plan: Plan, current: SaasData["billingSummary"], employees?: number, years = 1, selectedAddOnKeys: string[] = [], couponKey = "none", quoteCoupons: { key: string; label: string; discountPercent: number }[] = [{ key: "none", label: "No Coupons", discountPercent: 0 }], quoteAddOns: { key: string; label: string; monthlyPrice: number }[] = []): SaasData["billingSummary"] {
   const billingEmployees = Math.max(1, Math.floor(employees || current.employees || 5));
   const billingYears = Math.max(1, Math.floor(years || 1));
   const extraEmployees = Math.max(0, billingEmployees - plan.employees);
@@ -134,6 +125,7 @@ export function SaasConsole() {
   const [paymentMethod, setPaymentMethod] = useState("UPI / Bank Transfer");
   const [paymentReceipt, setPaymentReceipt] = useState<PaymentReceipt | null>(null);
   const [quoteCoupons, setQuoteCoupons] = useState<{ key: string; label: string; discountPercent: number }[]>([{ key: "none", label: "No Coupons", discountPercent: 0 }]);
+  const [quoteAddOns, setQuoteAddOns] = useState<{ key: string; label: string; monthlyPrice: number }[]>([]);
   const [supportEmail, setSupportEmail] = useState("support@example.com");
 
   function load() {
@@ -151,7 +143,7 @@ export function SaasConsole() {
       })
       .catch(() => undefined);
 
-    apiFetch<{ coupons: any[], supportEmail: string }>("/saas/coupons")
+    apiFetch<{ coupons: any[], quoteAddOns: any[], supportEmail: string }>("/saas/coupons")
       .then((body) => {
         if (body.data) {
           if (Array.isArray(body.data.coupons) && body.data.coupons.length > 0) {
@@ -164,6 +156,9 @@ export function SaasConsole() {
                 discountPercent: Number(c.discountPercent) || 0,
               })),
             );
+          }
+          if (Array.isArray(body.data.quoteAddOns) && body.data.quoteAddOns.length > 0) {
+            setQuoteAddOns(body.data.quoteAddOns);
           }
           if (body.data.supportEmail) {
             setSupportEmail(body.data.supportEmail);
@@ -217,7 +212,7 @@ export function SaasConsole() {
   }
 
   const quotedPlan = data.plans.find((plan) => plan.name === data.billingSummary.plan) || data.plans.find((plan) => plan.status === "ACTIVE") || data.plans[0];
-  const quotedBillingSummary = quotedPlan ? billingSummaryForPlan(quotedPlan, data.billingSummary, quoteEmployees, quoteYears, selectedQuoteAddOns, selectedCouponKey, quoteCoupons) : data.billingSummary;
+  const quotedBillingSummary = quotedPlan ? billingSummaryForPlan(quotedPlan, data.billingSummary, quoteEmployees, quoteYears, selectedQuoteAddOns, selectedCouponKey, quoteCoupons, quoteAddOns) : data.billingSummary;
   const selectedAddOnNames = quoteAddOns.filter((addOn) => selectedQuoteAddOns.includes(addOn.key)).map((addOn) => addOn.label);
   const selectedCoupon = quoteCoupons.find((coupon) => coupon.key === selectedCouponKey) || quoteCoupons[0] || { key: "none", label: "No Coupons", discountPercent: 0 };
   const couponDiscountAmount = Number((quotedBillingSummary.itemTotal - quotedBillingSummary.discountPrice).toFixed(2));

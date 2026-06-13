@@ -99,4 +99,7 @@ export class UpdateClientRulesDto {
   @IsOptional()
   @IsObject()
   exitRules?: Record<string, unknown>;
+
+  @IsOptional()
+  quoteAddOns?: any[];
 }

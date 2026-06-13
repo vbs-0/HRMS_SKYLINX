@@ -107,6 +107,7 @@ export function PayrollConsole() {
 
   const [selectedPayslip, setSelectedPayslip] = useState<ApiPayslip | null>(null);
   const [showPayslipModal, setShowPayslipModal] = useState(false);
+  const [rules, setRules] = useState<any>(null);
 
   const [showSalaryModal, setShowSalaryModal] = useState(false);
   const [salaryForm, setSalaryForm] = useState({
@@ -204,6 +205,7 @@ export function PayrollConsole() {
     loadSalaryStructures();
     loadTemplates();
     loadComponentConfigs();
+    apiFetch("/settings/rules").then((res) => setRules(res.data || null)).catch(() => null);
 
     const cleanup = onDataRefresh("payroll", () => {
       loadRuns();
@@ -229,16 +231,23 @@ export function PayrollConsole() {
     const ctc = Number(salaryForm.annualCtc) || 0;
     const monthlyCtc = ctc / 12;
 
-    const monthlyBasic = Math.round(monthlyCtc * 0.50); // 50% basic
-    const monthlyHra = Math.round(monthlyBasic * 0.40); // 40% of basic
-    const monthlyPf = Math.round(monthlyBasic * 0.12); // 12% EPF
+    const basicPct = Number(rules?.salaryStructure?.basicPct) || 0.50;
+    const hraPct = Number(rules?.salaryStructure?.hraPct) || 0.40;
+    const pfEmployeeRate = Number(rules?.payroll?.pfEmployeeRate) || 12.0;
+    const esiEmployerRate = Number(rules?.payroll?.esiEmployerRate) || 3.25;
+
+    const monthlyBasic = Math.round(monthlyCtc * basicPct);
+    const monthlyHra = Math.round(monthlyBasic * hraPct);
+    const monthlyPf = Math.round(monthlyBasic * (pfEmployeeRate / 100)); // EPF
     
-    // ESI check (Applicable if gross is <= 21000 per month)
-    const monthlyEsi = (monthlyBasic + monthlyHra) <= 21000 ? Math.round((monthlyBasic + monthlyHra) * 0.0075) : 0; 
+    // ESI check (Applicable if gross is <= esiWageCeiling per month)
+    const esiWageCeiling = Number(rules?.payroll?.esiWageCeiling) || 21000;
+    const monthlyEsi = (monthlyBasic + monthlyHra) <= esiWageCeiling ? Math.round((monthlyBasic + monthlyHra) * (esiEmployerRate / 100)) : 0; 
     const monthlyPt = monthlyCtc > 15000 ? 200 : 0;
     
     // Quick slab estimate
-    const monthlyTds = monthlyCtc > 100000 ? Math.round(monthlyCtc * 0.15) : monthlyCtc > 50000 ? Math.round(monthlyCtc * 0.08) : 0;
+    const defaultTdsPct = Number(rules?.salaryStructure?.defaultTdsPct) || 0.05;
+    const monthlyTds = monthlyCtc > 100000 ? Math.round(monthlyCtc * 0.15) : monthlyCtc > 50000 ? Math.round(monthlyCtc * defaultTdsPct) : 0;
 
     const monthlyAllowances = Math.max(0, Math.round(monthlyCtc - monthlyBasic - monthlyHra - monthlyPf - monthlyEsi - monthlyPt - monthlyTds));
 

@@ -41,12 +41,14 @@ const DEFAULT_RULES: Required<UpdateClientRulesDto> = {
     showPoweredBy: true,
     primaryColor: "#078ced",
     supportEmail: "support@example.com",
+    supportPhone: "+91-800-SKYLINX",
   },
   attendance: {
     workWeek: "Monday to Saturday",
     shiftStart: "09:30",
     shiftEnd: "18:30",
     graceMinutes: 10,
+    halfDayMinutes: 240,
     geoAttendance: true,
     geofenceRadiusMeters: 200,
     biometricRequired: false,
@@ -156,6 +158,8 @@ const DEFAULT_RULES: Required<UpdateClientRulesDto> = {
     fyCutoffMonth: 1, // January
     fyCutoffDay: 31,
     mandatoryProof: true,
+    currentFiscalYearStart: "2024-04-01",
+    fiscalYearDeadline: "2025-01-31",
   },
   bankExport: {
     format: "GENERIC_CSV",
@@ -177,6 +181,14 @@ const DEFAULT_RULES: Required<UpdateClientRulesDto> = {
     { code: "WELCOME10", discountPercent: 10 },
     { code: "ANNUAL15", discountPercent: 15 },
     { code: "LAUNCH20", discountPercent: 20 },
+  ],
+  quoteAddOns: [
+    { key: "multicompany", label: "Multicompany Support", monthlyPrice: 20 },
+    { key: "live-tracking", label: "Live Tracking", monthlyPrice: 50 },
+    { key: "rewards", label: "Rewards and Recognition", monthlyPrice: 30 },
+    { key: "roster", label: "Roster / Rotational Shift", monthlyPrice: 30 },
+    { key: "performance", label: "Performance Management", monthlyPrice: 40 },
+    { key: "attendance-ai", label: "Advanced Attendance System", monthlyPrice: 50 },
   ],
   exitRules: {
     defaultNoticeDays: 90,

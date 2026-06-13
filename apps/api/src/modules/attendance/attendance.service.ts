@@ -30,24 +30,7 @@ export class AttendanceService {
 
   async getAttendanceDefaults() {
     const rulesRes = await this.settingsService.rules();
-    const rule = (rulesRes.data as any).attendance || {};
-    return {
-      workWeek: rule.workWeek || "Monday to Saturday",
-      shiftStart: rule.shiftStart || "09:30",
-      shiftEnd: rule.shiftEnd || "18:30",
-      graceMinutes: rule.graceMinutes ?? 10,
-      halfDayMinutes: rule.halfDayMinutes || 240,
-      geoAttendance: rule.geoAttendance ?? true,
-      geofenceRadiusMeters: rule.geofenceRadiusMeters ?? 200,
-      penaltyMapping: rule.penaltyMapping || {
-        ABSENT: "FULL_DAY",
-        LATE: "HALF_DAY",
-        EARLY_EXIT: "HALF_DAY",
-        MISSED_PUNCH: "HALF_DAY",
-        OUT_TIME: "HALF_DAY",
-        SHORT_HOURS: "HALF_DAY",
-      }
-    };
+    return (rulesRes.data as any).attendance || {};
   }
 
   async checkIn(data: CheckInDto) {
@@ -325,14 +308,14 @@ export class AttendanceService {
       });
 
       // Anomaly type inferred from the attendance log status
-      // (AttendanceStatus enum: PRESENT, LATE, ABSENT, HALF_DAY, HOLIDAY, WEEK_OFF)
       let anomalyType = "LATE";
       if (rejected.attendanceLog?.status === "ABSENT") anomalyType = "ABSENT";
       else if (rejected.attendanceLog?.status === "HALF_DAY") anomalyType = "OUT_TIME";
       else if (!rejected.attendanceLog) anomalyType = "MISSED_PUNCH";
 
-      // If it's a full day absence, penalty is FULL_DAY, else HALF_DAY
-      const penaltyType = anomalyType === "ABSENT" ? "FULL_DAY" : "HALF_DAY";
+      const attendanceRule = await this.getAttendanceDefaults();
+      const penaltyMapping = (attendanceRule.penaltyMapping || {}) as Record<string, string>;
+      const penaltyType = penaltyMapping[anomalyType];
       const deductionDays = penaltyType === "FULL_DAY" ? 1 : 0.5;
       
       const logDate = rejected.attendanceLog?.date || new Date();
@@ -749,7 +732,7 @@ export class AttendanceService {
     const results = [];
     const attendanceRule = await this.getAttendanceDefaults();
     const graceMinutes = attendanceRule.graceMinutes;
-    const halfDayMinutes = attendanceRule.halfDayMinutes;
+    const halfDayMinutes = Number(attendanceRule.halfDayMinutes || 240);
 
     for (const log of logs) {
       if (!log.checkInAt || !log.checkOutAt) continue;
@@ -757,8 +740,8 @@ export class AttendanceService {
       const shift = log.shift || await this.prisma.shift.findFirst({ where: { status: "ACTIVE" } });
       if (!shift) continue;
 
-      const [shiftStartH, shiftStartM] = (shift.startTime || "09:30").split(":").map(Number);
-      const [shiftEndH, shiftEndM] = (shift.endTime || "18:30").split(":").map(Number);
+      const [shiftStartH, shiftStartM] = (shift.startTime || attendanceRule.shiftStart || "09:30").split(":").map(Number);
+      const [shiftEndH, shiftEndM] = (shift.endTime || attendanceRule.shiftEnd || "18:30").split(":").map(Number);
       const shiftDurationMinutes = (shiftEndH * 60 + shiftEndM) - (shiftStartH * 60 + shiftStartM);
 
       // Late check-in
@@ -916,7 +899,8 @@ export class AttendanceService {
 
     await this.prisma.$transaction(async (tx) => {
       for (const a of openAnomalies) {
-        const penaltyType = (attendanceRule.penaltyMapping as any)[a.type] || "HALF_DAY";
+        const penaltyMapping = (attendanceRule.penaltyMapping || {}) as Record<string, string>;
+        const penaltyType = penaltyMapping[a.type];
         const deduction = penaltyType === "FULL_DAY" ? 1 : 0.5;
 
         await tx.attendanceAnomaly.update({

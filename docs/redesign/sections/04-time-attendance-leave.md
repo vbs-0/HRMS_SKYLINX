@@ -122,3 +122,18 @@ approvalFlow, sandwichLeave, carryForward, compOffAllowed, leaveYear (rbac-setti
 - Mobile: PunchWidget full-width with GPS map; Apply Leave bottom-sheet (reference §5.3 swipe approve/reject in queues); tables → RecordCards.
 - Keyboard: punch (Enter), day-drawer Esc, queue j/k + a/r approve/reject.
 - **Backend backlog**: shift CRUD; holiday edit/delete; regularize route fix + create UI; OT list/decide; anomaly UI wiring + schedulers; accrual-schedule CRUD; block-list delete; leave cancel + self-scoped my-reads; half-day day-count; single leave-year; tenant-scope AttendanceLog/LeaveRequest/Balance/Ledger (time.md §0.2).
+
+---
+
+## Post-critique remediations (98 §B)
+- **OT create permission (#1):** `POST /attendance/overtime` is gated `attendance.update`, **not** `attendance.create`; body requires `employeeId`. EMPLOYEE lacks `attendance.update`, so ESS-initiated OT needs either a server downgrade to `attendance.create` or a seed grant (rbac A7).
+- **ESS read dependency (#23, P0):** EMPLOYEE has **no `attendance.read`/`leave.read`** today → "My Attendance"/"My Leave" tabs 403 **and** the §01 nav items are hidden. Every "self-scope (NEW)" read here depends on the rbac A7 grant of self-scoped `attendance.read`/`leave.read` to EMPLOYEE — state this as a hard prerequisite.
+- **Holiday delete permission (#3):** gate `DELETE /holidays/:id` as `holidays.delete` (a real action, SUPER_ADMIN-only by seed — rbac A2), not `holidays.update`; flag it SUPER_ADMIN-only until §08 grants delete.
+- **Leave-year (#7):** state in C1/C2 that balance rings + approval key off `getLeaveYear()` (settings `leave.leaveYear`), not `fromDate.getFullYear()` — the single-leave-year fix.
+- **Roster route (#4):** commit to the dedicated `/roster` route (drop the "or /attendance Roster tab" hedge) per §01.
+- **Export perms (#5/#6):** `attendance.export`/`leave.export`/`holidays.export` are seeded to **no role** — either gate exports on `*.read` or add the `export` action to HR_ADMIN grants (rbac A3).
+- **Policy-assignments listing (#8):** surface `GET /leave/policies/assignments/:companyId` as the assigned-employees view (today nested-only).
+- **Comp-off duplicate-OT guard (#9):** OvertimeRequest↔CompOffConversion is one-to-one — disable already-converted OTs in the picker (2nd conversion 500s on the unique FK).
+- **Settings key home (#25):** `documents.expiryReminderDays` belongs to §03 Documents, not the §04 header (it's a `documents.*` key).
+- **`attendance.ipAllowlist` (98 §F-B4):** the NEW IP-restriction key must be registered in the §08 Attendance settings row (not in rbac B1 today).
+- **OT body (#2):** include required `employeeId` in the OT request shape.

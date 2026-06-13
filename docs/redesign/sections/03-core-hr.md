@@ -140,3 +140,16 @@ Tabs: **Org Chart · Departments · Designations · Locations · Grades · Emplo
 
 ## 12. Backend correctness backlog (consolidated from core-hr.md for this section)
 Tenant-scope `EmployeeDocument`/`EmployeeBankDetail`/exit-promotion-transfer-loan models + onboarding/separation templates (add `companyId`); documents PENDING-on-create + reject path; PATCH employee send all fields; tenant-unique (not global) email; employee delete/deactivate endpoint; route + UI for loans list/decide (today 404, core-hr §1.16); persist onboarding/separation task instances; single-source F&F notice shortfall; location lat/long in DTO; server pagination/filter on `GET /employees`; server export endpoint; include relation names on promotion/transfer lists; numbering series.
+
+---
+
+## 13. Post-critique remediations (98 §B)
+- **Loans tab (#15):** add a **Loans** tab to Profile 360 (§2) wiring the NEW `GET /employees/loans` + `PATCH /employees/loans/:id/decide` (today both 404; only `POST /employees/loans` exists). EMI auto-recovery already flows in payroll calculate (money.md §1.1).
+- **Deactivate action (#14):** name its gate — propose `employees.update` for soft-deactivate vs `employees.delete` (SUPER_ADMIN-only by seed) for hard delete; no deactivate endpoint exists today (NEW). Gate-disable with reason per role.
+- **Exit phantom module (#24):** exit endpoints are gated `employees.*` (e.g. `employees.approve` for F&F approve), **NOT** the phantom `exit.*` module (permissions seeded but no controller) — ignore `exit.*` grants when wiring.
+- **Verify queue (#18):** wire `GET /employees/queue/verify` to the bulk-verify queue (today the Verification tab reads the unscoped full documents list — wrong dataset + tenant leak).
+- **Separation task-instances (#20):** mirror §5's onboarding task-instance model + `companyId` fix for **separation** templates too (today `startSeparation` flips status EXITED with no persisted clearance, and templates are global).
+- **Geofence radius ownership (#21):** reconcile to a **per-location** field that overrides the global `attendance.geofenceRadiusMeters` default (§04 A5) — single source, not two competing values.
+- **Employees export perm (#12):** the export endpoint uses `employees.read` (avoid a seed change) or add `employees.export` to HR_ADMIN grants; the slash-notation was ambiguous.
+- **Custom-fields dual alias (#16):** routes exist under **both** `settings/custom-fields…` and `custom-fields/definitions…` (values under `/employees/:id/custom-values` and `/custom-fields/values/:id`); `permission-map.json` must gate both aliases. Self-service value edit needs `employees.update` (today `employees.configure`).
+- **`/me` + `/employees/[id]`** are NEW routes (no current route); add per §01 redirect rule.

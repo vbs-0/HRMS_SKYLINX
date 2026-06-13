@@ -41,6 +41,7 @@ Each phase ships behind incremental migration (rebuilt primitives + flag where r
 
 ## 2. Consolidated correctness & security backlog
 
+> **Canonical status tracker = `CORRECTNESS_BACKLOG.md`** (code-lane operational file: ☐/☑ + commit SHAs + [Claude]/[AG] owner tags + execution order). As of this writing it already shows two P0 security items **fixed in `77005f4`** (`x-tenant-id` header trust → SEC-01; signup→SUPER_ADMIN → SEC-04). **This §2 is the redesign-section-mapped planning view** — use it to see which screen each defect's UX lives in; defer to `CORRECTNESS_BACKLOG.md` for live status. Keep the two in sync; where an item appears in both, `CORRECTNESS_BACKLOG.md` is authoritative for done/open.
 > One ranked list merged from every section footer + the inventories' "biggest quirks." Severity: **P0** security/data-integrity · **P1** UI exists-but-broken/lies · **P2** missing capability. Source = inventory ref. Each is a code-lane work item; the redesign section is where its UX lives.
 
 ### 2.1 Security & data-integrity (P0)

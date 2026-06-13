@@ -155,6 +155,22 @@ export class PayrollService {
     
     const components = template.components as Array<{ name: string; type: string; calcType: string; formula?: string; amount?: number }>;
 
+    // Statutory rates for SYSTEM-type components (EPF, Professional Tax), which
+    // are not formula/fixed and were previously left uncomputed (→ 0).
+    const payrollRules = await this.settingsService.getPayrollRules();
+    const num = (v: unknown, d: number) => {
+      const n = Number(v);
+      return Number.isFinite(n) ? n : d;
+    };
+    const pfEnabled = payrollRules.pfEnabled !== false;
+    const ptEnabled = payrollRules.professionalTaxEnabled !== false;
+    const pfEmployeeRate = num(payrollRules.pfEmployeeRate, 12) / 100;
+    const pfEmployerRate = num(payrollRules.pfEmployerRate, 12) / 100;
+    const pfWageCeiling = num(payrollRules.pfWageCeiling, 15000);
+    const ptSlabs: PtSlab[] = Array.isArray(payrollRules.ptSlabs)
+      ? (payrollRules.ptSlabs as PtSlab[]).filter((s) => s && Number.isFinite(Number(s.upto)))
+      : [];
+
     const passed: Array<{ employeeId: string; name: string }> = [];
     const failed: Array<{ employeeId: string; name: string; reason: string }> = [];
 
@@ -187,34 +203,56 @@ export class PayrollService {
       let employerPf = 0;
       let esi = 0;
       
-      for (const comp of components) {
-        let amount = 0;
-        
-        if (comp.calcType === "FIXED" && comp.amount) {
-          amount = comp.amount;
-        } else if (comp.calcType === "FORMULA" && comp.formula) {
+      const evalAmount = (comp: { calcType: string; formula?: string; amount?: number }) => {
+        if (comp.calcType === "FIXED" && comp.amount) return comp.amount;
+        if (comp.calcType === "FORMULA" && comp.formula) {
           const match = comp.formula.match(/^CTC\s*\*\s*([0-9.]+)$/);
-          if (match && match[1]) {
-            const multiplier = parseFloat(match[1]);
-            amount = ctc * multiplier;
-          }
+          if (match && match[1]) return ctc * parseFloat(match[1]);
         }
-        
-        const isDeduction = comp.type === "DEDUCTION";
+        return 0;
+      };
+
+      // Pass 1 — earnings (so `basic` is known before statutory deductions).
+      for (const comp of components) {
+        if (comp.type === "DEDUCTION") continue;
+        const amount = evalAmount(comp);
         const nameLower = comp.name.toLowerCase();
-        
-        if (!isDeduction) {
-          if (nameLower.includes("basic")) basic += amount;
-          else if (nameLower.includes("hra")) hra += amount;
-          else allowances += amount;
-        } else {
-          if (nameLower.includes("tds")) tds += amount;
-          else if (nameLower.includes("pf") || nameLower.includes("provident")) {
-            employeePf += amount; // We're simplifying based on name matching since there are limited fields in model
-          } else if (nameLower.includes("esi")) {
-            esi += amount;
-          } else if (nameLower.includes("tax") || nameLower.includes("professional")) {
-            professionalTax += amount;
+        if (nameLower.includes("basic")) basic += amount;
+        else if (nameLower.includes("hra")) hra += amount;
+        else allowances += amount;
+      }
+
+      // Statutory bases (annual = monthly × 12; PF basis capped at the wage ceiling).
+      const monthlyBasic = basic / 12;
+      const monthlyGross = (basic + hra + allowances) / 12;
+      const pfBasis = Math.min(monthlyBasic, pfWageCeiling);
+
+      // Pass 2 — deductions, including SYSTEM-type EPF / Professional Tax.
+      for (const comp of components) {
+        if (comp.type !== "DEDUCTION") continue;
+        const nameLower = comp.name.toLowerCase();
+        const isStatutory = comp.calcType === "SYSTEM";
+
+        if (nameLower.includes("tds")) {
+          tds += evalAmount(comp);
+        } else if (nameLower.includes("pf") || nameLower.includes("provident") || nameLower.includes("epf")) {
+          if (isStatutory) {
+            employeePf += pfEnabled ? Math.round(pfBasis * pfEmployeeRate) * 12 : 0;
+            employerPf += pfEnabled ? Math.round(pfBasis * pfEmployerRate) * 12 : 0;
+          } else {
+            const amount = evalAmount(comp);
+            employeePf += amount;
+            // Employer EPF mirrors the employee contribution (both 12% of basic).
+            employerPf += amount;
+          }
+        } else if (nameLower.includes("esi")) {
+          esi += evalAmount(comp);
+        } else if (nameLower.includes("tax") || nameLower.includes("professional")) {
+          if (isStatutory && ptEnabled && ptSlabs.length) {
+            const slab = ptSlabs.find((s) => monthlyGross <= Number(s.upto)) || ptSlabs[ptSlabs.length - 1];
+            professionalTax += num(slab?.monthly, 0) * 12;
+          } else {
+            professionalTax += evalAmount(comp);
           }
         }
       }

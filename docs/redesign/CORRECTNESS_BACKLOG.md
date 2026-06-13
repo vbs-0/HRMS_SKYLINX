@@ -45,7 +45,7 @@
 - ☑ **Probation confirm always 400s** → CreateEmployeeDto accepts optional enum-validated `status`; create with PROBATION → confirm → ACTIVE works. *`f5f19b7`, live-verified.* [Claude]
 - ☑ **Promotion/transfer timeline placeholder names** → service-layer enrichment resolves designation/dept/location names. *`80a3a16`, live-verified.* [Claude]
 - ☑ **employer PF always 0** → root cause was SYSTEM-type components (EPF/PT) uncomputed in template-assign; now derives employee PF, employer PF, PT from admin rules. *`fa83520`, live-verified.* [Claude]
-- ☐ **Declarations key mismatch** — UI writes `currentFiscalYearStart`/`fiscalYearDeadline`; DEFAULT_RULES defines `fyCutoffMonth`/`fyCutoffDay`. Reconcile to what payroll reads. (platform.md §119) [Claude]
+- ☑ **Declarations key mismatch** → UI now derives `fyCutoffMonth`/`fyCutoffDay` from the picked `fiscalYearDeadline` on submit, so the admin's deadline drives payroll's cutoff (was silently ignored). *`c076a93`, plumbing live-verified.* [Claude]
 - ☐ **Payroll console fake stats** — "Audit State: Verified" hardcoded; "Gross Payout" uses `/12000` (wrong lakh math); wizard step-4 completion client-only, lost on reload. (money.md) [AG]
 - ☐ **Company Profile "Locations" stat hardcoded `5`** (`companyStats.locs.length || 5`). (core-hr §54) [AG]
 - ☐ **No employee delete/deactivate** endpoint anywhere. (core-hr §1.1) [Claude]

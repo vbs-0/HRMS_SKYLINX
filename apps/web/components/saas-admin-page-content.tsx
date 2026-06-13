@@ -59,13 +59,15 @@ export function SaasAdminPageContent() {
       const token = getAccessToken();
       if (token) {
         const payload = JSON.parse(atob(token.split(".")[1]));
-        // Check isSuperAdmin flag OR saas.admin permission OR super_admin role
+        // Platform-owner gate: matches the backend owner model (SUPER_ADMIN /
+        // SYSTEM_OWNER bypass tenant scoping). Owners may legitimately carry a
+        // tenantId (seeded into a company), so role/permission is the criterion —
+        // the API still enforces real authorization on every saas route.
         const ownerCheck =
-          !payload?.tenantId && (
-            payload?.isSuperAdmin === true ||
-            (Array.isArray(payload?.permissions) && payload.permissions.includes("saas.admin")) ||
-            (Array.isArray(payload?.roles) && payload.roles.includes("SUPER_ADMIN"))
-          );
+          payload?.isSuperAdmin === true ||
+          (Array.isArray(payload?.permissions) && payload.permissions.includes("saas.admin")) ||
+          (Array.isArray(payload?.roles) &&
+            (payload.roles.includes("SUPER_ADMIN") || payload.roles.includes("SYSTEM_OWNER")));
         setIsOwner(ownerCheck);
       }
     } catch (err) {

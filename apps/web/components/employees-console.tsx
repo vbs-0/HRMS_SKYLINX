@@ -86,6 +86,7 @@ export function EmployeesConsole() {
   }, []);
   const [showAddPanel, setShowAddPanel] = useState(false);
   const [showBulkPanel, setShowBulkPanel] = useState(false);
+  const [bulkFileName, setBulkFileName] = useState("");
   const [selectedEmployeeId, setSelectedEmployeeId] = useState<string | null>(null);
   const [selectedEmployee, setSelectedEmployee] = useState<ApiEmployeeDetail | null>(null);
   const [myEmployeeId, setMyEmployeeId] = useState<string | null>(null);
@@ -361,6 +362,7 @@ export function EmployeesConsole() {
       if (!res.ok) throw new Error(json?.message || "Bulk upload failed");
       setMessage(`Bulk upload complete! ${json?.data?.imported ?? ""} employees imported.`);
       setShowBulkPanel(false);
+      setBulkFileName("");
       requestDataRefresh("employees");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Bulk upload failed");
@@ -380,6 +382,9 @@ export function EmployeesConsole() {
       const updated = await apiFetch<ApiEmployeeDetail>(`/employees/${selectedEmployeeId}`, {
         method: "PATCH",
         body: JSON.stringify({
+          firstName: editForm.firstName || undefined,
+          lastName: editForm.lastName || undefined,
+          email: editForm.email || undefined,
           phone: editForm.phone || null,
           gender: editForm.gender || null,
           dateOfBirth: editForm.dateOfBirth ? new Date(editForm.dateOfBirth).toISOString() : null,
@@ -609,11 +614,17 @@ export function EmployeesConsole() {
               <h3 className="mb-2 text-sm font-bold uppercase tracking-wider text-slate-800">Bulk Upload Spreadsheet</h3>
               <p className="text-xs text-slate-400 mb-4 font-normal">Upload CSV / Excel sheets to parse multiple employee records at once.</p>
               <form onSubmit={handleBulkUpload} className="flex flex-col gap-4 max-w-md">
-                <div className="border-2 border-dashed border-slate-200 rounded-lg p-6 text-center hover:border-brand transition cursor-pointer">
+                <label className="border-2 border-dashed border-slate-200 rounded-lg p-6 text-center hover:border-brand transition cursor-pointer block">
                   <Upload className="h-8 w-8 text-slate-400 mx-auto mb-2" />
-                  <span className="text-sm font-semibold text-slate-600 block">Drag file here or browse</span>
+                  <span className="text-sm font-semibold text-slate-600 block">{bulkFileName || "Drag file here or browse"}</span>
                   <span className="text-xs text-slate-400 block mt-1">Accepts CSV, XLSX up to 10MB</span>
-                </div>
+                  <input
+                    type="file"
+                    accept=".csv,.xlsx,.xls"
+                    className="sr-only"
+                    onChange={(e) => setBulkFileName(e.target.files?.[0]?.name || "")}
+                  />
+                </label>
                 <div className="flex gap-2 justify-end">
                   <button className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-slate-50" type="button" onClick={() => setShowBulkPanel(false)}>Cancel</button>
                   <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white hover:bg-brand-dark" type="submit" disabled={loading}>

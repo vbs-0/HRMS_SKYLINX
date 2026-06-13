@@ -484,13 +484,24 @@ export function SettingsConsole() {
     setMessage("");
     setError("");
     const form = new FormData(event.currentTarget);
+    const fiscalYearDeadline = String(form.get("fiscalYearDeadline"));
+    // The payroll cutoff logic reads fyCutoffMonth/fyCutoffDay (recurring annual),
+    // not the full date — derive them from the picked deadline so the admin's
+    // choice actually takes effect instead of being silently ignored. Parse the
+    // YYYY-MM-DD string directly to avoid Date()'s UTC/local off-by-one.
+    const [, fyMonthStr, fyDayStr] = fiscalYearDeadline.split("-");
+    const fyCutoffMonth = Number(fyMonthStr);
+    const fyCutoffDay = Number(fyDayStr);
     const body = {
       declarations: {
         windowEnabled: form.get("windowEnabled") === "on",
         monthlyFromDay: Number(form.get("monthlyFromDay")),
         monthlyToDay: Number(form.get("monthlyToDay")),
         currentFiscalYearStart: String(form.get("currentFiscalYearStart")),
-        fiscalYearDeadline: String(form.get("fiscalYearDeadline")),
+        fiscalYearDeadline,
+        ...(fyCutoffMonth >= 1 && fyCutoffMonth <= 12 && fyCutoffDay >= 1 && fyCutoffDay <= 31
+          ? { fyCutoffMonth, fyCutoffDay }
+          : {}),
       }
     };
     try {

@@ -98,6 +98,14 @@ export class AttendanceService {
       }
     }
 
+    if (attendanceRule?.selfieRequired && !data.selfieUrl) {
+      throw new BadRequestException("Selfie is required for check-in");
+    }
+
+    if (attendanceRule?.deviceRequired && !data.deviceId) {
+      throw new BadRequestException("Device ID is required for check-in");
+    }
+
     const status = this.calculateStatus(checkInAt, shift.startTime || attendanceRule.shiftStart, shift.graceMinutes ?? attendanceRule.graceMinutes);
     const log = await this.prisma.attendanceLog.upsert({
       where: {
@@ -145,6 +153,16 @@ export class AttendanceService {
       },
     });
     if (!existing) throw new NotFoundException("Check-in record not found for today");
+
+    const attendanceRule = await this.getAttendanceDefaults();
+
+    if (attendanceRule?.selfieRequired && !data.selfieUrl) {
+      throw new BadRequestException("Selfie is required for check-out");
+    }
+
+    if (attendanceRule?.deviceRequired && !data.deviceId) {
+      throw new BadRequestException("Device ID is required for check-out");
+    }
 
     const log = await this.prisma.attendanceLog.update({
       where: { id: existing.id },

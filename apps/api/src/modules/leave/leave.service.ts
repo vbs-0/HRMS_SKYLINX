@@ -108,6 +108,11 @@ export class LeaveService {
         maxEncashableDays: data.maxEncashableDays !== undefined ? Number(data.maxEncashableDays) : undefined,
         availableDuringNotice: data.availableDuringNotice !== undefined ? Boolean(data.availableDuringNotice) : undefined,
         status: data.status !== undefined ? String(data.status) : undefined,
+        maxPerMonth: data.maxLeavesPerMonth !== undefined ? Number(data.maxLeavesPerMonth) : undefined,
+        continuousAllowed: data.maxContinuousLeaves !== undefined ? Number(data.maxContinuousLeaves) : undefined,
+        negativeAllowed: data.negativeLeavesAllowed !== undefined ? Boolean(data.negativeLeavesAllowed) : undefined,
+        backdatedDays: data.backdatedLeavesAllowed !== undefined ? (data.backdatedLeavesAllowed ? (data.backdatedLeavesDaysLimit !== undefined ? Number(data.backdatedLeavesDaysLimit) : 30) : 0) : undefined,
+        futureDatedDays: data.futureDatedLeavesAllowed !== undefined ? (data.futureDatedLeavesAllowed ? 90 : 0) : undefined,
       },
     });
 
@@ -187,6 +192,11 @@ export class LeaveService {
         carryForwardAllowed: data.carryForwardAllowed !== undefined ? Boolean(data.carryForwardAllowed) : false,
         sandwichRuleEnabled: data.sandwichRuleEnabled !== undefined ? Boolean(data.sandwichRuleEnabled) : false,
         status: data.status || "ACTIVE",
+        maxPerMonth: data.maxLeavesPerMonth !== undefined ? Number(data.maxLeavesPerMonth) : null,
+        continuousAllowed: data.maxContinuousLeaves !== undefined ? Number(data.maxContinuousLeaves) : null,
+        negativeAllowed: data.negativeLeavesAllowed !== undefined ? Boolean(data.negativeLeavesAllowed) : false,
+        backdatedDays: data.backdatedLeavesAllowed !== false ? (data.backdatedLeavesDaysLimit !== undefined ? Number(data.backdatedLeavesDaysLimit) : 30) : 0,
+        futureDatedDays: data.futureDatedLeavesAllowed ? 90 : 0,
       },
     });
 

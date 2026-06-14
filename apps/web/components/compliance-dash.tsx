@@ -21,6 +21,17 @@ interface TaxDeclaration {
   section80C: string;
   section80D: string;
   section24: string;
+  section80E?: string;
+  section80G?: string;
+  section80TTA?: string;
+  section80TTB?: string;
+  section80CCD?: string;
+  hra?: string;
+  lta?: string;
+  housePropertyLoss?: string;
+  previousEmployerIncome?: string;
+  reimbursements?: string;
+  section80CBreakdown?: any;
   otherExemptions: string;
   status: string;
   employee?: {
@@ -87,10 +98,26 @@ export function ComplianceDash() {
   const [decYear, setDecYear] = useState(currentFinancialYear);
   const [decRegime, setDecRegime] = useState("NEW");
   const [dec80C, setDec80C] = useState("0");
+  const [dec80CBreakdown, setDec80CBreakdown] = useState({ lic: 0, fd: 0, elss: 0, ulip: 0, epf: 0, ppf: 0, nsc: 0, homeLoanPrincipal: 0, pension80CCC: 0, tuitionFees: 0, sukanyaSamridhi: 0, nabard: 0, vpf: 0, other80C: 0 });
   const [dec80D, setDec80D] = useState("0");
   const [dec24, setDec24] = useState("0");
+  const [dec80E, setDec80E] = useState("0");
+  const [dec80G, setDec80G] = useState("0");
+  const [dec80TTA, setDec80TTA] = useState("0");
+  const [dec80TTB, setDec80TTB] = useState("0");
+  const [dec80CCD, setDec80CCD] = useState("0");
+  const [decHRA, setDecHRA] = useState("0");
+  const [decLTA, setDecLTA] = useState("0");
+  const [decHousePropertyLoss, setDecHousePropertyLoss] = useState("0");
+  const [decPrevEmployerIncome, setDecPrevEmployerIncome] = useState("0");
+  const [decReimbursements, setDecReimbursements] = useState("0");
   const [decOther, setDecOther] = useState("0");
   const [userDeclaration, setUserDeclaration] = useState<TaxDeclaration | null>(null);
+
+  useEffect(() => {
+    const total80C = Object.values(dec80CBreakdown).reduce((acc, val) => acc + (Number(val) || 0), 0);
+    setDec80C(String(total80C));
+  }, [dec80CBreakdown]);
 
   // Proof Submissions states
   const [proofEmp, setProofEmp] = useState("");
@@ -138,8 +165,19 @@ export function ComplianceDash() {
             setDecYear(res.data.financialYear);
             setDecRegime(res.data.regime);
             setDec80C(String(res.data.section80C));
+            if (res.data.section80CBreakdown) setDec80CBreakdown(res.data.section80CBreakdown);
             setDec80D(String(res.data.section80D));
             setDec24(String(res.data.section24));
+            setDec80E(String(res.data.section80E || "0"));
+            setDec80G(String(res.data.section80G || "0"));
+            setDec80TTA(String(res.data.section80TTA || "0"));
+            setDec80TTB(String(res.data.section80TTB || "0"));
+            setDec80CCD(String(res.data.section80CCD || "0"));
+            setDecHRA(String(res.data.hra || "0"));
+            setDecLTA(String(res.data.lta || "0"));
+            setDecHousePropertyLoss(String(res.data.housePropertyLoss || "0"));
+            setDecPrevEmployerIncome(String(res.data.previousEmployerIncome || "0"));
+            setDecReimbursements(String(res.data.reimbursements || "0"));
             setDecOther(String(res.data.otherExemptions));
           } else {
             setUserDeclaration(null);
@@ -190,8 +228,19 @@ export function ComplianceDash() {
           financialYear: decYear,
           regime: decRegime,
           section80C: Number(dec80C),
+          section80CBreakdown: dec80CBreakdown,
           section80D: Number(dec80D),
           section24: Number(dec24),
+          section80E: Number(dec80E),
+          section80G: Number(dec80G),
+          section80TTA: Number(dec80TTA),
+          section80TTB: Number(dec80TTB),
+          section80CCD: Number(dec80CCD),
+          hra: Number(decHRA),
+          lta: Number(decLTA),
+          housePropertyLoss: Number(decHousePropertyLoss),
+          previousEmployerIncome: Number(decPrevEmployerIncome),
+          reimbursements: Number(decReimbursements),
           otherExemptions: Number(decOther),
         }),
       });
@@ -432,47 +481,72 @@ export function ComplianceDash() {
               </div>
 
               {decRegime === "OLD" && (
-                <div className="border-t pt-3 grid gap-3 animate-in fade-in zoom-in-95 duration-200">
+                <div className="border-t pt-3 grid gap-4 animate-in fade-in zoom-in-95 duration-200">
                   <div className="font-semibold text-xs text-slate-400 uppercase tracking-wide">OLD regime exemptions (Declared limits)</div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-500 mb-1">Section 80C (Max 1.5L)</label>
-                      <input
-                        className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
-                        type="number"
-                        value={dec80C}
-                        onChange={(e) => setDec80C(e.target.value)}
-                      />
+                  
+                  <details className="group border border-slate-200 rounded-lg bg-slate-50">
+                    <summary className="p-3 text-sm font-semibold cursor-pointer text-slate-700 hover:text-brand flex justify-between items-center">
+                      <span>Section 80C — Investments (max ₹1,50,000)</span>
+                      <span className="text-brand bg-brand-50 px-2 py-0.5 rounded text-xs">Total: ₹{dec80C}</span>
+                    </summary>
+                    <div className="p-3 pt-0 grid grid-cols-2 gap-3 bg-white border-t border-slate-200">
+                      {[
+                        { key: "lic", label: "LIC Premium" },
+                        { key: "fd", label: "5-Year Fixed Deposit" },
+                        { key: "elss", label: "ELSS / Mutual Funds" },
+                        { key: "ulip", label: "ULIP" },
+                        { key: "epf", label: "EPF (Auto-read)" },
+                        { key: "ppf", label: "PPF" },
+                        { key: "nsc", label: "NSC" },
+                        { key: "homeLoanPrincipal", label: "Home Loan Principal" },
+                        { key: "pension80CCC", label: "Pension Fund (80CCC)" },
+                        { key: "tuitionFees", label: "Children's Tuition Fees" },
+                        { key: "sukanyaSamridhi", label: "Sukanya Samridhi" },
+                        { key: "nabard", label: "NABARD Rural Bonds" },
+                        { key: "vpf", label: "VPF" },
+                        { key: "other80C", label: "Other 80C Deductions" },
+                      ].map(item => (
+                        <div key={item.key}>
+                          <label className="block text-xs font-semibold text-slate-500 mb-1">{item.label}</label>
+                          <input
+                            className="min-h-9 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                            type="number"
+                            readOnly={item.key === "epf"}
+                            value={(dec80CBreakdown as any)[item.key]}
+                            onChange={(e) => setDec80CBreakdown({...dec80CBreakdown, [item.key]: Number(e.target.value)})}
+                          />
+                        </div>
+                      ))}
                     </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-500 mb-1">Section 80D (Health Max 25k)</label>
-                      <input
-                        className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
-                        type="number"
-                        value={dec80D}
-                        onChange={(e) => setDec80D(e.target.value)}
-                      />
+                  </details>
+
+                  <div className="p-3 border border-slate-200 rounded-lg">
+                    <h4 className="text-xs font-semibold text-slate-500 uppercase mb-3">Other Deductions</h4>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div><label className="block text-xs font-medium text-slate-500 mb-1">80D (Medical)</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={dec80D} onChange={e=>setDec80D(e.target.value)}/></div>
+                      <div><label className="block text-xs font-medium text-slate-500 mb-1">80E (Edu Loan Int)</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={dec80E} onChange={e=>setDec80E(e.target.value)}/></div>
+                      <div><label className="block text-xs font-medium text-slate-500 mb-1">80G (Donations)</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={dec80G} onChange={e=>setDec80G(e.target.value)}/></div>
+                      <div><label className="block text-xs font-medium text-slate-500 mb-1">80TTA (Savings Int)</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={dec80TTA} onChange={e=>setDec80TTA(e.target.value)}/></div>
+                      <div><label className="block text-xs font-medium text-slate-500 mb-1">80TTB (Senior Int)</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={dec80TTB} onChange={e=>setDec80TTB(e.target.value)}/></div>
+                      <div><label className="block text-xs font-medium text-slate-500 mb-1">80CCD(1B) (NPS)</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={dec80CCD} onChange={e=>setDec80CCD(e.target.value)}/></div>
+                      <div><label className="block text-xs font-medium text-slate-500 mb-1">Sec 24(b) (Home Int)</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={dec24} onChange={e=>setDec24(e.target.value)}/></div>
                     </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-500 mb-1">Section 24 (Housing Max 2L)</label>
-                      <input
-                        className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
-                        type="number"
-                        value={dec24}
-                        onChange={(e) => setDec24(e.target.value)}
-                      />
+
+                  <div className="p-3 border border-slate-200 rounded-lg">
+                    <h4 className="text-xs font-semibold text-slate-500 uppercase mb-3">Exemptions</h4>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div><label className="block text-xs font-medium text-slate-500 mb-1">HRA</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={decHRA} onChange={e=>setDecHRA(e.target.value)}/></div>
+                      <div><label className="block text-xs font-medium text-slate-500 mb-1">LTA</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={decLTA} onChange={e=>setDecLTA(e.target.value)}/></div>
+                      <div><label className="block text-xs font-medium text-slate-500 mb-1">House Property Loss</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={decHousePropertyLoss} onChange={e=>setDecHousePropertyLoss(e.target.value)}/></div>
+                      <div><label className="block text-xs font-medium text-slate-500 mb-1">Prev Employer Income</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={decPrevEmployerIncome} onChange={e=>setDecPrevEmployerIncome(e.target.value)}/></div>
+                      <div><label className="block text-xs font-medium text-slate-500 mb-1">Reimbursements</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={decReimbursements} onChange={e=>setDecReimbursements(e.target.value)}/></div>
                     </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-500 mb-1">Other Exemptions</label>
-                      <input
-                        className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
-                        type="number"
-                        value={decOther}
-                        onChange={(e) => setDecOther(e.target.value)}
-                      />
-                    </div>
+                  </div>
+
+                  <div className="mt-2 text-sm font-semibold bg-emerald-50 text-emerald-800 p-3 rounded-lg border border-emerald-200 flex justify-between">
+                    <span>Estimated Tax Saving (approx 30%)</span>
+                    <span>₹{Math.round((Math.min(150000, Number(dec80C)) + Number(dec80D) + Number(dec24) + Number(dec80E) + Number(dec80G) + Number(dec80TTA) + Number(dec80TTB) + Number(dec80CCD) + Number(decHRA) + Number(decLTA) + Number(decHousePropertyLoss) + Number(decReimbursements) + Number(decOther)) * 0.3).toLocaleString("en-IN")}</span>
                   </div>
                 </div>
               )}

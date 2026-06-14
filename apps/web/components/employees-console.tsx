@@ -44,6 +44,8 @@ interface ApiEmployeeDetail {
   joiningDate: string;
   employmentType: string;
   status: string;
+  deletionStatus?: string | null;
+  deletionRequestedAt?: string | null;
   panNumber?: string | null;
   providentFundAccount?: string | null;
   bloodGroup?: string | null;
@@ -74,6 +76,7 @@ interface ApiEmployeeDetail {
     verificationStatus?: string;
   } | null;
 }
+import { hasPermission } from "../lib/permissions";
 
 export function EmployeesConsole() {
   const [activeTab, setActiveTab] = useState("All Employees");
@@ -770,24 +773,70 @@ export function EmployeesConsole() {
                             <Edit3 className="h-4 w-4" /> Edit Profile
                           </button>
                           {selectedEmployee.status !== "INACTIVE" && activeTab !== "My Profile" && (
-                            <button
-                              className="inline-flex min-h-10 items-center gap-1.5 rounded-lg border border-rose-300 px-4 text-sm font-semibold text-rose-700 hover:bg-rose-50 transition"
-                              onClick={async () => {
-                                if (confirm("Are you sure you want to deactivate this employee?")) {
-                                  try {
-                                    await apiFetch(`/employees/${selectedEmployee.id}/deactivate`, { method: "PATCH" });
-                                    setMessage("Employee deactivated.");
-                                    const refreshed = await apiFetch<ApiEmployeeDetail>(`/employees/${selectedEmployee.id}`);
-                                    setSelectedEmployee(refreshed.data || selectedEmployee);
-                                    requestDataRefresh("employees");
-                                  } catch (err: any) {
-                                    setError(err.message || "Failed to deactivate");
-                                  }
-                                }
-                              }}
-                            >
-                              <X className="h-4 w-4" /> Deactivate
-                            </button>
+                            <>
+                              {selectedEmployee.deletionStatus === "PENDING_CEO" ? (
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs font-semibold text-amber-600 bg-amber-50 px-2 py-1 rounded">Pending CEO Approval</span>
+                                  {hasPermission("saas.admin") && (
+                                    <button
+                                      className="inline-flex min-h-10 items-center gap-1.5 rounded-lg border border-rose-300 px-4 text-sm font-semibold text-rose-700 hover:bg-rose-50 transition"
+                                      onClick={async () => {
+                                        if (confirm("Confirm employee deletion? This will deactivate their profile.")) {
+                                          try {
+                                            await apiFetch(`/employees/${selectedEmployee.id}/confirm-deletion`, { method: "PATCH" });
+                                            setMessage("Employee deletion confirmed.");
+                                            const refreshed = await apiFetch<ApiEmployeeDetail>(`/employees/${selectedEmployee.id}`);
+                                            setSelectedEmployee(refreshed.data || selectedEmployee);
+                                            requestDataRefresh("employees");
+                                          } catch (err: any) {
+                                            setError(err.message || "Failed to confirm deletion");
+                                          }
+                                        }
+                                      }}
+                                    >
+                                      <CheckCircle2 className="h-4 w-4" /> Confirm Deletion
+                                    </button>
+                                  )}
+                                  <button
+                                    className="inline-flex min-h-10 items-center gap-1.5 rounded-lg border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition"
+                                    onClick={async () => {
+                                      if (confirm("Cancel this deletion request?")) {
+                                        try {
+                                          await apiFetch(`/employees/${selectedEmployee.id}/cancel-deletion`, { method: "PATCH" });
+                                          setMessage("Deletion request cancelled.");
+                                          const refreshed = await apiFetch<ApiEmployeeDetail>(`/employees/${selectedEmployee.id}`);
+                                          setSelectedEmployee(refreshed.data || selectedEmployee);
+                                          requestDataRefresh("employees");
+                                        } catch (err: any) {
+                                          setError(err.message || "Failed to cancel deletion");
+                                        }
+                                      }
+                                    }}
+                                  >
+                                    <X className="h-4 w-4" /> Cancel Request
+                                  </button>
+                                </div>
+                              ) : (
+                                <button
+                                  className="inline-flex min-h-10 items-center gap-1.5 rounded-lg border border-rose-300 px-4 text-sm font-semibold text-rose-700 hover:bg-rose-50 transition"
+                                  onClick={async () => {
+                                    if (confirm("Are you sure you want to request deletion for this employee? CEO approval will be required.")) {
+                                      try {
+                                        await apiFetch(`/employees/${selectedEmployee.id}/request-deletion`, { method: "PATCH" });
+                                        setMessage("Employee deletion requested. Awaiting CEO confirmation.");
+                                        const refreshed = await apiFetch<ApiEmployeeDetail>(`/employees/${selectedEmployee.id}`);
+                                        setSelectedEmployee(refreshed.data || selectedEmployee);
+                                        requestDataRefresh("employees");
+                                      } catch (err: any) {
+                                        setError(err.message || "Failed to request deletion");
+                                      }
+                                    }
+                                  }}
+                                >
+                                  <X className="h-4 w-4" /> Request Deletion
+                                </button>
+                              )}
+                            </>
                           )}
                         </>
                       )}

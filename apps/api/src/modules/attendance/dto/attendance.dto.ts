@@ -23,6 +23,14 @@ export class CheckInDto {
   @IsOptional()
   @IsNumber()
   accuracy?: number;
+
+  @IsOptional()
+  @IsString()
+  selfieUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  deviceId?: string;
 }
 
 export class CheckOutDto {
@@ -44,6 +52,14 @@ export class CheckOutDto {
   @IsOptional()
   @IsNumber()
   accuracy?: number;
+
+  @IsOptional()
+  @IsString()
+  selfieUrl?: string;
+
+  @IsOptional()
+  @IsString()
+  deviceId?: string;
 }
 
 export type RegularizationType = "mark_present" | "mark_leave" | "exact_time" | "mark_lop";

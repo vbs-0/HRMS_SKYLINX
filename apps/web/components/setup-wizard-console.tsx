@@ -192,6 +192,8 @@ export function SetupWizardConsole() {
         lateMarkRule: String(form.get("lateMarkRule")),
         geoAttendance: form.get("geoAttendance") === "on",
         biometricRequired: form.get("biometricRequired") === "on",
+        selfieRequired: form.get("selfieRequired") === "on",
+        deviceRequired: form.get("deviceRequired") === "on",
         overtimeEnabled: form.get("overtimeEnabled") === "on",
       };
       await apiFetch("/settings/rules", { method: "PATCH", body: JSON.stringify({ attendance }) });
@@ -349,6 +351,8 @@ export function SetupWizardConsole() {
               <input className={inputClass()} name="lateMarkRule" defaultValue={valueText(rules.attendance.lateMarkRule, "After grace minutes")} placeholder="Late Mark Rule" />
               {checkbox("geoAttendance", "Geo Attendance", valueBool(rules.attendance.geoAttendance, true))}
               {checkbox("biometricRequired", "Biometric Required", valueBool(rules.attendance.biometricRequired))}
+              {checkbox("selfieRequired", "Selfie Required", valueBool(rules.attendance.selfieRequired))}
+              {checkbox("deviceRequired", "Clock-in Device Required", valueBool(rules.attendance.deviceRequired))}
               {checkbox("overtimeEnabled", "Overtime Enabled", valueBool(rules.attendance.overtimeEnabled, true))}
             </div>
             <SaveButton saving={saving === "attendance"} label="Save Attendance Settings" />

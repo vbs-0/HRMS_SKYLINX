@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>PeopleOS — Feature Permissions Matrix</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#fff;--bg2:#f7f8fa;--bg3:#eef1f5;
+  --text:#1a1a2e;--text2:#6b7280;--text3:#9ca3af;
+  --border:#e5e7eb;--border2:#d1d5db;--accent:#2563eb;
+  --radius:8px;--radius-lg:12px;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg2);color:var(--text)}
+
+.topbar{background:var(--bg);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:50;flex-wrap:wrap}
+.topbar-title{font-size:16px;font-weight:700;flex:1;min-width:160px}
+.topbar-title small{display:block;font-size:11px;font-weight:400;color:var(--text2);margin-top:2px}
+.badge{background:#fee2e2;color:#dc2626;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;display:none}
+.badge.show{display:inline}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:var(--radius);font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:var(--bg);color:var(--text);white-space:nowrap}
+.btn:hover{background:var(--bg3)}
+.btn.primary{background:var(--text);color:#fff;border-color:var(--text)}
+.btn.primary:hover{opacity:.85}
+.btn svg{width:14px;height:14px;flex-shrink:0}
+
+.legend{display:flex;align-items:center;gap:8px;padding:10px 20px;background:var(--bg);border-bottom:1px solid var(--border);font-size:11px;color:var(--text2);flex-wrap:wrap}
+.legend b{color:var(--text);font-size:12px;margin-right:4px}
+.chip{padding:2px 8px;border-radius:5px;font-weight:600;font-size:11px}
+
+.intro{max-width:1500px;margin:16px auto 0;padding:0 20px}
+.intro .card{background:#eff6ff;border:1px solid #bfdbfe;border-radius:var(--radius-lg);padding:14px 16px;font-size:12.5px;color:#1e40af;line-height:1.6}
+.intro .roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-top:16px}
+.intro .role{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:11px 13px}
+.intro .role h4{font-size:13px;margin-bottom:3px}
+.intro .role p{font-size:11.5px;color:var(--text2);line-height:1.5}
+
+.main{padding:18px 20px 60px;max-width:1500px;margin:0 auto}
+.tbl-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden}
+.tbl-outer{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+thead th{background:#1f2433;color:#fff;font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.03em;padding:11px 10px;text-align:center;white-space:nowrap;position:sticky;top:0}
+thead th:first-child{text-align:left;min-width:230px;position:sticky;left:0;z-index:2}
+thead th .rh{display:flex;align-items:center;justify-content:center;gap:5px}
+.th-del{background:rgba(255,255,255,.12);border:none;cursor:pointer;color:#fff;width:16px;height:16px;border-radius:4px;font-size:11px;line-height:1;opacity:.55}
+.th-del:hover{opacity:1;background:#dc2626}
+.notes-col{min-width:240px;text-align:left!important}
+
+tbody td{padding:5px 9px;border-bottom:1px solid var(--border);vertical-align:middle}
+tbody td:first-child{font-weight:500;position:sticky;left:0;background:var(--bg);z-index:1;border-right:1px solid var(--border)}
+tr.sec td{background:var(--bg3);font-weight:700;font-size:12px;letter-spacing:.02em;padding:8px 12px;color:var(--text);position:sticky;left:0}
+tr.sec .addf{float:right;font-size:10.5px;font-weight:600;color:var(--accent);cursor:pointer;border:1px solid #bfdbfe;background:#eff6ff;padding:2px 8px;border-radius:5px}
+tr.sec .addf:hover{background:#dbeafe}
+tr:hover td:first-child{background:var(--bg2)}
+.feat-name{display:flex;align-items:center;gap:6px}
+.row-del{visibility:hidden;border:none;background:none;cursor:pointer;color:var(--text3);font-size:13px;padding:0 2px}
+tr:hover .row-del{visibility:visible}
+.row-del:hover{color:#dc2626}
+
+select.sel{appearance:none;-webkit-appearance:none;border:1px solid transparent;border-radius:6px;padding:4px 6px;font-size:11.5px;font-weight:600;cursor:pointer;width:100%;text-align:center;text-align-last:center;min-width:92px;outline:none}
+select.sel:focus{border-color:var(--accent)}
+.note-cell{font-size:11.5px;color:var(--text);min-height:24px;padding:4px 6px;border:1px dashed transparent;border-radius:6px;cursor:text;line-height:1.4}
+.note-cell:hover{border-color:var(--border2)}
+.note-cell:focus{border-color:var(--accent);border-style:solid;outline:none;background:#f8fafc}
+.note-cell:empty:before{content:'Add limit / scope / note…';color:var(--text3);font-style:italic}
+
+/* level colors */
+.lv-full{background:#dcfce7;color:#15803d}
+.lv-manage{background:#d1fae5;color:#047857}
+.lv-edit{background:#dbeafe;color:#1d4ed8}
+.lv-viewall{background:#e0f2fe;color:#0369a1}
+.lv-approve{background:#fef3c7;color:#b45309}
+.lv-team{background:#fef9c3;color:#a16207}
+.lv-ownrw{background:#f3e8ff;color:#7e22ce}
+.lv-ownr{background:#faf5ff;color:#9333ea}
+.lv-export{background:#ccfbf1;color:#0f766e}
+.lv-none{background:#f3f4f6;color:#9ca3af}
+.lv-review{background:#fee2e2;color:#dc2626}
+
+@media print{.topbar,.legend,.intro,tr.sec .addf,.th-del,.row-del{display:none!important}.main{padding:4px}.tbl-card{border:none}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-title">PeopleOS — Feature Permissions Matrix
+    <small>Draft for review. Confirm each access level + fill the limits/scope in Notes, then we map it to code.</small>
+  </div>
+  <span class="badge" id="badge">0 to review</span>
+  <button class="btn" onclick="addRole()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    Add role
+  </button>
+  <button class="btn" onclick="markAllReview()">Flag all for review</button>
+  <button class="btn primary" onclick="exportPDF()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    Export PDF
+  </button>
+</div>
+
+<div class="legend" id="legend"><b>Levels:</b></div>
+
+<div class="intro">
+  <div class="card">
+    <strong>How to use:</strong> Each row is a real feature in the product. For every role, pick the access level that role <em>should</em> have on that feature. Use <strong>Notes / Limits</strong> for anything with a threshold or scope your team must decide — e.g. "Manager approves expenses up to ₹____", "Employee sees own payslip only", "Approval escalates to HR above X". Anything you're unsure about, set to <strong>❓ Review</strong>. You can add custom roles and add features under any section. Then export to PDF and share.
+  </div>
+  <div class="roles">
+    <div class="role"><h4>👑 Platform Owner</h4><p>SUPER_ADMIN / SYSTEM_OWNER. Runs the platform: tenants, plans, billing, global config. Bypasses tenant scoping — cross-tenant oversight. Not day-to-day HR.</p></div>
+    <div class="role"><h4>🛡️ HR Admin</h4><p>Full HR operations within one company: employees, payroll, leave, recruitment, settings. The primary administrator.</p></div>
+    <div class="role"><h4>👔 Manager</h4><p>Team-scoped. Approves their reports' requests (leave, attendance, expense), views team data. No configuration.</p></div>
+    <div class="role"><h4>💼 Employee</h4><p>Self-service. Manages own data, submits requests, views own records (payslip, leave balance, documents).</p></div>
+  </div>
+</div>
+
+<div class="main"><div class="tbl-card"><div class="tbl-outer">
+  <table id="tbl"><thead id="thead"></thead><tbody id="tbody"></tbody></table>
+</div></div></div>
+
+<script>
+// ── LEVELS ──────────────────────────────────────────────────────────────────
+const LEVELS=[
+  {c:'full',    l:'Full'},        // create/read/update/delete + configure
+  {c:'manage',  l:'Manage'},      // create/read/update/delete (no config)
+  {c:'edit',    l:'Edit'},        // read + update
+  {c:'viewall', l:'View All'},    // read every record
+  {c:'approve', l:'Approve'},     // approve/decide (org-wide)
+  {c:'team',    l:'Team'},        // view + approve own team only
+  {c:'ownrw',   l:'Own R/W'},     // create/edit own records
+  {c:'ownr',    l:'Own View'},    // view own records only
+  {c:'export',  l:'Export'},      // export/download only
+  {c:'none',    l:'—'},           // no access
+  {c:'review',  l:'❓ Review'},   // undecided — needs sign-off
+];
+const LBL=Object.fromEntries(LEVELS.map(x=>[x.c,x.l]));
+
+// ── ROLES ───────────────────────────────────────────────────────────────────
+let ROLES=[
+  {k:'owner', e:'👑', l:'Platform Owner'},
+  {k:'hr',    e:'🛡️', l:'HR Admin'},
+  {k:'mgr',   e:'👔', l:'Manager'},
+  {k:'emp',   e:'💼', l:'Employee'},
+];
+
+// ── DATA  (o=owner h=hr m=manager e=employee) ────────────────────────────────
+// helper to keep authoring compact: row(name, owner, hr, mgr, emp, note)
+function R(n,o,h,m,e,note){return {n,l:{owner:o,hr:h,mgr:m,emp:e},note:note||''};}
+
+let DATA=[
+{m:'Employees / Core HR',e:'👥',f:[
+  R('Employee Directory (list & search)','viewall','manage','team','viewall','Employee directory usually visible to all — confirm which fields staff can see.'),
+  R('Profile — Personal Info','viewall','edit','team','ownrw',''),
+  R('Contact & Address','viewall','edit','team','ownrw',''),
+  R('Education History','viewall','edit','none','ownrw',''),
+  R('Family / Dependents','viewall','edit','none','ownrw',''),
+  R('Emergency Contacts','viewall','edit','team','ownrw',''),
+  R('Bank Details','viewall','edit','none','ownrw','Encrypted. Employee submits → resets to PENDING; HR verifies.'),
+  R('Bank Detail Verification','none','approve','none','none','Who signs off bank changes — HR / Finance?'),
+  R('Documents (upload & verify)','viewall','manage','none','ownrw','Employee uploads (PENDING); HR verifies/rejects.'),
+  R('Custom Fields — define','full','full','none','none',''),
+  R('Custom Field Values','viewall','edit','team','ownr',''),
+  R('Bulk Import (CSV / Excel)','none','manage','none','none',''),
+  R('Export Directory','export','export','team','none','Can Managers export their team roster?'),
+  R('Org Chart / Reporting Line','viewall','edit','team','viewall',''),
+  R('Probation Confirmation','none','approve','none','none','Manager recommend → HR confirms? Confirm flow.'),
+  R('Promotions (record)','viewall','manage','none','ownr',''),
+  R('Promotion Approval','none','approve','none','none','Who approves a promotion + revised CTC?'),
+  R('Transfers','viewall','manage','none','ownr',''),
+  R('Offer / Experience Letters','none','manage','none','ownr','Employee downloads own letters.'),
+  R('Deactivate / Exit Employee','none','manage','none','none','Soft (status→INACTIVE), reversible. Confirm who can.'),
+]},
+{m:'Attendance',e:'🕒',f:[
+  R('Daily Attendance Log','viewall','manage','team','ownrw',''),
+  R('Check-in / Check-out','none','none','none','ownrw','Geofence radius is admin-configurable.'),
+  R('Regularization Request','none','manage','none','ownrw',''),
+  R('Regularization Approval','none','approve','team','none','Manager approves team, HR override? Confirm.'),
+  R('Shift Management','none','full','none','ownr',''),
+  R('Attendance Rules / Geofence','full','full','none','none','Geofence radius, work-week, grace — admin-set.'),
+  R('Penalty / LOP Logs','viewall','manage','team','ownr',''),
+  R('Bulk Attendance Upload','none','manage','none','none',''),
+  R('Overtime Requests','none','approve','team','ownrw',''),
+]},
+{m:'Leave',e:'🌴',f:[
+  R('Leave Balances','viewall','edit','team','ownr',''),
+  R('Leave Request','none','manage','ownrw','ownrw',''),
+  R('Leave Approval','none','approve','team','none','Manager approves team; HR can override. Multi-level?'),
+  R('Leave Types — config','full','full','none','none',''),
+  R('Leave Policy / Accrual Rules','full','full','none','ownr',''),
+  R('Holiday Calendar','viewall','manage','viewall','viewall',''),
+  R('Comp-off','none','approve','team','ownrw',''),
+]},
+{m:'Payroll',e:'💰',f:[
+  R('Payslips','viewall','manage','none','ownr','Employee views & downloads OWN payslip only.'),
+  R('Payslip Export / Download','export','export','none','export','Employee export limited to own.'),
+  R('Salary Structure (CTC breakup)','viewall','manage','none','ownr','Defined by HR; employee sees own structure read-only.'),
+  R('Salary Templates','none','full','none','none',''),
+  R('Assign Template to Employees','none','manage','none','none',''),
+  R('Payroll Runs (create / process)','viewall','manage','none','none',''),
+  R('Payroll Approval / Lock','none','approve','none','none','Payroll lock day configurable. Maker-checker? Confirm.'),
+  R('Tax Declarations','none','viewall','none','ownrw','Employee submits investment declarations before FY cutoff.'),
+  R('Tax Declaration Deadline','full','full','none','none','FY cutoff date drives payroll — admin-set.'),
+  R('Form 16','none','manage','none','ownr','Employee downloads own Form 16.'),
+  R('Reimbursements (payroll)','none','approve','team','ownrw',''),
+  R('Employee Loans / EMI','none','manage','none','ownr','HR creates; EMI flows to payroll; employee views own.'),
+  R('Loan Approval','none','approve','none','none','Loan amount / eligibility limits?'),
+  R('Bank Transfer / Salary Export','export','export','none','none','NEFT advice file generated by HR/Finance.'),
+  R('Payroll Rules (PF/ESI/PT/TDS)','full','full','none','none','Statutory rates, slabs, caps — admin-editable.'),
+]},
+{m:'Expenses',e:'🧾',f:[
+  R('Expense Claims','viewall','manage','ownrw','ownrw',''),
+  R('Expense Approval — Manager','none','approve','team','none','Manager approves up to ₹____ ; above escalates.'),
+  R('Expense Approval — HR / Finance','none','approve','none','none','Final approver above the manager limit.'),
+  R('Reimbursement Payout','none','approve','none','ownr',''),
+  R('Expense Categories','full','full','none','none',''),
+]},
+{m:'Performance',e:'📈',f:[
+  R('Appraisal Cycles','none','full','none','none',''),
+  R('Self-Appraisal','none','viewall','ownrw','ownrw',''),
+  R('Manager Appraisal / Review','none','viewall','team','none','Manager rates direct reports only.'),
+  R('Goals / KRA','none','manage','team','ownrw',''),
+  R('Ratings & Calibration','none','manage','team','ownr',''),
+  R('Increment Recommendation','none','approve','team','none','Default increment % configurable; final approver?'),
+  R('Performance Reports','viewall','export','team','ownr',''),
+]},
+{m:'Recruitment',e:'🧑‍💼',f:[
+  R('Job Requisitions','none','manage','ownrw','none','Manager raises requisition (needs designation).'),
+  R('Requisition Approval','none','approve','none','none','Headcount budget owner approves.'),
+  R('Job Postings','none','manage','viewall','viewall',''),
+  R('Candidates','none','manage','team','none',''),
+  R('Applications','none','manage','team','none',''),
+  R('Interviews (schedule)','none','manage','team','none',''),
+  R('Interview Feedback','none','viewall','team','none',''),
+  R('Job Offers','none','manage','none','none','Offer CTC approval limit?'),
+  R('Referrals (submit)','none','viewall','ownrw','ownrw','Any employee can refer a candidate.'),
+  R('Referral Bonus / Mark Hired','none','approve','none','ownr','HR marks APPROVED→bonus, PAID releases it. Bonus amount?'),
+  R('Staffing Plans / Budget','viewall','manage','team','none',''),
+]},
+{m:'Insurance',e:'🏥',f:[
+  R('Policies','viewall','manage','none','ownr',''),
+  R('Dependents','none','edit','none','ownrw',''),
+  R('Claims (submit)','none','viewall','none','ownrw',''),
+  R('Claim Approval','none','approve','none','none','Claims start PENDING; HR/insurer approves. Limits?'),
+]},
+{m:'Assets',e:'💻',f:[
+  R('Asset Register','viewall','manage','team','ownr',''),
+  R('Asset Assignment','none','manage','none','none','Requires explicit assignee.'),
+  R('Asset Return / Handover','none','manage','none','ownrw',''),
+  R('Asset Categories','full','full','none','none',''),
+]},
+{m:'Exit / Separation',e:'🚪',f:[
+  R('Resignation','none','manage','team','ownrw',''),
+  R('Exit Interview','none','manage','none','ownrw',''),
+  R('Full & Final Settlement','none','manage','none','ownr',''),
+  R('F&F Approval','none','approve','none','none','Who signs off F&F payout?'),
+  R('Exit / Relieving Letters','none','manage','none','ownr',''),
+  R('Separation Templates','none','full','none','none',''),
+]},
+{m:'Engagement — Social',e:'💬',f:[
+  R('Social Feed / Posts','viewall','manage','ownrw','ownrw',''),
+  R('Likes / Comments','none','manage','ownrw','ownrw',''),
+  R('Announcements','viewall','manage','viewall','viewall',''),
+  R('Announcement Read / Ack','none','viewall','ownrw','ownrw',''),
+]},
+{m:'Surveys',e:'📋',f:[
+  R('Surveys — create','none','manage','ownrw','none','Can Managers run team surveys?'),
+  R('Survey Responses','none','viewall','team','ownrw',''),
+  R('Survey Results / Analytics','viewall','export','team','none','Anonymous responses — who sees raw data?'),
+]},
+{m:'Grievance',e:'🗣️',f:[
+  R('Raise Grievance','none','viewall','none','ownrw',''),
+  R('Anonymous Grievance','none','viewall','none','ownrw','Identity stripped when anonymous — confirm who can de-anonymise (nobody?).'),
+  R('Grievance Resolution','none','manage','none','ownr',''),
+  R('Grievance Assignment','none','manage','none','none',''),
+]},
+{m:'Rewards & Recognition',e:'🏆',f:[
+  R('Recognition / Kudos','viewall','manage','ownrw','ownrw',''),
+  R('Rewards Catalog / Points','full','manage','team','ownr','Points budget per manager?'),
+]},
+{m:'Travel',e:'✈️',f:[
+  R('Travel Requests','none','manage','ownrw','ownrw',''),
+  R('Travel Approval','none','approve','team','none','Manager approves up to ₹____ ?'),
+  R('Travel Desk / Bookings','none','manage','none','ownr',''),
+]},
+{m:'Training',e:'🎓',f:[
+  R('Training Programs','none','full','viewall','viewall',''),
+  R('Enrollment','none','manage','team','ownrw',''),
+  R('Training Records','viewall','manage','team','ownr',''),
+]},
+{m:'Helpdesk / Tickets',e:'🎫',f:[
+  R('Raise Ticket','none','manage','ownrw','ownrw',''),
+  R('Ticket Assignment','none','manage','none','none',''),
+  R('Ticket Resolution','none','manage','none','ownr',''),
+  R('Ticket Queues / Prefix','full','full','none','none',''),
+]},
+{m:'Policies',e:'📜',f:[
+  R('Policy Documents','viewall','manage','viewall','viewall',''),
+  R('Policy Acknowledgment','none','viewall','ownrw','ownrw',''),
+]},
+{m:'Organization Setup',e:'🏢',f:[
+  R('Departments','full','manage','viewall','viewall',''),
+  R('Designations','full','manage','viewall','viewall',''),
+  R('Locations','full','manage','viewall','viewall',''),
+  R('Grades / Bands','full','manage','none','none',''),
+  R('Employment Types','full','manage','none','none',''),
+]},
+{m:'Compliance',e:'⚖️',f:[
+  R('Compliance Dashboard','viewall','viewall','none','none',''),
+  R('Statutory Returns (PF/ESI/PT/TDS)','none','export','none','none',''),
+  R('Fiscal Year Config','full','full','none','none',''),
+]},
+{m:'Reports & Analytics',e:'📊',f:[
+  R('Standard Reports','viewall','export','team','none',''),
+  R('Analytics Dashboards','viewall','viewall','team','none',''),
+  R('Data Export','export','export','none','none','Which roles can bulk-export PII?'),
+]},
+{m:'Settings / Admin',e:'⚙️',f:[
+  R('Branding / White-label','full','full','none','none','Logo, name, colours per tenant.'),
+  R('Client Rules / Config','full','full','none','none',''),
+  R('Approval Workflows','full','full','none','none','Define maker-checker chains here.'),
+  R('Notification Settings','full','full','none','ownr','Employee controls own prefs.'),
+  R('Email / SMTP Config','full','full','none','none','Creds in env; "Test SMTP" button in settings.'),
+  R('Roles & Permissions','full','manage','none','none','THIS MATRIX governs this screen.'),
+  R('Module Enable / Disable','full','full','none','none',''),
+]},
+{m:'Platform / SaaS (Owner)',e:'👑',f:[
+  R('Tenant Management','full','none','none','none',''),
+  R('Tenant Status (suspend/activate)','full','none','none','none','Owner-only — tenant admins cannot touch other tenants.'),
+  R('Subscription Plans','full','none','none','none',''),
+  R('Plan Pricing','full','none','none','none',''),
+  R('Billing / Invoices','full','viewall','none','none','HR sees own-tenant billing only.'),
+  R('Cross-tenant Access','full','none','none','none','Strictly owner. Everyone else tenant-scoped.'),
+]},
+{m:'Notifications',e:'🔔',f:[
+  R('Notification Center','viewall','viewall','team','ownr',''),
+  R('Notification Preferences','ownrw','ownrw','ownrw','ownrw',''),
+]},
+{m:'System / Data (advanced)',e:'🧰',f:[
+  R('Backup / Restore','full','full','none','none',''),
+  R('Mobile App Config','full','full','none','none',''),
+  R('Audit Logs','viewall','viewall','none','none','Tamper-evident; who can read?'),
+]},
+];
+
+// ── RENDER ────────────────────────────────────────────────────────────────
+function optionsHtml(sel){return LEVELS.map(x=>`<option value="${x.c}"${x.c===sel?' selected':''}>${x.l}</option>`).join('');}
+
+function renderLegend(){
+  const el=document.getElementById('legend');el.innerHTML='<b>Levels:</b>';
+  LEVELS.forEach(x=>{el.insertAdjacentHTML('beforeend',`<span class="chip lv-${x.c}">${x.l}</span>`);});
+}
+
+function renderHead(){
+  const h=document.getElementById('thead');
+  h.innerHTML=`<tr>
+    <th><div class="rh">Feature</div></th>
+    ${ROLES.map((r,i)=>`<th><div class="rh">${r.e} ${r.l}${i>3?`<button class="th-del" title="Remove role" onclick="delRole(${i})">×</button>`:''}</div></th>`).join('')}
+    <th class="notes-col"><div class="rh" style="justify-content:flex-start">Notes / Limits</div></th>
+  </tr>`;
+}
+
+function renderBody(){
+  const b=document.getElementById('tbody');
+  const span=ROLES.length+2;
+  b.innerHTML=DATA.map((mod,mi)=>{
+    const sec=`<tr class="sec"><td colspan="${span}">${mod.e} ${mod.m.toUpperCase()}<span class="addf" onclick="addFeature(${mi})">+ feature</span></td></tr>`;
+    const rows=mod.f.map((ft,fi)=>`
+      <tr>
+        <td><div class="feat-name"><span>${ft.n}</span><button class="row-del" title="Remove feature" onclick="delFeature(${mi},${fi})">×</button></div></td>
+        ${ROLES.map(r=>{const v=ft.l[r.k]||'review';return `<td><select class="sel lv-${v}" onchange="setLvl(this,${mi},${fi},'${r.k}')">${optionsHtml(v)}</select></td>`;}).join('')}
+        <td><div class="note-cell" contenteditable onblur="setNote(this,${mi},${fi})">${escapeHtml(ft.note)}</div></td>
+      </tr>`).join('');
+    return sec+rows;
+  }).join('');
+}
+
+function render(){renderHead();renderBody();badge();}
+function escapeHtml(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+// ── EDIT HANDLERS ───────────────────────────────────────────────────────────
+function setLvl(sel,mi,fi,rk){DATA[mi].f[fi].l[rk]=sel.value;sel.className='sel lv-'+sel.value;badge();}
+function setNote(el,mi,fi){DATA[mi].f[fi].note=el.innerText.trim();}
+
+function addFeature(mi){
+  const n=prompt('New feature name under "'+DATA[mi].m+'":');
+  if(!n||!n.trim())return;
+  const l={};ROLES.forEach(r=>l[r.k]='review');
+  DATA[mi].f.push({n:n.trim(),l,note:''});render();
+}
+function delFeature(mi,fi){
+  if(!confirm('Remove feature "'+DATA[mi].f[fi].n+'"?'))return;
+  DATA[mi].f.splice(fi,1);render();
+}
+function addRole(){
+  const l=prompt('New role name (e.g. Finance, Team Lead, Payroll Officer):');
+  if(!l||!l.trim())return;
+  const k='r'+Date.now();
+  ROLES.push({k,e:'⭐',l:l.trim()});
+  DATA.forEach(m=>m.f.forEach(f=>f.l[k]='review'));
+  render();
+}
+function delRole(i){
+  if(i<4){alert('The four base roles cannot be removed.');return;}
+  if(!confirm('Remove role "'+ROLES[i].l+'"?'))return;
+  const k=ROLES[i].k;ROLES.splice(i,1);
+  DATA.forEach(m=>m.f.forEach(f=>delete f.l[k]));render();
+}
+function markAllReview(){
+  if(!confirm('Set EVERY cell to ❓ Review? (use this to start a fresh sign-off pass)'))return;
+  DATA.forEach(m=>m.f.forEach(f=>ROLES.forEach(r=>f.l[r.k]='review')));render();
+}
+function badge(){
+  let c=0;DATA.forEach(m=>m.f.forEach(f=>ROLES.forEach(r=>{if((f.l[r.k]||'review')==='review')c++;})));
+  const el=document.getElementById('badge');
+  if(c>0){el.textContent=c+' to review';el.classList.add('show');}else el.classList.remove('show');
+}
+
+// ── PDF ──────────────────────────────────────────────────────────────────
+const PDF_COLORS={full:[21,128,61],manage:[4,120,87],edit:[29,78,216],viewall:[3,105,161],approve:[180,83,9],team:[161,98,7],ownrw:[126,34,206],ownr:[147,51,234],export:[15,118,110],none:[160,160,160],review:[220,38,38]};
+function exportPDF(){
+  const {jsPDF}=window.jspdf;
+  const doc=new jsPDF({orientation:'landscape',unit:'mm',format:'a4'});
+  const W=doc.internal.pageSize.getWidth();const M=10;let y=13;
+  doc.setFont('helvetica','bold');doc.setFontSize(15);
+  doc.text('PeopleOS — Feature Permissions Matrix',W/2,y,{align:'center'});y+=5;
+  doc.setFont('helvetica','normal');doc.setFontSize(8);doc.setTextColor(120);
+  doc.text('Generated '+new Date().toLocaleString()+'   ·   Roles: '+ROLES.map(r=>r.l).join(' / '),W/2,y,{align:'center'});
+  y+=7;doc.setTextColor(0);
+
+  DATA.forEach((mod,mi)=>{
+    doc.setFont('helvetica','bold');doc.setFontSize(11);
+    if(y>180){doc.addPage();y=14;}
+    doc.text(mod.e+' '+mod.m,M,y);y+=4;
+    const head=[['Feature',...ROLES.map(r=>r.l),'Notes / Limits']];
+    const body=mod.f.map(ft=>[ft.n,...ROLES.map(r=>LBL[ft.l[r.k]||'review']),ft.note||'']);
+    const roleW=Math.min(24,(W-M*2-50-46)/ROLES.length);
+    const cs={0:{cellWidth:50,halign:'left',fontStyle:'bold'}};
+    ROLES.forEach((_,i)=>cs[i+1]={cellWidth:roleW,halign:'center',fontStyle:'bold'});
+    cs[ROLES.length+1]={cellWidth:46,halign:'left',textColor:[90,90,90],fontSize:7};
+    doc.autoTable({
+      head,body,startY:y,margin:{left:M,right:M},
+      styles:{fontSize:7.5,cellPadding:1.8,overflow:'linebreak'},
+      columnStyles:cs,
+      headStyles:{fillColor:[31,36,51],textColor:255,fontSize:7.5},
+      didParseCell(d){
+        if(d.section==='body'&&d.column.index>0&&d.column.index<=ROLES.length){
+          const code=Object.keys(LBL).find(k=>LBL[k]===d.cell.raw);
+          if(code&&PDF_COLORS[code])d.cell.styles.textColor=PDF_COLORS[code];
+        }
+      }
+    });
+    y=doc.lastAutoTable.finalY+7;
+  });
+  doc.save('peopleos-permissions-matrix.pdf');
+}
+
+// ── BOOT ──────────────────────────────────────────────────────────────────
+renderLegend();render();
+</script>
+</body>
+</html>

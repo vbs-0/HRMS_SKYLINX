@@ -478,8 +478,50 @@ export class LeaveService {
     });
 
     if (!balance) throw new BadRequestException("Leave balance is not configured for this employee");
-    if (Number(balance.available) < calculatedDays) {
+
+    // Negative balance gate
+    if (!leaveType.negativeAllowed && Number(balance.available) < calculatedDays) {
       throw new BadRequestException("Insufficient leave balance");
+    }
+
+    // Max per month gate
+    if (leaveType.maxPerMonth != null) {
+      const monthStart = new Date(requestedFrom.getFullYear(), requestedFrom.getMonth(), 1);
+      const monthEnd = new Date(requestedFrom.getFullYear(), requestedFrom.getMonth() + 1, 0, 23, 59, 59);
+      const usedThisMonth = await this.prisma.leaveRequest.aggregate({
+        where: {
+          employeeId: data.employeeId,
+          leaveTypeId: data.leaveTypeId,
+          status: { in: ["APPROVED", "PENDING"] as any },
+          fromDate: { gte: monthStart },
+          toDate: { lte: monthEnd },
+        },
+        _sum: { days: true },
+      });
+      if ((Number(usedThisMonth._sum.days) || 0) + calculatedDays > leaveType.maxPerMonth) {
+        throw new BadRequestException(`Cannot exceed ${leaveType.maxPerMonth} days of this leave type per month`);
+      }
+    }
+
+    // Continuous days gate
+    if (leaveType.continuousAllowed != null && calculatedDays > leaveType.continuousAllowed) {
+      throw new BadRequestException(`Maximum ${leaveType.continuousAllowed} consecutive days allowed for this leave type`);
+    }
+
+    // Backdated days gate
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const backdatedLimit = new Date(today);
+    backdatedLimit.setDate(backdatedLimit.getDate() - (leaveType.backdatedDays ?? 30));
+    if (requestedFrom < backdatedLimit) {
+      throw new BadRequestException(`Cannot apply for leave more than ${leaveType.backdatedDays ?? 30} days in the past`);
+    }
+
+    // Future-dated days gate
+    const futureDateLimit = new Date(today);
+    futureDateLimit.setDate(futureDateLimit.getDate() + (leaveType.futureDatedDays ?? 90));
+    if (requestedTo > futureDateLimit) {
+      throw new BadRequestException(`Cannot apply for leave more than ${leaveType.futureDatedDays ?? 90} days in the future`);
     }
 
     const leaveRequest = await this.prisma.leaveRequest.create({

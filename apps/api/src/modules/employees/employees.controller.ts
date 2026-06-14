@@ -79,6 +79,26 @@ export class EmployeesController {
     return this.employeesService.deactivate(id);
   }
 
+  // 2-person deletion flow (Kredily parity):
+  // HR Admin submits → CEO confirms → employee becomes INACTIVE
+  @Patch(":id/request-deletion")
+  @RequirePermissions("employees.update")
+  requestDeletion(@Param("id") id: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.employeesService.requestDeletion(id, user.sub);
+  }
+
+  @Patch(":id/confirm-deletion")
+  @RequirePermissions("saas.admin")
+  confirmDeletion(@Param("id") id: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.employeesService.confirmDeletion(id, user.sub);
+  }
+
+  @Patch(":id/cancel-deletion")
+  @RequirePermissions("employees.update")
+  cancelDeletion(@Param("id") id: string, @CurrentUser() user: AuthenticatedUser) {
+    return this.employeesService.cancelDeletion(id, user.sub);
+  }
+
   // Employee self-service (own record) or HR; ownership enforced in the service
   @Patch(":id/bank-details")
   @RequirePermissions("employees.read")

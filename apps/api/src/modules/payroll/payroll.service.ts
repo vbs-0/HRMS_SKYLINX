@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException, ForbiddenException, UnauthorizedException } from "@nestjs/common";
-import { ApprovalStatus } from "@prisma/client";
+import { ApprovalStatus, Prisma } from "@prisma/client";
 import { response } from "../../common/crud-response";
 import { decrypt, sanitizeBankDetail } from "../../common/crypto.util";
 import { AuthenticatedUser } from "../../common/auth/auth.types";
@@ -424,27 +424,36 @@ export class PayrollService {
       }
     }
 
+    // Auto-sum 80C from breakdown if provided and no explicit total given
+    const computed80C = data.section80CBreakdown
+      ? Object.values(data.section80CBreakdown).reduce((s: number, v) => s + (Number(v) || 0), 0)
+      : (data.section80C || 0);
+
+    const declFields = {
+      financialYear: data.financialYear,
+      regime: data.regime,
+      section80C: computed80C,
+      section80CBreakdown: data.section80CBreakdown ? (data.section80CBreakdown as unknown as Prisma.InputJsonValue) : undefined,
+      section80D: data.section80D || 0,
+      section24: data.section24 || 0,
+      section80E: data.section80E || 0,
+      section80G: data.section80G || 0,
+      section80TTA: data.section80TTA || 0,
+      section80TTB: data.section80TTB || 0,
+      section80CCD: data.section80CCD || 0,
+      hra: data.hra || 0,
+      lta: data.lta || 0,
+      housePropertyLoss: data.housePropertyLoss || 0,
+      previousEmployerIncome: data.previousEmployerIncome || 0,
+      reimbursements: data.reimbursements || 0,
+      otherExemptions: data.otherExemptions || 0,
+      status: "APPROVED",
+    };
+
     const declaration = await this.prisma.employeeTaxExemptionDeclaration.upsert({
       where: { employeeId: data.employeeId },
-      update: {
-        financialYear: data.financialYear,
-        regime: data.regime,
-        section80C: data.section80C || 0,
-        section80D: data.section80D || 0,
-        section24: data.section24 || 0,
-        otherExemptions: data.otherExemptions || 0,
-        status: "APPROVED",
-      },
-      create: {
-        employeeId: data.employeeId,
-        financialYear: data.financialYear,
-        regime: data.regime,
-        section80C: data.section80C || 0,
-        section80D: data.section80D || 0,
-        section24: data.section24 || 0,
-        otherExemptions: data.otherExemptions || 0,
-        status: "APPROVED",
-      },
+      update: declFields,
+      create: { employeeId: data.employeeId, ...declFields },
       include: { employee: true },
     });
     await this.audit("payroll", "tax.declaration_submit", "tax_exemption_declaration", declaration.id, declaration);
@@ -812,7 +821,18 @@ export class PayrollService {
             const capped80C = Math.min(Number(taxDeclaration.section80C || 0), cap80C);
             const capped80D = Math.min(Number(taxDeclaration.section80D || 0), cap80D);
             const capped24 = Math.min(Number(taxDeclaration.section24 || 0), cap24b);
-            exemptions = capped80C + capped80D + capped24 + Number(taxDeclaration.otherExemptions || 0);
+            const extra =
+              Number(taxDeclaration.section80E || 0) +
+              Number(taxDeclaration.section80G || 0) +
+              Number(taxDeclaration.section80TTA || 0) +
+              Number(taxDeclaration.section80TTB || 0) +
+              Number(taxDeclaration.section80CCD || 0) +
+              Number(taxDeclaration.hra || 0) +
+              Number(taxDeclaration.lta || 0) +
+              Number(taxDeclaration.housePropertyLoss || 0) +
+              Number(taxDeclaration.reimbursements || 0) +
+              Number(taxDeclaration.otherExemptions || 0);
+            exemptions = capped80C + capped80D + capped24 + extra;
           }
 
           const taxableIncome = Math.max(annualGross - standardDeduction - exemptions, 0);

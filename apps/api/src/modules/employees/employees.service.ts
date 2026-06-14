@@ -327,6 +327,79 @@ export class EmployeesService {
     return response("employees", "deactivate", employee);
   }
 
+  /** Step 1: HR Admin submits a deletion request. Employee flagged PENDING_CEO. */
+  async requestDeletion(id: string, requestedByUserId: string) {
+    const existing = await this.prisma.employee.findUnique({ where: { id } });
+    if (!existing) throw new NotFoundException("Employee not found");
+    if (existing.deletionStatus === "PENDING_CEO") {
+      throw new BadRequestException("Deletion already pending CEO confirmation");
+    }
+    const employee = await this.prisma.employee.update({
+      where: { id },
+      data: {
+        deletionRequestedAt: new Date(),
+        deletionRequestedBy: requestedByUserId,
+        deletionStatus: "PENDING_CEO",
+      },
+    });
+    await this.prisma.auditLog.create({
+      data: {
+        actorUserId: requestedByUserId,
+        module: "employees",
+        action: "deletion.request",
+        entityType: "employee",
+        entityId: id,
+        newValueJson: { deletionStatus: "PENDING_CEO" },
+      },
+    });
+    return response("employees", "deletion.request", employee);
+  }
+
+  /** Step 2: CEO/Owner confirms deletion — sets status INACTIVE + marks confirmed. */
+  async confirmDeletion(id: string, confirmedByUserId: string) {
+    const existing = await this.prisma.employee.findUnique({ where: { id } });
+    if (!existing) throw new NotFoundException("Employee not found");
+    if (existing.deletionStatus !== "PENDING_CEO") {
+      throw new BadRequestException("No pending deletion request for this employee");
+    }
+    const employee = await this.prisma.employee.update({
+      where: { id },
+      data: {
+        status: "INACTIVE",
+        deletionStatus: "CONFIRMED",
+      },
+    });
+    await this.prisma.auditLog.create({
+      data: {
+        actorUserId: confirmedByUserId,
+        module: "employees",
+        action: "deletion.confirm",
+        entityType: "employee",
+        entityId: id,
+        newValueJson: { deletionStatus: "CONFIRMED", status: "INACTIVE" },
+      },
+    });
+    return response("employees", "deletion.confirm", employee);
+  }
+
+  /** Cancel a pending deletion request (HR Admin or CEO). */
+  async cancelDeletion(id: string, cancelledByUserId: string) {
+    const existing = await this.prisma.employee.findUnique({ where: { id } });
+    if (!existing) throw new NotFoundException("Employee not found");
+    if (existing.deletionStatus !== "PENDING_CEO") {
+      throw new BadRequestException("No pending deletion request to cancel");
+    }
+    const employee = await this.prisma.employee.update({
+      where: { id },
+      data: {
+        deletionStatus: "CANCELLED",
+        deletionRequestedAt: null,
+        deletionRequestedBy: null,
+      },
+    });
+    return response("employees", "deletion.cancel", employee);
+  }
+
   /**
    * Employee submits/updates their own bank details (status resets to PENDING),
    * HR (employees.update) can edit anyone's. Account number stored encrypted.

@@ -1,6 +1,6 @@
 import * as crypto from "crypto";
 
-const ENCRYPTION_KEY = process.env.OTP_SECRET || "skylinx-peopleos-local-otp-secret-long-enough-32-chars!!!";
+const ENCRYPTION_KEY = process.env.OTP_SECRET || "peopleos-local-otp-secret-key-long-enough-32-chars!!!";
 const IV_LENGTH = 16;
 
 export function encrypt(text: string): string {

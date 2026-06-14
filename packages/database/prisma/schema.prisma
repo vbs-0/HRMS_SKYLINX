@@ -309,6 +309,11 @@ model Employee {
   user                      User?
   penaltyLogs               PenaltyLog[]
 
+  // 2-person deletion flow (Kredily parity)
+  deletionRequestedAt       DateTime?
+  deletionRequestedBy       String?
+  deletionStatus            String?    // "PENDING_CEO" | "CONFIRMED" | "CANCELLED"
+
   @@unique([companyId, employeeCode])
   @@index([companyId, status])
   @@index([departmentId])
@@ -524,6 +529,13 @@ model LeaveType {
   maxEncashableDays     Int                    @default(0)
   availableDuringNotice Boolean                @default(true)
   status                String                 @default("ACTIVE")
+  // Kredily advanced leave rules
+  maxPerMonth           Int?                   // max leaves of this type per calendar month
+  continuousAllowed     Int?                   // max consecutive days allowed
+  negativeAllowed       Boolean                @default(false)
+  backdatedDays         Int                    @default(30) // how far back a request can be filed
+  futureDatedDays       Int                    @default(90) // how far ahead a request can be filed
+  carryForwardMonth     Int?                   // month (1–12) when carry-forward triggers
   compOffConversions    CompOffConversion[]
   accrualSchedules      LeaveAccrualSchedule[]
   balances              LeaveBalance[]
@@ -1335,17 +1347,29 @@ model EmployeeBenefitClaim {
 }
 
 model EmployeeTaxExemptionDeclaration {
-  id              String   @id @default(cuid())
-  employeeId      String   @unique
-  financialYear   String
-  regime          String
-  section80C      Decimal  @default(0)
-  section80D      Decimal  @default(0)
-  section24       Decimal  @default(0)
-  otherExemptions Decimal  @default(0)
-  status          String   @default("APPROVED")
-  createdAt       DateTime @default(now())
-  employee        Employee @relation(fields: [employeeId], references: [id])
+  id                       String   @id @default(cuid())
+  employeeId               String   @unique
+  financialYear            String
+  regime                   String   // NEW | OLD
+  // Aggregated section totals (used by both regimes unless noted)
+  section80C               Decimal  @default(0) // LIC + FD + ELSS + PPF + EPF + NSC + home-loan-principal + etc.
+  section80CBreakdown      Json?    // { lic, fd, elss, ulip, epf, ppf, nsc, homeLoanPrincipal, pension80CCC, tuitionFees, sukanyaSamridhi, nabard, vpf, other80C }
+  section80D               Decimal  @default(0) // Medical insurance premium
+  section24                Decimal  @default(0) // Home loan interest
+  section80E               Decimal  @default(0) // Education loan interest
+  section80G               Decimal  @default(0) // Donations
+  section80TTA             Decimal  @default(0) // Savings interest (non-senior)
+  section80TTB             Decimal  @default(0) // Savings interest (senior citizen)
+  section80CCD             Decimal  @default(0) // NPS additional contribution
+  hra                      Decimal  @default(0) // House Rent Allowance
+  lta                      Decimal  @default(0) // Leave Travel Allowance
+  housePropertyLoss        Decimal  @default(0) // Loss from house property
+  previousEmployerIncome   Decimal  @default(0) // Income from previous employer in same FY
+  reimbursements           Decimal  @default(0) // Meal, internet, other reimbursements
+  otherExemptions          Decimal  @default(0) // Catch-all for any remaining exemptions
+  status                   String   @default("APPROVED")
+  createdAt                DateTime @default(now())
+  employee                 Employee @relation(fields: [employeeId], references: [id])
 
   @@index([employeeId])
 }

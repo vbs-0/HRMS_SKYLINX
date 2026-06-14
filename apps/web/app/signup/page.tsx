@@ -243,7 +243,7 @@ export default function SignupPage() {
                   <input
                     required
                     type="text"
-                    placeholder="skylinx"
+                    placeholder="mycompany"
                     value={companyCode}
                     onChange={(e) => setCompanyCode(e.target.value.toLowerCase().replace(/[^a-z0-9]/g, ""))}
                     className="flex-1 px-3 py-2.5 border border-slate-700 bg-slate-900 text-sm outline-none focus:border-indigo-500"

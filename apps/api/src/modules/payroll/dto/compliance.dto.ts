@@ -37,6 +37,23 @@ export class CreateBenefitClaimDto {
   receiptUrl?: string;
 }
 
+export class Section80CBreakdownDto {
+  @IsNumber() @IsOptional() lic?: number;
+  @IsNumber() @IsOptional() fd?: number;
+  @IsNumber() @IsOptional() elss?: number;
+  @IsNumber() @IsOptional() ulip?: number;
+  @IsNumber() @IsOptional() epf?: number;
+  @IsNumber() @IsOptional() ppf?: number;
+  @IsNumber() @IsOptional() nsc?: number;
+  @IsNumber() @IsOptional() homeLoanPrincipal?: number;
+  @IsNumber() @IsOptional() pension80CCC?: number;
+  @IsNumber() @IsOptional() tuitionFees?: number;
+  @IsNumber() @IsOptional() sukanyaSamridhi?: number;
+  @IsNumber() @IsOptional() nabard?: number;
+  @IsNumber() @IsOptional() vpf?: number;
+  @IsNumber() @IsOptional() other80C?: number;
+}
+
 export class CreateTaxDeclarationDto {
   @IsString()
   @IsNotEmpty()
@@ -48,23 +65,23 @@ export class CreateTaxDeclarationDto {
 
   @IsString()
   @IsNotEmpty()
-  regime: string; // NEW, OLD
+  regime: string; // NEW | OLD
 
-  @IsNumber()
-  @IsOptional()
-  section80C?: number;
-
-  @IsNumber()
-  @IsOptional()
-  section80D?: number;
-
-  @IsNumber()
-  @IsOptional()
-  section24?: number;
-
-  @IsNumber()
-  @IsOptional()
-  otherExemptions?: number;
+  @IsNumber() @IsOptional() section80C?: number;
+  @IsOptional() section80CBreakdown?: Section80CBreakdownDto;
+  @IsNumber() @IsOptional() section80D?: number;
+  @IsNumber() @IsOptional() section24?: number;
+  @IsNumber() @IsOptional() section80E?: number;
+  @IsNumber() @IsOptional() section80G?: number;
+  @IsNumber() @IsOptional() section80TTA?: number;
+  @IsNumber() @IsOptional() section80TTB?: number;
+  @IsNumber() @IsOptional() section80CCD?: number;
+  @IsNumber() @IsOptional() hra?: number;
+  @IsNumber() @IsOptional() lta?: number;
+  @IsNumber() @IsOptional() housePropertyLoss?: number;
+  @IsNumber() @IsOptional() previousEmployerIncome?: number;
+  @IsNumber() @IsOptional() reimbursements?: number;
+  @IsNumber() @IsOptional() otherExemptions?: number;
 }
 
 export class CreateProofSubmissionDto {

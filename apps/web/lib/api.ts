@@ -50,7 +50,7 @@ export async function getCompanyProfile(): Promise<CompanyProfile> {
   const fallback = {
     name: "PeopleOS",
     legalName: "Acme Corp",
-    logoUrl: "/skylinx-logo-display.png",
+    logoUrl: "/company-logo.png",
     linkedinUrl: "",
     facebookUrl: "",
     xUrl: "",

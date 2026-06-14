@@ -53,6 +53,9 @@ const DEFAULT_RULES: Required<UpdateClientRulesDto> = {
     geofenceRadiusMeters: 200,
     biometricRequired: false,
     overtimeEnabled: true,
+    clockInDevice: "Both",
+    selfieRequired: false,
+    penaltyRulesEnabled: false,
     penaltyMapping: {
       ABSENT: "FULL_DAY",
       LATE: "HALF_DAY",

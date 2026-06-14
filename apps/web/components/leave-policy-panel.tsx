@@ -224,15 +224,15 @@ export function LeavePolicyPanel({ initialTab = "policies" }: LeavePolicyPanelPr
         </button>
       </div>
 
-      {message && <div className="rounded-lg bg-[#e6f5ef] p-3 text-sm text-[#18865a] font-semibold text-left">{message}</div>}
-      {error && <div className="rounded-lg bg-[#fde8e6] p-3 text-sm text-[#ba3d37] font-semibold text-left">{error}</div>}
+      {message && <div className="rounded-lg bg-[var(--success-bg)] p-3 text-sm text-[var(--success-fg)] font-semibold text-left">{message}</div>}
+      {error && <div className="rounded-lg bg-[var(--danger-bg)] p-3 text-sm text-[var(--danger-fg)] font-semibold text-left">{error}</div>}
 
       {/* Leave Policies Section */}
       {activeSubTab === "policies" && (
         <div className="space-y-6 text-left">
-          <div className="flex justify-between items-center bg-white p-4 rounded-lg border border-[#e8edf4] shadow-sm">
+          <div className="flex justify-between items-center bg-white p-4 rounded-lg border border-[var(--border-subtle)] shadow-sm">
             <div>
-              <h3 className="text-base font-semibold text-[#172033]">Leave Policies</h3>
+              <h3 className="text-base font-semibold text-[var(--text-primary)]">Leave Policies</h3>
               <p className="text-xs text-muted font-medium mt-0.5">Define corporate leave policies and assign them to employees.</p>
             </div>
             <div className="flex gap-2">
@@ -253,7 +253,7 @@ export function LeavePolicyPanel({ initialTab = "policies" }: LeavePolicyPanelPr
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {policies.map((policy) => (
-              <Card key={policy.id} className="p-5 border border-[#e8edf4] hover:shadow-md transition text-left flex flex-col justify-between">
+              <Card key={policy.id} className="p-5 border border-[var(--border-subtle)] hover:shadow-md transition text-left flex flex-col justify-between">
                 <div>
                   <h4 className="text-lg font-bold text-slate-800 mb-2">{policy.name}</h4>
                   <p className="text-xs text-slate-500 mb-4">{policy.description || "No description provided."}</p>
@@ -282,9 +282,9 @@ export function LeavePolicyPanel({ initialTab = "policies" }: LeavePolicyPanelPr
       {/* Leave Block Lists Section */}
       {activeSubTab === "blocklists" && (
         <div className="space-y-6 text-left">
-          <div className="flex justify-between items-center bg-white p-4 rounded-lg border border-[#e8edf4] shadow-sm">
+          <div className="flex justify-between items-center bg-white p-4 rounded-lg border border-[var(--border-subtle)] shadow-sm">
             <div>
-              <h3 className="text-base font-semibold text-[#172033]">Leave Block Lists</h3>
+              <h3 className="text-base font-semibold text-[var(--text-primary)]">Leave Block Lists</h3>
               <p className="text-xs text-muted font-medium mt-0.5">Prevent leave requests during critical company periods.</p>
             </div>
             <button
@@ -297,7 +297,7 @@ export function LeavePolicyPanel({ initialTab = "policies" }: LeavePolicyPanelPr
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {blockLists.map((bl) => (
-              <Card key={bl.id} className="p-5 border border-[#e8edf4] hover:shadow-md transition text-left flex flex-col justify-between">
+              <Card key={bl.id} className="p-5 border border-[var(--border-subtle)] hover:shadow-md transition text-left flex flex-col justify-between">
                 <div>
                   <div className="flex justify-between items-start mb-2">
                     <h4 className="text-lg font-bold text-slate-800">{bl.name}</h4>

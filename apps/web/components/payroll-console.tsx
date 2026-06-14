@@ -511,9 +511,9 @@ export function PayrollConsole() {
         <div className="grid gap-5">
           {/* Stepper Wizard */}
           <Card>
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#e8edf4] pb-4">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--border-subtle)] pb-4">
               <div>
-                <h3 className="text-base font-semibold text-[#172033]">Payroll Workflow Tracker</h3>
+                <h3 className="text-base font-semibold text-[var(--text-primary)]">Payroll Workflow Tracker</h3>
                 <p className="text-xs text-muted">Guided verification checklist for current payroll cycle.</p>
               </div>
               <button
@@ -582,7 +582,7 @@ export function PayrollConsole() {
                         ? "border-emerald-200 bg-emerald-50/30 text-emerald-800"
                         : isActive
                         ? "border-brand-300 bg-brand-50/20 shadow-sm"
-                        : "border-[#e8edf4] bg-[#f8fafc] text-muted"
+                        : "border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-muted"
                     }`}
                   >
                     <div className="flex items-center gap-3">
@@ -612,7 +612,7 @@ export function PayrollConsole() {
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="flex flex-wrap items-center gap-3">
                 <select
-                  className="min-h-10 w-64 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm text-[#172033] outline-none transition focus:border-brand"
+                  className="min-h-10 w-64 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none transition focus:border-brand"
                   value={selectedRunId}
                   onChange={(e) => setSelectedRunId(e.target.value)}
                 >
@@ -700,7 +700,7 @@ export function PayrollConsole() {
           {/* Current Run Payslips Table */}
           <Card>
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-base font-semibold text-[#172033]">Calculated Salary List</h3>
+              <h3 className="text-base font-semibold text-[var(--text-primary)]">Calculated Salary List</h3>
               <span className="text-xs text-muted">{payslips.length} Employees found</span>
             </div>
 
@@ -708,13 +708,13 @@ export function PayrollConsole() {
               <table className="w-full border-collapse text-left text-sm text-slate-600">
                 <thead>
                   <tr className="bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500">
-                    <th className="border-b border-[#e8edf4] p-3">Employee</th>
-                    <th className="border-b border-[#e8edf4] p-3">Code</th>
-                    <th className="border-b border-[#e8edf4] p-3">Gross (Monthly)</th>
-                    <th className="border-b border-[#e8edf4] p-3">Deductions (Monthly)</th>
-                    <th className="border-b border-[#e8edf4] p-3">Net Pay (Monthly)</th>
-                    <th className="border-b border-[#e8edf4] p-3 text-center">Status</th>
-                    <th className="border-b border-[#e8edf4] p-3 text-right">Actions</th>
+                    <th className="border-b border-[var(--border-subtle)] p-3">Employee</th>
+                    <th className="border-b border-[var(--border-subtle)] p-3">Code</th>
+                    <th className="border-b border-[var(--border-subtle)] p-3">Gross (Monthly)</th>
+                    <th className="border-b border-[var(--border-subtle)] p-3">Deductions (Monthly)</th>
+                    <th className="border-b border-[var(--border-subtle)] p-3">Net Pay (Monthly)</th>
+                    <th className="border-b border-[var(--border-subtle)] p-3 text-center">Status</th>
+                    <th className="border-b border-[var(--border-subtle)] p-3 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -739,14 +739,14 @@ export function PayrollConsole() {
                   ) : (
                     payslips.map((p) => (
                       <tr key={p.id} className="hover:bg-slate-50/50">
-                        <td className="border-b border-[#e8edf4] p-3 font-semibold text-slate-800">
+                        <td className="border-b border-[var(--border-subtle)] p-3 font-semibold text-slate-800">
                           {p.employee.firstName} {p.employee.lastName}
                         </td>
-                        <td className="border-b border-[#e8edf4] p-3 text-xs font-mono">{p.employee.employeeCode}</td>
-                        <td className="border-b border-[#e8edf4] p-3">₹{Number(p.grossPay).toLocaleString("en-IN")}</td>
-                        <td className="border-b border-[#e8edf4] p-3 text-rose-600">₹{Number(p.deductions).toLocaleString("en-IN")}</td>
-                        <td className="border-b border-[#e8edf4] p-3 font-semibold text-brand">₹{Number(p.netPay).toLocaleString("en-IN")}</td>
-                        <td className="border-b border-[#e8edf4] p-3 text-center">
+                        <td className="border-b border-[var(--border-subtle)] p-3 text-xs font-mono">{p.employee.employeeCode}</td>
+                        <td className="border-b border-[var(--border-subtle)] p-3">₹{Number(p.grossPay).toLocaleString("en-IN")}</td>
+                        <td className="border-b border-[var(--border-subtle)] p-3 text-rose-600">₹{Number(p.deductions).toLocaleString("en-IN")}</td>
+                        <td className="border-b border-[var(--border-subtle)] p-3 font-semibold text-brand">₹{Number(p.netPay).toLocaleString("en-IN")}</td>
+                        <td className="border-b border-[var(--border-subtle)] p-3 text-center">
                           <span
                             className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
                               p.status === "APPROVED"
@@ -757,7 +757,7 @@ export function PayrollConsole() {
                             {p.status}
                           </span>
                         </td>
-                        <td className="border-b border-[#e8edf4] p-3 text-right">
+                        <td className="border-b border-[var(--border-subtle)] p-3 text-right">
                           <button
                             className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50"
                             onClick={() => handleOpenPayslip(p)}
@@ -789,7 +789,7 @@ export function PayrollConsole() {
               <div className="col-span-3 py-8 text-center text-slate-400">No payslips available. Perform component calculation first.</div>
             ) : (
               payslips.map((p) => (
-                <div key={p.id} className="rounded-xl border border-[#e8edf4] bg-white p-4 shadow-sm hover:shadow-md transition">
+                <div key={p.id} className="rounded-xl border border-[var(--border-subtle)] bg-white p-4 shadow-sm hover:shadow-md transition">
                   <div className="flex items-start justify-between">
                     <div>
                       <h4 className="font-semibold text-slate-800">{p.employee.firstName} {p.employee.lastName}</h4>
@@ -986,7 +986,7 @@ export function PayrollConsole() {
                 </div>
               ) : (
                 templates.map((tpl) => (
-                  <div key={tpl.id} className="rounded-xl border border-[#e8edf4] bg-white p-4 shadow-sm">
+                  <div key={tpl.id} className="rounded-xl border border-[var(--border-subtle)] bg-white p-4 shadow-sm">
                     <div className="flex items-start justify-between gap-2">
                       <div>
                         <h4 className="font-semibold text-slate-800">{tpl.name}</h4>
@@ -1024,7 +1024,7 @@ export function PayrollConsole() {
           </Card>
 
           {assignTpl ? (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#172033]/45 p-4" onClick={() => setAssignTpl(null)}>
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--text-primary)]/45 p-4" onClick={() => setAssignTpl(null)}>
               <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl" onClick={(e) => e.stopPropagation()}>
                 {assignResult ? (
                   <>
@@ -1060,14 +1060,14 @@ export function PayrollConsole() {
                     <label className="mt-4 grid gap-1 text-xs text-muted">
                       Effective Date
                       <input
-                        className="min-h-10 rounded-lg border border-[#dce2eb] px-3 text-sm text-ink"
+                        className="min-h-10 rounded-lg border border-[var(--border-default)] px-3 text-sm text-ink"
                         onChange={(e) => setAssignEffectiveDate(e.target.value)}
                         type="date"
                         value={assignEffectiveDate}
                       />
                     </label>
                     <div className="mt-3 text-xs text-muted">Employees ({assignEmployeeIds.length} selected)</div>
-                    <div className="mt-1 max-h-56 overflow-auto rounded-lg border border-[#dce2eb] p-2">
+                    <div className="mt-1 max-h-56 overflow-auto rounded-lg border border-[var(--border-default)] p-2">
                       {employeeOptions.map((opt) => (
                         <label key={opt.value} className="flex items-center gap-2 rounded px-2 py-1.5 text-sm hover:bg-slate-50">
                           <input
@@ -1084,7 +1084,7 @@ export function PayrollConsole() {
                       ))}
                     </div>
                     <div className="mt-5 flex justify-end gap-2">
-                      <button className="rounded-lg border border-[#dce2eb] px-4 py-2 text-sm" onClick={() => setAssignTpl(null)} type="button">Cancel</button>
+                      <button className="rounded-lg border border-[var(--border-default)] px-4 py-2 text-sm" onClick={() => setAssignTpl(null)} type="button">Cancel</button>
                       <button
                         className="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white disabled:opacity-50"
                         disabled={assignBusy || assignEmployeeIds.length === 0}
@@ -1155,24 +1155,24 @@ export function PayrollConsole() {
             <table className="w-full border-collapse text-left text-sm text-slate-600">
               <thead>
                 <tr className="bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500">
-                  <th className="border-b border-[#e8edf4] p-3">Name</th>
-                  <th className="border-b border-[#e8edf4] p-3">Category</th>
-                  <th className="border-b border-[#e8edf4] p-3">Kind</th>
-                  <th className="border-b border-[#e8edf4] p-3">Limit (Annual)</th>
-                  <th className="border-b border-[#e8edf4] p-3 text-center">Taxable</th>
-                  <th className="border-b border-[#e8edf4] p-3 text-center">Active</th>
-                  <th className="border-b border-[#e8edf4] p-3 text-right">Actions</th>
+                  <th className="border-b border-[var(--border-subtle)] p-3">Name</th>
+                  <th className="border-b border-[var(--border-subtle)] p-3">Category</th>
+                  <th className="border-b border-[var(--border-subtle)] p-3">Kind</th>
+                  <th className="border-b border-[var(--border-subtle)] p-3">Limit (Annual)</th>
+                  <th className="border-b border-[var(--border-subtle)] p-3 text-center">Taxable</th>
+                  <th className="border-b border-[var(--border-subtle)] p-3 text-center">Active</th>
+                  <th className="border-b border-[var(--border-subtle)] p-3 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {componentConfigs.map((c) => (
                   <tr key={c.id} className="hover:bg-slate-50/50">
-                    <td className="border-b border-[#e8edf4] p-3 font-semibold text-slate-800">{c.name}</td>
-                    <td className="border-b border-[#e8edf4] p-3">{c.category}</td>
-                    <td className="border-b border-[#e8edf4] p-3">{c.kind}</td>
-                    <td className="border-b border-[#e8edf4] p-3">{c.annualLimit ? `₹${c.annualLimit.toLocaleString()}` : "No Limit"}</td>
-                    <td className="border-b border-[#e8edf4] p-3 text-center">{c.taxable ? "Yes" : "No"}</td>
-                    <td className="border-b border-[#e8edf4] p-3 text-center">
+                    <td className="border-b border-[var(--border-subtle)] p-3 font-semibold text-slate-800">{c.name}</td>
+                    <td className="border-b border-[var(--border-subtle)] p-3">{c.category}</td>
+                    <td className="border-b border-[var(--border-subtle)] p-3">{c.kind}</td>
+                    <td className="border-b border-[var(--border-subtle)] p-3">{c.annualLimit ? `₹${c.annualLimit.toLocaleString()}` : "No Limit"}</td>
+                    <td className="border-b border-[var(--border-subtle)] p-3 text-center">{c.taxable ? "Yes" : "No"}</td>
+                    <td className="border-b border-[var(--border-subtle)] p-3 text-center">
                       <span
                         className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${
                           c.enabled ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-600"
@@ -1181,7 +1181,7 @@ export function PayrollConsole() {
                         {c.enabled ? "Active" : "Disabled"}
                       </span>
                     </td>
-                    <td className="border-b border-[#e8edf4] p-3 text-right">
+                    <td className="border-b border-[var(--border-subtle)] p-3 text-right">
                       <div className="flex justify-end gap-2">
                         <button
                           className="text-brand text-xs font-medium hover:underline"
@@ -1216,8 +1216,8 @@ export function PayrollConsole() {
       {showComponentModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 p-4 backdrop-blur-sm">
           <div className="w-full max-w-lg rounded-2xl bg-white shadow-xl flex flex-col max-h-[90vh]">
-            <div className="flex items-center justify-between border-b border-[#e8edf4] px-6 py-4 shrink-0">
-              <h2 className="text-lg font-bold text-[#172033]">{componentForm.id ? "Edit" : "Add"} Component Configuration</h2>
+            <div className="flex items-center justify-between border-b border-[var(--border-subtle)] px-6 py-4 shrink-0">
+              <h2 className="text-lg font-bold text-[var(--text-primary)]">{componentForm.id ? "Edit" : "Add"} Component Configuration</h2>
               <button
                 onClick={() => setShowComponentModal(false)}
                 className="rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
@@ -1229,10 +1229,10 @@ export function PayrollConsole() {
             <div className="overflow-y-auto px-6 py-4">
               <form id="component-form" onSubmit={handleSaveComponent} className="grid gap-4">
                 <div>
-                  <label className="mb-1 block text-xs font-bold text-[#49637f]">Component Name</label>
+                  <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Component Name</label>
                   <input
                     required
-                    className="w-full min-h-10 rounded-lg border border-[#dce2eb] px-3 text-sm"
+                    className="w-full min-h-10 rounded-lg border border-[var(--border-default)] px-3 text-sm"
                     value={componentForm.name}
                     onChange={(e) => setComponentForm({ ...componentForm, name: e.target.value })}
                     placeholder="e.g. Conveyance Allowance"
@@ -1240,9 +1240,9 @@ export function PayrollConsole() {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="mb-1 block text-xs font-bold text-[#49637f]">Category</label>
+                    <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Category</label>
                     <select
-                      className="w-full min-h-10 rounded-lg border border-[#dce2eb] px-3 text-sm"
+                      className="w-full min-h-10 rounded-lg border border-[var(--border-default)] px-3 text-sm"
                       value={componentForm.category}
                       onChange={(e) => setComponentForm({ ...componentForm, category: e.target.value })}
                     >
@@ -1253,9 +1253,9 @@ export function PayrollConsole() {
                     </select>
                   </div>
                   <div>
-                    <label className="mb-1 block text-xs font-bold text-[#49637f]">Kind</label>
+                    <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Kind</label>
                     <select
-                      className="w-full min-h-10 rounded-lg border border-[#dce2eb] px-3 text-sm"
+                      className="w-full min-h-10 rounded-lg border border-[var(--border-default)] px-3 text-sm"
                       value={componentForm.kind}
                       onChange={(e) => setComponentForm({ ...componentForm, kind: e.target.value })}
                     >
@@ -1267,10 +1267,10 @@ export function PayrollConsole() {
                 </div>
                 
                 <div>
-                  <label className="mb-1 block text-xs font-bold text-[#49637f]">Annual Limit (₹)</label>
+                  <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Annual Limit (₹)</label>
                   <input
                     type="number"
-                    className="w-full min-h-10 rounded-lg border border-[#dce2eb] px-3 text-sm"
+                    className="w-full min-h-10 rounded-lg border border-[var(--border-default)] px-3 text-sm"
                     value={componentForm.annualLimit}
                     onChange={(e) => setComponentForm({ ...componentForm, annualLimit: e.target.value })}
                     placeholder="Leave blank for no limit"
@@ -1336,7 +1336,7 @@ export function PayrollConsole() {
               </form>
             </div>
 
-            <div className="flex justify-end gap-3 border-t border-[#e8edf4] px-6 py-4 bg-slate-50 shrink-0 rounded-b-2xl">
+            <div className="flex justify-end gap-3 border-t border-[var(--border-subtle)] px-6 py-4 bg-slate-50 shrink-0 rounded-b-2xl">
               <button
                 type="button"
                 onClick={() => setShowComponentModal(false)}
@@ -1415,7 +1415,7 @@ export function PayrollConsole() {
               <div>
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Month</label>
                 <select
-                  className="min-h-11 w-full rounded-lg border border-[#dce2eb] bg-white px-3 text-sm outline-none transition focus:border-brand"
+                  className="min-h-11 w-full rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
                   value={newRunMonth}
                   onChange={(e) => setNewRunMonth(e.target.value)}
                 >
@@ -1432,7 +1432,7 @@ export function PayrollConsole() {
               <div>
                 <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Year</label>
                 <select
-                  className="min-h-11 w-full rounded-lg border border-[#dce2eb] bg-white px-3 text-sm outline-none transition focus:border-brand"
+                  className="min-h-11 w-full rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
                   value={newRunYear}
                   onChange={(e) => setNewRunYear(e.target.value)}
                 >
@@ -1597,7 +1597,7 @@ export function PayrollConsole() {
                 <div>
                   <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Employee</label>
                   <select
-                    className="min-h-11 w-full rounded-lg border border-[#dce2eb] bg-white px-3 text-sm outline-none transition focus:border-brand"
+                    className="min-h-11 w-full rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
                     value={salaryForm.employeeId}
                     onChange={(e) => setSalaryForm((prev) => ({ ...prev, employeeId: e.target.value }))}
                     required
@@ -1613,7 +1613,7 @@ export function PayrollConsole() {
                   <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Effective From</label>
                   <input
                     type="date"
-                    className="min-h-11 w-full rounded-lg border border-[#dce2eb] bg-white px-3 text-sm outline-none transition focus:border-brand"
+                    className="min-h-11 w-full rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
                     value={salaryForm.effectiveFrom}
                     onChange={(e) => setSalaryForm((prev) => ({ ...prev, effectiveFrom: e.target.value }))}
                     required
@@ -1626,7 +1626,7 @@ export function PayrollConsole() {
                   <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Annual CTC (₹)</label>
                   <input
                     type="number"
-                    className="min-h-11 w-full rounded-lg border border-[#dce2eb] bg-white px-3 text-sm outline-none transition focus:border-brand"
+                    className="min-h-11 w-full rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
                     value={salaryForm.annualCtc}
                     onChange={(e) => setSalaryForm((prev) => ({ ...prev, annualCtc: Number(e.target.value) }))}
                     required
@@ -1637,7 +1637,7 @@ export function PayrollConsole() {
                   <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Annual Basic (₹)</label>
                   <input
                     type="number"
-                    className="min-h-11 w-full rounded-lg border border-[#dce2eb] bg-white px-3 text-sm outline-none transition focus:border-brand"
+                    className="min-h-11 w-full rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
                     value={salaryForm.basic}
                     onChange={(e) => setSalaryForm((prev) => ({ ...prev, basic: Number(e.target.value) }))}
                     required
@@ -1648,7 +1648,7 @@ export function PayrollConsole() {
                   <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Annual HRA (₹)</label>
                   <input
                     type="number"
-                    className="min-h-11 w-full rounded-lg border border-[#dce2eb] bg-white px-3 text-sm outline-none transition focus:border-brand"
+                    className="min-h-11 w-full rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
                     value={salaryForm.hra}
                     onChange={(e) => setSalaryForm((prev) => ({ ...prev, hra: Number(e.target.value) }))}
                     required
@@ -1661,7 +1661,7 @@ export function PayrollConsole() {
                   <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Annual Allowances (₹)</label>
                   <input
                     type="number"
-                    className="min-h-11 w-full rounded-lg border border-[#dce2eb] bg-white px-3 text-sm outline-none transition focus:border-brand"
+                    className="min-h-11 w-full rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
                     value={salaryForm.allowances}
                     onChange={(e) => setSalaryForm((prev) => ({ ...prev, allowances: Number(e.target.value) }))}
                   />
@@ -1671,7 +1671,7 @@ export function PayrollConsole() {
                   <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Employee PF (₹)</label>
                   <input
                     type="number"
-                    className="min-h-11 w-full rounded-lg border border-[#dce2eb] bg-white px-3 text-sm outline-none transition focus:border-brand"
+                    className="min-h-11 w-full rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
                     value={salaryForm.employeePf}
                     onChange={(e) => setSalaryForm((prev) => ({ ...prev, employeePf: Number(e.target.value) }))}
                   />
@@ -1681,7 +1681,7 @@ export function PayrollConsole() {
                   <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Employer PF (₹)</label>
                   <input
                     type="number"
-                    className="min-h-11 w-full rounded-lg border border-[#dce2eb] bg-white px-3 text-sm outline-none transition focus:border-brand"
+                    className="min-h-11 w-full rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
                     value={salaryForm.employerPf}
                     onChange={(e) => setSalaryForm((prev) => ({ ...prev, employerPf: Number(e.target.value) }))}
                   />
@@ -1693,7 +1693,7 @@ export function PayrollConsole() {
                   <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Annual ESI (₹)</label>
                   <input
                     type="number"
-                    className="min-h-11 w-full rounded-lg border border-[#dce2eb] bg-white px-3 text-sm outline-none transition focus:border-brand"
+                    className="min-h-11 w-full rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
                     value={salaryForm.esi}
                     onChange={(e) => setSalaryForm((prev) => ({ ...prev, esi: Number(e.target.value) }))}
                   />
@@ -1703,7 +1703,7 @@ export function PayrollConsole() {
                   <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Professional Tax (₹)</label>
                   <input
                     type="number"
-                    className="min-h-11 w-full rounded-lg border border-[#dce2eb] bg-white px-3 text-sm outline-none transition focus:border-brand"
+                    className="min-h-11 w-full rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
                     value={salaryForm.professionalTax}
                     onChange={(e) => setSalaryForm((prev) => ({ ...prev, professionalTax: Number(e.target.value) }))}
                   />
@@ -1713,7 +1713,7 @@ export function PayrollConsole() {
                   <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Annual TDS (₹)</label>
                   <input
                     type="number"
-                    className="min-h-11 w-full rounded-lg border border-[#dce2eb] bg-white px-3 text-sm outline-none transition focus:border-brand"
+                    className="min-h-11 w-full rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
                     value={salaryForm.tds}
                     onChange={(e) => setSalaryForm((prev) => ({ ...prev, tds: Number(e.target.value) }))}
                   />
@@ -1826,10 +1826,10 @@ function PayrollCorrectionsConsole() {
 
   return (
     <div className="grid grid-cols-[1fr_2fr] gap-6 max-lg:grid-cols-1 text-left">
-      <Card className="p-5 border border-[#e8edf4]">
+      <Card className="p-5 border border-[var(--border-subtle)]">
         <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Record Payroll Correction / Arrears</h3>
-        {message && <div className="rounded-lg bg-[#e6f5ef] p-3 text-xs text-[#18865a] font-semibold mb-3">{message}</div>}
-        {error && <div className="rounded-lg bg-[#fde8e6] p-3 text-xs text-[#ba3d37] font-semibold mb-3">{error}</div>}
+        {message && <div className="rounded-lg bg-[var(--success-bg)] p-3 text-xs text-[var(--success-fg)] font-semibold mb-3">{message}</div>}
+        {error && <div className="rounded-lg bg-[var(--danger-bg)] p-3 text-xs text-[var(--danger-fg)] font-semibold mb-3">{error}</div>}
         <form onSubmit={handleSubmit} className="grid gap-4">
           <div>
             <label className="block text-xs font-semibold text-slate-500 mb-1">Target Payslip</label>
@@ -1900,11 +1900,11 @@ function PayrollCorrectionsConsole() {
         </form>
       </Card>
 
-      <Card className="p-5 border border-[#e8edf4]">
+      <Card className="p-5 border border-[var(--border-subtle)]">
         <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Pending Adjustments Ledger</h3>
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-xs text-slate-655">
-            <thead className="bg-[#f8fafc] text-[10px] uppercase font-bold text-slate-500 border-b">
+            <thead className="bg-[var(--surface-sunken)] text-[10px] uppercase font-bold text-slate-500 border-b">
               <tr>
                 <th className="p-2.5">Employee</th>
                 <th className="p-2.5">Type</th>
@@ -2023,10 +2023,10 @@ function GratuityConsole() {
 
   return (
     <div className="grid grid-cols-[1fr_2fr] gap-6 max-lg:grid-cols-1 text-left">
-      <Card className="p-5 border border-[#e8edf4]">
+      <Card className="p-5 border border-[var(--border-subtle)]">
         <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Calculate Gratuity Dues</h3>
-        {message && <div className="rounded-lg bg-[#e6f5ef] p-3 text-xs text-[#18865a] font-semibold mb-3">{message}</div>}
-        {error && <div className="rounded-lg bg-[#fde8e6] p-3 text-xs text-[#ba3d37] font-semibold mb-3">{error}</div>}
+        {message && <div className="rounded-lg bg-[var(--success-bg)] p-3 text-xs text-[var(--success-fg)] font-semibold mb-3">{message}</div>}
+        {error && <div className="rounded-lg bg-[var(--danger-bg)] p-3 text-xs text-[var(--danger-fg)] font-semibold mb-3">{error}</div>}
         <form onSubmit={handleCalculate} className="grid gap-4">
           <div>
             <label className="block text-xs font-semibold text-slate-500 mb-1">Select Employee</label>
@@ -2056,11 +2056,11 @@ function GratuityConsole() {
         </form>
       </Card>
 
-      <Card className="p-5 border border-[#e8edf4]">
+      <Card className="p-5 border border-[var(--border-subtle)]">
         <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Gratuity Settlements</h3>
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-xs text-slate-655">
-            <thead className="bg-[#f8fafc] text-[10px] uppercase font-bold text-slate-500 border-b">
+            <thead className="bg-[var(--surface-sunken)] text-[10px] uppercase font-bold text-slate-500 border-b">
               <tr>
                 <th className="p-2.5">Employee</th>
                 <th className="p-2.5">Years of Service</th>
@@ -2167,10 +2167,10 @@ function TaxSlabConsole() {
 
   return (
     <div className="grid grid-cols-[1fr_2fr] gap-6 max-lg:grid-cols-1 text-left">
-      <Card className="p-5 border border-[#e8edf4]">
+      <Card className="p-5 border border-[var(--border-subtle)]">
         <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Add Income Tax Slab</h3>
-        {message && <div className="rounded-lg bg-[#e6f5ef] p-3 text-xs text-[#18865a] font-semibold mb-3">{message}</div>}
-        {error && <div className="rounded-lg bg-[#fde8e6] p-3 text-xs text-[#ba3d37] font-semibold mb-3">{error}</div>}
+        {message && <div className="rounded-lg bg-[var(--success-bg)] p-3 text-xs text-[var(--success-fg)] font-semibold mb-3">{message}</div>}
+        {error && <div className="rounded-lg bg-[var(--danger-bg)] p-3 text-xs text-[var(--danger-fg)] font-semibold mb-3">{error}</div>}
         <form onSubmit={handleSubmit} className="grid gap-4">
           <div>
             <label className="block text-xs font-semibold text-slate-500 mb-1">Regime Type</label>
@@ -2235,11 +2235,11 @@ function TaxSlabConsole() {
         </form>
       </Card>
 
-      <Card className="p-5 border border-[#e8edf4]">
+      <Card className="p-5 border border-[var(--border-subtle)]">
         <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Active Income Tax Slabs Ledger</h3>
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-xs text-slate-655">
-            <thead className="bg-[#f8fafc] text-[10px] uppercase font-bold text-slate-500 border-b">
+            <thead className="bg-[var(--surface-sunken)] text-[10px] uppercase font-bold text-slate-500 border-b">
               <tr>
                 <th className="p-2.5">Regime</th>
                 <th className="p-2.5">Income Band</th>
@@ -2354,10 +2354,10 @@ function RetentionBonusConsole() {
 
   return (
     <div className="grid grid-cols-[1fr_2fr] gap-6 max-lg:grid-cols-1 text-left">
-      <Card className="p-5 border border-[#e8edf4]">
+      <Card className="p-5 border border-[var(--border-subtle)]">
         <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Log Retention Bonus</h3>
-        {message && <div className="rounded-lg bg-[#e6f5ef] p-3 text-xs text-[#18865a] font-semibold mb-3">{message}</div>}
-        {error && <div className="rounded-lg bg-[#fde8e6] p-3 text-xs text-[#ba3d37] font-semibold mb-3">{error}</div>}
+        {message && <div className="rounded-lg bg-[var(--success-bg)] p-3 text-xs text-[var(--success-fg)] font-semibold mb-3">{message}</div>}
+        {error && <div className="rounded-lg bg-[var(--danger-bg)] p-3 text-xs text-[var(--danger-fg)] font-semibold mb-3">{error}</div>}
         <form onSubmit={handleSubmit} className="grid gap-4">
           <div>
             <label className="block text-xs font-semibold text-slate-500 mb-1">Select Employee</label>
@@ -2428,11 +2428,11 @@ function RetentionBonusConsole() {
         </form>
       </Card>
 
-      <Card className="p-5 border border-[#e8edf4]">
+      <Card className="p-5 border border-[var(--border-subtle)]">
         <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Retention Bonuses Ledger</h3>
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-xs text-slate-655">
-            <thead className="bg-[#f8fafc] text-[10px] uppercase font-bold text-slate-500 border-b">
+            <thead className="bg-[var(--surface-sunken)] text-[10px] uppercase font-bold text-slate-500 border-b">
               <tr>
                 <th className="p-2.5">Employee</th>
                 <th className="p-2.5">Bonus Amount</th>
@@ -2566,10 +2566,10 @@ function SalaryWithholdingConsole() {
 
   return (
     <div className="grid grid-cols-[1fr_2fr] gap-6 max-lg:grid-cols-1 text-left">
-      <Card className="p-5 border border-[#e8edf4]">
+      <Card className="p-5 border border-[var(--border-subtle)]">
         <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Apply Salary Withholding</h3>
-        {message && <div className="rounded-lg bg-[#e6f5ef] p-3 text-xs text-[#18865a] font-semibold mb-3">{message}</div>}
-        {error && <div className="rounded-lg bg-[#fde8e6] p-3 text-xs text-[#ba3d37] font-semibold mb-3">{error}</div>}
+        {message && <div className="rounded-lg bg-[var(--success-bg)] p-3 text-xs text-[var(--success-fg)] font-semibold mb-3">{message}</div>}
+        {error && <div className="rounded-lg bg-[var(--danger-bg)] p-3 text-xs text-[var(--danger-fg)] font-semibold mb-3">{error}</div>}
         <form onSubmit={handleSubmit} className="grid gap-4">
           <div>
             <label className="block text-xs font-semibold text-slate-500 mb-1">Select Employee</label>
@@ -2638,11 +2638,11 @@ function SalaryWithholdingConsole() {
         </form>
       </Card>
 
-      <Card className="p-5 border border-[#e8edf4]">
+      <Card className="p-5 border border-[var(--border-subtle)]">
         <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Salary Withholdings Ledger</h3>
         <div className="overflow-x-auto">
           <table className="w-full border-collapse text-xs text-slate-655">
-            <thead className="bg-[#f8fafc] text-[10px] uppercase font-bold text-slate-500 border-b">
+            <thead className="bg-[var(--surface-sunken)] text-[10px] uppercase font-bold text-slate-500 border-b">
               <tr>
                 <th className="p-2.5">Employee</th>
                 <th className="p-2.5">From Date</th>
@@ -2667,7 +2667,7 @@ function SalaryWithholdingConsole() {
                     <td className="p-2.5 max-w-[200px] truncate">{r.reason || "N/A"}</td>
                     <td className="p-2.5">
                       <div className="flex items-center gap-2">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${r.status === "ACTIVE" ? "bg-[#fde8e6] text-[#ba3d37]" : "bg-emerald-100 text-emerald-800"}`}>
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${r.status === "ACTIVE" ? "bg-[var(--danger-bg)] text-[var(--danger-fg)]" : "bg-emerald-100 text-emerald-800"}`}>
                           {r.status}
                         </span>
                         {r.status === "ACTIVE" && (
@@ -2727,7 +2727,7 @@ function Form16Panel() {
 
   return (
     <div className="grid gap-5">
-      <Card className="p-5 border border-[#e8edf4]">
+      <Card className="p-5 border border-[var(--border-subtle)]">
         <h3 className="text-base font-bold text-slate-800 mb-4">Form 16 — Annual Tax Summary</h3>
         <div className="flex flex-wrap gap-3 items-end">
           <div className="flex-1 min-w-[200px]">
@@ -2762,7 +2762,7 @@ function Form16Panel() {
       </Card>
 
       {form16 && (
-        <Card className="p-6 border border-[#e8edf4] print:shadow-none" id="form16-printable">
+        <Card className="p-6 border border-[var(--border-subtle)] print:shadow-none" id="form16-printable">
           {/* Header */}
           <div className="border-b-2 border-slate-200 pb-4 mb-5 flex items-start justify-between flex-wrap gap-4">
             <div>

@@ -104,13 +104,13 @@ export function ExpensesConsole() {
         <div className="grid gap-5 text-left">
           <ExpensePayoutWorkspace />
           {showClaimPanel && <ExpenseClaimPanel />}
-          <Card className="border border-[#e8edf4]">
+          <Card className="border border-[var(--border-subtle)]">
             <div className="mb-4 flex items-center justify-between gap-3">
-              <h2 className="text-lg font-bold text-[#172033]">Claims & Payouts</h2>
+              <h2 className="text-lg font-bold text-[var(--text-primary)]">Claims & Payouts</h2>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[860px] border-collapse text-sm text-[#49637f]">
-                <thead className="bg-[#f8fafc] text-left text-xs uppercase font-bold text-slate-500 border-b">
+              <table className="w-full min-w-[860px] border-collapse text-sm text-[var(--text-secondary)]">
+                <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase font-bold text-slate-500 border-b">
                   <tr>
                     <th className="p-3">Employee</th>
                     <th className="p-3">Category</th>
@@ -129,13 +129,13 @@ export function ExpensesConsole() {
 
       {activeTab === "Approvals" && (
         <div className="grid gap-5 text-left">
-          <Card className="border border-[#e8edf4]">
+          <Card className="border border-[var(--border-subtle)]">
             <div className="mb-4 flex items-center justify-between gap-3">
-              <h2 className="text-lg font-bold text-[#172033]">Pending Claim Approvals</h2>
+              <h2 className="text-lg font-bold text-[var(--text-primary)]">Pending Claim Approvals</h2>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[860px] border-collapse text-sm text-[#49637f]">
-                <thead className="bg-[#f8fafc] text-left text-xs uppercase font-bold text-slate-500 border-b">
+              <table className="w-full min-w-[860px] border-collapse text-sm text-[var(--text-secondary)]">
+                <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase font-bold text-slate-500 border-b">
                   <tr>
                     <th className="p-3">Employee</th>
                     <th className="p-3">Category</th>
@@ -154,13 +154,13 @@ export function ExpensesConsole() {
 
       {activeTab === "Receipts" && (
         <div className="grid gap-5 text-left">
-          <Card className="border border-[#e8edf4]">
+          <Card className="border border-[var(--border-subtle)]">
             <div className="mb-4 flex items-center justify-between gap-3">
-              <h2 className="text-lg font-bold text-[#172033]">Expense Claim Receipts</h2>
+              <h2 className="text-lg font-bold text-[var(--text-primary)]">Expense Claim Receipts</h2>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[860px] border-collapse text-sm text-[#49637f]">
-                <thead className="bg-[#f8fafc] text-left text-xs uppercase font-bold text-slate-500 border-b">
+              <table className="w-full min-w-[860px] border-collapse text-sm text-[var(--text-secondary)]">
+                <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase font-bold text-slate-500 border-b">
                   <tr>
                     <th className="p-3">Employee</th>
                     <th className="p-3">Category</th>
@@ -179,13 +179,13 @@ export function ExpensesConsole() {
 
       {activeTab === "Reimbursement" && (
         <div className="grid gap-5 text-left">
-          <Card className="border border-[#e8edf4]">
+          <Card className="border border-[var(--border-subtle)]">
             <div className="mb-4 flex items-center justify-between gap-3">
-              <h2 className="text-lg font-bold text-[#172033]">Pending Reimbursements</h2>
+              <h2 className="text-lg font-bold text-[var(--text-primary)]">Pending Reimbursements</h2>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[860px] border-collapse text-sm text-[#49637f]">
-                <thead className="bg-[#f8fafc] text-left text-xs uppercase font-bold text-slate-500 border-b">
+              <table className="w-full min-w-[860px] border-collapse text-sm text-[var(--text-secondary)]">
+                <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase font-bold text-slate-500 border-b">
                   <tr>
                     <th className="p-3">Employee</th>
                     <th className="p-3">Category</th>

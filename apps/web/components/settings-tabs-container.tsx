@@ -44,7 +44,7 @@ export function SettingsTabsContainer() {
       ) : activeTab === "Organization" ? (
         <OrganizationSettingsConsole />
       ) : (
-        <div className="rounded-lg border border-[#e8edf4] bg-[#f8fafc] p-10 text-center text-sm font-semibold text-muted">
+        <div className="rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)] p-10 text-center text-sm font-semibold text-muted">
           Configuration settings for {activeTab} will be integrated based on active license subscriptions.
         </div>
       )}

@@ -97,7 +97,7 @@ function AccessValue({ value }: { value: string }) {
   const label = displayAccessValue(value);
   if (lower.includes("not included")) {
     return (
-      <span className="inline-flex items-center gap-2 font-semibold text-[#ba3d37]" title="Not included">
+      <span className="inline-flex items-center gap-2 font-semibold text-[var(--danger-fg)]" title="Not included">
         <X className="h-4 w-4" />
         <span className="sr-only">Not included</span>
       </span>
@@ -105,14 +105,14 @@ function AccessValue({ value }: { value: string }) {
   }
   if (lower === "included") {
     return (
-      <span className="inline-flex items-center gap-2 font-semibold text-[#078ced]" title="Included">
+      <span className="inline-flex items-center gap-2 font-semibold text-[var(--color-brand-600)]" title="Included">
         <Check className="h-5 w-5" />
         <span className="sr-only">Included</span>
       </span>
     );
   }
-  if (lower.includes("unlimited")) return <span className="font-bold text-[#111827]">{label}</span>;
-  return <span className="font-semibold text-[#34465f]">{label}</span>;
+  if (lower.includes("unlimited")) return <span className="font-bold text-[var(--text-primary)]">{label}</span>;
+  return <span className="font-semibold text-[var(--text-secondary)]">{label}</span>;
 }
 
 export function SaasConsole() {
@@ -234,15 +234,15 @@ export function SaasConsole() {
   <meta charset="utf-8" />
   <title>${escapeHtml(invoiceNumber)}</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 32px; color: #172033; }
-    .top { display: flex; justify-content: space-between; gap: 24px; border-bottom: 1px solid #dce2eb; padding-bottom: 20px; }
+    body { font-family: Arial, sans-serif; margin: 32px; color: var(--text-primary); }
+    .top { display: flex; justify-content: space-between; gap: 24px; border-bottom: 1px solid var(--border-default); padding-bottom: 20px; }
     h1 { margin: 0; font-size: 24px; }
     .muted { color: #667892; font-size: 13px; }
-    .box { border: 1px solid #dce2eb; border-radius: 8px; padding: 14px; margin-top: 18px; }
+    .box { border: 1px solid var(--border-default); border-radius: 8px; padding: 14px; margin-top: 18px; }
     table { border-collapse: collapse; width: 100%; margin-top: 20px; font-size: 14px; }
-    th, td { border-bottom: 1px solid #dce2eb; padding: 12px; text-align: left; }
+    th, td { border-bottom: 1px solid var(--border-default); padding: 12px; text-align: left; }
     th:last-child, td:last-child { text-align: right; }
-    .total { background: #f8fafc; font-weight: 700; font-size: 16px; }
+    .total { background: var(--surface-sunken); font-weight: 700; font-size: 16px; }
   </style>
 </head>
 <body>
@@ -330,7 +330,7 @@ export function SaasConsole() {
 
   return (
     <div className="grid gap-5">
-      {message ? <div className="rounded-lg bg-[#e6f5ef] p-3 text-sm text-[#18865a]">{message}</div> : null}
+      {message ? <div className="rounded-lg bg-[var(--success-bg)] p-3 text-sm text-[var(--success-fg)]">{message}</div> : null}
       <div className="grid grid-cols-4 gap-3 max-xl:grid-cols-2 max-md:grid-cols-1">
         <MetricCard label="Tenants" value={`${data.activeTenants}/${data.tenants}`} note="Multi-company readiness" />
         <MetricCard label="Active Plan" value={data.activePlan} note={money(data.monthlyPrice)} />
@@ -339,11 +339,11 @@ export function SaasConsole() {
       </div>
 
       <Card className="p-0">
-        <div className="border-b-2 border-[#078ced]">
-          <div className="inline-flex min-h-10 items-center bg-[#078ced] px-4 text-sm font-bold text-white">My Plan</div>
+        <div className="border-b-2 border-[var(--color-brand-600)]">
+          <div className="inline-flex min-h-10 items-center bg-[var(--color-brand-600)] px-4 text-sm font-bold text-white">My Plan</div>
         </div>
-        <div className="grid grid-cols-[1.35fr_repeat(3,minmax(170px,1fr))] overflow-hidden border border-[#d1d7df] border-b-0 max-xl:grid-cols-2 max-md:grid-cols-1">
-          <div className="flex min-h-52 flex-col items-center justify-center border-r border-[#d1d7df] bg-white p-5 text-center max-xl:border-b max-md:border-r-0">
+        <div className="grid grid-cols-[1.35fr_repeat(3,minmax(170px,1fr))] overflow-hidden border border-[var(--border-strong)] border-b-0 max-xl:grid-cols-2 max-md:grid-cols-1">
+          <div className="flex min-h-52 flex-col items-center justify-center border-r border-[var(--border-strong)] bg-white p-5 text-center max-xl:border-b max-md:border-r-0">
             <div className="relative h-28 w-36">
               <div className="absolute left-6 top-1 h-16 w-16 rotate-45 rounded-md border-[3px] border-[#ffa51f] bg-[#ffc13b]" />
               <div className="absolute right-5 top-9 h-16 w-16 rotate-45 rounded-md border-[3px] border-[#f02fa0] bg-[#f45dbc]" />
@@ -351,14 +351,14 @@ export function SaasConsole() {
               <div className="absolute right-2 top-2 h-3.5 w-3.5 rounded bg-[#eef3ff]" />
               <div className="absolute left-2 bottom-5 h-3.5 w-3.5 rounded bg-[#eef3ff]" />
             </div>
-            <div className="mt-1 text-xl font-semibold text-[#111827]">Features</div>
+            <div className="mt-1 text-xl font-semibold text-[var(--text-primary)]">Features</div>
           </div>
           {data.plans.map((plan: Plan) => {
             const active = plan.status === "ACTIVE";
             const isBasic = plan.name === "Basic";
             const circleClass = plan.name === "Basic" ? "bg-[#4ec266]" : plan.name === "Standard" ? "bg-[#ffb11b]" : "bg-[#e83e93]";
             return (
-              <div className={`flex min-h-52 flex-col items-center justify-center border-r border-[#d1d7df] p-5 text-center last:border-r-0 max-xl:border-b ${active ? "bg-[#ff8428] text-white" : "bg-white text-[#111827]"}`} key={plan.name}>
+              <div className={`flex min-h-52 flex-col items-center justify-center border-r border-[var(--border-strong)] p-5 text-center last:border-r-0 max-xl:border-b ${active ? "bg-[#ff8428] text-white" : "bg-white text-[var(--text-primary)]"}`} key={plan.name}>
                 <div className={`mb-3 flex h-16 w-16 items-center justify-center rounded-full ${circleClass} text-white shadow-sm ring-4 ring-white/40`}>
                   <Layers3 className="h-7 w-7" />
                 </div>
@@ -368,16 +368,16 @@ export function SaasConsole() {
                     <div className="mt-1 text-sm font-semibold">No Hidden Charges</div>
                     <div className="mt-1 text-sm font-semibold">No Credit Card Required</div>
                     <div className={`mt-2 text-lg ${active ? "text-white/80" : "text-[#9ca3af]"}`}>{money(0)}/month</div>
-                    <button className="mt-5 min-h-9 rounded border border-transparent px-7 text-sm font-semibold text-[#078ced]" type="button" onClick={() => selectPlan(plan.name)}>
+                    <button className="mt-5 min-h-9 rounded border border-transparent px-7 text-sm font-semibold text-[var(--color-brand-600)]" type="button" onClick={() => selectPlan(plan.name)}>
                       {active ? "Current Plan" : "Select Plan"}
                     </button>
                     <div className="mt-2 text-xs font-semibold text-[#006fd6]">*Subject to Active Usage Policy</div>
                   </>
                 ) : (
                   <>
-                    <div className={`mt-2 text-sm font-bold ${active ? "text-white" : "text-[#111827]"}`}>{money(plan.monthlyPrice)}/Month/upto {plan.employees} emp</div>
-                    <div className={`mt-2 text-sm font-bold ${active ? "text-white" : "text-[#111827]"}`}>{money(plan.additionalEmployeePrice)} per additional emp {plan.employees}+</div>
-                    <button className={`mt-6 min-h-10 rounded px-9 text-sm font-semibold ${active ? "border border-white bg-[#ff8428] text-white" : "bg-[#078ced] text-white"}`} type="button" onClick={() => selectPlan(plan.name)}>
+                    <div className={`mt-2 text-sm font-bold ${active ? "text-white" : "text-[var(--text-primary)]"}`}>{money(plan.monthlyPrice)}/Month/upto {plan.employees} emp</div>
+                    <div className={`mt-2 text-sm font-bold ${active ? "text-white" : "text-[var(--text-primary)]"}`}>{money(plan.additionalEmployeePrice)} per additional emp {plan.employees}+</div>
+                    <button className={`mt-6 min-h-10 rounded px-9 text-sm font-semibold ${active ? "border border-white bg-[#ff8428] text-white" : "bg-[var(--color-brand-600)] text-white"}`} type="button" onClick={() => selectPlan(plan.name)}>
                       {active ? "Current Plan" : "Select Plan"}
                     </button>
                     {active ? <div className="mt-3 text-sm text-white">Valid till 30/09/2026</div> : null}
@@ -387,7 +387,7 @@ export function SaasConsole() {
             );
           })}
         </div>
-        <div className="overflow-auto border-x border-[#d1d7df]">
+        <div className="overflow-auto border-x border-[var(--border-strong)]">
           <table className="w-full min-w-[940px] border-collapse text-sm">
             <tbody>
               {data.planMatrix.map((row: PlanMatrixRow, index) => {
@@ -395,51 +395,51 @@ export function SaasConsole() {
                 const showSection = !previous || previous.section !== row.section;
                 return (
                   <tr key={`${row.section}-${row.feature}`}>
-                    <td className="w-[35%] border-b border-r border-[#d1d7df] p-3">
-                      {showSection ? <div className="mb-2 text-sm font-bold text-[#078ced]">{row.section}</div> : null}
-                      <div className="text-sm text-[#111827]">{row.feature}</div>
+                    <td className="w-[35%] border-b border-r border-[var(--border-strong)] p-3">
+                      {showSection ? <div className="mb-2 text-sm font-bold text-[var(--color-brand-600)]">{row.section}</div> : null}
+                      <div className="text-sm text-[var(--text-primary)]">{row.feature}</div>
                     </td>
-                    <td className="w-[21.66%] border-b border-r border-[#d1d7df] p-3 text-center"><AccessValue value={row.basic} /></td>
+                    <td className="w-[21.66%] border-b border-r border-[var(--border-strong)] p-3 text-center"><AccessValue value={row.basic} /></td>
                     <td className="w-[21.66%] border-x border-b border-[#ff8428] bg-[#fffaf5] p-3 text-center"><AccessValue value={row.standard} /></td>
-                    <td className="w-[21.66%] border-b border-l border-[#d1d7df] p-3 text-center"><AccessValue value={row.pro} /></td>
+                    <td className="w-[21.66%] border-b border-l border-[var(--border-strong)] p-3 text-center"><AccessValue value={row.pro} /></td>
                   </tr>
                 );
               })}
             </tbody>
           </table>
         </div>
-        <div className="flex flex-wrap justify-end gap-2 border-x border-b border-[#d1d7df] p-3">
+        <div className="flex flex-wrap justify-end gap-2 border-x border-b border-[var(--border-strong)] p-3">
           <button className="flex min-h-10 items-center gap-2 rounded-lg bg-brand px-4 text-sm font-semibold text-white" onClick={() => run("/saas/invoice", "Invoice queue")}>
             <ReceiptText className="h-4 w-4" /> Queue Invoice
           </button>
-          <button className="flex min-h-10 items-center gap-2 rounded-lg border border-[#dce2eb] px-4 text-sm font-semibold hover:border-brand" onClick={() => run("/saas/license-refresh", "License refresh")}>
+          <button className="flex min-h-10 items-center gap-2 rounded-lg border border-[var(--border-default)] px-4 text-sm font-semibold hover:border-brand" onClick={() => run("/saas/license-refresh", "License refresh")}>
             <RefreshCcw className="h-4 w-4" /> Refresh License
           </button>
         </div>
       </Card>
 
       <Card className="p-0">
-        <div className="border-b border-[#dce2eb] p-5 text-center">
+        <div className="border-b border-[var(--border-default)] p-5 text-center">
           <h2 className="text-xl font-semibold">Add Ons</h2>
           <p className="mt-1 text-sm text-muted">Optional modules and premium controls that can be added to Standard or included in Pro.</p>
         </div>
         <div className="overflow-auto">
           <table className="w-full min-w-[940px] border-collapse text-sm">
-            <thead className="bg-[#f8fafc] text-left text-xs uppercase text-muted">
+            <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase text-muted">
               <tr>
-                <th className="border-b border-[#dce2eb] p-3">Add On</th>
-                <th className="border-b border-[#dce2eb] p-3">{planColumnTitle("Basic")}</th>
-                <th className="border-b border-[#dce2eb] bg-[#fff3e8] p-3">{planColumnTitle("Standard")}</th>
-                <th className="border-b border-[#dce2eb] p-3">{planColumnTitle("Pro")}</th>
+                <th className="border-b border-[var(--border-default)] p-3">Add On</th>
+                <th className="border-b border-[var(--border-default)] p-3">{planColumnTitle("Basic")}</th>
+                <th className="border-b border-[var(--border-default)] bg-[#fff3e8] p-3">{planColumnTitle("Standard")}</th>
+                <th className="border-b border-[var(--border-default)] p-3">{planColumnTitle("Pro")}</th>
               </tr>
             </thead>
             <tbody>
               {data.planAddOns.map((row: PlanAddOn) => (
                 <tr key={row.feature}>
-                  <td className="border-b border-[#dce2eb] p-3 font-semibold text-[#172033]">{row.feature}</td>
-                  <td className="border-b border-[#dce2eb] p-3"><AccessValue value={row.basic} /></td>
-                  <td className="border-b border-[#dce2eb] bg-[#fffaf5] p-3"><AccessValue value={row.standard} /></td>
-                  <td className="border-b border-[#dce2eb] p-3"><AccessValue value={row.pro} /></td>
+                  <td className="border-b border-[var(--border-default)] p-3 font-semibold text-[var(--text-primary)]">{row.feature}</td>
+                  <td className="border-b border-[var(--border-default)] p-3"><AccessValue value={row.basic} /></td>
+                  <td className="border-b border-[var(--border-default)] bg-[#fffaf5] p-3"><AccessValue value={row.standard} /></td>
+                  <td className="border-b border-[var(--border-default)] p-3"><AccessValue value={row.pro} /></td>
                 </tr>
               ))}
             </tbody>
@@ -448,17 +448,17 @@ export function SaasConsole() {
       </Card>
 
       <Card className="p-0">
-        <div className="border-b border-[#dce2eb] p-5 text-center">
+        <div className="border-b border-[var(--border-default)] p-5 text-center">
           <h2 className="text-xl font-semibold">Plan Summary</h2>
         </div>
         <div className="grid grid-cols-2 max-lg:grid-cols-1">
-          <div className="border-r border-[#dce2eb] p-5 max-lg:border-r-0 max-lg:border-b">
-            <h3 className="text-lg font-semibold text-[#172033]">{displayPlanName(quotedBillingSummary.plan)}</h3>
+          <div className="border-r border-[var(--border-default)] p-5 max-lg:border-r-0 max-lg:border-b">
+            <h3 className="text-lg font-semibold text-[var(--text-primary)]">{displayPlanName(quotedBillingSummary.plan)}</h3>
             <div className="mt-5 grid gap-4 text-sm">
-              <div className="flex items-center justify-between gap-4 border-b border-[#eef3f8] pb-3">
+              <div className="flex items-center justify-between gap-4 border-b border-[var(--surface-sunken)] pb-3">
                 <label className="text-muted" htmlFor="billing-duration">Duration</label>
                 <select
-                  className="min-h-10 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm font-semibold text-[#172033]"
+                  className="min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)]"
                   id="billing-duration"
                   value={quoteYears}
                   onChange={(event) => setQuoteYears(Number(event.target.value))}
@@ -468,10 +468,10 @@ export function SaasConsole() {
                   <option value={3}>3 Years</option>
                 </select>
               </div>
-              <div className="flex items-center justify-between gap-4 border-b border-[#eef3f8] pb-3">
+              <div className="flex items-center justify-between gap-4 border-b border-[var(--surface-sunken)] pb-3">
                 <label className="text-muted" htmlFor="billing-employees">No. of Employees</label>
                 <input
-                  className="min-h-10 w-28 rounded-lg border border-[#dce2eb] px-3 text-right text-sm font-semibold text-[#172033]"
+                  className="min-h-10 w-28 rounded-lg border border-[var(--border-default)] px-3 text-right text-sm font-semibold text-[var(--text-primary)]"
                   id="billing-employees"
                   min={1}
                   type="number"
@@ -479,11 +479,11 @@ export function SaasConsole() {
                   onChange={(event) => setQuoteEmployees(Number(event.target.value))}
                 />
               </div>
-              <div className="flex items-center justify-between border-b border-[#eef3f8] pb-3">
+              <div className="flex items-center justify-between border-b border-[var(--surface-sunken)] pb-3">
                 <span className="text-muted">Base Plan up to {quotedPlan?.employees || 25} Employees</span>
                 <span className="font-semibold">{money(quotedBillingSummary.basePlan)}</span>
               </div>
-              <div className="flex items-center justify-between border-b border-[#eef3f8] pb-3">
+              <div className="flex items-center justify-between border-b border-[var(--surface-sunken)] pb-3">
                 <span className="text-muted">Additional Employee Price</span>
                 <span className="font-semibold">{money(quotedBillingSummary.additionalEmployeePrice)}</span>
               </div>
@@ -496,7 +496,7 @@ export function SaasConsole() {
                   {quoteAddOns.map((addOn) => {
                     const checked = selectedQuoteAddOns.includes(addOn.key);
                     return (
-                      <label className={`flex min-h-11 items-center justify-between gap-3 rounded-lg border px-3 text-xs font-semibold ${checked ? "border-brand bg-[#eef5ff] text-brand" : "border-[#dce2eb] text-[#34465f]"}`} key={addOn.key}>
+                      <label className={`flex min-h-11 items-center justify-between gap-3 rounded-lg border px-3 text-xs font-semibold ${checked ? "border-brand bg-[var(--color-brand-50)] text-brand" : "border-[var(--border-default)] text-[var(--text-secondary)]"}`} key={addOn.key}>
                         <span>{addOn.label}</span>
                         <span className="flex items-center gap-2">
                           {money(addOn.monthlyPrice)}/mo
@@ -514,7 +514,7 @@ export function SaasConsole() {
                   })}
                 </div>
               </div>
-              <div className="flex items-center justify-between border-t border-[#eef3f8] pt-3">
+              <div className="flex items-center justify-between border-t border-[var(--surface-sunken)] pt-3">
                 <span className="text-muted">Total Add on Price</span>
                 <span className="font-semibold">{money(quotedBillingSummary.addOnMonthlyPrice * 12 * quoteYears)} / {quotedBillingSummary.duration.toLowerCase()}</span>
               </div>
@@ -525,7 +525,7 @@ export function SaasConsole() {
               <div className="flex items-center justify-between">
                 <span className="text-muted">Apply Coupon</span>
                 <select
-                  className="min-h-10 rounded-lg border border-[#b8c2d1] bg-white px-3 text-sm font-semibold text-[#172033]"
+                  className="min-h-10 rounded-lg border border-[#b8c2d1] bg-white px-3 text-sm font-semibold text-[var(--text-primary)]"
                   value={selectedCouponKey}
                   onChange={(event) => setSelectedCouponKey(event.target.value)}
                 >
@@ -542,7 +542,7 @@ export function SaasConsole() {
           </div>
 
           <div className="p-5">
-            <h3 className="text-lg font-semibold text-[#172033]">Billing Summary</h3>
+            <h3 className="text-lg font-semibold text-[var(--text-primary)]">Billing Summary</h3>
             <div className="mt-5 grid gap-4 text-sm">
               <div className="flex items-center justify-between">
                 <span className="text-muted">Item Total</span>
@@ -552,18 +552,18 @@ export function SaasConsole() {
                 <span className="text-muted">Price after discount</span>
                 <span className="font-semibold">{money(quotedBillingSummary.discountPrice)}</span>
               </div>
-              <div className="flex items-center justify-between border-b border-[#dce2eb] pb-4">
+              <div className="flex items-center justify-between border-b border-[var(--border-default)] pb-4">
                 <span className="text-muted">GST (18%)</span>
                 <span className="font-semibold">{money(quotedBillingSummary.gst)}</span>
               </div>
               <div className="flex items-center justify-between text-base">
-                <span className="font-semibold text-[#172033]">Grand Total</span>
-                <span className="font-bold text-[#172033]">{money(quotedBillingSummary.grandTotal)}</span>
+                <span className="font-semibold text-[var(--text-primary)]">Grand Total</span>
+                <span className="font-bold text-[var(--text-primary)]">{money(quotedBillingSummary.grandTotal)}</span>
               </div>
               <div className="grid gap-2">
                 <label className="text-xs font-bold uppercase text-muted" htmlFor="payment-method">Payment Method</label>
                 <select
-                  className="min-h-10 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm font-semibold text-[#172033]"
+                  className="min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm font-semibold text-[var(--text-primary)]"
                   id="payment-method"
                   value={paymentMethod}
                   onChange={(event) => setPaymentMethod(event.target.value)}
@@ -580,29 +580,29 @@ export function SaasConsole() {
               {paymentReceipt ? (
                 <div className="mt-3 rounded-lg border border-[#bfe6d2] bg-[#f1fbf6] p-4 text-sm">
                   <div className="mb-3 flex items-center justify-between gap-3">
-                    <div className="font-bold text-[#172033]">Payment Confirmation</div>
+                    <div className="font-bold text-[var(--text-primary)]">Payment Confirmation</div>
                     <StatusPill tone="yellow">{paymentReceipt.status}</StatusPill>
                   </div>
-                  <div className="grid gap-2 text-[#34465f]">
+                  <div className="grid gap-2 text-[var(--text-secondary)]">
                     <div className="flex items-center justify-between gap-3">
                       <span>Receipt ID</span>
-                      <span className="font-semibold text-[#172033]">{paymentReceipt.id}</span>
+                      <span className="font-semibold text-[var(--text-primary)]">{paymentReceipt.id}</span>
                     </div>
                     <div className="flex items-center justify-between gap-3">
                       <span>Amount</span>
-                      <span className="font-semibold text-[#172033]">{money(paymentReceipt.amount)}</span>
+                      <span className="font-semibold text-[var(--text-primary)]">{money(paymentReceipt.amount)}</span>
                     </div>
                     <div className="flex items-center justify-between gap-3">
                       <span>Method</span>
-                      <span className="font-semibold text-[#172033]">{paymentReceipt.method}</span>
+                      <span className="font-semibold text-[var(--text-primary)]">{paymentReceipt.method}</span>
                     </div>
                     <div className="flex items-center justify-between gap-3">
                       <span>Plan</span>
-                      <span className="font-semibold text-[#172033]">{paymentReceipt.plan}</span>
+                      <span className="font-semibold text-[var(--text-primary)]">{paymentReceipt.plan}</span>
                     </div>
                     <div className="flex items-center justify-between gap-3">
                       <span>Created</span>
-                      <span className="font-semibold text-[#172033]">{new Date(paymentReceipt.paidAt).toLocaleString("en-IN")}</span>
+                      <span className="font-semibold text-[var(--text-primary)]">{new Date(paymentReceipt.paidAt).toLocaleString("en-IN")}</span>
                     </div>
                   </div>
                   <div className="mt-3 text-xs text-muted">Use this receipt for internal tracking until payment gateway verification is connected.</div>
@@ -614,12 +614,12 @@ export function SaasConsole() {
       </Card>
 
       <Card className="p-0 print-area">
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#dce2eb] p-5">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[var(--border-default)] p-5">
           <div>
             <h2 className="text-xl font-semibold">Invoice Preview</h2>
             <p className="mt-1 text-sm text-muted">Client-ready quote generated from the selected plan, add-ons and coupon.</p>
           </div>
-          <button className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-[#dce2eb] px-4 text-sm font-semibold text-[#172033] print-hide" onClick={() => window.print()} type="button">
+          <button className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-[var(--border-default)] px-4 text-sm font-semibold text-[var(--text-primary)] print-hide" onClick={() => window.print()} type="button">
             <Printer className="h-4 w-4" /> Print
           </button>
           <button className="inline-flex min-h-10 items-center gap-2 rounded-lg bg-brand px-4 text-sm font-semibold text-white print-hide" onClick={downloadQuote} type="button">
@@ -627,60 +627,60 @@ export function SaasConsole() {
           </button>
         </div>
         <div className="grid grid-cols-3 gap-5 p-5 max-lg:grid-cols-1">
-          <div className="rounded-lg border border-[#dce2eb] p-4">
+          <div className="rounded-lg border border-[var(--border-default)] p-4">
             <div className="text-xs font-bold uppercase text-muted">Billed From</div>
-            <div className="mt-2 text-lg font-semibold text-[#172033]">Acme Corp</div>
+            <div className="mt-2 text-lg font-semibold text-[var(--text-primary)]">Acme Corp</div>
             <div className="mt-1 text-sm text-muted">PeopleOS HRMS</div>
-            <div className="mt-3 text-sm text-[#34465f]">{supportEmail}</div>
-            <div className="text-sm text-[#34465f]">+1-800-555-0199</div>
+            <div className="mt-3 text-sm text-[var(--text-secondary)]">{supportEmail}</div>
+            <div className="text-sm text-[var(--text-secondary)]">+1-800-555-0199</div>
           </div>
-          <div className="rounded-lg border border-[#dce2eb] p-4">
+          <div className="rounded-lg border border-[var(--border-default)] p-4">
             <div className="text-xs font-bold uppercase text-muted">Billed To</div>
-            <div className="mt-2 text-lg font-semibold text-[#172033]">{billedToName}</div>
+            <div className="mt-2 text-lg font-semibold text-[var(--text-primary)]">{billedToName}</div>
             <div className="mt-1 text-sm text-muted">{billedToLegalName}</div>
-            <div className="mt-3 text-sm text-[#34465f]">Plan: {displayPlanName(quotedBillingSummary.plan)}</div>
-            <div className="text-sm text-[#34465f]">Users: {quoteEmployees}</div>
+            <div className="mt-3 text-sm text-[var(--text-secondary)]">Plan: {displayPlanName(quotedBillingSummary.plan)}</div>
+            <div className="text-sm text-[var(--text-secondary)]">Users: {quoteEmployees}</div>
           </div>
-          <div className="rounded-lg border border-[#dce2eb] p-4">
+          <div className="rounded-lg border border-[var(--border-default)] p-4">
             <div className="text-xs font-bold uppercase text-muted">Quote Details</div>
-            <div className="mt-2 text-sm text-[#34465f]">Invoice No.</div>
-            <div className="font-semibold text-[#172033]">{invoiceNumber}</div>
-            <div className="mt-3 text-sm text-[#34465f]">Duration: {quotedBillingSummary.duration}</div>
-            <div className="text-sm text-[#34465f]">GST: 18%</div>
+            <div className="mt-2 text-sm text-[var(--text-secondary)]">Invoice No.</div>
+            <div className="font-semibold text-[var(--text-primary)]">{invoiceNumber}</div>
+            <div className="mt-3 text-sm text-[var(--text-secondary)]">Duration: {quotedBillingSummary.duration}</div>
+            <div className="text-sm text-[var(--text-secondary)]">GST: 18%</div>
             <StatusPill tone="yellow">Draft Quote</StatusPill>
           </div>
         </div>
         <div className="overflow-auto px-5 pb-5">
           <table className="w-full min-w-[820px] border-collapse text-sm">
-            <thead className="bg-[#f8fafc] text-left text-xs uppercase text-muted">
+            <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase text-muted">
               <tr>
-                <th className="border-b border-[#dce2eb] p-3">Description</th>
-                <th className="border-b border-[#dce2eb] p-3">Qty</th>
-                <th className="border-b border-[#dce2eb] p-3">Rate</th>
-                <th className="border-b border-[#dce2eb] p-3 text-right">Amount</th>
+                <th className="border-b border-[var(--border-default)] p-3">Description</th>
+                <th className="border-b border-[var(--border-default)] p-3">Qty</th>
+                <th className="border-b border-[var(--border-default)] p-3">Rate</th>
+                <th className="border-b border-[var(--border-default)] p-3 text-right">Amount</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td className="border-b border-[#dce2eb] p-3 font-semibold">{displayPlanName(quotedBillingSummary.plan)} base plan</td>
-                <td className="border-b border-[#dce2eb] p-3">{quoteYears} year</td>
-                <td className="border-b border-[#dce2eb] p-3">{money(quotedBillingSummary.basePlan)}/month</td>
-                <td className="border-b border-[#dce2eb] p-3 text-right font-semibold">{money(quotedBillingSummary.basePlan * 12 * quoteYears)}</td>
+                <td className="border-b border-[var(--border-default)] p-3 font-semibold">{displayPlanName(quotedBillingSummary.plan)} base plan</td>
+                <td className="border-b border-[var(--border-default)] p-3">{quoteYears} year</td>
+                <td className="border-b border-[var(--border-default)] p-3">{money(quotedBillingSummary.basePlan)}/month</td>
+                <td className="border-b border-[var(--border-default)] p-3 text-right font-semibold">{money(quotedBillingSummary.basePlan * 12 * quoteYears)}</td>
               </tr>
               {quotedBillingSummary.additionalEmployeePrice ? (
                 <tr>
-                  <td className="border-b border-[#dce2eb] p-3 font-semibold">Additional employees above {quotedPlan?.employees || 25}</td>
-                  <td className="border-b border-[#dce2eb] p-3">{Math.max(0, quoteEmployees - (quotedPlan?.employees || 25))} users</td>
-                  <td className="border-b border-[#dce2eb] p-3">{money(quotedPlan?.additionalEmployeePrice || 0)}/user/month</td>
-                  <td className="border-b border-[#dce2eb] p-3 text-right font-semibold">{money(quotedBillingSummary.additionalEmployeePrice * 12 * quoteYears)}</td>
+                  <td className="border-b border-[var(--border-default)] p-3 font-semibold">Additional employees above {quotedPlan?.employees || 25}</td>
+                  <td className="border-b border-[var(--border-default)] p-3">{Math.max(0, quoteEmployees - (quotedPlan?.employees || 25))} users</td>
+                  <td className="border-b border-[var(--border-default)] p-3">{money(quotedPlan?.additionalEmployeePrice || 0)}/user/month</td>
+                  <td className="border-b border-[var(--border-default)] p-3 text-right font-semibold">{money(quotedBillingSummary.additionalEmployeePrice * 12 * quoteYears)}</td>
                 </tr>
               ) : null}
               {selectedAddOnNames.length ? (
                 <tr>
-                  <td className="border-b border-[#dce2eb] p-3 font-semibold">Selected add-ons</td>
-                  <td className="border-b border-[#dce2eb] p-3">{selectedAddOnNames.length}</td>
-                  <td className="border-b border-[#dce2eb] p-3">{selectedAddOnNames.join(", ")}</td>
-                  <td className="border-b border-[#dce2eb] p-3 text-right font-semibold">{money(quotedBillingSummary.addOnMonthlyPrice * 12 * quoteYears)}</td>
+                  <td className="border-b border-[var(--border-default)] p-3 font-semibold">Selected add-ons</td>
+                  <td className="border-b border-[var(--border-default)] p-3">{selectedAddOnNames.length}</td>
+                  <td className="border-b border-[var(--border-default)] p-3">{selectedAddOnNames.join(", ")}</td>
+                  <td className="border-b border-[var(--border-default)] p-3 text-right font-semibold">{money(quotedBillingSummary.addOnMonthlyPrice * 12 * quoteYears)}</td>
                 </tr>
               ) : null}
               <tr>
@@ -695,9 +695,9 @@ export function SaasConsole() {
                 <td className="p-3 text-muted" colSpan={3}>GST (18%)</td>
                 <td className="p-3 text-right font-semibold">{money(quotedBillingSummary.gst)}</td>
               </tr>
-              <tr className="bg-[#f8fafc]">
-                <td className="p-3 text-base font-bold text-[#172033]" colSpan={3}>Grand total</td>
-                <td className="p-3 text-right text-base font-bold text-[#172033]">{money(quotedBillingSummary.grandTotal)}</td>
+              <tr className="bg-[var(--surface-sunken)]">
+                <td className="p-3 text-base font-bold text-[var(--text-primary)]" colSpan={3}>Grand total</td>
+                <td className="p-3 text-right text-base font-bold text-[var(--text-primary)]">{money(quotedBillingSummary.grandTotal)}</td>
               </tr>
             </tbody>
           </table>
@@ -709,22 +709,22 @@ export function SaasConsole() {
           <h2 className="mb-4 text-lg font-semibold">Companies</h2>
           <div className="overflow-auto">
             <table className="w-full min-w-[720px] border-collapse text-sm">
-              <thead className="bg-[#f8fafc] text-left text-xs uppercase text-muted">
+              <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase text-muted">
                 <tr>
-                  <th className="border-b border-[#dce2eb] p-3">Company</th>
-                  <th className="border-b border-[#dce2eb] p-3">Timezone</th>
-                  <th className="border-b border-[#dce2eb] p-3">Status</th>
+                  <th className="border-b border-[var(--border-default)] p-3">Company</th>
+                  <th className="border-b border-[var(--border-default)] p-3">Timezone</th>
+                  <th className="border-b border-[var(--border-default)] p-3">Status</th>
                 </tr>
               </thead>
               <tbody>
                 {data.companies.map((company) => (
                   <tr key={company.id}>
-                    <td className="border-b border-[#dce2eb] p-3">
+                    <td className="border-b border-[var(--border-default)] p-3">
                       <div className="font-semibold">{company.name}</div>
                       <div className="text-xs text-muted">{company.legalName}</div>
                     </td>
-                    <td className="border-b border-[#dce2eb] p-3">{company.timezone}</td>
-                    <td className="border-b border-[#dce2eb] p-3"><StatusPill>{company.status}</StatusPill></td>
+                    <td className="border-b border-[var(--border-default)] p-3">{company.timezone}</td>
+                    <td className="border-b border-[var(--border-default)] p-3"><StatusPill>{company.status}</StatusPill></td>
                   </tr>
                 ))}
               </tbody>
@@ -736,7 +736,7 @@ export function SaasConsole() {
           <h2 className="mb-4 text-lg font-semibold">Module Entitlements</h2>
           <div className="grid grid-cols-2 gap-2 max-md:grid-cols-1">
             {data.entitlements.map((item: Entitlement) => (
-              <div className="flex items-center justify-between rounded-lg border border-[#dce2eb] p-3 text-sm" key={item.id}>
+              <div className="flex items-center justify-between rounded-lg border border-[var(--border-default)] p-3 text-sm" key={item.id}>
                 <span className="font-semibold">{item.module}</span>
                 <StatusPill tone={item.enabled ? "green" : "yellow"}>{item.enabled ? "Enabled" : "Disabled"}</StatusPill>
               </div>
@@ -749,26 +749,26 @@ export function SaasConsole() {
         <h2 className="mb-4 text-lg font-semibold">Billing Events</h2>
         <div className="overflow-auto">
           <table className="w-full min-w-[820px] border-collapse text-sm">
-            <thead className="bg-[#f8fafc] text-left text-xs uppercase text-muted">
+            <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase text-muted">
               <tr>
-                <th className="border-b border-[#dce2eb] p-3">Action</th>
-                <th className="border-b border-[#dce2eb] p-3">Status</th>
-                <th className="border-b border-[#dce2eb] p-3">Amount</th>
-                <th className="border-b border-[#dce2eb] p-3">Date</th>
+                <th className="border-b border-[var(--border-default)] p-3">Action</th>
+                <th className="border-b border-[var(--border-default)] p-3">Status</th>
+                <th className="border-b border-[var(--border-default)] p-3">Amount</th>
+                <th className="border-b border-[var(--border-default)] p-3">Date</th>
               </tr>
             </thead>
             <tbody>
               {data.billingEvents.map((event: BillingEvent) => (
                 <tr key={event.id}>
-                  <td className="border-b border-[#dce2eb] p-3 font-semibold">{event.action}</td>
-                  <td className="border-b border-[#dce2eb] p-3"><StatusPill>{event.status}</StatusPill></td>
-                  <td className="border-b border-[#dce2eb] p-3">{money(event.amount)}</td>
-                  <td className="border-b border-[#dce2eb] p-3">{String(event.createdAt).slice(0, 10)}</td>
+                  <td className="border-b border-[var(--border-default)] p-3 font-semibold">{event.action}</td>
+                  <td className="border-b border-[var(--border-default)] p-3"><StatusPill>{event.status}</StatusPill></td>
+                  <td className="border-b border-[var(--border-default)] p-3">{money(event.amount)}</td>
+                  <td className="border-b border-[var(--border-default)] p-3">{String(event.createdAt).slice(0, 10)}</td>
                 </tr>
               ))}
               {!data.billingEvents.length ? (
                 <tr>
-                  <td className="border-b border-[#dce2eb] p-3 text-muted" colSpan={4}>No billing events yet.</td>
+                  <td className="border-b border-[var(--border-default)] p-3 text-muted" colSpan={4}>No billing events yet.</td>
                 </tr>
               ) : null}
             </tbody>

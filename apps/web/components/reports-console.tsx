@@ -444,7 +444,7 @@ export function ReportsConsole() {
               className={`rounded-xl border p-4 cursor-pointer transition-all ${
                 selectedReport?.type === c.key
                   ? "border-brand bg-brand-50/10 shadow-sm ring-1 ring-brand"
-                  : "border-[#e8edf4] bg-white hover:bg-slate-50/70"
+                  : "border-[var(--border-subtle)] bg-white hover:bg-slate-50/70"
               }`}
               onClick={() => loadReport(c.key)}
             >
@@ -498,14 +498,14 @@ export function ReportsConsole() {
             <input
               type="text"
               placeholder="Search name or code..."
-              className="min-h-10 w-full rounded-lg border border-[#dce2eb] bg-white pl-9 pr-3 text-sm outline-none transition focus:border-brand"
+              className="min-h-10 w-full rounded-lg border border-[var(--border-default)] bg-white pl-9 pr-3 text-sm outline-none transition focus:border-brand"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
 
           <select
-            className="min-h-10 w-44 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm outline-none transition focus:border-brand"
+            className="min-h-10 w-44 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
           >
@@ -517,7 +517,7 @@ export function ReportsConsole() {
           </select>
 
           <select
-            className="min-h-10 w-44 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm outline-none transition focus:border-brand"
+            className="min-h-10 w-44 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
             value={deptFilter}
             onChange={(e) => setDeptFilter(e.target.value)}
           >
@@ -719,17 +719,17 @@ export function ReportsConsole() {
       )}
 
       {activeTab === "Custom Builder" && (
-        <Card className="p-5 border border-[#e8edf4] text-left">
+        <Card className="p-5 border border-[var(--border-subtle)] text-left">
           <div className="grid grid-cols-[300px_1fr] gap-6 max-xl:grid-cols-1">
             {/* Left panel: configurations */}
-            <div className="space-y-5 rounded-xl border border-slate-100 bg-[#f8fafc] p-4">
+            <div className="space-y-5 rounded-xl border border-slate-100 bg-[var(--surface-sunken)] p-4">
               <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">Report Configurations</h4>
 
               {/* Model selector */}
               <div>
                 <label className="block text-xs font-semibold text-slate-500 mb-1">Select Dataset</label>
                 <select
-                  className="w-full min-h-10 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm outline-none transition focus:border-brand"
+                  className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
                   value={customModel}
                   onChange={(e) => setCustomModel(e.target.value)}
                 >
@@ -743,7 +743,7 @@ export function ReportsConsole() {
               <div>
                 <label className="block text-xs font-semibold text-slate-500 mb-1">Status Filter (Optional)</label>
                 <select
-                  className="w-full min-h-10 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm outline-none transition focus:border-brand"
+                  className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
                   value={customStatus}
                   onChange={(e) => setCustomStatus(e.target.value)}
                 >

@@ -73,11 +73,11 @@ export function ReferenceModuleHeader({
   };
 
   return (
-    <section className="mb-5 rounded-lg border border-[#dce2eb] bg-white shadow-sm">
-      <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[#dce2eb] p-5">
+    <section className="mb-5 rounded-lg border border-[var(--border-default)] bg-white shadow-sm">
+      <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[var(--border-default)] p-5">
         <div>
-          <div className="text-xs font-bold uppercase tracking-wide text-[#8ca0bf]">{eyebrow}</div>
-          <h2 className="mt-1 text-xl font-semibold text-[#172033]">{title}</h2>
+          <div className="text-xs font-bold uppercase tracking-wide text-[var(--text-muted)]">{eyebrow}</div>
+          <h2 className="mt-1 text-xl font-semibold text-[var(--text-primary)]">{title}</h2>
           <p className="mt-1 max-w-2xl text-sm text-muted">{summary}</p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -85,7 +85,7 @@ export function ReferenceModuleHeader({
             const className =
               tone === "primary"
                 ? "inline-flex min-h-10 items-center gap-2 rounded-lg bg-brand px-4 text-sm font-semibold text-white cursor-pointer"
-                : "inline-flex min-h-10 items-center gap-2 rounded-lg border border-[#dce2eb] bg-white px-4 text-sm font-semibold text-[#34465f] cursor-pointer";
+                : "inline-flex min-h-10 items-center gap-2 rounded-lg border border-[var(--border-default)] bg-white px-4 text-sm font-semibold text-[var(--text-secondary)] cursor-pointer";
             
             const isElement = React.isValidElement(icon);
             const RenderIcon = !isElement && (
@@ -124,9 +124,9 @@ export function ReferenceModuleHeader({
         {stats.length ? (
           <div className="grid min-w-[360px] grid-cols-3 gap-2 max-sm:min-w-0 max-sm:grid-cols-1">
             {stats.map((stat) => (
-              <div className="rounded-lg border border-[#e8edf4] bg-[#f8fafc] p-3" key={stat.label}>
-                <div className="text-[11px] font-bold uppercase text-[#8ca0bf]">{stat.label}</div>
-                <div className="mt-1 text-lg font-semibold text-[#172033]">{stat.value}</div>
+              <div className="rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)] p-3" key={stat.label}>
+                <div className="text-[11px] font-bold uppercase text-[var(--text-muted)]">{stat.label}</div>
+                <div className="mt-1 text-lg font-semibold text-[var(--text-primary)]">{stat.value}</div>
                 <div className="text-[11px] text-muted">{stat.note}</div>
               </div>
             ))}
@@ -134,11 +134,11 @@ export function ReferenceModuleHeader({
         ) : null}
       </div>
 
-      <div className="grid grid-cols-[1fr_180px_150px_auto] gap-3 border-t border-[#eef3f8] p-5 max-xl:grid-cols-2 max-sm:grid-cols-1">
-        <label className="flex min-h-10 items-center gap-2 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm text-muted">
-          <Search className="h-4 w-4 text-[#38a7f4]" />
+      <div className="grid grid-cols-[1fr_180px_150px_auto] gap-3 border-t border-[var(--surface-sunken)] p-5 max-xl:grid-cols-2 max-sm:grid-cols-1">
+        <label className="flex min-h-10 items-center gap-2 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-muted">
+          <Search className="h-4 w-4 text-[var(--color-brand-600)]" />
           <input
-            className="min-w-0 flex-1 bg-transparent text-[#172033] outline-none placeholder:text-[#8ca0bf]"
+            className="min-w-0 flex-1 bg-transparent text-[var(--text-primary)] outline-none placeholder:text-[var(--text-muted)]"
             placeholder="Search employee or record"
             value={sVal}
             onChange={(e) => setSVal(e.target.value)}
@@ -147,13 +147,13 @@ export function ReferenceModuleHeader({
         <input
           value={mVal}
           onChange={(e) => setMVal(e.target.value)}
-          className="min-h-10 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm text-[#172033] outline-none"
+          className="min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none"
           type="month"
         />
         <select
           value={stVal}
           onChange={(e) => setStVal(e.target.value)}
-          className="min-h-10 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm text-[#172033] outline-none"
+          className="min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none"
         >
           <option value="All">All</option>
           <option value="Pending">Pending</option>
@@ -161,8 +161,8 @@ export function ReferenceModuleHeader({
           <option value="Rejected">Rejected</option>
           <option value="Active">Active</option>
         </select>
-        <div className="flex min-h-10 items-center gap-2 rounded-lg border border-[#dce2eb] bg-[#f8fafc] px-3 text-xs font-semibold text-[#49637f]">
-          <CheckCircle2 className="h-4 w-4 text-[#18865a]" />
+        <div className="flex min-h-10 items-center gap-2 rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] px-3 text-xs font-semibold text-[var(--text-secondary)]">
+          <CheckCircle2 className="h-4 w-4 text-[var(--success-fg)]" />
           {activeTab}
         </div>
       </div>

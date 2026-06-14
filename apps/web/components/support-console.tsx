@@ -364,8 +364,8 @@ export function SupportConsole() {
   return (
     <>
       {toastMessage && (
-        <div className="fixed bottom-5 right-5 z-50 flex items-center gap-3 rounded-lg border border-[#e6f5ef] bg-[#e6f5ef] p-4 text-[#18865a] shadow-lg animate-in fade-in slide-in-from-bottom-5">
-          <CheckCircle2 className="h-5 w-5 text-[#18865a]" />
+        <div className="fixed bottom-5 right-5 z-50 flex items-center gap-3 rounded-lg border border-[var(--success-bg)] bg-[var(--success-bg)] p-4 text-[var(--success-fg)] shadow-lg animate-in fade-in slide-in-from-bottom-5">
+          <CheckCircle2 className="h-5 w-5 text-[var(--success-fg)]" />
           <span className="text-sm font-semibold">{toastMessage}</span>
         </div>
       )}
@@ -414,9 +414,9 @@ export function SupportConsole() {
           {/* 1. HELPDESK VIEW */}
           {activeTab === "Helpdesk" && (
             <Card className="p-0">
-              <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#dce2eb] p-5">
+              <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--border-default)] p-5">
                 <div>
-                  <h2 className="text-lg font-semibold text-[#172033]">HR Support Departments</h2>
+                  <h2 className="text-lg font-semibold text-[var(--text-primary)]">HR Support Departments</h2>
                   <p className="mt-1 text-sm text-muted">Direct queues routing payroll, attendance, onboarding and software operations.</p>
                 </div>
                 <button
@@ -432,24 +432,24 @@ export function SupportConsole() {
                 {getFilteredQueues().map((queue) => {
                   const QueueIcon = queue.icon;
                   return (
-                    <div className="rounded-lg border border-[#dce2eb] bg-[#f8fafc] p-5 hover:border-brand hover:bg-white transition-all flex flex-col justify-between" key={queue.title}>
+                    <div className="rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] p-5 hover:border-brand hover:bg-white transition-all flex flex-col justify-between" key={queue.title}>
                       <div>
                         <div className="flex items-center justify-between gap-3">
-                          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-[#eef5ff]">
+                          <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-[var(--color-brand-50)]">
                             <QueueIcon className="h-6 w-6 text-brand" />
                           </div>
                           <div className="flex items-center gap-2">
-                            <span className="text-xs text-[#8ca0bf] font-medium">{queue.agents}</span>
+                            <span className="text-xs text-[var(--text-muted)] font-medium">{queue.agents}</span>
                             <StatusPill tone={queue.tone}>{queue.status}</StatusPill>
                           </div>
                         </div>
-                        <h3 className="mt-4 text-base font-semibold text-[#172033]">{queue.title}</h3>
+                        <h3 className="mt-4 text-base font-semibold text-[var(--text-primary)]">{queue.title}</h3>
                         <p className="mt-2 text-sm text-muted leading-relaxed">{queue.note}</p>
                       </div>
 
-                      <div className="mt-6 border-t border-[#eef2f7] pt-4 flex items-center justify-between">
-                        <div className="flex items-center gap-2 text-xs font-semibold text-[#49637f]">
-                          <Clock3 className="h-4 w-4 text-[#8ca0bf]" />
+                      <div className="mt-6 border-t border-[var(--surface-sunken)] pt-4 flex items-center justify-between">
+                        <div className="flex items-center gap-2 text-xs font-semibold text-[var(--text-secondary)]">
+                          <Clock3 className="h-4 w-4 text-[var(--text-muted)]" />
                           SLA Target: {queue.sla}
                         </div>
                         <button
@@ -477,9 +477,9 @@ export function SupportConsole() {
           {/* 2. TICKETS VIEW */}
           {activeTab === "Tickets" && (
             <Card className="p-0">
-              <div className="flex items-center justify-between border-b border-[#dce2eb] p-5">
+              <div className="flex items-center justify-between border-b border-[var(--border-default)] p-5">
                 <div>
-                  <h2 className="text-lg font-semibold text-[#172033]">Your Support Tickets</h2>
+                  <h2 className="text-lg font-semibold text-[var(--text-primary)]">Your Support Tickets</h2>
                   <p className="text-sm text-muted">Track history and real-time correspondence of your raised helpdesk requests.</p>
                 </div>
                 <div className="flex gap-2">
@@ -495,7 +495,7 @@ export function SupportConsole() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-[100px_1fr_160px_100px_100px_40px] border-b border-[#dce2eb] px-5 py-3 text-xs font-bold uppercase text-muted max-md:hidden">
+              <div className="grid grid-cols-[100px_1fr_160px_100px_100px_40px] border-b border-[var(--border-default)] px-5 py-3 text-xs font-bold uppercase text-muted max-md:hidden">
                 <span>ID</span>
                 <span>Ticket / Subject</span>
                 <span>Department Queue</span>
@@ -507,25 +507,25 @@ export function SupportConsole() {
               {getFilteredTickets().map((tkt) => {
                 const isExpanded = expandedTicketId === tkt.id;
                 return (
-                  <div key={tkt.id} className="border-b border-[#eef2f7] last:border-b-0">
+                  <div key={tkt.id} className="border-b border-[var(--surface-sunken)] last:border-b-0">
                     {/* Header Row */}
                     <div
                       onClick={() => setExpandedTicketId(isExpanded ? null : tkt.id)}
-                      className={`grid grid-cols-[100px_1fr_160px_100px_100px_40px] items-center gap-2 px-5 py-4 text-sm cursor-pointer hover:bg-[#f8fafc] transition-colors max-md:grid-cols-1 ${
-                        isExpanded ? "bg-[#f8fafc]" : ""
+                      className={`grid grid-cols-[100px_1fr_160px_100px_100px_40px] items-center gap-2 px-5 py-4 text-sm cursor-pointer hover:bg-[var(--surface-sunken)] transition-colors max-md:grid-cols-1 ${
+                        isExpanded ? "bg-[var(--surface-sunken)]" : ""
                       }`}
                     >
-                      <div className="font-bold text-[#8ca0bf]">{tkt.id}</div>
-                      <div className="font-semibold text-[#172033] flex items-center gap-2">
+                      <div className="font-bold text-[var(--text-muted)]">{tkt.id}</div>
+                      <div className="font-semibold text-[var(--text-primary)] flex items-center gap-2">
                         {tkt.title}
                         {tkt.priority === "High" && (
-                          <span className="rounded bg-[#fde8e6] px-1.5 py-0.5 text-[10px] font-bold text-[#ba3d37]">
+                          <span className="rounded bg-[var(--danger-bg)] px-1.5 py-0.5 text-[10px] font-bold text-[var(--danger-fg)]">
                             High Priority
                           </span>
                         )}
                       </div>
                       <div className="text-muted flex items-center gap-1.5">
-                        <Building className="h-3.5 w-3.5 text-[#8ca0bf]" />
+                        <Building className="h-3.5 w-3.5 text-[var(--text-muted)]" />
                         {tkt.queue}
                       </div>
                       <div>
@@ -539,28 +539,28 @@ export function SupportConsole() {
 
                     {/* Expandable Details Pane */}
                     {isExpanded && (
-                      <div className="bg-[#fcfdfe] border-t border-[#eef2f7] p-5 text-sm">
+                      <div className="bg-[#fcfdfe] border-t border-[var(--surface-sunken)] p-5 text-sm">
                         <div className="grid grid-cols-[1fr_260px] gap-6 max-lg:grid-cols-1">
                           {/* Description and Discussion */}
                           <div className="space-y-4">
                             <div>
-                              <h4 className="text-xs font-bold uppercase text-[#8ca0bf] tracking-wide mb-1">Issue Description</h4>
-                              <p className="text-[#34465f] bg-white p-3 rounded-lg border border-[#dce2eb] leading-relaxed">
+                              <h4 className="text-xs font-bold uppercase text-[var(--text-muted)] tracking-wide mb-1">Issue Description</h4>
+                              <p className="text-[var(--text-secondary)] bg-white p-3 rounded-lg border border-[var(--border-default)] leading-relaxed">
                                 {tkt.description}
                               </p>
                             </div>
 
                             {/* Discussion History */}
                             <div className="space-y-3 pt-2">
-                              <h4 className="text-xs font-bold uppercase text-[#8ca0bf] tracking-wide">Correspondence Log</h4>
+                              <h4 className="text-xs font-bold uppercase text-[var(--text-muted)] tracking-wide">Correspondence Log</h4>
                               {tkt.replies.map((reply, i) => (
-                                <div key={i} className="flex gap-3 items-start bg-white p-3 rounded-lg border border-[#eef2f7]">
-                                  <div className="h-8 w-8 rounded-full bg-[#eef5ff] text-brand font-bold text-xs flex items-center justify-center flex-shrink-0">
+                                <div key={i} className="flex gap-3 items-start bg-white p-3 rounded-lg border border-[var(--surface-sunken)]">
+                                  <div className="h-8 w-8 rounded-full bg-[var(--color-brand-50)] text-brand font-bold text-xs flex items-center justify-center flex-shrink-0">
                                     {reply.author.substring(0, 2).toUpperCase()}
                                   </div>
                                   <div className="flex-1">
                                     <div className="flex items-center justify-between mb-1">
-                                      <span className="font-semibold text-[#172033]">{reply.author} <span className="text-[10px] text-muted font-normal">({reply.role})</span></span>
+                                      <span className="font-semibold text-[var(--text-primary)]">{reply.author} <span className="text-[10px] text-muted font-normal">({reply.role})</span></span>
                                       <span className="text-xs text-muted">{reply.time}</span>
                                     </div>
                                     <p className="text-muted leading-relaxed">{reply.message}</p>
@@ -580,7 +580,7 @@ export function SupportConsole() {
                                   value={replyText}
                                   onChange={(e) => setReplyText(e.target.value)}
                                   placeholder="Type a message or note..."
-                                  className="flex-1 min-h-10 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm text-[#172033] outline-none focus:border-brand"
+                                  className="flex-1 min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none focus:border-brand"
                                 />
                                 <button
                                   onClick={() => handleAddReply(tkt.id)}
@@ -593,28 +593,28 @@ export function SupportConsole() {
                           </div>
 
                           {/* Timeline & Metadata Sidebar */}
-                          <div className="rounded-lg border border-[#dce2eb] bg-[#f8fafc] p-4 h-fit">
-                            <h4 className="text-xs font-bold uppercase text-[#8ca0bf] tracking-wide mb-3">Ticket Timeline</h4>
-                            <div className="relative border-l border-[#dce2eb] ml-2 pl-4 space-y-4">
+                          <div className="rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] p-4 h-fit">
+                            <h4 className="text-xs font-bold uppercase text-[var(--text-muted)] tracking-wide mb-3">Ticket Timeline</h4>
+                            <div className="relative border-l border-[var(--border-default)] ml-2 pl-4 space-y-4">
                               {tkt.timeline.map((step, idx) => (
                                 <div key={idx} className="relative">
                                   {/* timeline dot */}
                                   <div className="absolute -left-[21px] top-1.5 h-2.5 w-2.5 rounded-full bg-brand" />
-                                  <div className="text-xs font-bold text-[#172033]">{step.status}</div>
+                                  <div className="text-xs font-bold text-[var(--text-primary)]">{step.status}</div>
                                   <div className="text-[10px] text-muted">{step.time}</div>
                                   <p className="text-xs text-muted mt-0.5">{step.note}</p>
                                 </div>
                               ))}
                             </div>
 
-                            <div className="mt-5 pt-4 border-t border-[#dce2eb] space-y-2 text-xs">
+                            <div className="mt-5 pt-4 border-t border-[var(--border-default)] space-y-2 text-xs">
                               <div className="flex justify-between">
-                                <span className="text-[#8ca0bf]">Priority:</span>
-                                <span className="font-bold text-[#172033]">{tkt.priority}</span>
+                                <span className="text-[var(--text-muted)]">Priority:</span>
+                                <span className="font-bold text-[var(--text-primary)]">{tkt.priority}</span>
                               </div>
                               <div className="flex justify-between">
-                                <span className="text-[#8ca0bf]">Last Update:</span>
-                                <span className="font-bold text-[#172033]">{tkt.updated}</span>
+                                <span className="text-[var(--text-muted)]">Last Update:</span>
+                                <span className="font-bold text-[var(--text-primary)]">{tkt.updated}</span>
                               </div>
                             </div>
                           </div>
@@ -626,8 +626,8 @@ export function SupportConsole() {
               })}
               {getFilteredTickets().length === 0 && (
                 <div className="text-center py-12 text-muted flex flex-col items-center justify-center">
-                  <FileText className="h-10 w-10 text-[#8ca0bf] mb-2" />
-                  <p className="font-semibold text-[#172033]">No tickets found</p>
+                  <FileText className="h-10 w-10 text-[var(--text-muted)] mb-2" />
+                  <p className="font-semibold text-[var(--text-primary)]">No tickets found</p>
                   <p className="text-xs mt-1">Try resetting the status filter or keyword search.</p>
                 </div>
               )}
@@ -639,7 +639,7 @@ export function SupportConsole() {
             <div className="grid grid-cols-[180px_1fr] gap-4 max-md:grid-cols-1">
               {/* Category sidebar */}
               <div className="flex flex-col gap-1.5">
-                <div className="text-xs font-bold uppercase text-[#8ca0bf] px-2 mb-1">Categories</div>
+                <div className="text-xs font-bold uppercase text-[var(--text-muted)] px-2 mb-1">Categories</div>
                 {["All", "Account & Access", "Payroll & Taxes", "Leaves & Attendance"].map((cat) => (
                   <button
                     key={cat}
@@ -649,8 +649,8 @@ export function SupportConsole() {
                     }}
                     className={`text-left text-sm font-semibold py-2 px-3 rounded-lg transition-colors cursor-pointer ${
                       selectedFaqCategory === cat
-                        ? "bg-[#eef5ff] text-brand"
-                        : "text-[#34465f] hover:bg-[#f8fafc]"
+                        ? "bg-[var(--color-brand-50)] text-brand"
+                        : "text-[var(--text-secondary)] hover:bg-[var(--surface-sunken)]"
                     }`}
                   >
                     {cat}
@@ -660,8 +660,8 @@ export function SupportConsole() {
 
               {/* FAQs accordion */}
               <Card className="p-0">
-                <div className="border-b border-[#dce2eb] p-5">
-                  <h2 className="text-lg font-semibold text-[#172033]">Searchable FAQ Articles</h2>
+                <div className="border-b border-[var(--border-default)] p-5">
+                  <h2 className="text-lg font-semibold text-[var(--text-primary)]">Searchable FAQ Articles</h2>
                   <p className="text-sm text-muted">Self-help support tutorials detailing standard operations and configurations.</p>
                 </div>
 
@@ -669,22 +669,22 @@ export function SupportConsole() {
                   {getFilteredFAQs().map((faq) => {
                     const isFaqExpanded = expandedFaqId === faq.id;
                     return (
-                      <div key={faq.id} className="rounded-lg border border-[#dce2eb] overflow-hidden bg-white">
+                      <div key={faq.id} className="rounded-lg border border-[var(--border-default)] overflow-hidden bg-white">
                         <button
                           onClick={() => setExpandedFaqId(isFaqExpanded ? null : faq.id)}
-                          className="w-full flex items-center justify-between text-left p-4 font-semibold text-[#172033] hover:bg-[#f8fafc] transition-colors cursor-pointer"
+                          className="w-full flex items-center justify-between text-left p-4 font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
                         >
                           <span className="flex items-center gap-2">
                             <HelpCircle className="h-4.5 w-4.5 text-brand flex-shrink-0" />
                             {faq.question}
                           </span>
-                          <span className="text-xs font-normal text-muted bg-[#f8fafc] px-2 py-0.5 rounded border border-[#eef2f7] mr-2 max-sm:hidden">
+                          <span className="text-xs font-normal text-muted bg-[var(--surface-sunken)] px-2 py-0.5 rounded border border-[var(--surface-sunken)] mr-2 max-sm:hidden">
                             {faq.category}
                           </span>
                           {isFaqExpanded ? <ChevronUp className="h-4 w-4 text-muted flex-shrink-0" /> : <ChevronDown className="h-4 w-4 text-muted flex-shrink-0" />}
                         </button>
                         {isFaqExpanded && (
-                          <div className="p-4 border-t border-[#eef2f7] bg-[#f8fafc] text-sm text-[#49637f] leading-relaxed">
+                          <div className="p-4 border-t border-[var(--surface-sunken)] bg-[var(--surface-sunken)] text-sm text-[var(--text-secondary)] leading-relaxed">
                             {faq.answer}
                           </div>
                         )}
@@ -704,24 +704,24 @@ export function SupportConsole() {
           {/* 4. CONTACT VIEW */}
           {activeTab === "Contact" && (
             <Card className="p-0">
-              <div className="border-b border-[#dce2eb] p-5">
-                <h2 className="text-lg font-semibold text-[#172033]">Primary HR Contacts</h2>
+              <div className="border-b border-[var(--border-default)] p-5">
+                <h2 className="text-lg font-semibold text-[var(--text-primary)]">Primary HR Contacts</h2>
                 <p className="text-sm text-muted">Reach our support agents directly via phone, email or direct WhatsApp chat.</p>
               </div>
 
               <div className="grid grid-cols-3 gap-4 p-5 max-md:grid-cols-1">
-                <div className="rounded-lg border border-[#dce2eb] p-4 text-center bg-[#f8fafc]">
+                <div className="rounded-lg border border-[var(--border-default)] p-4 text-center bg-[var(--surface-sunken)]">
                   <PhoneCall className="h-8 w-8 text-brand mx-auto mb-2" />
-                  <h3 className="font-semibold text-[#172033]">Hotline Support</h3>
+                  <h3 className="font-semibold text-[var(--text-primary)]">Hotline Support</h3>
                   <p className="text-xs text-muted mt-1">Direct query support line</p>
                   <a href="tel:555-0199" className="block mt-3 text-sm font-bold text-brand hover:underline">
                     555-0199
                   </a>
                 </div>
 
-                <div className="rounded-lg border border-[#dce2eb] p-4 text-center bg-[#f8fafc]">
+                <div className="rounded-lg border border-[var(--border-default)] p-4 text-center bg-[var(--surface-sunken)]">
                   <Mail className="h-8 w-8 text-brand mx-auto mb-2" />
-                  <h3 className="font-semibold text-[#172033]">Email Desk</h3>
+                  <h3 className="font-semibold text-[var(--text-primary)]">Email Desk</h3>
                   <p className="text-xs text-muted mt-1">Ticket submissions & reports</p>
                   <button
                     type="button"
@@ -732,9 +732,9 @@ export function SupportConsole() {
                   </button>
                 </div>
 
-                <div className="rounded-lg border border-[#dce2eb] p-4 text-center bg-[#f8fafc]">
+                <div className="rounded-lg border border-[var(--border-default)] p-4 text-center bg-[var(--surface-sunken)]">
                   <MessageCircle className="h-8 w-8 text-brand mx-auto mb-2" />
-                  <h3 className="font-semibold text-[#172033]">WhatsApp Chat</h3>
+                  <h3 className="font-semibold text-[var(--text-primary)]">WhatsApp Chat</h3>
                   <p className="text-xs text-muted mt-1">Quick messaging and status updates</p>
                   <a href="https://wa.me/91555-0199" target="_blank" rel="noreferrer" className="block mt-3 text-sm font-bold text-brand hover:underline">
                     +91 555-0199
@@ -742,15 +742,15 @@ export function SupportConsole() {
                 </div>
               </div>
 
-              <div className="p-5 border-t border-[#eef2f7] space-y-4">
-                <h3 className="font-semibold text-[#172033]">Support Operating Hours</h3>
-                <div className="grid grid-cols-2 gap-4 text-sm text-[#49637f] max-sm:grid-cols-1">
-                  <div className="bg-[#f8fafc] border border-[#eef2f7] p-3 rounded-lg">
-                    <span className="font-bold text-[#172033] block">Monday - Friday</span>
+              <div className="p-5 border-t border-[var(--surface-sunken)] space-y-4">
+                <h3 className="font-semibold text-[var(--text-primary)]">Support Operating Hours</h3>
+                <div className="grid grid-cols-2 gap-4 text-sm text-[var(--text-secondary)] max-sm:grid-cols-1">
+                  <div className="bg-[var(--surface-sunken)] border border-[var(--surface-sunken)] p-3 rounded-lg">
+                    <span className="font-bold text-[var(--text-primary)] block">Monday - Friday</span>
                     9:00 AM - 6:00 PM (IST)
                   </div>
-                  <div className="bg-[#f8fafc] border border-[#eef2f7] p-3 rounded-lg">
-                    <span className="font-bold text-[#172033] block">Saturday</span>
+                  <div className="bg-[var(--surface-sunken)] border border-[var(--surface-sunken)] p-3 rounded-lg">
+                    <span className="font-bold text-[var(--text-primary)] block">Saturday</span>
                     9:00 AM - 1:00 PM (IST)
                   </div>
                 </div>
@@ -763,7 +763,7 @@ export function SupportConsole() {
         <aside className="grid content-start gap-5">
           <Card>
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-[#eef5ff] text-brand">
+              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-[var(--color-brand-50)] text-brand">
                 <Mail className="h-5 w-5" />
               </div>
               <div>
@@ -771,41 +771,41 @@ export function SupportConsole() {
                 <button
                   type="button"
                   onClick={() => setIsEmailModalOpen(true)}
-                  className="text-sm font-bold text-[#172033] hover:text-brand bg-transparent border-0 p-0 text-left font-sans cursor-pointer focus:outline-none"
+                  className="text-sm font-bold text-[var(--text-primary)] hover:text-brand bg-transparent border-0 p-0 text-left font-sans cursor-pointer focus:outline-none"
                 >
                   support@example.com
                 </button>
               </div>
             </div>
             <div className="mt-4 flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-[#eef5ff] text-brand">
+              <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-[var(--color-brand-50)] text-brand">
                 <PhoneCall className="h-5 w-5" />
               </div>
               <div>
                 <div className="text-xs font-semibold uppercase text-muted">Query Phone</div>
-                <a className="text-sm font-bold text-[#172033] hover:text-brand" href="tel:555-0199">
+                <a className="text-sm font-bold text-[var(--text-primary)] hover:text-brand" href="tel:555-0199">
                   555-0199
                 </a>
               </div>
             </div>
             <div className="mt-5 grid gap-3 text-sm">
-              <div className="flex items-center gap-2 text-[#172033]">
-                <CheckCircle2 className="h-4 w-4 text-[#15b881] flex-shrink-0" />
+              <div className="flex items-center gap-2 text-[var(--text-primary)]">
+                <CheckCircle2 className="h-4 w-4 text-[var(--success-fg)] flex-shrink-0" />
                 Employee profile and HR queries
               </div>
-              <div className="flex items-center gap-2 text-[#172033]">
-                <CheckCircle2 className="h-4 w-4 text-[#15b881] flex-shrink-0" />
+              <div className="flex items-center gap-2 text-[var(--text-primary)]">
+                <CheckCircle2 className="h-4 w-4 text-[var(--success-fg)] flex-shrink-0" />
                 Payroll, payslip and compliance support
               </div>
-              <div className="flex items-center gap-2 text-[#172033]">
-                <CheckCircle2 className="h-4 w-4 text-[#15b881] flex-shrink-0" />
+              <div className="flex items-center gap-2 text-[var(--text-primary)]">
+                <CheckCircle2 className="h-4 w-4 text-[var(--success-fg)] flex-shrink-0" />
                 Access, role and module assistance
               </div>
             </div>
           </Card>
 
           <Card>
-            <h2 className="text-lg font-semibold text-[#172033]">Support Controls</h2>
+            <h2 className="text-lg font-semibold text-[var(--text-primary)]">Support Controls</h2>
             <div className="mt-4 grid gap-3">
               <button
                 onClick={() => setIsModalOpen(true)}
@@ -821,12 +821,12 @@ export function SupportConsole() {
                     if (el) el.scrollIntoView({ behavior: "smooth" });
                   }, 100);
                 }}
-                className="inline-flex min-h-10 items-center justify-center rounded-lg border border-[#dce2eb] bg-white px-4 text-sm font-semibold text-[#172033] hover:bg-[#f8fafc] transition-colors cursor-pointer"
+                className="inline-flex min-h-10 items-center justify-center rounded-lg border border-[var(--border-default)] bg-white px-4 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
               >
                 View SLA Policy
               </button>
               <a
-                className="inline-flex min-h-10 items-center justify-center rounded-lg border border-[#dce2eb] bg-white px-4 text-sm font-semibold text-[#172033] hover:bg-[#f8fafc] transition-colors"
+                className="inline-flex min-h-10 items-center justify-center rounded-lg border border-[var(--border-default)] bg-white px-4 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-sunken)] transition-colors"
                 download="peopleos-support-report.csv"
                 href={`data:text/csv;charset=utf-8,${supportReport}`}
               >
@@ -839,7 +839,7 @@ export function SupportConsole() {
             <div className="flex items-start gap-3">
               <ShieldCheck className="mt-1 h-5 w-5 text-brand flex-shrink-0" />
               <div>
-                <h2 className="text-base font-semibold text-[#172033]">Secure Helpdesk</h2>
+                <h2 className="text-base font-semibold text-[var(--text-primary)]">Secure Helpdesk</h2>
                 <p className="mt-2 text-xs text-muted leading-relaxed">
                   Payroll and document requests are routed through role-based access with audit trail visibility. HR Helpdesk replies within 24h, Payroll priority issues within 8h, and technical access issues within 12h.
                 </p>
@@ -852,15 +852,15 @@ export function SupportConsole() {
       {/* RAISE TICKET MODAL */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-in fade-in">
-          <div className="w-full max-w-lg rounded-xl border border-[#dce2eb] bg-white shadow-2xl animate-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between border-b border-[#dce2eb] px-5 py-4">
-              <h3 className="text-lg font-semibold text-[#172033] flex items-center gap-2">
+          <div className="w-full max-w-lg rounded-xl border border-[var(--border-default)] bg-white shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between border-b border-[var(--border-default)] px-5 py-4">
+              <h3 className="text-lg font-semibold text-[var(--text-primary)] flex items-center gap-2">
                 <CircleHelp className="h-5 w-5 text-brand" />
                 Raise New Support Ticket
               </h3>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="rounded-lg p-1 text-muted hover:bg-[#f8fafc] hover:text-[#172033] cursor-pointer"
+                className="rounded-lg p-1 text-muted hover:bg-[var(--surface-sunken)] hover:text-[var(--text-primary)] cursor-pointer"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -868,7 +868,7 @@ export function SupportConsole() {
 
             <form onSubmit={handleCreateTicket} className="p-5 space-y-4">
               <div>
-                <label className="block text-xs font-bold uppercase text-[#8ca0bf] tracking-wide mb-1.5">
+                <label className="block text-xs font-bold uppercase text-[var(--text-muted)] tracking-wide mb-1.5">
                   Ticket Subject / Title
                 </label>
                 <input
@@ -877,19 +877,19 @@ export function SupportConsole() {
                   placeholder="e.g. Payslip error for May 2026"
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
-                  className="w-full min-h-10 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm text-[#172033] outline-none focus:border-brand"
+                  className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none focus:border-brand"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
                 <div>
-                  <label className="block text-xs font-bold uppercase text-[#8ca0bf] tracking-wide mb-1.5">
+                  <label className="block text-xs font-bold uppercase text-[var(--text-muted)] tracking-wide mb-1.5">
                     Department Queue
                   </label>
                   <select
                     value={newQueue}
                     onChange={(e) => setNewQueue(e.target.value)}
-                    className="w-full min-h-10 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm text-[#172033] outline-none focus:border-brand"
+                    className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none focus:border-brand"
                   >
                     <option value="HR Helpdesk">HR Helpdesk</option>
                     <option value="Payroll Support">Payroll Support</option>
@@ -899,13 +899,13 @@ export function SupportConsole() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold uppercase text-[#8ca0bf] tracking-wide mb-1.5">
+                  <label className="block text-xs font-bold uppercase text-[var(--text-muted)] tracking-wide mb-1.5">
                     Priority
                   </label>
                   <select
                     value={newPriority}
                     onChange={(e) => setNewPriority(e.target.value as "Low" | "Medium" | "High")}
-                    className="w-full min-h-10 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm text-[#172033] outline-none focus:border-brand"
+                    className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none focus:border-brand"
                   >
                     <option value="Low">Low</option>
                     <option value="Medium">Medium</option>
@@ -915,7 +915,7 @@ export function SupportConsole() {
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase text-[#8ca0bf] tracking-wide mb-1.5">
+                <label className="block text-xs font-bold uppercase text-[var(--text-muted)] tracking-wide mb-1.5">
                   Detailed Description
                 </label>
                 <textarea
@@ -924,15 +924,15 @@ export function SupportConsole() {
                   placeholder="Provide details about the issue to expedite resolution..."
                   value={newDescription}
                   onChange={(e) => setNewDescription(e.target.value)}
-                  className="w-full rounded-lg border border-[#dce2eb] bg-white p-3 text-sm text-[#172033] outline-none focus:border-brand resize-none"
+                  className="w-full rounded-lg border border-[var(--border-default)] bg-white p-3 text-sm text-[var(--text-primary)] outline-none focus:border-brand resize-none"
                 />
               </div>
 
-              <div className="flex justify-end gap-3 pt-3 border-t border-[#eef2f7]">
+              <div className="flex justify-end gap-3 pt-3 border-t border-[var(--surface-sunken)]">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="min-h-10 rounded-lg border border-[#dce2eb] bg-white px-4 text-sm font-semibold text-[#172033] hover:bg-[#f8fafc] transition-colors cursor-pointer"
+                  className="min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-4 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -951,15 +951,15 @@ export function SupportConsole() {
       {/* EMAIL COMPOSER MODAL */}
       {isEmailModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-in fade-in">
-          <div className="w-full max-w-lg rounded-xl border border-[#dce2eb] bg-white shadow-2xl animate-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between border-b border-[#dce2eb] px-5 py-4">
-              <h3 className="text-lg font-semibold text-[#172033] flex items-center gap-2">
+          <div className="w-full max-w-lg rounded-xl border border-[var(--border-default)] bg-white shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between border-b border-[var(--border-default)] px-5 py-4">
+              <h3 className="text-lg font-semibold text-[var(--text-primary)] flex items-center gap-2">
                 <Mail className="h-5 w-5 text-brand" />
                 Compose & Send Email to HR
               </h3>
               <button
                 onClick={() => setIsEmailModalOpen(false)}
-                className="rounded-lg p-1 text-muted hover:bg-[#f8fafc] hover:text-[#172033] cursor-pointer"
+                className="rounded-lg p-1 text-muted hover:bg-[var(--surface-sunken)] hover:text-[var(--text-primary)] cursor-pointer"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -967,19 +967,19 @@ export function SupportConsole() {
 
             <form onSubmit={handleSendEmail} className="p-5 space-y-4">
               <div>
-                <label className="block text-xs font-bold uppercase text-[#8ca0bf] tracking-wide mb-1.5">
+                <label className="block text-xs font-bold uppercase text-[var(--text-muted)] tracking-wide mb-1.5">
                   To
                 </label>
                 <input
                   type="text"
                   disabled
                   value="support@example.com"
-                  className="w-full min-h-10 rounded-lg border border-[#dce2eb] bg-[#f8fafc] px-3 text-sm text-[#8ca0bf] outline-none cursor-not-allowed"
+                  className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] px-3 text-sm text-[var(--text-muted)] outline-none cursor-not-allowed"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase text-[#8ca0bf] tracking-wide mb-1.5">
+                <label className="block text-xs font-bold uppercase text-[var(--text-muted)] tracking-wide mb-1.5">
                   Subject
                 </label>
                 <input
@@ -988,12 +988,12 @@ export function SupportConsole() {
                   placeholder="Enter email subject"
                   value={emailSubject}
                   onChange={(e) => setEmailSubject(e.target.value)}
-                  className="w-full min-h-10 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm text-[#172033] outline-none focus:border-brand"
+                  className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none focus:border-brand"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase text-[#8ca0bf] tracking-wide mb-1.5">
+                <label className="block text-xs font-bold uppercase text-[var(--text-muted)] tracking-wide mb-1.5">
                   Message Body
                 </label>
                 <textarea
@@ -1002,15 +1002,15 @@ export function SupportConsole() {
                   placeholder="Write your query or request details here..."
                   value={emailBody}
                   onChange={(e) => setEmailBody(e.target.value)}
-                  className="w-full rounded-lg border border-[#dce2eb] bg-white p-3 text-sm text-[#172033] outline-none focus:border-brand resize-none"
+                  className="w-full rounded-lg border border-[var(--border-default)] bg-white p-3 text-sm text-[var(--text-primary)] outline-none focus:border-brand resize-none"
                 />
               </div>
 
-              <div className="flex justify-end gap-3 pt-3 border-t border-[#eef2f7]">
+              <div className="flex justify-end gap-3 pt-3 border-t border-[var(--surface-sunken)]">
                 <button
                   type="button"
                   onClick={() => setIsEmailModalOpen(false)}
-                  className="min-h-10 rounded-lg border border-[#dce2eb] bg-white px-4 text-sm font-semibold text-[#172033] hover:bg-[#f8fafc] transition-colors cursor-pointer"
+                  className="min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-4 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>

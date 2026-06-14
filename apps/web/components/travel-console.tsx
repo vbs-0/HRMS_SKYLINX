@@ -350,7 +350,7 @@ export function TravelConsole() {
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[750px] border-collapse text-sm text-left">
-                  <thead className="bg-[#f8fafc] text-xs uppercase text-slate-500 border-b">
+                  <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 border-b">
                     <tr>
                       <th className="p-3">Employee</th>
                       <th className="p-3">Destination & Dates</th>
@@ -504,7 +504,7 @@ export function TravelConsole() {
               {requests.map((r) => {
                 if (!r.itineraries || r.itineraries.length === 0) return null;
                 return (
-                  <div key={r.id} className="rounded-xl border border-slate-100 bg-[#f8fafc] p-4 shadow-sm">
+                  <div key={r.id} className="rounded-xl border border-slate-100 bg-[var(--surface-sunken)] p-4 shadow-sm">
                     <h4 className="font-bold text-xs uppercase tracking-wider text-slate-400 mb-3 border-b pb-2 flex justify-between items-center">
                       <span>Trip: {r.employee.firstName} to {r.destinationCity}</span>
                       <StatusPill tone="green">ACTIVE</StatusPill>

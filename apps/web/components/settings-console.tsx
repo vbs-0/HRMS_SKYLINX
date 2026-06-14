@@ -548,12 +548,12 @@ export function SettingsConsole() {
   }
 
   function inputClass() {
-    return "min-h-10 rounded-lg border border-[#dce2eb] px-3 text-sm";
+    return "min-h-10 rounded-lg border border-[var(--border-default)] px-3 text-sm";
   }
 
   function checkbox(name: string, label: string, checked: boolean) {
     return (
-      <label className="flex min-h-10 items-center gap-2 rounded-lg border border-[#dce2eb] px-3 text-sm">
+      <label className="flex min-h-10 items-center gap-2 rounded-lg border border-[var(--border-default)] px-3 text-sm">
         <input defaultChecked={checked} name={name} type="checkbox" />
         {label}
       </label>
@@ -584,8 +584,8 @@ export function SettingsConsole() {
 
   return (
     <div className="grid gap-5">
-      {message ? <div className="rounded-lg bg-[#e6f5ef] p-3 text-sm text-[#18865a]">{message}</div> : null}
-      {error ? <div className="rounded-lg bg-[#fde8e6] p-3 text-sm text-[#ba3d37]">{error}</div> : null}
+      {message ? <div className="rounded-lg bg-[var(--success-bg)] p-3 text-sm text-[var(--success-fg)]">{message}</div> : null}
+      {error ? <div className="rounded-lg bg-[var(--danger-bg)] p-3 text-sm text-[var(--danger-fg)]">{error}</div> : null}
 
       {/* ── Company Profile ─────────────────────────────────────────────── */}
       <Card>
@@ -628,7 +628,7 @@ export function SettingsConsole() {
               <div className="flex flex-col gap-1">
                 <label className="text-xs font-semibold text-muted">Primary Brand Color</label>
                 <div className="flex gap-2">
-                  <input className="h-10 w-12 cursor-pointer rounded-lg border border-[#dce2eb] p-1" name="primaryColor" defaultValue={String(rules.branding.primaryColor)} type="color" />
+                  <input className="h-10 w-12 cursor-pointer rounded-lg border border-[var(--border-default)] p-1" name="primaryColor" defaultValue={String(rules.branding.primaryColor)} type="color" />
                   <input className={`${inputClass()} flex-1`} defaultValue={String(rules.branding.primaryColor)} readOnly />
                 </div>
               </div>
@@ -721,7 +721,7 @@ export function SettingsConsole() {
           <section>
             <h3 className="mb-3 text-sm font-bold uppercase text-muted">📋 PF &amp; ESI Rates</h3>
             <div className="grid grid-cols-3 gap-4 max-lg:grid-cols-2 max-md:grid-cols-1">
-              <div className="rounded-xl border border-[#dce2eb] bg-[#f8fafc] p-4">
+              <div className="rounded-xl border border-[var(--border-default)] bg-[var(--surface-sunken)] p-4">
                 <div className="mb-3 text-xs font-bold uppercase text-muted">Provident Fund (PF)</div>
                 <div className="grid gap-3">
                   <div className="flex flex-col gap-1">
@@ -738,7 +738,7 @@ export function SettingsConsole() {
                   </div>
                 </div>
               </div>
-              <div className="rounded-xl border border-[#dce2eb] bg-[#f8fafc] p-4">
+              <div className="rounded-xl border border-[var(--border-default)] bg-[var(--surface-sunken)] p-4">
                 <div className="mb-3 text-xs font-bold uppercase text-muted">ESI (Employee State Insurance)</div>
                 <div className="grid gap-3">
                   <div className="flex flex-col gap-1">
@@ -762,42 +762,42 @@ export function SettingsConsole() {
           <section>
             <div className="mb-3 flex items-center justify-between gap-3">
               <h3 className="text-sm font-bold uppercase text-muted">🏛️ Professional Tax Slabs</h3>
-              <button className="flex items-center gap-1.5 rounded-lg border border-[#dce2eb] px-3 py-1.5 text-xs font-semibold" onClick={addPtSlab} type="button">
+              <button className="flex items-center gap-1.5 rounded-lg border border-[var(--border-default)] px-3 py-1.5 text-xs font-semibold" onClick={addPtSlab} type="button">
                 <Plus className="h-3.5 w-3.5" /> Add Slab
               </button>
             </div>
-            <div className="overflow-auto rounded-xl border border-[#dce2eb]">
+            <div className="overflow-auto rounded-xl border border-[var(--border-default)]">
               <table className="w-full min-w-[400px] text-sm">
-                <thead className="bg-[#f8fafc] text-xs uppercase text-muted">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-muted">
                   <tr>
-                    <th className="border-b border-[#dce2eb] p-3 text-left">Monthly Gross Upto (₹)</th>
-                    <th className="border-b border-[#dce2eb] p-3 text-left">Monthly PT (₹)</th>
-                    <th className="border-b border-[#dce2eb] p-3 w-12"></th>
+                    <th className="border-b border-[var(--border-default)] p-3 text-left">Monthly Gross Upto (₹)</th>
+                    <th className="border-b border-[var(--border-default)] p-3 text-left">Monthly PT (₹)</th>
+                    <th className="border-b border-[var(--border-default)] p-3 w-12"></th>
                   </tr>
                 </thead>
                 <tbody>
                   {ptSlabs.map((slab, i) => (
                     <tr key={i}>
-                      <td className="border-b border-[#dce2eb] p-2">
+                      <td className="border-b border-[var(--border-default)] p-2">
                         <input
-                          className="min-h-9 w-full rounded-lg border border-[#dce2eb] px-3 text-sm"
+                          className="min-h-9 w-full rounded-lg border border-[var(--border-default)] px-3 text-sm"
                           value={slab.upto}
                           min="0"
                           type="number"
                           onChange={(e) => updatePtSlab(i, "upto", Number(e.target.value))}
                         />
                       </td>
-                      <td className="border-b border-[#dce2eb] p-2">
+                      <td className="border-b border-[var(--border-default)] p-2">
                         <input
-                          className="min-h-9 w-full rounded-lg border border-[#dce2eb] px-3 text-sm"
+                          className="min-h-9 w-full rounded-lg border border-[var(--border-default)] px-3 text-sm"
                           value={slab.monthly}
                           min="0"
                           type="number"
                           onChange={(e) => updatePtSlab(i, "monthly", Number(e.target.value))}
                         />
                       </td>
-                      <td className="border-b border-[#dce2eb] p-2 text-center">
-                        <button className="rounded p-1 text-[#ba3d37] hover:bg-[#fde8e6]" onClick={() => removePtSlab(i)} type="button">
+                      <td className="border-b border-[var(--border-default)] p-2 text-center">
+                        <button className="rounded p-1 text-[var(--danger-fg)] hover:bg-[var(--danger-bg)]" onClick={() => removePtSlab(i)} type="button">
                           <Trash2 className="h-4 w-4" />
                         </button>
                       </td>
@@ -812,44 +812,44 @@ export function SettingsConsole() {
           <section>
             <div className="mb-3 flex items-center justify-between gap-3">
               <h3 className="text-sm font-bold uppercase text-muted">📊 TDS / Income Tax Slabs</h3>
-              <button className="flex items-center gap-1.5 rounded-lg border border-[#dce2eb] px-3 py-1.5 text-xs font-semibold" onClick={addTdsSlab} type="button">
+              <button className="flex items-center gap-1.5 rounded-lg border border-[var(--border-default)] px-3 py-1.5 text-xs font-semibold" onClick={addTdsSlab} type="button">
                 <Plus className="h-3.5 w-3.5" /> Add Slab
               </button>
             </div>
-            <div className="overflow-auto rounded-xl border border-[#dce2eb]">
+            <div className="overflow-auto rounded-xl border border-[var(--border-default)]">
               <table className="w-full min-w-[520px] text-sm">
-                <thead className="bg-[#f8fafc] text-xs uppercase text-muted">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-muted">
                   <tr>
-                    <th className="border-b border-[#dce2eb] p-3 text-left">From (₹)</th>
-                    <th className="border-b border-[#dce2eb] p-3 text-left">Upto (₹)</th>
-                    <th className="border-b border-[#dce2eb] p-3 text-left">Rate (%)</th>
-                    <th className="border-b border-[#dce2eb] p-3 w-12"></th>
+                    <th className="border-b border-[var(--border-default)] p-3 text-left">From (₹)</th>
+                    <th className="border-b border-[var(--border-default)] p-3 text-left">Upto (₹)</th>
+                    <th className="border-b border-[var(--border-default)] p-3 text-left">Rate (%)</th>
+                    <th className="border-b border-[var(--border-default)] p-3 w-12"></th>
                   </tr>
                 </thead>
                 <tbody>
                   {tdsSlabs.map((slab, i) => (
                     <tr key={i}>
-                      <td className="border-b border-[#dce2eb] p-2">
+                      <td className="border-b border-[var(--border-default)] p-2">
                         <input
-                          className="min-h-9 w-full rounded-lg border border-[#dce2eb] px-3 text-sm"
+                          className="min-h-9 w-full rounded-lg border border-[var(--border-default)] px-3 text-sm"
                           value={slab.from}
                           min="0"
                           type="number"
                           onChange={(e) => updateTdsSlab(i, "from", Number(e.target.value))}
                         />
                       </td>
-                      <td className="border-b border-[#dce2eb] p-2">
+                      <td className="border-b border-[var(--border-default)] p-2">
                         <input
-                          className="min-h-9 w-full rounded-lg border border-[#dce2eb] px-3 text-sm"
+                          className="min-h-9 w-full rounded-lg border border-[var(--border-default)] px-3 text-sm"
                           value={slab.upto}
                           min="0"
                           type="number"
                           onChange={(e) => updateTdsSlab(i, "upto", Number(e.target.value))}
                         />
                       </td>
-                      <td className="border-b border-[#dce2eb] p-2">
+                      <td className="border-b border-[var(--border-default)] p-2">
                         <input
-                          className="min-h-9 w-full rounded-lg border border-[#dce2eb] px-3 text-sm"
+                          className="min-h-9 w-full rounded-lg border border-[var(--border-default)] px-3 text-sm"
                           value={slab.rate}
                           min="0"
                           max="100"
@@ -858,8 +858,8 @@ export function SettingsConsole() {
                           onChange={(e) => updateTdsSlab(i, "rate", Number(e.target.value))}
                         />
                       </td>
-                      <td className="border-b border-[#dce2eb] p-2 text-center">
-                        <button className="rounded p-1 text-[#ba3d37] hover:bg-[#fde8e6]" onClick={() => removeTdsSlab(i)} type="button">
+                      <td className="border-b border-[var(--border-default)] p-2 text-center">
+                        <button className="rounded p-1 text-[var(--danger-fg)] hover:bg-[var(--danger-bg)]" onClick={() => removeTdsSlab(i)} type="button">
                           <Trash2 className="h-4 w-4" />
                         </button>
                       </td>
@@ -970,7 +970,7 @@ export function SettingsConsole() {
 
         <div className="grid grid-cols-3 gap-6 max-xl:grid-cols-1">
           {/* Departments Column */}
-          <div className="rounded-xl border border-[#dce2eb] bg-white p-4">
+          <div className="rounded-xl border border-[var(--border-default)] bg-white p-4">
             <h3 className="mb-3 text-sm font-bold uppercase text-muted flex items-center gap-1.5">
               🏢 Departments ({departments.length})
             </h3>
@@ -980,7 +980,7 @@ export function SettingsConsole() {
                 <div className="text-xs text-muted py-4 text-center">No departments created.</div>
               ) : (
                 departments.map((dept) => (
-                  <div key={dept.id} className="flex items-center justify-between rounded-lg border border-[#f0f3f6] bg-[#f8fafc] p-2.5 hover:bg-[#f1f5f9] transition-colors duration-150">
+                  <div key={dept.id} className="flex items-center justify-between rounded-lg border border-[var(--surface-sunken)] bg-[var(--surface-sunken)] p-2.5 hover:bg-[var(--surface-sunken)] transition-colors duration-150">
                     <div>
                       <div className="text-sm font-semibold">{dept.name}</div>
                       <div className="text-[10px] font-bold text-muted uppercase tracking-wider">{dept.code}</div>
@@ -990,8 +990,8 @@ export function SettingsConsole() {
               )}
             </div>
 
-            <form className="border-t border-[#f0f3f6] pt-3 flex flex-col gap-2" onSubmit={handleAddDepartment}>
-              <div className="text-xs font-semibold text-[#34465f]">Add Department</div>
+            <form className="border-t border-[var(--surface-sunken)] pt-3 flex flex-col gap-2" onSubmit={handleAddDepartment}>
+              <div className="text-xs font-semibold text-[var(--text-secondary)]">Add Department</div>
               <div className="grid grid-cols-2 gap-2">
                 <input className={inputClass()} name="name" placeholder="Name (e.g. Sales)" required />
                 <input className={inputClass()} name="code" placeholder="Code (e.g. SAL)" required />
@@ -1003,7 +1003,7 @@ export function SettingsConsole() {
           </div>
 
           {/* Designations Column */}
-          <div className="rounded-xl border border-[#dce2eb] bg-white p-4">
+          <div className="rounded-xl border border-[var(--border-default)] bg-white p-4">
             <h3 className="mb-3 text-sm font-bold uppercase text-muted flex items-center gap-1.5">
               💼 Designations ({designations.length})
             </h3>
@@ -1013,7 +1013,7 @@ export function SettingsConsole() {
                 <div className="text-xs text-muted py-4 text-center">No designations created.</div>
               ) : (
                 designations.map((desig) => (
-                  <div key={desig.id} className="flex items-center justify-between rounded-lg border border-[#f0f3f6] bg-[#f8fafc] p-2.5 hover:bg-[#f1f5f9] transition-colors duration-150">
+                  <div key={desig.id} className="flex items-center justify-between rounded-lg border border-[var(--surface-sunken)] bg-[var(--surface-sunken)] p-2.5 hover:bg-[var(--surface-sunken)] transition-colors duration-150">
                     <div>
                       <div className="text-sm font-semibold">{desig.title}</div>
                       <div className="flex flex-wrap gap-1.5 mt-1">
@@ -1030,8 +1030,8 @@ export function SettingsConsole() {
               )}
             </div>
 
-            <form className="border-t border-[#f0f3f6] pt-3 flex flex-col gap-2" onSubmit={handleAddDesignation}>
-              <div className="text-xs font-semibold text-[#34465f]">Add Designation</div>
+            <form className="border-t border-[var(--surface-sunken)] pt-3 flex flex-col gap-2" onSubmit={handleAddDesignation}>
+              <div className="text-xs font-semibold text-[var(--text-secondary)]">Add Designation</div>
               <input className={inputClass()} name="title" placeholder="Title (e.g. Sales Executive)" required />
               <div className="grid grid-cols-2 gap-2">
                 <input className={inputClass()} name="grade" placeholder="Grade (e.g. L2)" />
@@ -1049,7 +1049,7 @@ export function SettingsConsole() {
           </div>
 
           {/* Locations Column */}
-          <div className="rounded-xl border border-[#dce2eb] bg-white p-4">
+          <div className="rounded-xl border border-[var(--border-default)] bg-white p-4">
             <h3 className="mb-3 text-sm font-bold uppercase text-muted flex items-center gap-1.5">
               📍 Locations ({locations.length})
             </h3>
@@ -1059,7 +1059,7 @@ export function SettingsConsole() {
                 <div className="text-xs text-muted py-4 text-center">No locations created.</div>
               ) : (
                 locations.map((loc) => (
-                  <div key={loc.id} className="flex items-center justify-between rounded-lg border border-[#f0f3f6] bg-[#f8fafc] p-2.5 hover:bg-[#f1f5f9] transition-colors duration-150">
+                  <div key={loc.id} className="flex items-center justify-between rounded-lg border border-[var(--surface-sunken)] bg-[var(--surface-sunken)] p-2.5 hover:bg-[var(--surface-sunken)] transition-colors duration-150">
                     <div>
                       <div className="text-sm font-semibold">{loc.name}</div>
                       <div className="text-[10px] text-muted">{loc.city}, {loc.state}</div>
@@ -1069,8 +1069,8 @@ export function SettingsConsole() {
               )}
             </div>
 
-            <form className="border-t border-[#f0f3f6] pt-3 flex flex-col gap-2" onSubmit={handleAddLocation}>
-              <div className="text-xs font-semibold text-[#34465f]">Add Location</div>
+            <form className="border-t border-[var(--surface-sunken)] pt-3 flex flex-col gap-2" onSubmit={handleAddLocation}>
+              <div className="text-xs font-semibold text-[var(--text-secondary)]">Add Location</div>
               <input className={inputClass()} name="name" placeholder="Name (e.g. Mumbai HQ)" required />
               <div className="grid grid-cols-2 gap-2">
                 <input className={inputClass()} name="city" placeholder="City" required />
@@ -1105,10 +1105,10 @@ export function SettingsConsole() {
           {planCards.map((card) => {
             const active = card.plan === activePlan;
             return (
-              <div className={`rounded-lg border p-4 ${active ? "border-[#ff8a2a] bg-[#fff3e8]" : "border-[#dce2eb] bg-white"}`} key={card.plan}>
+              <div className={`rounded-lg border p-4 ${active ? "border-[#ff8a2a] bg-[#fff3e8]" : "border-[var(--border-default)] bg-white"}`} key={card.plan}>
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <div className="text-lg font-semibold text-[#172033]">{card.title}</div>
+                    <div className="text-lg font-semibold text-[var(--text-primary)]">{card.title}</div>
                     <div className="text-xs font-bold uppercase text-muted">{card.plan}</div>
                   </div>
                   <StatusPill tone={active ? "green" : planTone(card.plan)}>{active ? "Current" : card.price}</StatusPill>
@@ -1116,7 +1116,7 @@ export function SettingsConsole() {
                 <div className="mt-3 text-sm font-semibold text-brand">{card.access}</div>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {card.includes.map((item) => (
-                    <span className="rounded-full bg-[#f3f7fb] px-3 py-1 text-xs font-semibold text-[#34465f]" key={item}>{item}</span>
+                    <span className="rounded-full bg-[#f3f7fb] px-3 py-1 text-xs font-semibold text-[var(--text-secondary)]" key={item}>{item}</span>
                   ))}
                 </div>
               </div>
@@ -1136,7 +1136,7 @@ export function SettingsConsole() {
               const requiredPlan = requiredPlanForModule(item.module);
               const allowed = hasPlanAccess(requiredPlan, activePlan);
               return (
-                <div className={`flex items-center justify-between gap-3 rounded-lg border p-3 ${allowed ? "border-[#dce2eb]" : "border-[#f3c4c0] bg-[#fff8f7]"}`} key={item.module}>
+                <div className={`flex items-center justify-between gap-3 rounded-lg border p-3 ${allowed ? "border-[var(--border-default)]" : "border-[#f3c4c0] bg-[#fff8f7]"}`} key={item.module}>
                   <div>
                     <div className="font-semibold">{moduleLabel(item.module)}</div>
                     <div className="mt-2 flex flex-wrap gap-2">
@@ -1145,11 +1145,11 @@ export function SettingsConsole() {
                     </div>
                   </div>
                   {allowed ? (
-                    <button className="rounded-lg border border-[#dce2eb] px-3 py-2 text-sm font-semibold" type="button" onClick={() => toggleModule(item.module, !item.enabled)}>
+                    <button className="rounded-lg border border-[var(--border-default)] px-3 py-2 text-sm font-semibold" type="button" onClick={() => toggleModule(item.module, !item.enabled)}>
                       {item.enabled ? "Disable" : "Enable"}
                     </button>
                   ) : (
-                    <a className="rounded-lg bg-[#ba3d37] px-3 py-2 text-sm font-semibold text-white" href="/saas">
+                    <a className="rounded-lg bg-[var(--danger-fg)] px-3 py-2 text-sm font-semibold text-white" href="/saas">
                       Upgrade
                     </a>
                   )}
@@ -1168,27 +1168,27 @@ export function SettingsConsole() {
             <h2 className="text-lg font-semibold">Settings &amp; Activity Logs</h2>
             <p className="mt-1 text-sm text-muted">Client administrators can review configuration and workflow changes.</p>
           </div>
-          <button className="rounded-lg border border-[#dce2eb] px-4 py-2 text-sm font-semibold" onClick={load} type="button">Refresh Logs</button>
+          <button className="rounded-lg border border-[var(--border-default)] px-4 py-2 text-sm font-semibold" onClick={load} type="button">Refresh Logs</button>
         </div>
         <div className="overflow-auto">
           <table className="w-full min-w-[760px] border-collapse text-sm">
-            <thead className="bg-[#f8fafc] text-left text-xs uppercase text-muted">
+            <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase text-muted">
               <tr>
-                <th className="border-b border-[#dce2eb] p-3">Time</th>
-                <th className="border-b border-[#dce2eb] p-3">Module</th>
-                <th className="border-b border-[#dce2eb] p-3">Action</th>
-                <th className="border-b border-[#dce2eb] p-3">Record</th>
-                <th className="border-b border-[#dce2eb] p-3">Actor</th>
+                <th className="border-b border-[var(--border-default)] p-3">Time</th>
+                <th className="border-b border-[var(--border-default)] p-3">Module</th>
+                <th className="border-b border-[var(--border-default)] p-3">Action</th>
+                <th className="border-b border-[var(--border-default)] p-3">Record</th>
+                <th className="border-b border-[var(--border-default)] p-3">Actor</th>
               </tr>
             </thead>
             <tbody>
               {logs.slice(0, 12).map((log) => (
                 <tr key={log.id}>
-                  <td className="border-b border-[#dce2eb] p-3">{new Date(log.createdAt).toLocaleString("en-IN")}</td>
-                  <td className="border-b border-[#dce2eb] p-3 font-semibold">{moduleLabel(log.module)}</td>
-                  <td className="border-b border-[#dce2eb] p-3">{log.action}</td>
-                  <td className="border-b border-[#dce2eb] p-3">{log.entityType}</td>
-                  <td className="border-b border-[#dce2eb] p-3">{log.actor?.employee ? `${log.actor.employee.firstName} ${log.actor.employee.lastName}` : log.actor?.email || "System"}</td>
+                  <td className="border-b border-[var(--border-default)] p-3">{new Date(log.createdAt).toLocaleString("en-IN")}</td>
+                  <td className="border-b border-[var(--border-default)] p-3 font-semibold">{moduleLabel(log.module)}</td>
+                  <td className="border-b border-[var(--border-default)] p-3">{log.action}</td>
+                  <td className="border-b border-[var(--border-default)] p-3">{log.entityType}</td>
+                  <td className="border-b border-[var(--border-default)] p-3">{log.actor?.employee ? `${log.actor.employee.firstName} ${log.actor.employee.lastName}` : log.actor?.email || "System"}</td>
                 </tr>
               ))}
             </tbody>
@@ -1203,17 +1203,17 @@ export function SettingsConsole() {
           { title: "Data Export", note: "Download company settings and client rule JSON", icon: FileDown, action: "Download", onClick: downloadSettings },
           ...(isOwner ? [{ title: "License", note: "Subscription and module entitlement control", icon: KeyRound, action: "Manage Plans", href: "/saas" }] : []),
         ].map(({ title, note, icon: Icon, action, href, onClick }) => (
-          <div className="rounded-lg border border-[#dce2eb] bg-white p-4 shadow-sm" key={title}>
+          <div className="rounded-lg border border-[var(--border-default)] bg-white p-4 shadow-sm" key={title}>
             <Icon className="h-5 w-5 text-brand" />
             <div className="mt-3 font-semibold">{title}</div>
             <div className="mt-1 text-sm text-muted">{note}</div>
             <div className="mt-3">
               {href ? (
-                <a className="inline-flex min-h-9 items-center rounded-lg border border-[#dce2eb] px-3 text-sm font-semibold text-[#172033]" href={href}>
+                <a className="inline-flex min-h-9 items-center rounded-lg border border-[var(--border-default)] px-3 text-sm font-semibold text-[var(--text-primary)]" href={href}>
                   {action}
                 </a>
               ) : (
-                <button className="inline-flex min-h-9 items-center rounded-lg border border-[#dce2eb] px-3 text-sm font-semibold text-[#172033]" onClick={onClick} type="button">
+                <button className="inline-flex min-h-9 items-center rounded-lg border border-[var(--border-default)] px-3 text-sm font-semibold text-[var(--text-primary)]" onClick={onClick} type="button">
                   {action}
                 </button>
               )}

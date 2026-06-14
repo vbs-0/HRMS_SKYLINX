@@ -442,7 +442,7 @@ export function SkyNexusConsole() {
           <Card>
             <form onSubmit={handlePublish} className="grid gap-4">
               <div className="flex gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#dff7ff] text-sm font-bold text-brand uppercase border border-brand/20">
+                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[var(--color-brand-50)] text-sm font-bold text-brand uppercase border border-brand/20">
                   {currentUserName.slice(0,2)}
                 </div>
                 <div className="grid gap-2 flex-1">
@@ -466,7 +466,7 @@ export function SkyNexusConsole() {
 
 
 
-              <div className="flex flex-wrap items-center justify-between border-t border-[#f1f5f9] pt-3 gap-3">
+              <div className="flex flex-wrap items-center justify-between border-t border-[var(--surface-sunken)] pt-3 gap-3">
                 <div className="flex items-center gap-3">
 
                   {/* Pin check box */}
@@ -475,7 +475,7 @@ export function SkyNexusConsole() {
                       type="checkbox" 
                       checked={isPinned}
                       onChange={(e) => setIsPinned(e.target.checked)}
-                      className="rounded border-[#cbd5e1] text-brand focus:ring-brand h-3.5 w-3.5"
+                      className="rounded border-[var(--border-strong)] text-brand focus:ring-brand h-3.5 w-3.5"
                     />
                     <Pin className="h-3.5 w-3.5 text-amber-500" />
                     <span>Pin notice</span>
@@ -487,7 +487,7 @@ export function SkyNexusConsole() {
                   <select
                     value={postType}
                     onChange={(e: any) => setPostType(e.target.value)}
-                    className="rounded-lg border border-[#cbd5e1] bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-600 outline-none transition focus:border-brand"
+                    className="rounded-lg border border-[var(--border-strong)] bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-600 outline-none transition focus:border-brand"
                   >
                     <option value="POST">General Post</option>
                     <option value="ANNOUNCEMENT">Announcement</option>
@@ -535,13 +535,13 @@ export function SkyNexusConsole() {
                   <article 
                     key={post.id} 
                     className={`rounded-xl border bg-white p-5 shadow-sm transition hover:shadow-md ${
-                      post.pinned ? "border-amber-200 ring-1 ring-amber-100" : "border-[#e8edf4]"
+                      post.pinned ? "border-amber-200 ring-1 ring-amber-100" : "border-[var(--border-subtle)]"
                     }`}
                   >
                     {/* Post Header details */}
                     <div className="flex items-start justify-between gap-4 border-b border-slate-50 pb-3 mb-3">
                       <div className="flex gap-3 items-center">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#f1f5f9] text-xs font-bold text-slate-600 uppercase border">
+                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--surface-sunken)] text-xs font-bold text-slate-600 uppercase border">
                           {authorName.slice(0, 2)}
                         </div>
                         <div>
@@ -635,7 +635,7 @@ export function SkyNexusConsole() {
                             placeholder="Write a comment..."
                             value={commentInputs[post.id] || ""}
                             onChange={(e) => setCommentInputs(curr => ({ ...curr, [post.id]: e.target.value }))}
-                            className="flex-1 rounded-lg border border-[#cbd5e1] px-3 py-1.5 text-xs outline-none focus:border-brand"
+                            className="flex-1 rounded-lg border border-[var(--border-strong)] px-3 py-1.5 text-xs outline-none focus:border-brand"
                           />
                           <button className="rounded-lg bg-brand px-3 py-1.5 text-xs font-bold text-white transition hover:bg-brand-dark">
                             Submit
@@ -730,8 +730,8 @@ export function SkyNexusConsole() {
 
       {/* Action Post Creator Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#172033]/50 p-4">
-          <div className="w-full max-w-lg rounded-xl border border-[#dce2eb] bg-white p-6 shadow-2xl relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--text-primary)]/50 p-4">
+          <div className="w-full max-w-lg rounded-xl border border-[var(--border-default)] bg-white p-6 shadow-2xl relative">
             <button
               onClick={() => setIsModalOpen(false)}
               className="absolute right-4 top-4 text-slate-400 hover:text-slate-600 transition"
@@ -762,7 +762,7 @@ export function SkyNexusConsole() {
                     value={modalTargetEmpId}
                     onChange={(e) => handleModalEmpChange(e.target.value)}
                     required
-                    className="min-h-10 rounded-lg border border-[#cbd5e1] bg-white px-3 text-sm outline-none focus:border-brand"
+                    className="min-h-10 rounded-lg border border-[var(--border-strong)] bg-white px-3 text-sm outline-none focus:border-brand"
                   >
                     <option value="">-- Choose Employee --</option>
                     {employeesList.map((emp) => (
@@ -784,7 +784,7 @@ export function SkyNexusConsole() {
                   placeholder="Enter a descriptive title..."
                   value={modalTitle}
                   onChange={(e) => setModalTitle(e.target.value)}
-                  className="min-h-10 rounded-lg border border-[#cbd5e1] px-3 text-sm outline-none focus:border-brand text-slate-800"
+                  className="min-h-10 rounded-lg border border-[var(--border-strong)] px-3 text-sm outline-none focus:border-brand text-slate-800"
                 />
               </div>
 
@@ -799,7 +799,7 @@ export function SkyNexusConsole() {
                   value={modalBody}
                   onChange={(e) => setModalBody(e.target.value)}
                   required
-                  className="rounded-lg border border-[#cbd5e1] p-3 text-sm outline-none focus:border-brand text-slate-800 resize-none"
+                  className="rounded-lg border border-[var(--border-strong)] p-3 text-sm outline-none focus:border-brand text-slate-800 resize-none"
                 />
               </div>
 
@@ -814,7 +814,7 @@ export function SkyNexusConsole() {
                       type="checkbox"
                       checked={modalPinned}
                       onChange={(e) => setModalPinned(e.target.checked)}
-                      className="rounded border-[#cbd5e1] text-brand focus:ring-brand h-3.5 w-3.5"
+                      className="rounded border-[var(--border-strong)] text-brand focus:ring-brand h-3.5 w-3.5"
                     />
                     <span>Pin notice</span>
                   </label>

@@ -3,8 +3,8 @@ import type { LucideIcon } from "lucide-react";
 
 function MiniCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-lg border border-[#dce2eb] bg-white p-4 shadow-sm">
-      <h3 className="text-sm font-semibold text-[#172033]">{title}</h3>
+    <div className="rounded-lg border border-[var(--border-default)] bg-white p-4 shadow-sm">
+      <h3 className="text-sm font-semibold text-[var(--text-primary)]">{title}</h3>
       <div className="mt-3">{children}</div>
     </div>
   );
@@ -14,9 +14,9 @@ function FieldGrid({ rows }: { rows: Array<[string, string]> }) {
   return (
     <div className="grid gap-3 text-sm">
       {rows.map(([label, value]) => (
-        <div className="grid grid-cols-[140px_1fr] gap-3 border-b border-[#eef3f8] pb-2 last:border-0 last:pb-0" key={label}>
-          <span className="text-xs font-bold uppercase text-[#8ca0bf]">{label}</span>
-          <span className="font-semibold text-[#172033]">{value}</span>
+        <div className="grid grid-cols-[140px_1fr] gap-3 border-b border-[var(--surface-sunken)] pb-2 last:border-0 last:pb-0" key={label}>
+          <span className="text-xs font-bold uppercase text-[var(--text-muted)]">{label}</span>
+          <span className="font-semibold text-[var(--text-primary)]">{value}</span>
         </div>
       ))}
     </div>
@@ -26,14 +26,14 @@ function FieldGrid({ rows }: { rows: Array<[string, string]> }) {
 export function EmployeeProfileWorkspace() {
   return (
     <section className="mb-5 grid grid-cols-[280px_1fr] gap-5 max-xl:grid-cols-1">
-      <div className="rounded-lg border border-[#dce2eb] bg-white p-5 text-center shadow-sm">
-        <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-[#dff7ff] text-2xl font-bold text-brand">SG</div>
-        <h2 className="mt-4 text-xl font-semibold text-[#172033]">Acme Employee</h2>
+      <div className="rounded-lg border border-[var(--border-default)] bg-white p-5 text-center shadow-sm">
+        <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-[var(--color-brand-50)] text-2xl font-bold text-brand">SG</div>
+        <h2 className="mt-4 text-xl font-semibold text-[var(--text-primary)]">Acme Employee</h2>
         <p className="text-sm font-semibold uppercase text-brand">HR Operations</p>
         <div className="mt-5 grid gap-2 text-left text-sm">
-          <div className="rounded-lg bg-[#f8fafc] p-3"><strong>Employee ID</strong><br />SGS/HR/0001</div>
-          <div className="rounded-lg bg-[#f8fafc] p-3"><strong>Status</strong><br />Active</div>
-          <div className="rounded-lg bg-[#f8fafc] p-3"><strong>Profile Completion</strong><br />Personal, Work, Bank, Documents</div>
+          <div className="rounded-lg bg-[var(--surface-sunken)] p-3"><strong>Employee ID</strong><br />SGS/HR/0001</div>
+          <div className="rounded-lg bg-[var(--surface-sunken)] p-3"><strong>Status</strong><br />Active</div>
+          <div className="rounded-lg bg-[var(--surface-sunken)] p-3"><strong>Profile Completion</strong><br />Personal, Work, Bank, Documents</div>
         </div>
       </div>
       <div className="grid grid-cols-2 gap-5 max-lg:grid-cols-1">
@@ -71,8 +71,8 @@ export function AttendanceRulesWorkspace() {
       <MiniCard title="Approval Flow">
         <div className="grid gap-3 text-sm">
           {["Employee request", "Manager review", "HR validation", "Attendance update"].map((step) => (
-            <div className="flex items-center gap-3 rounded-lg bg-[#f8fafc] p-3" key={step}>
-              <CheckCircle2 className="h-4 w-4 text-[#18865a]" />
+            <div className="flex items-center gap-3 rounded-lg bg-[var(--surface-sunken)] p-3" key={step}>
+              <CheckCircle2 className="h-4 w-4 text-[var(--success-fg)]" />
               <span className="font-semibold">{step}</span>
             </div>
           ))}
@@ -86,7 +86,7 @@ export function AttendanceRulesWorkspace() {
             ["Biometric device", ShieldCheck],
             ["Manual HR entry", UserRound],
           ] as Array<[string, LucideIcon]>).map(([label, Icon]) => (
-            <div className="flex items-center gap-3 rounded-lg bg-[#f8fafc] p-3" key={String(label)}>
+            <div className="flex items-center gap-3 rounded-lg bg-[var(--surface-sunken)] p-3" key={String(label)}>
               <Icon className="h-4 w-4 text-brand" />
               <span className="font-semibold">{label}</span>
             </div>
@@ -100,10 +100,10 @@ export function AttendanceRulesWorkspace() {
 export function PayrollRunWorkspace() {
   const steps = ["Create Run", "Import Attendance", "Calculate Salary", "Verify Deductions", "Lock Payroll", "Publish Payslips"];
   return (
-    <section className="mb-5 rounded-lg border border-[#dce2eb] bg-white p-5 shadow-sm">
+    <section className="mb-5 rounded-lg border border-[var(--border-default)] bg-white p-5 shadow-sm">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold text-[#172033]">Payroll Run Wizard</h2>
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">Payroll Run Wizard</h2>
           <p className="text-sm text-muted">Same step-by-step payroll flow from the reference, connected to the live payroll run actions below.</p>
         </div>
         <button className="inline-flex min-h-10 items-center gap-2 rounded-lg bg-brand px-4 text-sm font-semibold text-white" type="button">
@@ -113,9 +113,9 @@ export function PayrollRunWorkspace() {
       </div>
       <div className="grid grid-cols-6 gap-3 max-xl:grid-cols-3 max-sm:grid-cols-1">
         {steps.map((step, index) => (
-          <div className="rounded-lg border border-[#e8edf4] bg-[#f8fafc] p-4" key={step}>
+          <div className="rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)] p-4" key={step}>
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand text-xs font-bold text-white">{index + 1}</div>
-            <div className="mt-3 text-sm font-semibold text-[#172033]">{step}</div>
+            <div className="mt-3 text-sm font-semibold text-[var(--text-primary)]">{step}</div>
           </div>
         ))}
       </div>
@@ -131,13 +131,13 @@ export function ReportsExportWorkspace() {
         ["Attendance Report", "Logs, late marks and regularization", CalendarCheck],
         ["Payroll Report", "Gross, deductions, net pay and statutory", BadgeIndianRupee],
       ] as Array<[string, string, LucideIcon]>).map(([title, note, Icon]) => (
-        <div className="rounded-lg border border-[#dce2eb] bg-white p-5 shadow-sm" key={String(title)}>
+        <div className="rounded-lg border border-[var(--border-default)] bg-white p-5 shadow-sm" key={String(title)}>
           <Icon className="h-8 w-8 text-brand" />
-          <h3 className="mt-4 text-lg font-semibold text-[#172033]">{title}</h3>
+          <h3 className="mt-4 text-lg font-semibold text-[var(--text-primary)]">{title}</h3>
           <p className="mt-2 text-sm text-muted">{note}</p>
           <div className="mt-4 flex gap-2">
-            <button className="inline-flex min-h-9 items-center gap-2 rounded-lg border border-[#dce2eb] px-3 text-sm font-semibold" type="button"><FileSpreadsheet className="h-4 w-4" />Excel</button>
-            <button className="inline-flex min-h-9 items-center gap-2 rounded-lg border border-[#dce2eb] px-3 text-sm font-semibold" type="button"><Download className="h-4 w-4" />PDF</button>
+            <button className="inline-flex min-h-9 items-center gap-2 rounded-lg border border-[var(--border-default)] px-3 text-sm font-semibold" type="button"><FileSpreadsheet className="h-4 w-4" />Excel</button>
+            <button className="inline-flex min-h-9 items-center gap-2 rounded-lg border border-[var(--border-default)] px-3 text-sm font-semibold" type="button"><Download className="h-4 w-4" />PDF</button>
           </div>
         </div>
       ))}
@@ -147,18 +147,18 @@ export function ReportsExportWorkspace() {
 
 export function OrganizationChartWorkspace() {
   return (
-    <section className="mb-5 rounded-lg border border-[#dce2eb] bg-white p-5 shadow-sm">
-      <h2 className="text-lg font-semibold text-[#172033]">Visual Organization Chart</h2>
+    <section className="mb-5 rounded-lg border border-[var(--border-default)] bg-white p-5 shadow-sm">
+      <h2 className="text-lg font-semibold text-[var(--text-primary)]">Visual Organization Chart</h2>
       <div className="mt-5 grid justify-items-center gap-4">
-        <div className="rounded-lg bg-[#1f2a44] px-6 py-4 text-center text-white shadow-sm">
+        <div className="rounded-lg bg-[var(--text-primary)] px-6 py-4 text-center text-white shadow-sm">
           <Building2 className="mx-auto h-6 w-6" />
           <div className="mt-2 font-semibold">Acme Corp</div>
         </div>
-        <GitFork className="h-6 w-6 text-[#8ca0bf]" />
+        <GitFork className="h-6 w-6 text-[var(--text-muted)]" />
         <div className="grid grid-cols-3 gap-4 max-lg:grid-cols-1">
           {["HR & Operations", "Finance & Payroll", "Recruitment & Admin"].map((team) => (
-            <div className="rounded-lg border border-[#dce2eb] bg-[#f8fafc] px-5 py-4 text-center" key={team}>
-              <div className="font-semibold text-[#172033]">{team}</div>
+            <div className="rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] px-5 py-4 text-center" key={team}>
+              <div className="font-semibold text-[var(--text-primary)]">{team}</div>
               <div className="mt-1 text-xs text-muted">Manager mapping enabled</div>
             </div>
           ))}
@@ -179,11 +179,11 @@ export function SettingsSetupWorkspace() {
         ["Attendance Settings", "Late marks, geo, biometric and overtime"],
         ["Leave Settings", "Types, balances, carry forward and sandwich rules"],
       ].map(([title, note]) => (
-        <div className="rounded-lg border border-[#dce2eb] bg-white p-4 shadow-sm" key={title}>
+        <div className="rounded-lg border border-[var(--border-default)] bg-white p-4 shadow-sm" key={title}>
           <div className="flex items-center gap-3">
             <LockKeyhole className="h-5 w-5 text-brand" />
             <div>
-              <div className="font-semibold text-[#172033]">{title}</div>
+              <div className="font-semibold text-[var(--text-primary)]">{title}</div>
               <div className="text-xs text-muted">{note}</div>
             </div>
           </div>
@@ -205,7 +205,7 @@ export function LeaveRulesWorkspace() {
       <MiniCard title="Request Flow">
         <div className="grid gap-3 text-sm">
           {["Apply leave", "Balance validation", "Manager approval", "HR audit update"].map((step) => (
-            <div className="flex items-center gap-3 rounded-lg bg-[#f8fafc] p-3" key={step}>
+            <div className="flex items-center gap-3 rounded-lg bg-[var(--surface-sunken)] p-3" key={step}>
               <CalendarCheck className="h-4 w-4 text-brand" />
               <span className="font-semibold">{step}</span>
             </div>
@@ -225,11 +225,11 @@ export function DocumentsVerificationWorkspace() {
         ["Employment", "Offer, experience, joining", "Direct upload"],
         ["Bank", "Account proof and cancelled cheque", "Payroll secure"],
       ].map(([title, note, status]) => (
-        <div className="rounded-lg border border-[#dce2eb] bg-white p-5 shadow-sm" key={title}>
+        <div className="rounded-lg border border-[var(--border-default)] bg-white p-5 shadow-sm" key={title}>
           <FileCheck2 className="h-8 w-8 text-brand" />
-          <h3 className="mt-4 text-lg font-semibold text-[#172033]">{title}</h3>
+          <h3 className="mt-4 text-lg font-semibold text-[var(--text-primary)]">{title}</h3>
           <p className="mt-2 text-sm text-muted">{note}</p>
-          <div className="mt-4 rounded-full bg-[#e6f5ef] px-3 py-2 text-xs font-semibold text-[#18865a]">{status}</div>
+          <div className="mt-4 rounded-full bg-[var(--success-bg)] px-3 py-2 text-xs font-semibold text-[var(--success-fg)]">{status}</div>
         </div>
       ))}
     </section>
@@ -239,21 +239,21 @@ export function DocumentsVerificationWorkspace() {
 export function HolidayCalendarWorkspace() {
   const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   return (
-    <section className="mb-5 rounded-lg border border-[#dce2eb] bg-white p-5 shadow-sm">
+    <section className="mb-5 rounded-lg border border-[var(--border-default)] bg-white p-5 shadow-sm">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-semibold text-[#172033]">Calendar View</h2>
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">Calendar View</h2>
           <p className="text-sm text-muted">Mandatory, optional and regional holidays in a month grid.</p>
         </div>
-        <div className="rounded-lg border border-[#dce2eb] px-4 py-2 text-sm font-semibold text-[#34465f]">June 2026</div>
+        <div className="rounded-lg border border-[var(--border-default)] px-4 py-2 text-sm font-semibold text-[var(--text-secondary)]">June 2026</div>
       </div>
       <div className="grid grid-cols-7 gap-2 text-center text-sm">
-        {days.map((day) => <div className="rounded-lg bg-[#eef3f8] p-2 font-semibold text-[#49637f]" key={day}>{day}</div>)}
+        {days.map((day) => <div className="rounded-lg bg-[var(--surface-sunken)] p-2 font-semibold text-[var(--text-secondary)]" key={day}>{day}</div>)}
         {Array.from({ length: 35 }, (_, index) => {
           const date = index + 1;
           const marked = [5, 15, 26].includes(date);
           return (
-            <div className={`min-h-20 rounded-lg border p-2 text-left ${marked ? "border-brand bg-[#eef5ff]" : "border-[#e8edf4] bg-[#f8fafc]"}`} key={date}>
+            <div className={`min-h-20 rounded-lg border p-2 text-left ${marked ? "border-brand bg-[var(--color-brand-50)]" : "border-[var(--border-subtle)] bg-[var(--surface-sunken)]"}`} key={date}>
               <div className="font-semibold">{date <= 30 ? date : ""}</div>
               {marked ? <div className="mt-2 text-xs font-semibold text-brand">Holiday</div> : null}
             </div>
@@ -273,7 +273,7 @@ export function InsuranceWorkspace() {
       <MiniCard title="Dependents">
         <div className="grid gap-3 text-sm">
           {["Spouse", "Children", "Parents"].map((person) => (
-            <div className="flex items-center gap-3 rounded-lg bg-[#f8fafc] p-3" key={person}>
+            <div className="flex items-center gap-3 rounded-lg bg-[var(--surface-sunken)] p-3" key={person}>
               <UsersRound className="h-4 w-4 text-brand" />
               <span className="font-semibold">{person}</span>
             </div>
@@ -283,7 +283,7 @@ export function InsuranceWorkspace() {
       <MiniCard title="Claim Workflow">
         <div className="grid gap-3 text-sm">
           {["Submit claim", "Attach proof", "HR approval", "Reimbursement"].map((step) => (
-            <div className="flex items-center gap-3 rounded-lg bg-[#f8fafc] p-3" key={step}>
+            <div className="flex items-center gap-3 rounded-lg bg-[var(--surface-sunken)] p-3" key={step}>
               <HeartPulse className="h-4 w-4 text-brand" />
               <span className="font-semibold">{step}</span>
             </div>
@@ -305,12 +305,12 @@ export function RewardsMarketplaceWorkspace() {
   return (
     <section className="mb-5 grid grid-cols-4 gap-4 max-xl:grid-cols-2 max-sm:grid-cols-1">
       {rewards.map(([title, note, Icon]) => (
-        <div className="overflow-hidden rounded-lg border border-[#dce2eb] bg-white shadow-sm" key={String(title)}>
-          <div className="h-24 bg-[#1f2a44] p-5 text-white">
+        <div className="overflow-hidden rounded-lg border border-[var(--border-default)] bg-white shadow-sm" key={String(title)}>
+          <div className="h-24 bg-[var(--text-primary)] p-5 text-white">
             <Icon className="h-8 w-8" />
           </div>
           <div className="p-5">
-            <h3 className="text-lg font-semibold text-[#172033]">{title}</h3>
+            <h3 className="text-lg font-semibold text-[var(--text-primary)]">{title}</h3>
             <p className="mt-2 text-sm text-muted">{note}</p>
             <button className="mt-4 min-h-9 rounded-lg bg-brand px-4 text-sm font-semibold text-white" type="button">Configure</button>
           </div>
@@ -326,7 +326,7 @@ export function ExpensePayoutWorkspace() {
       <MiniCard title="Claim Workflow">
         <div className="grid gap-3 text-sm">
           {["Employee claim", "Receipt upload", "Manager approval", "HR approval", "Reimbursement"].map((step) => (
-            <div className="flex items-center gap-3 rounded-lg bg-[#f8fafc] p-3" key={step}>
+            <div className="flex items-center gap-3 rounded-lg bg-[var(--surface-sunken)] p-3" key={step}>
               <ReceiptText className="h-4 w-4 text-brand" />
               <span className="font-semibold">{step}</span>
             </div>
@@ -346,19 +346,19 @@ export function ExpensePayoutWorkspace() {
 export function KonnectWorkspace() {
   return (
     <section className="mb-5 grid grid-cols-[1fr_320px] gap-5 max-xl:grid-cols-1">
-      <div className="rounded-lg border border-[#dce2eb] bg-white p-5 shadow-sm">
-        <h2 className="text-lg font-semibold text-[#172033]">Company Feed</h2>
+      <div className="rounded-lg border border-[var(--border-default)] bg-white p-5 shadow-sm">
+        <h2 className="text-lg font-semibold text-[var(--text-primary)]">Company Feed</h2>
         <div className="mt-4 grid gap-4">
           {[
             ["Company Announcement", "Broadcast updates to all employees with comments and likes."],
             ["Birthday Wishes", "Auto-surface birthdays and employee celebrations."],
             ["Recognition Post", "Share rewards, wins and HR appreciation posts."],
           ].map(([title, note]) => (
-            <div className="rounded-lg border border-[#e8edf4] bg-[#f8fafc] p-4" key={title}>
+            <div className="rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)] p-4" key={title}>
               <div className="flex items-center gap-3">
                 <Megaphone className="h-5 w-5 text-brand" />
                 <div>
-                  <div className="font-semibold text-[#172033]">{title}</div>
+                  <div className="font-semibold text-[var(--text-primary)]">{title}</div>
                   <div className="text-sm text-muted">{note}</div>
                 </div>
               </div>
@@ -382,11 +382,11 @@ export function PerformanceReviewWorkspace() {
         ["Recognition", "Rewards-based appraisal signals"],
         ["Review Cycle", "Manager rating and HR lock"],
       ].map(([title, note]) => (
-        <div className="rounded-lg border border-[#dce2eb] bg-white p-5 shadow-sm" key={title}>
+        <div className="rounded-lg border border-[var(--border-default)] bg-white p-5 shadow-sm" key={title}>
           <Target className="h-8 w-8 text-brand" />
-          <h3 className="mt-4 text-lg font-semibold text-[#172033]">{title}</h3>
+          <h3 className="mt-4 text-lg font-semibold text-[var(--text-primary)]">{title}</h3>
           <p className="mt-2 text-sm text-muted">{note}</p>
-          <div className="mt-4 h-2 overflow-hidden rounded-full bg-[#eef3f8]">
+          <div className="mt-4 h-2 overflow-hidden rounded-full bg-[var(--surface-sunken)]">
             <div className="h-full w-2/3 bg-brand" />
           </div>
         </div>
@@ -398,13 +398,13 @@ export function PerformanceReviewWorkspace() {
 export function RecruitmentWorkflowWorkspace() {
   const stages = ["Job Posting", "Candidate Database", "Resume Upload", "Interview", "Offer Letter", "Joining"];
   return (
-    <section className="mb-5 rounded-lg border border-[#dce2eb] bg-white p-5 shadow-sm">
-      <h2 className="text-lg font-semibold text-[#172033]">Recruitment Pipeline</h2>
+    <section className="mb-5 rounded-lg border border-[var(--border-default)] bg-white p-5 shadow-sm">
+      <h2 className="text-lg font-semibold text-[var(--text-primary)]">Recruitment Pipeline</h2>
       <div className="mt-5 grid grid-cols-6 gap-3 max-xl:grid-cols-3 max-sm:grid-cols-1">
         {stages.map((stage, index) => (
-          <div className="rounded-lg border border-[#e8edf4] bg-[#f8fafc] p-4" key={stage}>
+          <div className="rounded-lg border border-[var(--border-subtle)] bg-[var(--surface-sunken)] p-4" key={stage}>
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand text-xs font-bold text-white">{index + 1}</div>
-            <div className="mt-3 text-sm font-semibold text-[#172033]">{stage}</div>
+            <div className="mt-3 text-sm font-semibold text-[var(--text-primary)]">{stage}</div>
           </div>
         ))}
       </div>
@@ -418,9 +418,9 @@ export function ComplianceWorkflowWorkspace() {
   return (
     <section className="mb-5 grid grid-cols-5 gap-3 max-xl:grid-cols-3 max-sm:grid-cols-1">
       {["PF", "ESI", "Professional Tax", "TDS", "Form 16"].map((item) => (
-        <div className="rounded-lg border border-[#dce2eb] bg-white p-4 shadow-sm" key={item}>
+        <div className="rounded-lg border border-[var(--border-default)] bg-white p-4 shadow-sm" key={item}>
           <ShieldCheck className="h-7 w-7 text-brand" />
-          <div className="mt-3 font-semibold text-[#172033]">{item}</div>
+          <div className="mt-3 font-semibold text-[var(--text-primary)]">{item}</div>
           <div className="mt-1 text-xs text-muted">Payroll linked statutory report</div>
         </div>
       ))}
@@ -439,9 +439,9 @@ export function AssetsWorkflowWorkspace() {
   return (
     <section className="mb-5 grid grid-cols-4 gap-4 max-xl:grid-cols-2 max-sm:grid-cols-1">
       {assets.map(([title, note, Icon]) => (
-        <div className="rounded-lg border border-[#dce2eb] bg-white p-5 shadow-sm" key={String(title)}>
+        <div className="rounded-lg border border-[var(--border-default)] bg-white p-5 shadow-sm" key={String(title)}>
           <Icon className="h-8 w-8 text-brand" />
-          <h3 className="mt-4 text-lg font-semibold text-[#172033]">{title}</h3>
+          <h3 className="mt-4 text-lg font-semibold text-[var(--text-primary)]">{title}</h3>
           <p className="mt-2 text-sm text-muted">{note}</p>
         </div>
       ))}
@@ -457,11 +457,11 @@ export function NotificationsWorkflowWorkspace() {
         ["Push Notifications", "Mobile app instant alerts"],
         ["In-App Queue", "Audit-backed notification history"],
       ].map(([title, note]) => (
-        <div className="rounded-lg border border-[#dce2eb] bg-white p-5 shadow-sm" key={title}>
+        <div className="rounded-lg border border-[var(--border-default)] bg-white p-5 shadow-sm" key={title}>
           <BellRing className="h-8 w-8 text-brand" />
-          <h3 className="mt-4 text-lg font-semibold text-[#172033]">{title}</h3>
+          <h3 className="mt-4 text-lg font-semibold text-[var(--text-primary)]">{title}</h3>
           <p className="mt-2 text-sm text-muted">{note}</p>
-          <div className="mt-4 rounded-full bg-[#e6f5ef] px-3 py-2 text-xs font-semibold text-[#18865a]">Channel ready</div>
+          <div className="mt-4 rounded-full bg-[var(--success-bg)] px-3 py-2 text-xs font-semibold text-[var(--success-fg)]">Channel ready</div>
         </div>
       ))}
     </section>
@@ -508,11 +508,11 @@ export function AnalyticsWorkflowWorkspace() {
         ["Attendance", "Presence, late and exception trends"],
         ["Payroll", "Gross, net, deductions and statutory"],
       ].map(([title, note]) => (
-        <div className="rounded-lg border border-[#dce2eb] bg-white p-5 shadow-sm" key={title}>
+        <div className="rounded-lg border border-[var(--border-default)] bg-white p-5 shadow-sm" key={title}>
           <Target className="h-8 w-8 text-brand" />
-          <h3 className="mt-4 text-lg font-semibold text-[#172033]">{title}</h3>
+          <h3 className="mt-4 text-lg font-semibold text-[var(--text-primary)]">{title}</h3>
           <p className="mt-2 text-sm text-muted">{note}</p>
-          <div className="mt-4 h-2 overflow-hidden rounded-full bg-[#eef3f8]">
+          <div className="mt-4 h-2 overflow-hidden rounded-full bg-[var(--surface-sunken)]">
             <div className="h-full w-3/4 bg-brand" />
           </div>
         </div>
@@ -546,9 +546,9 @@ export function ApprovalsWorkflowWorkspace() {
         ["Expense", "Manager and HR approval"],
         ["Payroll", "Run lock and statutory checks"],
       ].map(([title, note]) => (
-        <div className="rounded-lg border border-[#dce2eb] bg-white p-5 shadow-sm" key={title}>
+        <div className="rounded-lg border border-[var(--border-default)] bg-white p-5 shadow-sm" key={title}>
           <CheckCircle2 className="h-8 w-8 text-brand" />
-          <h3 className="mt-4 text-lg font-semibold text-[#172033]">{title}</h3>
+          <h3 className="mt-4 text-lg font-semibold text-[var(--text-primary)]">{title}</h3>
           <p className="mt-2 text-sm text-muted">{note}</p>
         </div>
       ))}

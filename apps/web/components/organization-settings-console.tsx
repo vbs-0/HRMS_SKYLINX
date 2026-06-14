@@ -180,8 +180,8 @@ export function OrganizationSettingsConsole() {
 
   return (
     <div className="grid gap-5">
-      {message && <div className="rounded-lg bg-[#e6f5ef] p-3 text-sm text-[#18865a] font-semibold">{message}</div>}
-      {error && <div className="rounded-lg bg-[#fde8e6] p-3 text-sm text-[#ba3d37] font-semibold">{error}</div>}
+      {message && <div className="rounded-lg bg-[var(--success-bg)] p-3 text-sm text-[var(--success-fg)] font-semibold">{message}</div>}
+      {error && <div className="rounded-lg bg-[var(--danger-bg)] p-3 text-sm text-[var(--danger-fg)] font-semibold">{error}</div>}
 
       {/* Sub-tab selection */}
       <div className="flex border-b border-slate-200">
@@ -204,7 +204,7 @@ export function OrganizationSettingsConsole() {
         ))}
       </div>
 
-      <Card className="p-5 border border-[#e8edf4]">
+      <Card className="p-5 border border-[var(--border-subtle)]">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             {activeTab === "Departments" && <Building2 className="h-5 w-5 text-brand" />}
@@ -406,7 +406,7 @@ export function OrganizationSettingsConsole() {
             <div className="text-center text-xs text-slate-400 py-8">Loading lists from database...</div>
           ) : (
             <table className="w-full text-xs text-left border-collapse">
-              <thead className="bg-[#f8fafc] uppercase text-slate-500 tracking-wider font-semibold">
+              <thead className="bg-[var(--surface-sunken)] uppercase text-slate-500 tracking-wider font-semibold">
                 {activeTab === "Departments" && (
                   <tr>
                     <th className="p-3 border-b border-slate-100">Code</th>

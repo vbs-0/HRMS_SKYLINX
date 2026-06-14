@@ -713,7 +713,7 @@ export function EmployeesConsole() {
               <div className="relative w-72">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
                 <input
-                  className="min-h-10 w-full rounded-lg border border-[#dce2eb] bg-[#f8fafc] pl-9 pr-3 text-sm outline-none transition focus:border-brand focus:bg-white"
+                  className="min-h-10 w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] pl-9 pr-3 text-sm outline-none transition focus:border-brand focus:bg-white"
                   placeholder="Search code, name, role..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -722,14 +722,14 @@ export function EmployeesConsole() {
             </div>
             <div className="overflow-auto">
               <table className="w-full min-w-[760px] border-collapse text-sm text-left">
-                <thead className="bg-[#f8fafc] text-xs uppercase text-slate-500 tracking-wider">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
                   <tr>
-                    <th className="border-b border-[#dce2eb] p-3">Code</th>
-                    <th className="border-b border-[#dce2eb] p-3">Name</th>
-                    <th className="border-b border-[#dce2eb] p-3">Role</th>
-                    <th className="border-b border-[#dce2eb] p-3">Department</th>
-                    <th className="border-b border-[#dce2eb] p-3">Location</th>
-                    <th className="border-b border-[#dce2eb] p-3">Status</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Code</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Name</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Role</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Department</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Location</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Status</th>
                   </tr>
                 </thead>
                 <EmployeesTable searchQuery={searchQuery} onSelectEmployee={(id) => setSelectedEmployeeId(id)} />
@@ -770,7 +770,7 @@ export function EmployeesConsole() {
               ) : selectedEmployee ? (
                 <div className="grid gap-6">
                   {/* Summary Ribbon */}
-                  <div className="flex items-center gap-4 rounded-xl border border-slate-100 bg-[#f8fafc] p-5">
+                  <div className="flex items-center gap-4 rounded-xl border border-slate-100 bg-[var(--surface-sunken)] p-5">
                     <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand/10 text-xl font-bold text-brand uppercase">
                       {selectedEmployee.firstName.substring(0, 1) + selectedEmployee.lastName.substring(0, 1)}
                     </div>
@@ -1473,16 +1473,16 @@ export function EmployeesConsole() {
       {activeTab === "Company Profile" && (
         <div className="grid gap-6">
           <section className="grid grid-cols-3 gap-5 max-xl:grid-cols-1">
-            <div className="rounded-xl border border-[#dce2eb] bg-white p-5 shadow-sm text-center">
+            <div className="rounded-xl border border-[var(--border-default)] bg-white p-5 shadow-sm text-center">
               <Building2 className="mx-auto h-8 w-8 text-brand mb-2" />
               <h3 className="text-lg font-bold text-slate-800">{companyProfile?.company?.name || "Company"}</h3>
               <p className="text-xs text-slate-400 uppercase font-semibold mt-1">{companyProfile?.company?.city ? `HQ - ${companyProfile.company.city}` : "HQ Corporate Office"}</p>
               <div className="mt-4 grid gap-2 text-left text-sm">
-                <div className="rounded-lg bg-[#f8fafc] p-3"><strong>Entity Code</strong><br />{companyProfile?.company?.taxId || "N/A"}</div>
-                <div className="rounded-lg bg-[#f8fafc] p-3"><strong>Subscription</strong><br />{companyProfile?.activePlan || "Standard"}</div>
+                <div className="rounded-lg bg-[var(--surface-sunken)] p-3"><strong>Entity Code</strong><br />{companyProfile?.company?.taxId || "N/A"}</div>
+                <div className="rounded-lg bg-[var(--surface-sunken)] p-3"><strong>Subscription</strong><br />{companyProfile?.activePlan || "Standard"}</div>
               </div>
             </div>
-            <div className="rounded-xl border border-[#dce2eb] bg-white p-5 shadow-sm space-y-4 col-span-2">
+            <div className="rounded-xl border border-[var(--border-default)] bg-white p-5 shadow-sm space-y-4 col-span-2">
               <h4 className="text-sm font-bold uppercase tracking-wider text-slate-700 border-b pb-2">Operational Headcount</h4>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
@@ -1546,13 +1546,13 @@ export function EmployeesConsole() {
             </div>
             <div className="overflow-auto">
               <table className="w-full min-w-[640px] border-collapse text-sm text-left">
-                <thead className="bg-[#f8fafc] text-xs uppercase text-slate-500 tracking-wider">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
                   <tr>
-                    <th className="border-b border-[#dce2eb] p-3">Employee</th>
-                    <th className="border-b border-[#dce2eb] p-3">Type</th>
-                    <th className="border-b border-[#dce2eb] p-3">Expiry Date</th>
-                    <th className="border-b border-[#dce2eb] p-3">File</th>
-                    <th className="border-b border-[#dce2eb] p-3">Status</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Employee</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Type</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Expiry Date</th>
+                    <th className="border-b border-[var(--border-default)] p-3">File</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Status</th>
                   </tr>
                 </thead>
                 <DocumentsTable />
@@ -1587,7 +1587,7 @@ export function EmployeesConsole() {
 
 function DocumentExpiryPanel({ expiries, loading }: { expiries: any[]; loading: boolean }) {
   return (
-    <Card className="p-5 border border-[#e8edf4] text-left">
+    <Card className="p-5 border border-[var(--border-subtle)] text-left">
       <div className="mb-4 border-b pb-2 flex justify-between items-center">
         <div>
           <h3 className="text-base font-bold text-slate-800">Upcoming Document Expiries</h3>
@@ -1596,7 +1596,7 @@ function DocumentExpiryPanel({ expiries, loading }: { expiries: any[]; loading: 
       </div>
       <div className="overflow-x-auto">
         <table className="w-full border-collapse text-xs text-slate-650">
-          <thead className="bg-[#f8fafc] text-[10px] uppercase font-bold text-slate-500 border-b">
+          <thead className="bg-[var(--surface-sunken)] text-[10px] uppercase font-bold text-slate-500 border-b">
             <tr>
               <th className="p-2.5 text-left">Employee</th>
               <th className="p-2.5 text-left">Document Type</th>
@@ -1758,11 +1758,11 @@ function LetterTemplatesPanel() {
 
   return (
     <div className="grid gap-6 text-left">
-      {message && <div className="rounded-lg bg-[#e6f5ef] p-3 text-sm text-[#18865a] font-semibold">{message}</div>}
-      {error && <div className="rounded-lg bg-[#fde8e6] p-3 text-sm text-[#ba3d37] font-semibold">{error}</div>}
+      {message && <div className="rounded-lg bg-[var(--success-bg)] p-3 text-sm text-[var(--success-fg)] font-semibold">{message}</div>}
+      {error && <div className="rounded-lg bg-[var(--danger-bg)] p-3 text-sm text-[var(--danger-fg)] font-semibold">{error}</div>}
 
       <div className="grid grid-cols-[1fr_2fr] gap-6 max-lg:grid-cols-1">
-        <Card className="p-5 border border-[#e8edf4]">
+        <Card className="p-5 border border-[var(--border-subtle)]">
           <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Create Document Template</h3>
           <form onSubmit={handleCreateTemplate} className="grid gap-4">
             <div>
@@ -1813,7 +1813,7 @@ function LetterTemplatesPanel() {
         </Card>
 
         <div className="grid gap-6">
-          <Card className="p-5 border border-[#e8edf4]">
+          <Card className="p-5 border border-[var(--border-subtle)]">
             <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Generate & Print Preview</h3>
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
@@ -1976,11 +1976,11 @@ function EmployeeLoansPanel() {
 
   return (
     <div className="grid gap-6 text-left">
-      {message && <div className="rounded-lg bg-[#e6f5ef] p-3 text-sm text-[#18865a] font-semibold">{message}</div>}
-      {error && <div className="rounded-lg bg-[#fde8e6] p-3 text-sm text-[#ba3d37] font-semibold">{error}</div>}
+      {message && <div className="rounded-lg bg-[var(--success-bg)] p-3 text-sm text-[var(--success-fg)] font-semibold">{message}</div>}
+      {error && <div className="rounded-lg bg-[var(--danger-bg)] p-3 text-sm text-[var(--danger-fg)] font-semibold">{error}</div>}
 
       <div className="grid grid-cols-[1fr_2fr] gap-6 max-lg:grid-cols-1">
-        <Card className="p-5 border border-[#e8edf4]">
+        <Card className="p-5 border border-[var(--border-subtle)]">
           <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Apply for Employee Loan</h3>
           <form onSubmit={handleSubmit} className="grid gap-4">
             <div>
@@ -2068,11 +2068,11 @@ function EmployeeLoansPanel() {
           </form>
         </Card>
 
-        <Card className="p-5 border border-[#e8edf4]">
+        <Card className="p-5 border border-[var(--border-subtle)]">
           <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Active Loans & Outstanding EMI</h3>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-xs text-slate-650">
-              <thead className="bg-[#f8fafc] text-[10px] uppercase font-bold text-slate-500 border-b">
+              <thead className="bg-[var(--surface-sunken)] text-[10px] uppercase font-bold text-slate-500 border-b">
                 <tr>
                   <th className="p-2.5">Employee</th>
                   <th className="p-2.5">Principal</th>
@@ -2309,10 +2309,10 @@ function CustomFieldsPanel() {
     <div className="grid grid-cols-[1fr_1.4fr] gap-6 max-lg:grid-cols-1">
       {/* Left: Definitions + Create */}
       <div className="space-y-4">
-        <Card className="p-5 border border-[#e8edf4]">
+        <Card className="p-5 border border-[var(--border-subtle)]">
           <h3 className="text-sm font-bold text-slate-800 mb-4 border-b pb-2">Create Custom Field</h3>
-          {message && <div className="mb-3 rounded bg-[#e6f5ef] p-2 text-xs text-green-700 font-semibold">{message}</div>}
-          {error && <div className="mb-3 rounded bg-[#fde8e6] p-2 text-xs text-red-700 font-semibold">{error}</div>}
+          {message && <div className="mb-3 rounded bg-[var(--success-bg)] p-2 text-xs text-green-700 font-semibold">{message}</div>}
+          {error && <div className="mb-3 rounded bg-[var(--danger-bg)] p-2 text-xs text-red-700 font-semibold">{error}</div>}
           <form onSubmit={handleCreateField} className="grid gap-3">
             <div className="grid grid-cols-2 gap-3">
               <div>
@@ -2384,7 +2384,7 @@ function CustomFieldsPanel() {
           </form>
         </Card>
 
-        <Card className="p-4 border border-[#e8edf4]">
+        <Card className="p-4 border border-[var(--border-subtle)]">
           <h4 className="text-xs font-bold text-slate-600 uppercase mb-3">All Field Definitions</h4>
           {loading ? (
             <p className="text-xs text-slate-400">Loading…</p>
@@ -2407,7 +2407,7 @@ function CustomFieldsPanel() {
       </div>
 
       {/* Right: Employee Value Editor */}
-      <Card className="p-5 border border-[#e8edf4]">
+      <Card className="p-5 border border-[var(--border-subtle)]">
         <h3 className="text-sm font-bold text-slate-800 mb-3 border-b pb-2">Employee Custom Field Values</h3>
         <div className="mb-4">
           <label className="block text-xs font-semibold text-slate-500 mb-1" htmlFor="cf-emp-select">

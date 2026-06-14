@@ -192,7 +192,7 @@ export function ApprovalsConsole() {
               <span className="text-slate-500 font-medium">Policy Type:</span>
               <span className="font-semibold text-slate-800">Rule-Backed sandwich verified</span>
             </div>
-            <div className="bg-[#f8fafc] p-3 rounded-lg border border-slate-100 mt-2">
+            <div className="bg-[var(--surface-sunken)] p-3 rounded-lg border border-slate-100 mt-2">
               <div className="text-xs text-slate-400 uppercase font-bold">Reason for request</div>
               <p className="text-xs text-slate-700 font-medium mt-1">"Personal family gathering. Travel tickets verified and backup resource allocated."</p>
             </div>
@@ -215,7 +215,7 @@ export function ApprovalsConsole() {
                 <FileText className="h-3.5 w-3.5" /> receipt_tax_invoice.png
               </span>
             </div>
-            <div className="bg-[#f8fafc] p-3 rounded-lg border border-slate-100 mt-2">
+            <div className="bg-[var(--surface-sunken)] p-3 rounded-lg border border-slate-100 mt-2">
               <div className="text-xs text-slate-400 uppercase font-bold">Description</div>
               <p className="text-xs text-slate-700 font-medium mt-1">"Client lunch with product engineering stakeholders regarding new project milestones."</p>
             </div>
@@ -236,7 +236,7 @@ export function ApprovalsConsole() {
               <span className="text-slate-500 font-medium">Regularized Shift:</span>
               <span className="font-semibold text-slate-800">General Shift (9:30 AM - 6:30 PM)</span>
             </div>
-            <div className="bg-[#f8fafc] p-3 rounded-lg border border-slate-100 mt-2">
+            <div className="bg-[var(--surface-sunken)] p-3 rounded-lg border border-slate-100 mt-2">
               <div className="text-xs text-slate-400 uppercase font-bold">Incident Details</div>
               <p className="text-xs text-slate-700 font-medium mt-1">Forgot to mark biometric scan when entering Bangalore premises due to security delay.</p>
             </div>
@@ -257,7 +257,7 @@ export function ApprovalsConsole() {
               <span className="text-slate-500 font-medium">Insured Coverage:</span>
               <span className="font-semibold text-slate-800">Company Group Medical Policy</span>
             </div>
-            <div className="bg-[#f8fafc] p-3 rounded-lg border border-slate-100 mt-2">
+            <div className="bg-[var(--surface-sunken)] p-3 rounded-lg border border-slate-100 mt-2">
               <div className="text-xs text-slate-400 uppercase font-bold">Medical Diagnosis / Comments</div>
               <p className="text-xs text-slate-700 font-medium mt-1">Dental implant treatment. Pre-auth files uploaded and verified by insurance provider.</p>
             </div>
@@ -274,7 +274,7 @@ export function ApprovalsConsole() {
               <span className="text-slate-500 font-medium">Processed Payouts:</span>
               <span className="font-semibold text-slate-800">5 Active Employees calculated</span>
             </div>
-            <div className="bg-[#f8fafc] p-3 rounded-lg border border-slate-100 mt-2">
+            <div className="bg-[var(--surface-sunken)] p-3 rounded-lg border border-slate-100 mt-2">
               <div className="text-xs text-slate-400 uppercase font-bold">Payroll Lock Status</div>
               <p className="text-xs text-slate-700 font-medium mt-1">Awaiting executive approval to lock components, freeze records, and compile the final direct-transfer bank export CSV lines.</p>
             </div>
@@ -360,7 +360,7 @@ export function ApprovalsConsole() {
               className={`rounded-xl border p-4 cursor-pointer transition-all min-w-[200px] ${
                 selectedModule === m.module
                   ? "border-brand bg-brand-50/15 shadow-sm ring-1 ring-brand"
-                  : "border-[#e8edf4] bg-white hover:bg-slate-50/70"
+                  : "border-[var(--border-subtle)] bg-white hover:bg-slate-50/70"
               }`}
               onClick={() => setSelectedModule(selectedModule === m.module ? null : m.module)}
             >

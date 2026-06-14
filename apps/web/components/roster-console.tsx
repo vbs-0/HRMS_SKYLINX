@@ -401,7 +401,7 @@ export function RosterConsole() {
             </h3>
             <div className="overflow-x-auto max-h-80">
               <table className="w-full min-w-[500px] border-collapse text-sm text-left">
-                <thead className="bg-[#f8fafc] text-xs uppercase text-slate-500 border-b">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 border-b">
                   <tr>
                     <th className="p-3">Employee</th>
                     <th className="p-3">Date</th>
@@ -441,7 +441,7 @@ export function RosterConsole() {
             </h3>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[600px] border-collapse text-sm text-left">
-                <thead className="bg-[#f8fafc] text-xs uppercase text-slate-500 border-b">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 border-b">
                   <tr>
                     <th className="p-3">Employee</th>
                     <th className="p-3">Requested Date</th>

@@ -46,7 +46,7 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4">
-      <div className="relative w-full max-w-lg rounded-xl border border-[#dce2eb] bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 text-left">
+      <div className="relative w-full max-w-lg rounded-xl border border-[var(--border-default)] bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 text-left">
         <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
           <h3 className="text-lg font-bold text-slate-900">{title}</h3>
           <button
@@ -362,7 +362,7 @@ export function AssetsConsole() {
 
       {/* Result Notification banner */}
       {message || error ? (
-        <div className={`rounded-lg p-3 text-sm ${error ? "bg-[#fde8e6] text-[#ba3d37]" : "bg-[#e6f5ef] text-[#18865a]"}`}>
+        <div className={`rounded-lg p-3 text-sm ${error ? "bg-[var(--danger-bg)] text-[var(--danger-fg)]" : "bg-[var(--success-bg)] text-[var(--success-fg)]"}`}>
           {error || message}
         </div>
       ) : null}
@@ -371,9 +371,9 @@ export function AssetsConsole() {
       <Modal isOpen={showAddPanel} onClose={() => setShowAddPanel(false)} title="Add New Company Asset">
         <form className="grid grid-cols-2 gap-4" onSubmit={handleAddAsset}>
           <div className="col-span-2">
-            <label className="mb-1 block text-xs font-bold text-[#49637f]">Asset Tag / Serial No.</label>
+            <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Asset Tag / Serial No.</label>
             <input
-              className="w-full min-h-10 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm text-[#172033] outline-none"
+              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none"
               placeholder="e.g. SKY-LAP-023"
               value={newAssetTag}
               onChange={(e) => setNewAssetTag(e.target.value)}
@@ -381,9 +381,9 @@ export function AssetsConsole() {
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-bold text-[#49637f]">Type</label>
+            <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Type</label>
             <select
-              className="w-full min-h-10 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm text-[#172033] outline-none"
+              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none"
               value={newAssetType}
               onChange={(e) => setNewAssetType(e.target.value)}
             >
@@ -394,9 +394,9 @@ export function AssetsConsole() {
             </select>
           </div>
           <div>
-            <label className="mb-1 block text-xs font-bold text-[#49637f]">Condition</label>
+            <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Condition</label>
             <select
-              className="w-full min-h-10 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm text-[#172033] outline-none"
+              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none"
               value={newAssetCondition}
               onChange={(e) => setNewAssetCondition(e.target.value)}
             >
@@ -406,9 +406,9 @@ export function AssetsConsole() {
             </select>
           </div>
           <div className="col-span-2">
-            <label className="mb-1 block text-xs font-bold text-[#49637f]">Item Name / Description</label>
+            <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Item Name / Description</label>
             <input
-              className="w-full min-h-10 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm text-[#172033] outline-none"
+              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none"
               placeholder="e.g. Dell Latitude 5420"
               value={newAssetItem}
               onChange={(e) => setNewAssetItem(e.target.value)}
@@ -416,9 +416,9 @@ export function AssetsConsole() {
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-bold text-[#49637f]">Initial Status</label>
+            <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Initial Status</label>
             <select
-              className="w-full min-h-10 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm text-[#172033] outline-none"
+              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none"
               value={newAssetStatus}
               onChange={(e) => setNewAssetStatus(e.target.value)}
             >
@@ -428,9 +428,9 @@ export function AssetsConsole() {
           </div>
           {newAssetStatus === "ASSIGNED" && (
             <div>
-              <label className="mb-1 block text-xs font-bold text-[#49637f]">Assign To Employee</label>
+              <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Assign To Employee</label>
               <select
-                className="w-full min-h-10 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm text-[#172033] outline-none"
+                className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none"
                 value={newAssetAssignedTo}
                 onChange={(e) => setNewAssetAssignedTo(e.target.value)}
                 required
@@ -445,7 +445,7 @@ export function AssetsConsole() {
           <div className="col-span-2 flex justify-end gap-2 border-t pt-3 mt-2">
             <button
               type="button"
-              className="min-h-10 rounded-lg border border-[#dce2eb] bg-white px-4 text-sm font-semibold text-[#34465f]"
+              className="min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-4 text-sm font-semibold text-[var(--text-secondary)]"
               onClick={() => setShowAddPanel(false)}
             >
               Cancel
@@ -463,9 +463,9 @@ export function AssetsConsole() {
       <Modal isOpen={showAssignPanel} onClose={() => setShowAssignPanel(false)} title="Assign Asset to Employee">
         <form className="grid gap-4" onSubmit={handleAssignAsset}>
           <div>
-            <label className="mb-1 block text-xs font-bold text-[#49637f]">Select Available Asset</label>
+            <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Select Available Asset</label>
             <select
-              className="w-full min-h-10 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm text-[#172033] outline-none"
+              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none"
               value={panelAssetTag}
               onChange={(e) => setPanelAssetTag(e.target.value)}
               required
@@ -477,9 +477,9 @@ export function AssetsConsole() {
             </select>
           </div>
           <div>
-            <label className="mb-1 block text-xs font-bold text-[#49637f]">Select Employee</label>
+            <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Select Employee</label>
             <select
-              className="w-full min-h-10 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm text-[#172033] outline-none"
+              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none"
               value={panelEmployeeId}
               onChange={(e) => setPanelEmployeeId(e.target.value)}
               required
@@ -493,7 +493,7 @@ export function AssetsConsole() {
           <div className="flex gap-2 justify-end border-t pt-3 mt-2">
             <button
               type="button"
-              className="min-h-10 rounded-lg border border-[#dce2eb] bg-white px-4 text-sm font-semibold text-[#34465f]"
+              className="min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-4 text-sm font-semibold text-[var(--text-secondary)]"
               onClick={() => setShowAssignPanel(false)}
             >
               Cancel
@@ -511,9 +511,9 @@ export function AssetsConsole() {
       <Modal isOpen={showReturnPanel} onClose={() => setShowReturnPanel(false)} title="Return Issued Asset">
         <form className="grid gap-4" onSubmit={handleReturnAsset}>
           <div>
-            <label className="mb-1 block text-xs font-bold text-[#49637f]">Select Assigned Asset</label>
+            <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Select Assigned Asset</label>
             <select
-              className="w-full min-h-10 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm text-[#172033] outline-none"
+              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none"
               value={panelAssetTag}
               onChange={(e) => setPanelAssetTag(e.target.value)}
               required
@@ -525,9 +525,9 @@ export function AssetsConsole() {
             </select>
           </div>
           <div>
-            <label className="mb-1 block text-xs font-bold text-[#49637f]">Return Condition</label>
+            <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Return Condition</label>
             <select
-              className="w-full min-h-10 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm text-[#172033] outline-none"
+              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none"
               value={returnCondition}
               onChange={(e) => setReturnCondition(e.target.value)}
               required
@@ -540,7 +540,7 @@ export function AssetsConsole() {
           <div className="flex gap-2 justify-end border-t pt-3 mt-2">
             <button
               type="button"
-              className="min-h-10 rounded-lg border border-[#dce2eb] bg-white px-4 text-sm font-semibold text-[#34465f]"
+              className="min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-4 text-sm font-semibold text-[var(--text-secondary)]"
               onClick={() => setShowReturnPanel(false)}
             >
               Cancel
@@ -562,9 +562,9 @@ export function AssetsConsole() {
           if (assignTargetAsset) handleAssignRow(assignTargetAsset, panelEmployeeId);
         }}>
           <div>
-            <label className="mb-1 block text-xs font-bold text-[#49637f]">Select Employee to Assign To</label>
+            <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Select Employee to Assign To</label>
             <select
-              className="w-full min-h-10 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm text-[#172033] outline-none"
+              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none"
               value={panelEmployeeId}
               onChange={(e) => setPanelEmployeeId(e.target.value)}
               required
@@ -578,7 +578,7 @@ export function AssetsConsole() {
           <div className="flex gap-2 justify-end border-t pt-3 mt-2">
             <button
               type="button"
-              className="min-h-10 rounded-lg border border-[#dce2eb] bg-white px-4 text-sm font-semibold text-[#34465f]"
+              className="min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-4 text-sm font-semibold text-[var(--text-secondary)]"
               onClick={() => { setAssignTargetAsset(null); setPanelEmployeeId(""); }}
             >
               Cancel
@@ -602,7 +602,7 @@ export function AssetsConsole() {
           <div className="flex justify-end gap-2 border-t pt-3 mt-2">
             <button
               type="button"
-              className="min-h-10 rounded-lg border border-[#dce2eb] bg-white px-4 text-sm font-semibold text-[#34465f]"
+              className="min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-4 text-sm font-semibold text-[var(--text-secondary)]"
               onClick={() => setDeleteTargetAsset(null)}
             >
               Cancel
@@ -635,10 +635,10 @@ export function AssetsConsole() {
               </div>
               <div className="grid grid-cols-4 gap-3 max-xl:grid-cols-2 max-md:grid-cols-1">
                 {data.categories.map((item) => (
-                  <div className="rounded-lg border border-[#dce2eb] p-4 bg-white shadow-xs" key={item.type}>
+                  <div className="rounded-lg border border-[var(--border-default)] p-4 bg-white shadow-xs" key={item.type}>
                     <BriefcaseBusiness className="mb-3 h-5 w-5 text-brand" />
                     <div className="font-semibold text-ink">{item.type}</div>
-                    <div className="mt-2 text-2xl font-semibold text-[#172033]">{item.count}</div>
+                    <div className="mt-2 text-2xl font-semibold text-[var(--text-primary)]">{item.count}</div>
                   </div>
                 ))}
               </div>
@@ -647,35 +647,35 @@ export function AssetsConsole() {
 
           {/* Filtered assets inventory table */}
           <Card>
-            <h2 className="mb-4 text-lg font-semibold text-[#172033]">
+            <h2 className="mb-4 text-lg font-semibold text-[var(--text-primary)]">
               {activeTab === "Inventory" ? "Asset Inventory" : activeTab === "Assigned" ? "Assigned Company Assets" : "Handover Queue (Exit & Poor Condition)"}
             </h2>
             <div className="overflow-auto">
               <table className="w-full min-w-[980px] border-collapse text-sm">
-                <thead className="bg-[#f8fafc] text-left text-xs uppercase text-muted">
+                <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase text-muted">
                   <tr>
-                    <th className="border-b border-[#dce2eb] p-3">Asset</th>
-                    <th className="border-b border-[#dce2eb] p-3">Type</th>
-                    <th className="border-b border-[#dce2eb] p-3">Assigned To</th>
-                    <th className="border-b border-[#dce2eb] p-3">Department</th>
-                    <th className="border-b border-[#dce2eb] p-3">Status</th>
-                    <th className="border-b border-[#dce2eb] p-3">Condition</th>
-                    <th className="border-b border-[#dce2eb] p-3">Actions</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Asset</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Type</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Assigned To</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Department</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Status</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Condition</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {filteredRows.map((row: AssetRow) => (
                     <tr key={row.id}>
-                      <td className="border-b border-[#dce2eb] p-3">
+                      <td className="border-b border-[var(--border-default)] p-3">
                         <div className="font-semibold text-ink">{row.assetTag}</div>
                         <div className="text-xs text-muted">{row.item}</div>
                       </td>
-                      <td className="border-b border-[#dce2eb] p-3 text-ink">{row.type}</td>
-                      <td className="border-b border-[#dce2eb] p-3 text-ink">{row.assignedTo}</td>
-                      <td className="border-b border-[#dce2eb] p-3 text-ink">{row.department}</td>
-                      <td className="border-b border-[#dce2eb] p-3"><StatusPill tone={toneFor(row.status)}>{row.status}</StatusPill></td>
-                      <td className="border-b border-[#dce2eb] p-3"><StatusPill tone={toneFor(row.condition)}>{row.condition}</StatusPill></td>
-                      <td className="border-b border-[#dce2eb] p-3">
+                      <td className="border-b border-[var(--border-default)] p-3 text-ink">{row.type}</td>
+                      <td className="border-b border-[var(--border-default)] p-3 text-ink">{row.assignedTo}</td>
+                      <td className="border-b border-[var(--border-default)] p-3 text-ink">{row.department}</td>
+                      <td className="border-b border-[var(--border-default)] p-3"><StatusPill tone={toneFor(row.status)}>{row.status}</StatusPill></td>
+                      <td className="border-b border-[var(--border-default)] p-3"><StatusPill tone={toneFor(row.condition)}>{row.condition}</StatusPill></td>
+                      <td className="border-b border-[var(--border-default)] p-3">
                         <div className="flex gap-2">
                           {row.status === "AVAILABLE" || row.status === "RETURNED" ? (
                             <button
@@ -689,7 +689,7 @@ export function AssetsConsole() {
                             </button>
                           ) : (
                              <button
-                               className="flex min-h-8 items-center gap-1 rounded-lg border border-[#dce2eb] px-3 text-xs font-semibold hover:bg-slate-50"
+                               className="flex min-h-8 items-center gap-1 rounded-lg border border-[var(--border-default)] px-3 text-xs font-semibold hover:bg-slate-50"
                                onClick={() => {
                                  setPanelAssetTag(row.assetTag);
                                  setReturnCondition(row.condition || "GOOD");
@@ -700,7 +700,7 @@ export function AssetsConsole() {
                              </button>
                           )}
                           <button
-                            className="flex h-8 w-8 items-center justify-center rounded-lg border border-[#fde8e6] text-[#ba3d37] hover:bg-[#fde8e6] transition-colors"
+                            className="flex h-8 w-8 items-center justify-center rounded-lg border border-[var(--danger-bg)] text-[var(--danger-fg)] hover:bg-[var(--danger-bg)] transition-colors"
                             onClick={() => setDeleteTargetAsset(row.assetTag)}
                             title="Delete Asset"
                           >
@@ -725,16 +725,16 @@ export function AssetsConsole() {
         <Card>
           <div className="mb-4 flex items-center justify-between gap-3">
             <div>
-              <h2 className="text-lg font-semibold text-[#172033]">Asset Movement Audit Logs</h2>
+              <h2 className="text-lg font-semibold text-[var(--text-primary)]">Asset Movement Audit Logs</h2>
               <p className="mt-1 text-sm text-muted">History of asset creations, assignments, and returns.</p>
             </div>
           </div>
           <div className="grid gap-2">
             {filteredLogs.map((log: AssetLog) => (
-              <div className="flex items-center justify-between rounded-lg border border-[#dce2eb] p-3 bg-[#f8fafc] text-sm" key={log.id}>
+              <div className="flex items-center justify-between rounded-lg border border-[var(--border-default)] p-3 bg-[var(--surface-sunken)] text-sm" key={log.id}>
                 <div className="flex items-center gap-3">
                   <span className={`inline-block px-2.5 py-0.5 rounded text-xs font-semibold ${
-                    log.action === "asset.create" ? "bg-[#e6f5ef] text-[#18865a]" : log.action === "asset.assign" ? "bg-blue-50 text-blue-600" : log.action === "asset.delete" ? "bg-red-50 text-red-600" : "bg-yellow-50 text-yellow-600"
+                    log.action === "asset.create" ? "bg-[var(--success-bg)] text-[var(--success-fg)]" : log.action === "asset.assign" ? "bg-blue-50 text-blue-600" : log.action === "asset.delete" ? "bg-red-50 text-red-600" : "bg-yellow-50 text-yellow-600"
                   }`}>
                     {log.action.replace("asset.", "").toUpperCase()}
                   </span>

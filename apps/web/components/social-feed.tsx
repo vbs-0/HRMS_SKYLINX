@@ -81,9 +81,9 @@ export function SocialFeed() {
 
   return (
     <div className="grid gap-4">
-      {message ? <div className="rounded-lg bg-[#e6f5ef] p-3 text-sm text-[#18865a]">{message}</div> : null}
+      {message ? <div className="rounded-lg bg-[var(--success-bg)] p-3 text-sm text-[var(--success-fg)]">{message}</div> : null}
       {posts.map((post) => (
-        <article className="rounded-lg border border-[#dce2eb] bg-white p-5 shadow-sm" key={post.id}>
+        <article className="rounded-lg border border-[var(--border-default)] bg-white p-5 shadow-sm" key={post.id}>
           <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
             <div>
               <div className="flex items-center gap-2">
@@ -96,22 +96,22 @@ export function SocialFeed() {
           </div>
           <p className="text-sm leading-6">{post.body}</p>
           <div className="mt-4 flex flex-wrap items-center gap-2">
-            <button className="flex min-h-9 items-center gap-2 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm font-semibold" onClick={() => like(post.id)}>
+            <button className="flex min-h-9 items-center gap-2 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm font-semibold" onClick={() => like(post.id)}>
               <Heart className="h-4 w-4" /> {post.likes}
             </button>
-            <div className="flex min-h-9 items-center gap-2 rounded-lg bg-[#f5f7fb] px-3 text-sm">
+            <div className="flex min-h-9 items-center gap-2 rounded-lg bg-[var(--surface-canvas)] px-3 text-sm">
               <MessageCircle className="h-4 w-4" /> {post.comments.length}
             </div>
           </div>
           {post.comments.length ? (
             <div className="mt-4 grid gap-2">
               {post.comments.map((item, index) => (
-                <div className="rounded-lg bg-[#f5f7fb] p-3 text-sm" key={`${post.id}-${index}`}>{item}</div>
+                <div className="rounded-lg bg-[var(--surface-canvas)] p-3 text-sm" key={`${post.id}-${index}`}>{item}</div>
               ))}
             </div>
           ) : null}
           <form className="mt-4 grid grid-cols-[1fr_auto] gap-2 max-md:grid-cols-1" onSubmit={(event) => comment(event, post.id)}>
-            <input className="min-h-10 rounded-lg border border-[#dce2eb] px-3 text-sm text-ink" name="body" placeholder="Write a comment" />
+            <input className="min-h-10 rounded-lg border border-[var(--border-default)] px-3 text-sm text-ink" name="body" placeholder="Write a comment" />
             <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white">Comment</button>
           </form>
         </article>

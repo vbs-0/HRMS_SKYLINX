@@ -257,7 +257,7 @@ export function HolidayConsole() {
       {showAddModal && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-xl border border-slate-200 shadow-xl w-full max-w-md overflow-hidden">
-            <div className="bg-[#1f2a44] text-white p-4 font-semibold text-sm flex justify-between items-center">
+            <div className="bg-[var(--text-primary)] text-white p-4 font-semibold text-sm flex justify-between items-center">
               <span>Create New Holiday</span>
               <button onClick={() => setShowAddModal(false)} className="text-white/60 hover:text-white text-lg font-bold">×</button>
             </div>
@@ -269,7 +269,7 @@ export function HolidayConsole() {
                   onChange={(e) => setFormName(e.target.value)}
                   placeholder="e.g. Independence Day"
                   required
-                  className="min-h-10 rounded-lg border border-slate-200 px-3 text-sm focus:border-[#0091ff] outline-none"
+                  className="min-h-10 rounded-lg border border-slate-200 px-3 text-sm focus:border-[var(--color-brand-600)] outline-none"
                 />
               </div>
 
@@ -280,7 +280,7 @@ export function HolidayConsole() {
                   value={formDate}
                   onChange={(e) => setFormDate(e.target.value)}
                   required
-                  className="min-h-10 rounded-lg border border-slate-200 px-3 text-sm focus:border-[#0091ff] outline-none"
+                  className="min-h-10 rounded-lg border border-slate-200 px-3 text-sm focus:border-[var(--color-brand-600)] outline-none"
                 />
               </div>
 
@@ -289,7 +289,7 @@ export function HolidayConsole() {
                 <select
                   value={formType}
                   onChange={(e) => setFormType(e.target.value)}
-                  className="min-h-10 rounded-lg border border-slate-200 px-3 text-sm focus:border-[#0091ff] outline-none"
+                  className="min-h-10 rounded-lg border border-slate-200 px-3 text-sm focus:border-[var(--color-brand-600)] outline-none"
                 >
                   <option value="MANDATORY">Mandatory</option>
                   <option value="OPTIONAL">Optional</option>
@@ -302,7 +302,7 @@ export function HolidayConsole() {
                 <select
                   value={formLocationId}
                   onChange={(e) => setFormLocationId(e.target.value)}
-                  className="min-h-10 rounded-lg border border-slate-200 px-3 text-sm focus:border-[#0091ff] outline-none"
+                  className="min-h-10 rounded-lg border border-slate-200 px-3 text-sm focus:border-[var(--color-brand-600)] outline-none"
                 >
                   <option value="">All Locations</option>
                   {locations.map((loc) => (
@@ -322,7 +322,7 @@ export function HolidayConsole() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="min-h-10 rounded-lg bg-[#0091ff] text-white px-4 text-xs font-semibold hover:bg-[#007cdb]"
+                  className="min-h-10 rounded-lg bg-[var(--color-brand-600)] text-white px-4 text-xs font-semibold hover:bg-[var(--color-brand-600)]"
                 >
                   {submitting ? "Saving..." : "Create Holiday"}
                 </button>
@@ -337,7 +337,7 @@ export function HolidayConsole() {
         <Card>
           <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
             <div>
-              <h2 className="text-base font-semibold text-[#172033]">Monthly Calendar Grid</h2>
+              <h2 className="text-base font-semibold text-[var(--text-primary)]">Monthly Calendar Grid</h2>
               <p className="text-xs text-muted">Mandatory, optional and regional holidays marked directly in the monthly view.</p>
             </div>
             <div className="flex items-center gap-2">
@@ -360,9 +360,9 @@ export function HolidayConsole() {
           </div>
 
           {/* Calendar grid */}
-          <div className="grid grid-cols-7 gap-2 text-center text-xs font-semibold mb-2 text-[#49637f]">
+          <div className="grid grid-cols-7 gap-2 text-center text-xs font-semibold mb-2 text-[var(--text-secondary)]">
             {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((d) => (
-              <div key={d} className="rounded-lg bg-[#eef3f8] p-2">{d}</div>
+              <div key={d} className="rounded-lg bg-[var(--surface-sunken)] p-2">{d}</div>
             ))}
           </div>
 
@@ -378,10 +378,10 @@ export function HolidayConsole() {
                   key={`${cell.dateString}-${idx}`}
                   className={`min-h-[96px] rounded-lg border p-2 flex flex-col justify-between text-left transition-all ${
                     !cell.isCurrentMonth
-                      ? "border-[#f1f5f9] bg-[#f8fafc]/50 text-slate-350"
+                      ? "border-[var(--surface-sunken)] bg-[var(--surface-sunken)]/50 text-slate-350"
                       : dayHolidays.length
                       ? "border-blue-200 bg-blue-50/20 text-slate-800"
-                      : "border-[#e8edf4] bg-white hover:bg-slate-50/50 text-slate-700"
+                      : "border-[var(--border-subtle)] bg-white hover:bg-slate-50/50 text-slate-700"
                   }`}
                 >
                   <span className={`text-[11px] font-bold ${!cell.isCurrentMonth ? "text-slate-300" : ""}`}>
@@ -415,7 +415,7 @@ export function HolidayConsole() {
         /* List tables view for Mandatory, Optional, Regional */
         <Card>
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-base font-semibold text-[#172033]">
+            <h2 className="text-base font-semibold text-[var(--text-primary)]">
               {activeTab} Holiday Directory
             </h2>
             <span className="text-xs text-muted">{filteredListHolidays.length} Holidays configured</span>
@@ -423,14 +423,14 @@ export function HolidayConsole() {
 
           <div className="overflow-auto">
             <table className="w-full min-w-[760px] border-collapse text-sm text-left text-slate-600">
-              <thead className="bg-[#f8fafc] text-xs uppercase text-slate-500 font-bold">
+              <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 font-bold">
                 <tr>
-                  <th className="border-b border-[#dce2eb] p-3">Holiday Name</th>
-                  <th className="border-b border-[#dce2eb] p-3">Date</th>
-                  <th className="border-b border-[#dce2eb] p-3">Type</th>
-                  <th className="border-b border-[#dce2eb] p-3">Location</th>
-                  <th className="border-b border-[#dce2eb] p-3">Status</th>
-                  <th className="border-b border-[#dce2eb] p-3 text-right">Actions</th>
+                  <th className="border-b border-[var(--border-default)] p-3">Holiday Name</th>
+                  <th className="border-b border-[var(--border-default)] p-3">Date</th>
+                  <th className="border-b border-[var(--border-default)] p-3">Type</th>
+                  <th className="border-b border-[var(--border-default)] p-3">Location</th>
+                  <th className="border-b border-[var(--border-default)] p-3">Status</th>
+                  <th className="border-b border-[var(--border-default)] p-3 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -446,9 +446,9 @@ export function HolidayConsole() {
                 )}
                 {filteredListHolidays.map((h) => (
                   <tr key={h.id} className="hover:bg-slate-50/50">
-                    <td className="border-b border-[#dce2eb] p-3 font-semibold text-slate-800">{h.name}</td>
-                    <td className="border-b border-[#dce2eb] p-3">{h.date.slice(0, 10)}</td>
-                    <td className="border-b border-[#dce2eb] p-3">
+                    <td className="border-b border-[var(--border-default)] p-3 font-semibold text-slate-800">{h.name}</td>
+                    <td className="border-b border-[var(--border-default)] p-3">{h.date.slice(0, 10)}</td>
+                    <td className="border-b border-[var(--border-default)] p-3">
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                         h.type === "MANDATORY"
                           ? "bg-rose-100 text-rose-800"
@@ -459,17 +459,17 @@ export function HolidayConsole() {
                         {h.type}
                       </span>
                     </td>
-                    <td className="border-b border-[#dce2eb] p-3">{h.location?.name || "All Locations"}</td>
-                    <td className="border-b border-[#dce2eb] p-3">
+                    <td className="border-b border-[var(--border-default)] p-3">{h.location?.name || "All Locations"}</td>
+                    <td className="border-b border-[var(--border-default)] p-3">
                       <StatusPill tone={h.status === "ACTIVE" ? "green" : "red"}>{h.status}</StatusPill>
                     </td>
-                    <td className="border-b border-[#dce2eb] p-3 text-right">
+                    <td className="border-b border-[var(--border-default)] p-3 text-right">
                       <button
                         onClick={() => handleToggleStatus(h.id, h.status)}
                         className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-lg border transition ${
                           h.status === "ACTIVE"
                             ? "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
-                            : "bg-[#0091ff] text-white border-transparent hover:bg-[#007cdb]"
+                            : "bg-[var(--color-brand-600)] text-white border-transparent hover:bg-[var(--color-brand-600)]"
                         }`}
                       >
                         {h.status === "ACTIVE" ? "Disable" : "Enable"}
@@ -487,10 +487,10 @@ export function HolidayConsole() {
       {showLocationAlert && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
           <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-2xl">
-            <h3 className="mb-2 text-lg font-bold text-[#172033]">Location Settings</h3>
-            <p className="text-sm text-[#49637f] mb-6">Location configurations and holiday mapping are managed via the central organization settings module.</p>
+            <h3 className="mb-2 text-lg font-bold text-[var(--text-primary)]">Location Settings</h3>
+            <p className="text-sm text-[var(--text-secondary)] mb-6">Location configurations and holiday mapping are managed via the central organization settings module.</p>
             <div className="flex justify-end">
-              <button onClick={() => setShowLocationAlert(false)} className="rounded-lg bg-[#0091ff] px-4 py-2 text-sm font-semibold text-white hover:bg-[#007cdb]">Got it</button>
+              <button onClick={() => setShowLocationAlert(false)} className="rounded-lg bg-[var(--color-brand-600)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--color-brand-600)]">Got it</button>
             </div>
           </div>
         </div>
@@ -500,10 +500,10 @@ export function HolidayConsole() {
       {showRulesAlert && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
           <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-2xl">
-            <h3 className="mb-2 text-lg font-bold text-[#172033]">Holiday Rules</h3>
-            <p className="text-sm text-[#49637f] mb-6">Holiday policies and compensation rules are linked directly to the attendance and payroll calculation engines.</p>
+            <h3 className="mb-2 text-lg font-bold text-[var(--text-primary)]">Holiday Rules</h3>
+            <p className="text-sm text-[var(--text-secondary)] mb-6">Holiday policies and compensation rules are linked directly to the attendance and payroll calculation engines.</p>
             <div className="flex justify-end">
-              <button onClick={() => setShowRulesAlert(false)} className="rounded-lg bg-[#0091ff] px-4 py-2 text-sm font-semibold text-white hover:bg-[#007cdb]">Got it</button>
+              <button onClick={() => setShowRulesAlert(false)} className="rounded-lg bg-[var(--color-brand-600)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--color-brand-600)]">Got it</button>
             </div>
           </div>
         </div>

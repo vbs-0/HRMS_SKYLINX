@@ -424,13 +424,13 @@ export function PerformanceConsole() {
             </div>
             <div className="grid grid-cols-4 gap-3 max-xl:grid-cols-2 max-md:grid-cols-1">
               {data.categories.map((item) => (
-                <div className="rounded-lg border border-[#dce2eb] p-4" key={item.name}>
+                <div className="rounded-lg border border-[var(--border-default)] p-4" key={item.name}>
                   <div className="mb-3 flex items-center justify-between">
                     <Target className="h-5 w-5 text-brand" />
                     <StatusPill tone={item.completed === item.total ? "green" : "yellow"}>{item.completed}/{item.total}</StatusPill>
                   </div>
                   <div className="font-semibold">{item.name}</div>
-                  <div className="mt-2 h-2 rounded-full bg-[#e8eef5]">
+                  <div className="mt-2 h-2 rounded-full bg-[var(--border-subtle)]">
                     <div className="h-2 rounded-full bg-brand" style={{ width: `${progress(item.completed, item.total)}%` }} />
                   </div>
                 </div>
@@ -442,29 +442,29 @@ export function PerformanceConsole() {
             <h2 className="mb-4 text-lg font-semibold">Performance Summary Matrix</h2>
             <div className="overflow-auto">
               <table className="w-full min-w-[1020px] border-collapse text-sm">
-                <thead className="bg-[#f8fafc] text-left text-xs uppercase text-muted">
+                <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase text-muted">
                   <tr>
-                    <th className="border-b border-[#dce2eb] p-3">Employee</th>
-                    <th className="border-b border-[#dce2eb] p-3">Department</th>
-                    <th className="border-b border-[#dce2eb] p-3">Designation</th>
-                    <th className="border-b border-[#dce2eb] p-3">Goals</th>
-                    <th className="border-b border-[#dce2eb] p-3">Attendance</th>
-                    <th className="border-b border-[#dce2eb] p-3">Recognition</th>
-                    <th className="border-b border-[#dce2eb] p-3">Score</th>
-                    <th className="border-b border-[#dce2eb] p-3">Rating</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Employee</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Department</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Designation</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Goals</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Attendance</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Recognition</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Score</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Rating</th>
                   </tr>
                 </thead>
                 <tbody>
                   {data.rows.map((row: PerformanceRow) => (
                     <tr key={row.employeeId}>
-                      <td className="border-b border-[#dce2eb] p-3 font-semibold"><Award className="mr-2 inline h-4 w-4 text-brand" />{row.employee}</td>
-                      <td className="border-b border-[#dce2eb] p-3">{row.department}</td>
-                      <td className="border-b border-[#dce2eb] p-3">{row.designation}</td>
-                      <td className="border-b border-[#dce2eb] p-3">{row.completedGoals}/{row.goals}</td>
-                      <td className="border-b border-[#dce2eb] p-3">{row.attendanceScore}%</td>
-                      <td className="border-b border-[#dce2eb] p-3">{row.recognitionPoints} pts</td>
-                      <td className="border-b border-[#dce2eb] p-3"><TrendingUp className="mr-2 inline h-4 w-4 text-brand" />{row.performanceScore}%</td>
-                      <td className="border-b border-[#dce2eb] p-3"><StatusPill tone={toneFor(row.rating)}>{row.rating}</StatusPill></td>
+                      <td className="border-b border-[var(--border-default)] p-3 font-semibold"><Award className="mr-2 inline h-4 w-4 text-brand" />{row.employee}</td>
+                      <td className="border-b border-[var(--border-default)] p-3">{row.department}</td>
+                      <td className="border-b border-[var(--border-default)] p-3">{row.designation}</td>
+                      <td className="border-b border-[var(--border-default)] p-3">{row.completedGoals}/{row.goals}</td>
+                      <td className="border-b border-[var(--border-default)] p-3">{row.attendanceScore}%</td>
+                      <td className="border-b border-[var(--border-default)] p-3">{row.recognitionPoints} pts</td>
+                      <td className="border-b border-[var(--border-default)] p-3"><TrendingUp className="mr-2 inline h-4 w-4 text-brand" />{row.performanceScore}%</td>
+                      <td className="border-b border-[var(--border-default)] p-3"><StatusPill tone={toneFor(row.rating)}>{row.rating}</StatusPill></td>
                     </tr>
                   ))}
                 </tbody>
@@ -490,13 +490,13 @@ export function PerformanceConsole() {
           <Card>
             <div className="overflow-auto">
               <table className="w-full min-w-[800px] border-collapse text-sm text-left">
-                <thead className="bg-[#f8fafc] text-xs uppercase text-slate-500 tracking-wider">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
                   <tr>
-                    <th className="border-b border-[#dce2eb] p-3">Cycle Name</th>
-                    <th className="border-b border-[#dce2eb] p-3">Start Date</th>
-                    <th className="border-b border-[#dce2eb] p-3">End Date</th>
-                    <th className="border-b border-[#dce2eb] p-3">Status</th>
-                    <th className="border-b border-[#dce2eb] p-3 text-right">Actions</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Cycle Name</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Start Date</th>
+                    <th className="border-b border-[var(--border-default)] p-3">End Date</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Status</th>
+                    <th className="border-b border-[var(--border-default)] p-3 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -509,15 +509,15 @@ export function PerformanceConsole() {
                   ) : (
                     cycles.map((cy) => (
                       <tr key={cy.id} className="hover:bg-slate-50 transition">
-                        <td className="border-b border-[#eef2f6] p-3 font-semibold text-slate-800">{cy.name}</td>
-                        <td className="border-b border-[#eef2f6] p-3 text-slate-600">{new Date(cy.startDate).toLocaleDateString("en-IN")}</td>
-                        <td className="border-b border-[#eef2f6] p-3 text-slate-600">{new Date(cy.endDate).toLocaleDateString("en-IN")}</td>
-                        <td className="border-b border-[#eef2f6] p-3">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-slate-800">{cy.name}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-600">{new Date(cy.startDate).toLocaleDateString("en-IN")}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-600">{new Date(cy.endDate).toLocaleDateString("en-IN")}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3">
                           <StatusPill tone={cy.status === "ACTIVE" ? "green" : cy.status === "COMPLETED" ? "blue" : "yellow"}>
                             {cy.status}
                           </StatusPill>
                         </td>
-                        <td className="border-b border-[#eef2f6] p-3 text-right space-x-2">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-right space-x-2">
                           {cy.status === "DRAFT" && (
                             <button
                               className="rounded bg-emerald-600 text-white font-semibold text-xs px-2.5 py-1.5 hover:bg-emerald-700"
@@ -683,13 +683,13 @@ export function PerformanceConsole() {
             <Card>
               <div className="overflow-auto">
                 <table className="w-full min-w-[700px] border-collapse text-sm text-left">
-                  <thead className="bg-[#f8fafc] text-xs uppercase text-slate-500 tracking-wider">
+                  <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
                     <tr>
-                      <th className="border-b border-[#dce2eb] p-3">Cycle Name</th>
-                      <th className="border-b border-[#dce2eb] p-3">Template Name</th>
-                      <th className="border-b border-[#dce2eb] p-3">Self Score</th>
-                      <th className="border-b border-[#dce2eb] p-3">Status</th>
-                      <th className="border-b border-[#dce2eb] p-3 text-right">Actions</th>
+                      <th className="border-b border-[var(--border-default)] p-3">Cycle Name</th>
+                      <th className="border-b border-[var(--border-default)] p-3">Template Name</th>
+                      <th className="border-b border-[var(--border-default)] p-3">Self Score</th>
+                      <th className="border-b border-[var(--border-default)] p-3">Status</th>
+                      <th className="border-b border-[var(--border-default)] p-3 text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -702,17 +702,17 @@ export function PerformanceConsole() {
                     ) : (
                       myAppraisals.map((app) => (
                         <tr key={app.id} className="hover:bg-slate-50 transition">
-                          <td className="border-b border-[#eef2f6] p-3 font-semibold text-slate-800">{app.cycle?.name}</td>
-                          <td className="border-b border-[#eef2f6] p-3 text-slate-600">{app.template?.name}</td>
-                          <td className="border-b border-[#eef2f6] p-3 font-semibold text-slate-600">
+                          <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-slate-800">{app.cycle?.name}</td>
+                          <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-600">{app.template?.name}</td>
+                          <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-slate-600">
                             {app.selfScore ? Number(app.selfScore).toFixed(2) : "-"}
                           </td>
-                          <td className="border-b border-[#eef2f6] p-3">
+                          <td className="border-b border-[var(--surface-sunken)] p-3">
                             <StatusPill tone={app.status === "COMPLETED" ? "green" : app.status === "MANAGER_DONE" ? "blue" : app.status === "SELF_DONE" ? "indigo" : "yellow"}>
                               {app.status}
                             </StatusPill>
                           </td>
-                          <td className="border-b border-[#eef2f6] p-3 text-right">
+                          <td className="border-b border-[var(--surface-sunken)] p-3 text-right">
                             {app.status === "PENDING" ? (
                               <button
                                 className="rounded bg-brand text-white font-semibold text-xs px-2.5 py-1.5 hover:bg-brand-dark transition"
@@ -863,14 +863,14 @@ export function PerformanceConsole() {
             <Card>
               <div className="overflow-auto">
                 <table className="w-full min-w-[800px] border-collapse text-sm text-left">
-                  <thead className="bg-[#f8fafc] text-xs uppercase text-slate-500 tracking-wider">
+                  <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
                     <tr>
-                      <th className="border-b border-[#dce2eb] p-3">Employee</th>
-                      <th className="border-b border-[#dce2eb] p-3">Cycle</th>
-                      <th className="border-b border-[#dce2eb] p-3">Self Score</th>
-                      <th className="border-b border-[#dce2eb] p-3">Manager Score</th>
-                      <th className="border-b border-[#dce2eb] p-3">Status</th>
-                      <th className="border-b border-[#dce2eb] p-3 text-right">Actions</th>
+                      <th className="border-b border-[var(--border-default)] p-3">Employee</th>
+                      <th className="border-b border-[var(--border-default)] p-3">Cycle</th>
+                      <th className="border-b border-[var(--border-default)] p-3">Self Score</th>
+                      <th className="border-b border-[var(--border-default)] p-3">Manager Score</th>
+                      <th className="border-b border-[var(--border-default)] p-3">Status</th>
+                      <th className="border-b border-[var(--border-default)] p-3 text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -883,22 +883,22 @@ export function PerformanceConsole() {
                     ) : (
                       teamAppraisals.map((app) => (
                         <tr key={app.id} className="hover:bg-slate-50 transition">
-                          <td className="border-b border-[#eef2f6] p-3 font-semibold text-slate-800">
+                          <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-slate-800">
                             {app.employee?.firstName} {app.employee?.lastName} ({app.employee?.employeeCode})
                           </td>
-                          <td className="border-b border-[#eef2f6] p-3 text-slate-600">{app.cycle?.name}</td>
-                          <td className="border-b border-[#eef2f6] p-3 text-slate-600 font-semibold">
+                          <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-600">{app.cycle?.name}</td>
+                          <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-600 font-semibold">
                             {app.selfScore ? Number(app.selfScore).toFixed(2) : "-"}
                           </td>
-                          <td className="border-b border-[#eef2f6] p-3 text-slate-600 font-semibold">
+                          <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-600 font-semibold">
                             {app.managerScore ? Number(app.managerScore).toFixed(2) : "-"}
                           </td>
-                          <td className="border-b border-[#eef2f6] p-3">
+                          <td className="border-b border-[var(--surface-sunken)] p-3">
                             <StatusPill tone={app.status === "COMPLETED" ? "green" : app.status === "MANAGER_DONE" ? "blue" : app.status === "SELF_DONE" ? "indigo" : "yellow"}>
                               {app.status}
                             </StatusPill>
                           </td>
-                          <td className="border-b border-[#eef2f6] p-3 text-right">
+                          <td className="border-b border-[var(--surface-sunken)] p-3 text-right">
                             {app.status === "SELF_DONE" && (
                               <button
                                 className="rounded bg-brand text-white font-semibold text-xs px-2.5 py-1.5 hover:bg-brand-dark transition"
@@ -941,14 +941,14 @@ export function PerformanceConsole() {
           <Card>
             <div className="overflow-auto">
               <table className="w-full min-w-[800px] border-collapse text-sm text-left">
-                <thead className="bg-[#f8fafc] text-xs uppercase text-slate-500 tracking-wider">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
                   <tr>
-                    <th className="border-b border-[#dce2eb] p-3">Employee</th>
-                    <th className="border-b border-[#dce2eb] p-3">Cycle Name</th>
-                    <th className="border-b border-[#dce2eb] p-3">Self Score</th>
-                    <th className="border-b border-[#dce2eb] p-3">Manager Score</th>
-                    <th className="border-b border-[#dce2eb] p-3">Final Score</th>
-                    <th className="border-b border-[#dce2eb] p-3">Status</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Employee</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Cycle Name</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Self Score</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Manager Score</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Final Score</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Status</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -961,20 +961,20 @@ export function PerformanceConsole() {
                   ) : (
                     appraisals.map((app) => (
                       <tr key={app.id} className="hover:bg-slate-50 transition">
-                        <td className="border-b border-[#eef2f6] p-3 font-semibold text-slate-800">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-slate-800">
                           {app.employee?.firstName} {app.employee?.lastName} ({app.employee?.employeeCode})
                         </td>
-                        <td className="border-b border-[#eef2f6] p-3 text-slate-600">{app.cycle?.name}</td>
-                        <td className="border-b border-[#eef2f6] p-3 text-slate-600 font-semibold">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-600">{app.cycle?.name}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-600 font-semibold">
                           {app.selfScore ? Number(app.selfScore).toFixed(2) : "-"}
                         </td>
-                        <td className="border-b border-[#eef2f6] p-3 text-slate-600 font-semibold">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-600 font-semibold">
                           {app.managerScore ? Number(app.managerScore).toFixed(2) : "-"}
                         </td>
-                        <td className="border-b border-[#eef2f6] p-3 text-brand font-bold">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-brand font-bold">
                           {app.finalScore ? Number(app.finalScore).toFixed(2) : "-"}
                         </td>
-                        <td className="border-b border-[#eef2f6] p-3">
+                        <td className="border-b border-[var(--surface-sunken)] p-3">
                           <StatusPill tone={app.status === "COMPLETED" ? "green" : app.status === "MANAGER_DONE" ? "blue" : app.status === "SELF_DONE" ? "indigo" : "yellow"}>
                             {app.status}
                           </StatusPill>
@@ -1008,13 +1008,13 @@ export function PerformanceConsole() {
           <Card>
             <div className="overflow-auto">
               <table className="w-full min-w-[700px] border-collapse text-sm text-left">
-                <thead className="bg-[#f8fafc] text-xs uppercase text-slate-500 tracking-wider">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
                   <tr>
-                    <th className="border-b border-[#dce2eb] p-3">Review Target</th>
-                    <th className="border-b border-[#dce2eb] p-3">Reviewer Assigned</th>
-                    <th className="border-b border-[#dce2eb] p-3">Focus Competencies</th>
-                    <th className="border-b border-[#dce2eb] p-3">Status</th>
-                    <th className="border-b border-[#dce2eb] p-3 text-right">Actions</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Review Target</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Reviewer Assigned</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Focus Competencies</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Status</th>
+                    <th className="border-b border-[var(--border-default)] p-3 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1027,21 +1027,21 @@ export function PerformanceConsole() {
                   ) : (
                     feedbackRequests.map((req) => (
                       <tr key={req.id} className="hover:bg-slate-50 transition">
-                        <td className="border-b border-[#eef2f6] p-3 font-semibold text-slate-800">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-slate-800">
                           {req.requestor?.firstName} {req.requestor?.lastName}
                         </td>
-                        <td className="border-b border-[#eef2f6] p-3 text-slate-600 font-semibold">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-600 font-semibold">
                           {req.provider?.firstName} {req.provider?.lastName}
                         </td>
-                        <td className="border-b border-[#eef2f6] p-3 text-xs text-slate-500 font-semibold">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-xs text-slate-500 font-semibold">
                           {Array.isArray(req.questions) ? req.questions.join(", ") : String(req.questions)}
                         </td>
-                        <td className="border-b border-[#eef2f6] p-3">
+                        <td className="border-b border-[var(--surface-sunken)] p-3">
                           <StatusPill tone={req.status === "SUBMITTED" ? "green" : "yellow"}>
                             {req.status}
                           </StatusPill>
                         </td>
-                        <td className="border-b border-[#eef2f6] p-3 text-right">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-right">
                           {req.status === "PENDING" && currentUser?.employeeId === req.providerId && (
                             <button
                               className="rounded bg-brand text-white font-semibold text-xs px-2.5 py-1.5 hover:bg-brand-dark transition"

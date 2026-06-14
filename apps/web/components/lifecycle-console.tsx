@@ -1009,7 +1009,7 @@ export function LifecycleConsole() {
           {/* Right: Generated F&F Statement View */}
           <div>
             {statement ? (
-              <Card className="border border-[#e8edf4]">
+              <Card className="border border-[var(--border-subtle)]">
                 <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-700 border-b pb-3 flex items-center justify-between">
                   <span>Generated Full & Final Statement</span>
                   <span className="rounded bg-emerald-50 px-2 py-1 text-xs font-bold text-emerald-800 uppercase tracking-wide">

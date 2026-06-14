@@ -13,14 +13,14 @@ export async function PlanGate({ children, moduleName, requiredPlan }: { childre
 
   return (
     <Card className="mx-auto max-w-3xl text-center">
-      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#fde8e6] text-[#ba3d37]">
+      <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[var(--danger-bg)] text-[var(--danger-fg)]">
         <LockKeyhole className="h-7 w-7" />
       </div>
       <div className="mt-5 flex justify-center gap-2">
         <StatusPill tone="yellow">{activePlan} Active</StatusPill>
         <StatusPill tone="red">{requiredPlan} Required</StatusPill>
       </div>
-      <h2 className="mt-5 text-2xl font-semibold text-[#172033]">{moduleName} is locked</h2>
+      <h2 className="mt-5 text-2xl font-semibold text-[var(--text-primary)]">{moduleName} is locked</h2>
       <p className="mx-auto mt-2 max-w-xl text-sm text-muted">
         This module is part of the {requiredPlan} plan. Upgrade your PeopleOS subscription to unlock the full workflow.
       </p>
@@ -28,7 +28,7 @@ export async function PlanGate({ children, moduleName, requiredPlan }: { childre
         <Link className="inline-flex min-h-10 items-center rounded-lg bg-brand px-5 text-sm font-semibold text-white" href="/saas">
           View Plans
         </Link>
-        <Link className="inline-flex min-h-10 items-center rounded-lg border border-[#dce2eb] bg-white px-5 text-sm font-semibold text-[#172033]" href="/dashboard">
+        <Link className="inline-flex min-h-10 items-center rounded-lg border border-[var(--border-default)] bg-white px-5 text-sm font-semibold text-[var(--text-primary)]" href="/dashboard">
           Back to Dashboard
         </Link>
       </div>

@@ -26,7 +26,7 @@ export default async function DashboardPage() {
         {/* Left column */}
         <div className="grid content-start gap-5">
           <Card className="text-center">
-            <div className="mx-auto flex h-32 w-32 items-center justify-center overflow-hidden rounded-full border-2 border-brand bg-[#dff7ff] text-4xl font-bold text-brand select-none">
+            <div className="mx-auto flex h-32 w-32 items-center justify-center overflow-hidden rounded-full border-2 border-brand bg-[var(--color-brand-50)] text-4xl font-bold text-brand select-none">
               {companyProfile.name ? companyProfile.name.slice(0, 2).toUpperCase() : "SL"}
             </div>
             <h2 className="mt-4 text-xl font-semibold">{companyProfile.name}</h2>
@@ -39,7 +39,7 @@ export default async function DashboardPage() {
                 item.href ? (
                   <a className="flex h-8 w-8 items-center justify-center rounded-full bg-brand text-xs font-bold text-white" href={item.href} key={item.label} rel="noreferrer" target="_blank">{item.label}</a>
                 ) : (
-                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#aab8ca] text-xs font-bold text-white" key={item.label}>{item.label}</span>
+                  <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--text-muted)] text-xs font-bold text-white" key={item.label}>{item.label}</span>
                 ),
               )}
             </div>
@@ -50,8 +50,8 @@ export default async function DashboardPage() {
             <div className="mt-5 text-sm font-semibold">Leave approvals, payroll review and attendance regularization are ready for HR action.</div>
           </div>
 
-          <div className="overflow-hidden rounded-lg border border-[#38a7f4] bg-white shadow-sm">
-            <div className="bg-[#38a7f4] p-2 text-center font-bold text-white">HR Desk</div>
+          <div className="overflow-hidden rounded-lg border border-[var(--color-brand-600)] bg-white shadow-sm">
+            <div className="bg-[var(--color-brand-600)] p-2 text-center font-bold text-white">HR Desk</div>
             <div className="grid gap-1 p-4 text-xs">
               <div><strong>Company</strong> {companyProfile.legalName}</div>
               <div><strong>HR Owner</strong> HR</div>
@@ -72,16 +72,16 @@ export default async function DashboardPage() {
 
           <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="text-lg font-semibold text-[#172033]">Available Modules</h2>
+              <h2 className="text-lg font-semibold text-[var(--text-primary)]">Available Modules</h2>
               <p className="text-sm text-muted">{activePlan} plan access is active for this workspace.</p>
             </div>
-            <Link className="rounded-lg border border-[#dce2eb] px-4 py-2 text-sm font-semibold text-[#172033]" href="/saas">Manage Plan</Link>
+            <Link className="rounded-lg border border-[var(--border-default)] px-4 py-2 text-sm font-semibold text-[var(--text-primary)]" href="/saas">Manage Plan</Link>
           </div>
 
           <div className="grid grid-cols-5 gap-x-8 gap-y-7 max-2xl:grid-cols-4 max-lg:grid-cols-3 max-sm:grid-cols-2">
             {availableModules.map(({ href, label, icon: Icon }) => (
-              <Link className="grid justify-items-center gap-3 text-center text-sm font-semibold text-[#172033]" href={href} key={href}>
-                <span className="flex h-20 w-20 items-center justify-center rounded-lg bg-[#f8fafc] shadow-sm">
+              <Link className="grid justify-items-center gap-3 text-center text-sm font-semibold text-[var(--text-primary)]" href={href} key={href}>
+                <span className="flex h-20 w-20 items-center justify-center rounded-lg bg-[var(--surface-sunken)] shadow-sm">
                   <Icon className="h-10 w-10 text-brand" />
                 </span>
                 <span>{label}</span>
@@ -89,18 +89,18 @@ export default async function DashboardPage() {
             ))}
           </div>
 
-          <div className="mt-8 rounded-lg border border-[#dce2eb] bg-[#f8fafc] p-4">
+          <div className="mt-8 rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] p-4">
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
               <div>
-                <h2 className="text-base font-semibold text-[#172033]">Locked Pro Modules</h2>
+                <h2 className="text-base font-semibold text-[var(--text-primary)]">Locked Pro Modules</h2>
                 <p className="text-sm text-muted">Upgrade to Pro to unlock these advanced controls.</p>
               </div>
               <StatusPill tone="red">Requires Pro</StatusPill>
             </div>
             <div className="grid grid-cols-5 gap-3 max-2xl:grid-cols-4 max-lg:grid-cols-3 max-sm:grid-cols-2">
               {lockedModules.map(({ href, label, icon: Icon }) => (
-                <Link className="grid justify-items-center gap-2 rounded-lg border border-[#dce2eb] bg-white p-3 text-center text-xs font-semibold text-[#8ca0bf]" href="/saas" key={href}>
-                  <Icon className="h-7 w-7 text-[#aab8ca]" />
+                <Link className="grid justify-items-center gap-2 rounded-lg border border-[var(--border-default)] bg-white p-3 text-center text-xs font-semibold text-[var(--text-muted)]" href="/saas" key={href}>
+                  <Icon className="h-7 w-7 text-[var(--text-muted)]" />
                   <span>{label}</span>
                 </Link>
               ))}

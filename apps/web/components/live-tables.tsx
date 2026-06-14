@@ -191,7 +191,7 @@ function time(value?: string | null) {
 function EmptyRow({ columns, message }: { columns: number; message: string }) {
   return (
     <tr>
-      <td className="border-b border-[#dce2eb] p-4 text-sm text-muted" colSpan={columns}>{message}</td>
+      <td className="border-b border-[var(--border-default)] p-4 text-sm text-muted" colSpan={columns}>{message}</td>
     </tr>
   );
 }
@@ -242,12 +242,12 @@ export function EmployeesTable({ searchQuery = "", onSelectEmployee }: { searchQ
           onClick={() => onSelectEmployee?.(employee.realId)}
           className={onSelectEmployee ? "cursor-pointer hover:bg-slate-50 transition" : ""}
         >
-          <td className="border-b border-[#dce2eb] p-3">{employee.id}</td>
-          <td className="border-b border-[#dce2eb] p-3 font-semibold text-brand hover:underline">{employee.name}</td>
-          <td className="border-b border-[#dce2eb] p-3">{employee.role}</td>
-          <td className="border-b border-[#dce2eb] p-3">{employee.department}</td>
-          <td className="border-b border-[#dce2eb] p-3">{employee.location}</td>
-          <td className="border-b border-[#dce2eb] p-3"><StatusPill>{employee.status}</StatusPill></td>
+          <td className="border-b border-[var(--border-default)] p-3">{employee.id}</td>
+          <td className="border-b border-[var(--border-default)] p-3 font-semibold text-brand hover:underline">{employee.name}</td>
+          <td className="border-b border-[var(--border-default)] p-3">{employee.role}</td>
+          <td className="border-b border-[var(--border-default)] p-3">{employee.department}</td>
+          <td className="border-b border-[var(--border-default)] p-3">{employee.location}</td>
+          <td className="border-b border-[var(--border-default)] p-3"><StatusPill>{employee.status}</StatusPill></td>
         </tr>
       ))}
     </tbody>
@@ -300,13 +300,13 @@ export function DocumentsTable() {
         {loaded && !rows.length ? <EmptyRow columns={5} message="No employee documents found in database." /> : null}
         {rows.map((document) => (
           <tr key={document.id}>
-            <td className="border-b border-[#dce2eb] p-3 font-semibold">{document.employee}</td>
-            <td className="border-b border-[#dce2eb] p-3">{document.type}</td>
-            <td className="border-b border-[#dce2eb] p-3">{document.expires}</td>
-            <td className="border-b border-[#dce2eb] p-3">
+            <td className="border-b border-[var(--border-default)] p-3 font-semibold">{document.employee}</td>
+            <td className="border-b border-[var(--border-default)] p-3">{document.type}</td>
+            <td className="border-b border-[var(--border-default)] p-3">{document.expires}</td>
+            <td className="border-b border-[var(--border-default)] p-3">
               <a className="font-semibold text-brand" href={document.fileUrl} rel="noreferrer" target="_blank">Open</a>
             </td>
-            <td className="border-b border-[#dce2eb] p-3">
+            <td className="border-b border-[var(--border-default)] p-3">
               <div className="flex items-center gap-2">
                 <StatusPill tone={document.status === "PENDING" || document.status === "Pending" ? "yellow" : "green"}>{document.status}</StatusPill>
                 {document.status === "PENDING" || document.status === "Pending" ? (
@@ -317,7 +317,7 @@ export function DocumentsTable() {
           </tr>
         ))}
       </tbody>
-      {message ? <caption className="caption-bottom p-3 text-left text-sm text-[#18865a]">{message}</caption> : null}
+      {message ? <caption className="caption-bottom p-3 text-left text-sm text-[var(--success-fg)]">{message}</caption> : null}
     </>
   );
 }
@@ -409,12 +409,12 @@ export function ExpensesTable({
         {loaded && !filtered.length ? <EmptyRow columns={6} message="No expense claims found in database." /> : null}
         {filtered.map((expense) => (
           <tr key={expense.id} className="hover:bg-slate-50 border-b border-slate-100 transition">
-            <td className="p-3 font-semibold text-[#172033]">
+            <td className="p-3 font-semibold text-[var(--text-primary)]">
               {expense.employee?.firstName} {expense.employee?.lastName}
             </td>
             <td className="p-3 text-slate-650">{expense.category}</td>
             <td className="p-3 text-slate-650">{expense.claimDate.slice(0, 10)}</td>
-            <td className="p-3 font-semibold text-[#172033]">
+            <td className="p-3 font-semibold text-[var(--text-primary)]">
               INR {Number(expense.amount).toLocaleString("en-IN")}
             </td>
             <td className="p-3">
@@ -443,7 +443,7 @@ export function ExpensesTable({
                   </button>
                 ) : null}
                 {(mode === "approvals" || mode === "reimbursement") && expense.status !== "PAID" && expense.status !== "REJECTED" ? (
-                  <button className="rounded border border-[#cbd5e1] bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition" onClick={() => decide(expense.id, "reject")}>
+                  <button className="rounded border border-[var(--border-strong)] bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition" onClick={() => decide(expense.id, "reject")}>
                     Reject
                   </button>
                 ) : null}
@@ -452,7 +452,7 @@ export function ExpensesTable({
           </tr>
         ))}
       </tbody>
-      {message ? <caption className="caption-bottom p-3 text-left text-sm text-[#18865a] bg-[#e6f5ef] rounded mt-2">{message}</caption> : null}
+      {message ? <caption className="caption-bottom p-3 text-left text-sm text-[var(--success-fg)] bg-[var(--success-bg)] rounded mt-2">{message}</caption> : null}
     </>
   );
 }
@@ -501,15 +501,15 @@ export function HolidaysTable() {
         {loaded && !rows.length ? <EmptyRow columns={5} message="No holidays found in database." /> : null}
         {rows.map((holiday) => (
           <tr key={holiday.id}>
-            <td className="border-b border-[#dce2eb] p-3 font-semibold">{holiday.name}</td>
-            <td className="border-b border-[#dce2eb] p-3">{holiday.date}</td>
-            <td className="border-b border-[#dce2eb] p-3">{holiday.type}</td>
-            <td className="border-b border-[#dce2eb] p-3">{holiday.location}</td>
-            <td className="border-b border-[#dce2eb] p-3">
+            <td className="border-b border-[var(--border-default)] p-3 font-semibold">{holiday.name}</td>
+            <td className="border-b border-[var(--border-default)] p-3">{holiday.date}</td>
+            <td className="border-b border-[var(--border-default)] p-3">{holiday.type}</td>
+            <td className="border-b border-[var(--border-default)] p-3">{holiday.location}</td>
+            <td className="border-b border-[var(--border-default)] p-3">
               <div className="flex items-center gap-2">
                 <StatusPill tone={holiday.status === "ACTIVE" ? "green" : "red"}>{holiday.status}</StatusPill>
                 {holiday.status === "ACTIVE" ? (
-                  <button className="rounded-lg border border-[#dce2eb] px-3 py-1 text-xs font-semibold" onClick={() => setStatus(holiday.id, "INACTIVE")}>Disable</button>
+                  <button className="rounded-lg border border-[var(--border-default)] px-3 py-1 text-xs font-semibold" onClick={() => setStatus(holiday.id, "INACTIVE")}>Disable</button>
                 ) : (
                   <button className="rounded-lg bg-brand px-3 py-1 text-xs font-semibold text-white" onClick={() => setStatus(holiday.id, "ACTIVE")}>Enable</button>
                 )}
@@ -518,7 +518,7 @@ export function HolidaysTable() {
           </tr>
         ))}
       </tbody>
-      {message ? <caption className="caption-bottom p-3 text-left text-sm text-[#18865a]">{message}</caption> : null}
+      {message ? <caption className="caption-bottom p-3 text-left text-sm text-[var(--success-fg)]">{message}</caption> : null}
     </>
   );
 }
@@ -543,10 +543,10 @@ export function OrganizationSummary() {
   return (
     <div className="mb-5 grid grid-cols-5 gap-3 max-xl:grid-cols-3 max-md:grid-cols-1">
       {departments.map((department) => (
-        <div className="rounded-lg border border-[#dce2eb] bg-white p-4 shadow-sm" key={department.department}>
+        <div className="rounded-lg border border-[var(--border-default)] bg-white p-4 shadow-sm" key={department.department}>
           <div className="text-xs uppercase text-muted">{department.department}</div>
           <div className="mt-2 text-2xl font-semibold">{department.count}</div>
-          <div className="mt-1 text-xs text-[#18865a]">Employees mapped</div>
+          <div className="mt-1 text-xs text-[var(--success-fg)]">Employees mapped</div>
         </div>
       ))}
     </div>
@@ -614,13 +614,13 @@ export function OrganizationTable({ search = "", status = "All" }: { search?: st
       {loaded && !filteredRows.length ? <EmptyRow columns={7} message="No organization records found matching filters." /> : null}
       {filteredRows.map((employee) => (
         <tr key={employee.id}>
-          <td className="border-b border-[#dce2eb] p-3">{employee.employeeCode}</td>
-          <td className="border-b border-[#dce2eb] p-3 font-semibold">{employee.name}</td>
-          <td className="border-b border-[#dce2eb] p-3">{employee.designation}</td>
-          <td className="border-b border-[#dce2eb] p-3">{employee.department}</td>
-          <td className="border-b border-[#dce2eb] p-3">{employee.managerName || "Leadership"}</td>
-          <td className="border-b border-[#dce2eb] p-3">{employee.reports}</td>
-          <td className="border-b border-[#dce2eb] p-3"><StatusPill>{employee.status}</StatusPill></td>
+          <td className="border-b border-[var(--border-default)] p-3">{employee.employeeCode}</td>
+          <td className="border-b border-[var(--border-default)] p-3 font-semibold">{employee.name}</td>
+          <td className="border-b border-[var(--border-default)] p-3">{employee.designation}</td>
+          <td className="border-b border-[var(--border-default)] p-3">{employee.department}</td>
+          <td className="border-b border-[var(--border-default)] p-3">{employee.managerName || "Leadership"}</td>
+          <td className="border-b border-[var(--border-default)] p-3">{employee.reports}</td>
+          <td className="border-b border-[var(--border-default)] p-3"><StatusPill>{employee.status}</StatusPill></td>
         </tr>
       ))}
     </tbody>
@@ -684,11 +684,11 @@ export function InsurancePoliciesTable({ search = "" }: InsurancePoliciesTablePr
       {loaded && !filtered.length ? <EmptyRow columns={8} message="No insurance policies found in database." /> : null}
       {filtered.map((policy) => (
         <tr key={policy.id} className="hover:bg-slate-50 border-b border-slate-100 transition">
-          <td className="p-3 font-semibold text-[#172033]">{policy.employee}</td>
+          <td className="p-3 font-semibold text-[var(--text-primary)]">{policy.employee}</td>
           <td className="p-3 text-slate-650">{policy.provider}</td>
           <td className="p-3 text-slate-650">{policy.policyNumber}</td>
           <td className="p-3 text-slate-650">{policy.policyType}</td>
-          <td className="p-3 font-semibold text-[#172033]">{policy.coverage}</td>
+          <td className="p-3 font-semibold text-[var(--text-primary)]">{policy.coverage}</td>
           <td className="p-3 text-slate-650">{policy.validTill}</td>
           <td className="p-3 text-slate-650">{policy.dependents}</td>
           <td className="p-3">
@@ -745,13 +745,13 @@ export function InsuranceDependentsTable({ search = "" }: InsuranceDependentsTab
       {loaded && !filtered.length ? <EmptyRow columns={6} message="No dependents found in database." /> : null}
       {filtered.map((dep) => (
         <tr key={dep.id} className="hover:bg-slate-50 border-b border-slate-100 transition">
-          <td className="p-3 font-semibold text-[#172033]">
+          <td className="p-3 font-semibold text-[var(--text-primary)]">
             {dep.employee?.firstName} {dep.employee?.lastName}
           </td>
           <td className="p-3 text-slate-650">
             {dep.insurance ? `${dep.insurance.provider} (${dep.insurance.policyNumber})` : "-"}
           </td>
-          <td className="p-3 font-semibold text-[#172033]">{dep.fullName}</td>
+          <td className="p-3 font-semibold text-[var(--text-primary)]">{dep.fullName}</td>
           <td className="p-3 text-slate-650">{dep.relationship}</td>
           <td className="p-3 text-slate-650">
             {dep.dateOfBirth ? dep.dateOfBirth.slice(0, 10) : "-"}
@@ -843,11 +843,11 @@ export function InsuranceClaimsTable({ search = "", status = "All" }: InsuranceC
         {loaded && !filtered.length ? <EmptyRow columns={8} message="No insurance claims found in database." /> : null}
         {filtered.map((claim) => (
           <tr key={claim.id} className="hover:bg-slate-50 border-b border-slate-100 transition">
-            <td className="p-3 font-semibold text-[#172033]">{claim.employee}</td>
+            <td className="p-3 font-semibold text-[var(--text-primary)]">{claim.employee}</td>
             <td className="p-3 text-slate-650">{claim.provider}</td>
             <td className="p-3 text-slate-650">{claim.claimNumber}</td>
             <td className="p-3 text-slate-650">{claim.claimType}</td>
-            <td className="p-3 font-semibold text-[#172033]">{claim.amount}</td>
+            <td className="p-3 font-semibold text-[var(--text-primary)]">{claim.amount}</td>
             <td className="p-3 text-slate-650">{claim.claimDate}</td>
             <td className="p-3 text-slate-650">
               {claim.documentUrl ? <a className="font-semibold text-brand hover:underline" href={claim.documentUrl} rel="noreferrer" target="_blank">Open</a> : "-"}
@@ -864,7 +864,7 @@ export function InsuranceClaimsTable({ search = "", status = "All" }: InsuranceC
                       Approve
                     </button>
                     <button
-                      className="rounded-lg border border-[#cbd5e1] bg-white px-3 py-1 text-xs font-bold text-slate-700 hover:bg-slate-50 transition"
+                      className="rounded-lg border border-[var(--border-strong)] bg-white px-3 py-1 text-xs font-bold text-slate-700 hover:bg-slate-50 transition"
                       onClick={() => decide(claim.id, "reject")}
                     >
                       Reject
@@ -876,7 +876,7 @@ export function InsuranceClaimsTable({ search = "", status = "All" }: InsuranceC
           </tr>
         ))}
       </tbody>
-      {message ? <caption className="caption-bottom p-3 text-left text-sm text-[#18865a] bg-[#e6f5ef] rounded mt-2">{message}</caption> : null}
+      {message ? <caption className="caption-bottom p-3 text-left text-sm text-[var(--success-fg)] bg-[var(--success-bg)] rounded mt-2">{message}</caption> : null}
     </>
   );
 }
@@ -965,15 +965,15 @@ export function NotificationsTable({
         {loaded && !filteredRows.length ? <EmptyRow columns={6} message="No notifications found in database." /> : null}
         {filteredRows.map((notification) => (
           <tr key={notification.id}>
-            <td className="border-b border-[#dce2eb] p-3 font-semibold">{notification.recipient}</td>
-            <td className="border-b border-[#dce2eb] p-3">{notification.channel}</td>
-            <td className="border-b border-[#dce2eb] p-3">
+            <td className="border-b border-[var(--border-default)] p-3 font-semibold">{notification.recipient}</td>
+            <td className="border-b border-[var(--border-default)] p-3">{notification.channel}</td>
+            <td className="border-b border-[var(--border-default)] p-3">
               <div className="font-semibold">{notification.title}</div>
               <div className="mt-1 max-w-[420px] text-xs text-muted">{notification.body}</div>
             </td>
-            <td className="border-b border-[#dce2eb] p-3">{notification.createdAt}</td>
-            <td className="border-b border-[#dce2eb] p-3">{notification.sentAt}</td>
-            <td className="border-b border-[#dce2eb] p-3">
+            <td className="border-b border-[var(--border-default)] p-3">{notification.createdAt}</td>
+            <td className="border-b border-[var(--border-default)] p-3">{notification.sentAt}</td>
+            <td className="border-b border-[var(--border-default)] p-3">
               <div className="flex items-center gap-2">
                 <StatusPill tone={tone(notification.status)}>{notification.status}</StatusPill>
                 {notification.status === "PENDING" ? (
@@ -984,7 +984,7 @@ export function NotificationsTable({
           </tr>
         ))}
       </tbody>
-      {message ? <caption className="caption-bottom p-3 text-left text-sm text-[#18865a]">{message}</caption> : null}
+      {message ? <caption className="caption-bottom p-3 text-left text-sm text-[var(--success-fg)]">{message}</caption> : null}
     </>
   );
 }
@@ -1033,11 +1033,11 @@ export function AttendanceTable({ search = "", status = "All", month = "" }: { s
       {loaded && !filtered.length ? <EmptyRow columns={5} message="No attendance logs found in database." /> : null}
       {filtered.map((row) => (
         <tr key={`${row.employee}-${row.date}`}>
-          <td className="border-b border-[#dce2eb] p-3 font-semibold">{row.employee}</td>
-          <td className="border-b border-[#dce2eb] p-3">{row.date}</td>
-          <td className="border-b border-[#dce2eb] p-3">{row.checkIn}</td>
-          <td className="border-b border-[#dce2eb] p-3">{row.checkOut}</td>
-          <td className="border-b border-[#dce2eb] p-3">
+          <td className="border-b border-[var(--border-default)] p-3 font-semibold">{row.employee}</td>
+          <td className="border-b border-[var(--border-default)] p-3">{row.date}</td>
+          <td className="border-b border-[var(--border-default)] p-3">{row.checkIn}</td>
+          <td className="border-b border-[var(--border-default)] p-3">{row.checkOut}</td>
+          <td className="border-b border-[var(--border-default)] p-3">
             <StatusPill tone={row.status === "ABSENT" || row.status === "Absent" ? "red" : row.status === "LATE" || row.status === "Late" ? "yellow" : "green"}>{row.status}</StatusPill>
           </td>
         </tr>
@@ -1084,15 +1084,15 @@ export function RegularizationsTable({ search = "", status = "All" }: { search?:
   if (!filtered.length && !rows.length) return null;
 
   return (
-    <div className="mt-5 rounded-lg border border-[#dce2eb] bg-white p-5 shadow-sm">
+    <div className="mt-5 rounded-lg border border-[var(--border-default)] bg-white p-5 shadow-sm">
       <h2 className="mb-4 text-lg font-semibold">Regularization Requests</h2>
-      {message ? <div className="mb-3 rounded-lg bg-[#e6f5ef] p-3 text-sm text-[#18865a]">{message}</div> : null}
+      {message ? <div className="mb-3 rounded-lg bg-[var(--success-bg)] p-3 text-sm text-[var(--success-fg)]">{message}</div> : null}
       <div className="grid gap-3">
         {!filtered.length ? (
           <div className="text-sm text-muted p-2">No regularization requests match current filters.</div>
         ) : null}
         {filtered.map((row) => (
-          <div className="flex items-center justify-between gap-3 rounded-lg border border-[#dce2eb] p-3" key={row.id}>
+          <div className="flex items-center justify-between gap-3 rounded-lg border border-[var(--border-default)] p-3" key={row.id}>
             <div>
               <div className="font-semibold">{row.employee.firstName} {row.employee.lastName}</div>
               <div className="text-sm text-muted">{row.reason} - {time(row.requestedCheckInAt)} to {time(row.requestedCheckOutAt)}</div>
@@ -1101,7 +1101,7 @@ export function RegularizationsTable({ search = "", status = "All" }: { search?:
               <StatusPill tone={row.status === "PENDING" ? "yellow" : "green"}>{row.status}</StatusPill>
               {row.status === "PENDING" ? (
                 <>
-                  <button className="rounded-lg border border-[#dce2eb] px-3 py-2 text-sm font-semibold hover:bg-slate-50 transition" onClick={() => decide(row.id, "reject")}>Reject</button>
+                  <button className="rounded-lg border border-[var(--border-default)] px-3 py-2 text-sm font-semibold hover:bg-slate-50 transition" onClick={() => decide(row.id, "reject")}>Reject</button>
                   <button className="rounded-lg bg-brand px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand/90 transition" onClick={() => decide(row.id, "approve")}>Approve</button>
                 </>
               ) : null}
@@ -1196,16 +1196,16 @@ export function LeaveTable({
   });
 
   return (
-    <Card className="border border-[#e8edf4]">
+    <Card className="border border-[var(--border-subtle)]">
       <div className="mb-4 flex items-center justify-between gap-3">
-        <h2 className="text-lg font-bold text-[#172033]">
+        <h2 className="text-lg font-bold text-[var(--text-primary)]">
           {mode === "requests" ? "Leave Requests Roster" : "Employee Leave Balances"}
         </h2>
-        {message ? <span className="text-xs font-semibold text-[#18865a] bg-[#e6f5ef] px-2.5 py-1 rounded">{message}</span> : null}
+        {message ? <span className="text-xs font-semibold text-[var(--success-fg)] bg-[var(--success-bg)] px-2.5 py-1 rounded">{message}</span> : null}
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[720px] border-collapse text-left text-sm text-[#49637f]">
-          <thead className="bg-[#f8fafc] text-xs uppercase font-bold text-slate-500 border-b">
+        <table className="w-full min-w-[720px] border-collapse text-left text-sm text-[var(--text-secondary)]">
+          <thead className="bg-[var(--surface-sunken)] text-xs uppercase font-bold text-slate-500 border-b">
             {mode === "requests" ? (
               <tr>
                 <th className="p-3">Employee</th>
@@ -1239,7 +1239,7 @@ export function LeaveTable({
               ) : null}
               {loaded && filteredRequests.map((request) => (
                 <tr key={request.id} className="hover:bg-slate-50 border-b border-slate-100 transition">
-                  <td className="p-3 font-semibold text-[#172033]">
+                  <td className="p-3 font-semibold text-[var(--text-primary)]">
                     {request.employee?.firstName} {request.employee?.lastName}
                   </td>
                   <td className="p-3 font-medium">{request.leaveType?.name}</td>
@@ -1261,7 +1261,7 @@ export function LeaveTable({
                             Approve
                           </button>
                           <button
-                            className="rounded-lg border border-[#cbd5e1] bg-white px-3 py-1 text-xs font-bold text-slate-700 hover:bg-slate-50 transition"
+                            className="rounded-lg border border-[var(--border-strong)] bg-white px-3 py-1 text-xs font-bold text-slate-700 hover:bg-slate-50 transition"
                             onClick={() => decide(request.id, "reject")}
                           >
                             Reject
@@ -1287,14 +1287,14 @@ export function LeaveTable({
               ) : null}
               {loaded && filteredBalances.map((bal) => (
                 <tr key={bal.id} className="hover:bg-slate-50 border-b border-slate-100 transition">
-                  <td className="p-3 font-semibold text-[#172033]">
+                  <td className="p-3 font-semibold text-[var(--text-primary)]">
                     {bal.employee?.firstName} {bal.employee?.lastName}
                   </td>
                   <td className="p-3 font-medium">{bal.leaveType?.name}</td>
                   <td className="p-3 font-semibold">{bal.year}</td>
                   <td className="p-3 font-semibold">{Number(bal.openingBalance)}</td>
                   <td className="p-3 font-semibold">{Number(bal.used)}</td>
-                  <td className="p-3 font-bold text-[#172033]">{Number(bal.available)}</td>
+                  <td className="p-3 font-bold text-[var(--text-primary)]">{Number(bal.available)}</td>
                 </tr>
               ))}
             </tbody>
@@ -1341,12 +1341,12 @@ export function PayrollTable() {
       {loaded && !rows.length ? <EmptyRow columns={6} message="No payslips found in database." /> : null}
       {rows.map((row) => (
         <tr key={row.employee}>
-          <td className="border-b border-[#dce2eb] p-3 font-semibold">{row.employee}</td>
-          <td className="border-b border-[#dce2eb] p-3">{row.month}</td>
-          <td className="border-b border-[#dce2eb] p-3">{row.gross}</td>
-          <td className="border-b border-[#dce2eb] p-3">{row.deductions}</td>
-          <td className="border-b border-[#dce2eb] p-3 font-semibold">{row.net}</td>
-          <td className="border-b border-[#dce2eb] p-3"><StatusPill tone="yellow">{row.status}</StatusPill></td>
+          <td className="border-b border-[var(--border-default)] p-3 font-semibold">{row.employee}</td>
+          <td className="border-b border-[var(--border-default)] p-3">{row.month}</td>
+          <td className="border-b border-[var(--border-default)] p-3">{row.gross}</td>
+          <td className="border-b border-[var(--border-default)] p-3">{row.deductions}</td>
+          <td className="border-b border-[var(--border-default)] p-3 font-semibold">{row.net}</td>
+          <td className="border-b border-[var(--border-default)] p-3"><StatusPill tone="yellow">{row.status}</StatusPill></td>
         </tr>
       ))}
     </tbody>
@@ -1418,12 +1418,12 @@ export function PenaltyLogsTable({ search = "", month = "" }: { search?: string;
           Revert Selected
         </button>
       </div>
-      {message && <div className="mb-4 rounded bg-[#e6f5ef] p-3 text-sm text-[#18865a] font-semibold">{message}</div>}
+      {message && <div className="mb-4 rounded bg-[var(--success-bg)] p-3 text-sm text-[var(--success-fg)] font-semibold">{message}</div>}
       <div className="overflow-auto">
         <table className="w-full min-w-[720px] border-collapse text-sm text-left">
-          <thead className="bg-[#f8fafc] text-xs uppercase text-slate-500 tracking-wider">
+          <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
             <tr>
-              <th className="border-b border-[#dce2eb] p-3 w-10">
+              <th className="border-b border-[var(--border-default)] p-3 w-10">
                 <input
                   type="checkbox"
                   checked={selectedIds.length === filtered.length && filtered.length > 0}
@@ -1433,12 +1433,12 @@ export function PenaltyLogsTable({ search = "", month = "" }: { search?: string;
                   }}
                 />
               </th>
-              <th className="border-b border-[#dce2eb] p-3">Employee</th>
-              <th className="border-b border-[#dce2eb] p-3">Month</th>
-              <th className="border-b border-[#dce2eb] p-3">Anomaly</th>
-              <th className="border-b border-[#dce2eb] p-3">Penalty</th>
-              <th className="border-b border-[#dce2eb] p-3">Deduction Days</th>
-              <th className="border-b border-[#dce2eb] p-3">Status</th>
+              <th className="border-b border-[var(--border-default)] p-3">Employee</th>
+              <th className="border-b border-[var(--border-default)] p-3">Month</th>
+              <th className="border-b border-[var(--border-default)] p-3">Anomaly</th>
+              <th className="border-b border-[var(--border-default)] p-3">Penalty</th>
+              <th className="border-b border-[var(--border-default)] p-3">Deduction Days</th>
+              <th className="border-b border-[var(--border-default)] p-3">Status</th>
             </tr>
           </thead>
           <tbody>
@@ -1456,7 +1456,7 @@ export function PenaltyLogsTable({ search = "", month = "" }: { search?: string;
                     }}
                   />
                 </td>
-                <td className="p-3 font-semibold text-[#172033]">
+                <td className="p-3 font-semibold text-[var(--text-primary)]">
                   {r.employee?.firstName} {r.employee?.lastName}
                 </td>
                 <td className="p-3 text-slate-650">{r.month}/{r.year}</td>
@@ -1514,24 +1514,24 @@ export function LeaveEncashmentTable({ search = "" }: { search?: string }) {
       </div>
       <div className="overflow-auto">
         <table className="w-full min-w-[720px] border-collapse text-sm text-left">
-          <thead className="bg-[#f8fafc] text-xs uppercase text-slate-500 tracking-wider">
+          <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
             <tr>
-              <th className="border-b border-[#dce2eb] p-3">Leave Name</th>
-              <th className="border-b border-[#dce2eb] p-3">Max Encashable Days</th>
-              <th className="border-b border-[#dce2eb] p-3">Encashable</th>
-              <th className="border-b border-[#dce2eb] p-3">Available During Notice</th>
+              <th className="border-b border-[var(--border-default)] p-3">Leave Name</th>
+              <th className="border-b border-[var(--border-default)] p-3">Max Encashable Days</th>
+              <th className="border-b border-[var(--border-default)] p-3">Encashable</th>
+              <th className="border-b border-[var(--border-default)] p-3">Available During Notice</th>
             </tr>
           </thead>
           <tbody>
             {!loaded ? <EmptyRow columns={4} message="Loading..." /> : null}
             {filtered.map((r) => (
               <tr key={r.id} className="hover:bg-slate-50 border-b border-slate-100 transition">
-                <td className="p-3 font-semibold text-[#172033]">{r.name}</td>
+                <td className="p-3 font-semibold text-[var(--text-primary)]">{r.name}</td>
                 <td className="p-3">
                   <input
                     type="number"
                     min="0"
-                    className="w-20 rounded border border-[#cbd5e1] p-1 text-sm outline-none focus:border-brand"
+                    className="w-20 rounded border border-[var(--border-strong)] p-1 text-sm outline-none focus:border-brand"
                     value={r.maxEncashableDays}
                     onChange={(e) => toggleSetting(r.id, "maxEncashableDays", Number(e.target.value))}
                   />

@@ -48,7 +48,7 @@ export function LoginForm() {
           name="email"
           type="email"
           autoComplete="username"
-          className="min-h-11 rounded-lg border border-[#dce2eb] px-3 text-ink"
+          className="min-h-11 rounded-lg border border-[var(--border-default)] px-3 text-ink"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
         />
@@ -59,13 +59,13 @@ export function LoginForm() {
           id="login-password"
           name="password"
           autoComplete="current-password"
-          className="min-h-11 rounded-lg border border-[#dce2eb] px-3 text-ink"
+          className="min-h-11 rounded-lg border border-[var(--border-default)] px-3 text-ink"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
           type="password"
         />
       </label>
-      {error ? <div className="rounded-lg bg-[#fde8e6] p-3 text-sm text-[#ba3d37]">{error}</div> : null}
+      {error ? <div className="rounded-lg bg-[var(--danger-bg)] p-3 text-sm text-[var(--danger-fg)]">{error}</div> : null}
       <button
         className="min-h-11 rounded-lg bg-brand px-4 text-sm font-semibold text-white disabled:opacity-60"
         disabled={loading}

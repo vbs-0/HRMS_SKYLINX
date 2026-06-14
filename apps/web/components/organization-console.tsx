@@ -136,8 +136,8 @@ export function OrganizationConsole() {
           left: 50%;
           right: 0;
           height: 16px;
-          border-top: 2px solid #cbd5e1;
-          border-left: 2px solid #cbd5e1;
+          border-top: 2px solid var(--border-strong);
+          border-left: 2px solid var(--border-strong);
           border-top-left-radius: 12px;
         }
 
@@ -147,8 +147,8 @@ export function OrganizationConsole() {
           left: 0;
           right: 50%;
           height: 16px;
-          border-top: 2px solid #cbd5e1;
-          border-right: 2px solid #cbd5e1;
+          border-top: 2px solid var(--border-strong);
+          border-right: 2px solid var(--border-strong);
           border-top-right-radius: 12px;
         }
 
@@ -158,7 +158,7 @@ export function OrganizationConsole() {
           left: 0;
           right: 0;
           height: 16px;
-          border-top: 2px solid #cbd5e1;
+          border-top: 2px solid var(--border-strong);
         }
 
         .curved-line-middle-vertical {
@@ -168,17 +168,17 @@ export function OrganizationConsole() {
           transform: translateX(-50%);
           width: 2px;
           height: 16px;
-          background-color: #cbd5e1;
+          background-color: var(--border-strong);
         }
       ` }} />
 
       {/* Tab bar */}
-      <div className="flex border-b-2 border-[#0091ff] w-full no-print tab-bar-container mb-6">
+      <div className="flex border-b-2 border-[var(--color-brand-600)] w-full no-print tab-bar-container mb-6">
         <button
           onClick={() => setActiveTab("Employee Tree")}
           className={`px-6 py-3 font-bold text-sm transition-all focus:outline-none ${
             activeTab === "Employee Tree"
-              ? "bg-[#0091ff] text-white"
+              ? "bg-[var(--color-brand-600)] text-white"
               : "bg-transparent text-slate-800 hover:bg-slate-100"
           }`}
         >
@@ -188,7 +188,7 @@ export function OrganizationConsole() {
           onClick={() => setActiveTab("Department Tree")}
           className={`px-6 py-3 font-bold text-sm transition-all focus:outline-none ${
             activeTab === "Department Tree"
-              ? "bg-[#0091ff] text-white"
+              ? "bg-[var(--color-brand-600)] text-white"
               : "bg-transparent text-slate-800 hover:bg-slate-100"
           }`}
         >
@@ -202,7 +202,7 @@ export function OrganizationConsole() {
           <div className="w-full flex justify-start mb-6 no-print export-btn-container">
             <button
               onClick={handleExportPDF}
-              className="px-6 py-2.5 font-bold text-xs bg-[#0091ff] text-white rounded shadow-sm hover:bg-[#007cdb] transition-all"
+              className="px-6 py-2.5 font-bold text-xs bg-[var(--color-brand-600)] text-white rounded shadow-sm hover:bg-[var(--color-brand-600)] transition-all"
             >
               EXPORT TO PDF
             </button>
@@ -232,7 +232,7 @@ export function OrganizationConsole() {
           <div className="no-print flex flex-col relative">
             <button
               onClick={() => setIsDeptDropdownOpen(!isDeptDropdownOpen)}
-              className="w-full flex items-center justify-between px-4 py-2 bg-[#0091ff] text-white font-bold text-xs rounded-md shadow-sm transition-all hover:bg-[#007cdb]"
+              className="w-full flex items-center justify-between px-4 py-2 bg-[var(--color-brand-600)] text-white font-bold text-xs rounded-md shadow-sm transition-all hover:bg-[var(--color-brand-600)]"
             >
               <span>DEPARTMENTS</span>
               <ChevronDown className="h-4 w-4 shrink-0 ml-1" />
@@ -278,7 +278,7 @@ export function OrganizationConsole() {
                 </div>
 
                 {/* Orange collapse toggle badge */}
-                <div className="w-0.5 h-6 bg-[#cbd5e1] relative">
+                <div className="w-0.5 h-6 bg-[var(--border-strong)] relative">
                   <button
                     onClick={() => setIsDeptCollapsed(!isDeptCollapsed)}
                     className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex h-5 w-5 items-center justify-center rounded-full bg-amber-500 text-white font-bold text-sm shadow-sm hover:bg-amber-600 transition-all focus:outline-none z-10"
@@ -293,10 +293,10 @@ export function OrganizationConsole() {
                     
                     {/* Branched connections */}
                     {activeDeptData.employees.length === 1 ? (
-                      <div className="w-0.5 h-6 bg-[#cbd5e1]" />
+                      <div className="w-0.5 h-6 bg-[var(--border-strong)]" />
                     ) : (
                       <div className="relative w-full flex justify-center h-4">
-                        <div className="absolute top-0 w-0.5 h-4 bg-[#cbd5e1]"></div>
+                        <div className="absolute top-0 w-0.5 h-4 bg-[var(--border-strong)]"></div>
                       </div>
                     )}
 
@@ -316,21 +316,21 @@ export function OrganizationConsole() {
                                 {!isFirst && !isLast && (
                                   <>
                                     <div className="curved-line-middle" />
-                                    <div className="w-0.5 h-8 bg-[#cbd5e1] absolute top-0 left-1/2 -translate-x-1/2" />
+                                    <div className="w-0.5 h-8 bg-[var(--border-strong)] absolute top-0 left-1/2 -translate-x-1/2" />
                                   </>
                                 )}
                                 {(isFirst || isLast) && (
-                                  <div className="w-0.5 h-4 bg-[#cbd5e1] absolute top-4 left-1/2 -translate-x-1/2" />
+                                  <div className="w-0.5 h-4 bg-[var(--border-strong)] absolute top-4 left-1/2 -translate-x-1/2" />
                                 )}
                               </>
                             )}
                             {isOnly && (
-                              <div className="w-0.5 h-4 bg-[#cbd5e1] absolute top-0 left-1/2 -translate-x-1/2" />
+                              <div className="w-0.5 h-4 bg-[var(--border-strong)] absolute top-0 left-1/2 -translate-x-1/2" />
                             )}
                             
                             {/* Employee Card */}
                             <div className="border border-slate-200 bg-white rounded-lg p-4 pt-8 text-center shadow-sm relative min-w-[180px] max-w-[200px]">
-                              <div className="w-12 h-12 rounded-full border-2 border-blue-400 overflow-hidden absolute -top-6 left-1/2 -translate-x-1/2 bg-[#dff7ff] flex items-center justify-center select-none">
+                              <div className="w-12 h-12 rounded-full border-2 border-blue-400 overflow-hidden absolute -top-6 left-1/2 -translate-x-1/2 bg-[var(--color-brand-50)] flex items-center justify-center select-none">
                                 <span className="text-sm font-bold text-blue-500">
                                   {emp.name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase()}
                                 </span>
@@ -383,7 +383,7 @@ function EmployeeTreeNode({
     <div className="flex flex-col items-center">
       {/* Node Card */}
       <div className="border border-blue-400 bg-white rounded-lg p-4 pt-8 text-center shadow-sm relative min-w-[200px] max-w-[220px] z-10">
-        <div className="w-12 h-12 rounded-full border-2 border-blue-400 overflow-hidden absolute -top-6 left-1/2 -translate-x-1/2 bg-[#dff7ff] flex items-center justify-center select-none">
+        <div className="w-12 h-12 rounded-full border-2 border-blue-400 overflow-hidden absolute -top-6 left-1/2 -translate-x-1/2 bg-[var(--color-brand-50)] flex items-center justify-center select-none">
           <span className="text-sm font-bold text-blue-500">
             {employee.name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase()}
           </span>
@@ -401,7 +401,7 @@ function EmployeeTreeNode({
       {hasChildren && (
         <div className="flex flex-col items-center w-full">
           {/* Vertical line down to the toggle badge */}
-          <div className="w-0.5 h-10 bg-[#cbd5e1] relative flex justify-center">
+          <div className="w-0.5 h-10 bg-[var(--border-strong)] relative flex justify-center">
             <button
               onClick={() => onToggleCollapse(employee.id)}
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-5 w-8 rounded border border-slate-200 bg-white flex items-center justify-center text-[10px] font-bold text-slate-500 hover:bg-slate-55 shadow-sm z-10 font-mono transition-all focus:outline-none"
@@ -414,10 +414,10 @@ function EmployeeTreeNode({
           {!isCollapsed && (
             <div className="w-full flex flex-col items-center">
               {children.length === 1 ? (
-                <div className="w-0.5 h-6 bg-[#cbd5e1]" />
+                <div className="w-0.5 h-6 bg-[var(--border-strong)]" />
               ) : (
                 <div className="relative w-full flex justify-center h-4">
-                  <div className="absolute top-0 w-0.5 h-4 bg-[#cbd5e1]"></div>
+                  <div className="absolute top-0 w-0.5 h-4 bg-[var(--border-strong)]"></div>
                 </div>
               )}
 
@@ -436,16 +436,16 @@ function EmployeeTreeNode({
                           {!isFirst && !isLast && (
                             <>
                               <div className="curved-line-middle" />
-                              <div className="w-0.5 h-8 bg-[#cbd5e1] absolute top-0 left-1/2 -translate-x-1/2" />
+                              <div className="w-0.5 h-8 bg-[var(--border-strong)] absolute top-0 left-1/2 -translate-x-1/2" />
                             </>
                           )}
                           {(isFirst || isLast) && (
-                            <div className="w-0.5 h-4 bg-[#cbd5e1] absolute top-4 left-1/2 -translate-x-1/2" />
+                            <div className="w-0.5 h-4 bg-[var(--border-strong)] absolute top-4 left-1/2 -translate-x-1/2" />
                           )}
                         </>
                       )}
                       {isOnly && (
-                        <div className="w-0.5 h-4 bg-[#cbd5e1] absolute top-0 left-1/2 -translate-x-1/2" />
+                        <div className="w-0.5 h-4 bg-[var(--border-strong)] absolute top-0 left-1/2 -translate-x-1/2" />
                       )}
                       
                       <EmployeeTreeNode

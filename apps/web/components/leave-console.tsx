@@ -24,7 +24,7 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4">
-      <div className="relative w-full max-w-lg rounded-xl border border-[#dce2eb] bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 text-left">
+      <div className="relative w-full max-w-lg rounded-xl border border-[var(--border-default)] bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 text-left">
         <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
           <h3 className="text-lg font-bold text-slate-900">{title}</h3>
           <button
@@ -244,48 +244,48 @@ export function LeaveConsole() {
       {activeTab === "Leave Rules" && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {types.map((type) => (
-            <Card key={type.id} className="p-5 border border-[#e8edf4] hover:shadow-md transition text-left flex flex-col justify-between">
+            <Card key={type.id} className="p-5 border border-[var(--border-subtle)] hover:shadow-md transition text-left flex flex-col justify-between">
               <div>
                 <div className="flex justify-between items-center mb-3">
-                  <h3 className="text-lg font-bold text-[#172033]">{type.name}</h3>
+                  <h3 className="text-lg font-bold text-[var(--text-primary)]">{type.name}</h3>
                   <span className="text-[10px] font-bold uppercase tracking-wider text-brand bg-blue-50 px-2.5 py-1 rounded">
                     {type.code}
                   </span>
                 </div>
                 <p className="text-xs text-slate-500 mb-4">{type.description}</p>
                 <hr className="border-slate-100 my-3" />
-                <div className="space-y-2 text-xs text-[#49637f]">
+                <div className="space-y-2 text-xs text-[var(--text-secondary)]">
                   <div className="flex justify-between">
                     <span className="font-semibold">Annual Quota:</span>
-                    <span className="font-bold text-[#172033]">{type.annualQuota} Days</span>
+                    <span className="font-bold text-[var(--text-primary)]">{type.annualQuota} Days</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="font-semibold">Probation Allowed:</span>
-                    <span className="font-bold text-[#172033]">{type.allowedUnderProbation ? "Yes" : "No"}</span>
+                    <span className="font-bold text-[var(--text-primary)]">{type.allowedUnderProbation ? "Yes" : "No"}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="font-semibold">Notice Allowed:</span>
-                    <span className="font-bold text-[#172033]">{type.allowedUnderNoticePeriod ? "Yes" : "No"}</span>
+                    <span className="font-bold text-[var(--text-primary)]">{type.allowedUnderNoticePeriod ? "Yes" : "No"}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="font-semibold">Weekends count:</span>
-                    <span className="font-bold text-[#172033]">{type.weekendsBetweenLeave}</span>
+                    <span className="font-bold text-[var(--text-primary)]">{type.weekendsBetweenLeave}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="font-semibold">Holidays count:</span>
-                    <span className="font-bold text-[#172033]">{type.holidaysBetweenLeave}</span>
+                    <span className="font-bold text-[var(--text-primary)]">{type.holidaysBetweenLeave}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="font-semibold">Carry Forward:</span>
-                    <span className="font-bold text-[#172033]">{type.carryForwardAllowed ? "Yes" : "No"}</span>
+                    <span className="font-bold text-[var(--text-primary)]">{type.carryForwardAllowed ? "Yes" : "No"}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="font-semibold">Max Leaves / Month:</span>
-                    <span className="font-bold text-[#172033]">{type.maxLeavesPerMonth}</span>
+                    <span className="font-bold text-[var(--text-primary)]">{type.maxLeavesPerMonth}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="font-semibold">Negative Leaves:</span>
-                    <span className="font-bold text-[#172033]">{type.negativeLeavesAllowed ? "Yes" : "No"}</span>
+                    <span className="font-bold text-[var(--text-primary)]">{type.negativeLeavesAllowed ? "Yes" : "No"}</span>
                   </div>
                 </div>
               </div>
@@ -382,11 +382,11 @@ function CompOffConversionPanel() {
 
   return (
     <div className="grid gap-6 text-left">
-      {message && <div className="rounded-lg bg-[#e6f5ef] p-3 text-sm text-[#18865a] font-semibold">{message}</div>}
-      {error && <div className="rounded-lg bg-[#fde8e6] p-3 text-sm text-[#ba3d37] font-semibold">{error}</div>}
+      {message && <div className="rounded-lg bg-[var(--success-bg)] p-3 text-sm text-[var(--success-fg)] font-semibold">{message}</div>}
+      {error && <div className="rounded-lg bg-[var(--danger-bg)] p-3 text-sm text-[var(--danger-fg)] font-semibold">{error}</div>}
 
       <div className="grid grid-cols-[1fr_2fr] gap-6 max-lg:grid-cols-1">
-        <Card className="p-5 border border-[#e8edf4]">
+        <Card className="p-5 border border-[var(--border-subtle)]">
           <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Overtime to Comp-Off Conversion</h3>
           <form onSubmit={handleSubmit} className="grid gap-4">
             <div>
@@ -467,11 +467,11 @@ function CompOffConversionPanel() {
           </form>
         </Card>
 
-        <Card className="p-5 border border-[#e8edf4]">
+        <Card className="p-5 border border-[var(--border-subtle)]">
           <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Comp-Off Requests Log</h3>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-xs text-slate-650">
-              <thead className="bg-[#f8fafc] text-[10px] uppercase font-bold text-slate-500 border-b">
+              <thead className="bg-[var(--surface-sunken)] text-[10px] uppercase font-bold text-slate-500 border-b">
                 <tr>
                   <th className="p-2.5">Employee</th>
                   <th className="p-2.5">Overtime Request ID</th>
@@ -603,11 +603,11 @@ function LeaveEncashmentPanel() {
 
   return (
     <div className="grid gap-6 text-left">
-      {message && <div className="rounded-lg bg-[#e6f5ef] p-3 text-sm text-[#18865a] font-semibold">{message}</div>}
-      {error && <div className="rounded-lg bg-[#fde8e6] p-3 text-sm text-[#ba3d37] font-semibold">{error}</div>}
+      {message && <div className="rounded-lg bg-[var(--success-bg)] p-3 text-sm text-[var(--success-fg)] font-semibold">{message}</div>}
+      {error && <div className="rounded-lg bg-[var(--danger-bg)] p-3 text-sm text-[var(--danger-fg)] font-semibold">{error}</div>}
 
       <div className="grid grid-cols-[1fr_2fr] gap-6 max-lg:grid-cols-1">
-        <Card className="p-5 border border-[#e8edf4]">
+        <Card className="p-5 border border-[var(--border-subtle)]">
           <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Apply for Leave Encashment</h3>
           <form onSubmit={handleSubmit} className="grid gap-4">
             <div>
@@ -673,11 +673,11 @@ function LeaveEncashmentPanel() {
           </form>
         </Card>
 
-        <Card className="p-5 border border-[#e8edf4]">
+        <Card className="p-5 border border-[var(--border-subtle)]">
           <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Encashment History & Approvals</h3>
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-xs text-slate-650">
-              <thead className="bg-[#f8fafc] text-[10px] uppercase font-bold text-slate-500 border-b">
+              <thead className="bg-[var(--surface-sunken)] text-[10px] uppercase font-bold text-slate-500 border-b">
                 <tr>
                   <th className="p-2.5">Employee</th>
                   <th className="p-2.5">Leave Type</th>
@@ -739,7 +739,7 @@ function TeamLeaveCalendar({ requests }: { requests: any[] }) {
   const approvedRequests = requests.filter(r => r.status === "APPROVED");
   
   return (
-    <Card className="p-5 border border-[#e8edf4]">
+    <Card className="p-5 border border-[var(--border-subtle)]">
       <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Team Leave Calendar</h3>
       <div className="grid gap-4">
         {!approvedRequests.length ? (

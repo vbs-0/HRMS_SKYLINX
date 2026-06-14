@@ -169,10 +169,10 @@ export function PoliciesConsole() {
       <ReferenceFlowStrip module="Policies" />
 
       {message && (
-        <div className="rounded-lg bg-[#e6f5ef] p-3 text-sm text-[#18865a] font-semibold">{message}</div>
+        <div className="rounded-lg bg-[var(--success-bg)] p-3 text-sm text-[var(--success-fg)] font-semibold">{message}</div>
       )}
       {error && (
-        <div className="rounded-lg bg-[#fde8e6] p-3 text-sm text-[#ba3d37] font-semibold">{error}</div>
+        <div className="rounded-lg bg-[var(--danger-bg)] p-3 text-sm text-[var(--danger-fg)] font-semibold">{error}</div>
       )}
 
       {activeTab === "All Policies" && (
@@ -188,7 +188,7 @@ export function PoliciesConsole() {
                 <Card
                   key={policy.id}
                   className={`p-4 cursor-pointer border transition hover:border-brand/40 hover:shadow-sm ${
-                    selectedPolicy?.id === policy.id ? "border-brand bg-brand/5" : "border-[#e8edf4]"
+                    selectedPolicy?.id === policy.id ? "border-brand bg-brand/5" : "border-[var(--border-subtle)]"
                   }`}
                   onClick={() => {
                     setSelectedPolicy(policy);
@@ -228,7 +228,7 @@ export function PoliciesConsole() {
           {/* Policy detail */}
           <div>
             {selectedPolicy ? (
-              <Card className="p-5 border border-[#e8edf4] sticky top-4">
+              <Card className="p-5 border border-[var(--border-subtle)] sticky top-4">
                 <div className="flex items-start justify-between mb-4">
                   <div>
                     <span
@@ -364,7 +364,7 @@ export function PoliciesConsole() {
       )}
 
       {activeTab === "Upload Policy" && (
-        <Card className="p-6 max-w-2xl border border-[#e8edf4]">
+        <Card className="p-6 max-w-2xl border border-[var(--border-subtle)]">
           <h3 className="text-base font-bold text-slate-800 mb-5 border-b pb-2">Create New Policy</h3>
           <form onSubmit={handleCreate} className="grid gap-4">
             <div className="grid grid-cols-2 gap-4">

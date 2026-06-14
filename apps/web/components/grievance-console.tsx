@@ -182,7 +182,7 @@ export function GrievanceConsole() {
         <div className="relative w-80">
           <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
           <input
-            className="min-h-10 w-full rounded-lg border border-[#dce2eb] bg-white pl-9 pr-3 text-sm outline-none transition focus:border-brand"
+            className="min-h-10 w-full rounded-lg border border-[var(--border-default)] bg-white pl-9 pr-3 text-sm outline-none transition focus:border-brand"
             placeholder="Search grievances..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -235,13 +235,13 @@ export function GrievanceConsole() {
         <h2 className="mb-4 text-lg font-semibold text-slate-800">Formal Grievance Logs</h2>
         <div className="overflow-auto">
           <table className="w-full min-w-[700px] border-collapse text-sm text-left">
-            <thead className="bg-[#f8fafc] text-xs uppercase text-slate-500 tracking-wider">
+            <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
               <tr>
-                <th className="border-b border-[#dce2eb] p-3">Grievance Details</th>
-                <th className="border-b border-[#dce2eb] p-3">Filer Identity</th>
-                <th className="border-b border-[#dce2eb] p-3">Log Date</th>
-                <th className="border-b border-[#dce2eb] p-3">Status</th>
-                <th className="border-b border-[#dce2eb] p-3 text-right">Actions</th>
+                <th className="border-b border-[var(--border-default)] p-3">Grievance Details</th>
+                <th className="border-b border-[var(--border-default)] p-3">Filer Identity</th>
+                <th className="border-b border-[var(--border-default)] p-3">Log Date</th>
+                <th className="border-b border-[var(--border-default)] p-3">Status</th>
+                <th className="border-b border-[var(--border-default)] p-3 text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -254,22 +254,22 @@ export function GrievanceConsole() {
               ) : (
                 filtered.map((g) => (
                   <tr key={g.id} className="hover:bg-slate-50 transition">
-                    <td className="border-b border-[#eef2f6] p-3">
+                    <td className="border-b border-[var(--surface-sunken)] p-3">
                       <div className="font-semibold text-slate-850">{g.title}</div>
                       <div className="text-xs text-slate-400 truncate max-w-sm mt-0.5">{g.description}</div>
                     </td>
-                    <td className="border-b border-[#eef2f6] p-3 font-semibold text-slate-600">
+                    <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-slate-600">
                       {g.anonymous ? <span className="italic text-slate-400">Anonymous</span> : `${g.employee?.firstName || "System"} ${g.employee?.lastName || "Filer"}`}
                     </td>
-                    <td className="border-b border-[#eef2f6] p-3 text-xs text-slate-400">
+                    <td className="border-b border-[var(--surface-sunken)] p-3 text-xs text-slate-400">
                       {new Date(g.createdAt).toLocaleDateString("en-IN")}
                     </td>
-                    <td className="border-b border-[#eef2f6] p-3">
+                    <td className="border-b border-[var(--surface-sunken)] p-3">
                       <StatusPill tone={g.status === "APPROVED" ? "green" : g.status === "REJECTED" ? "red" : "yellow"}>
                         {g.status === "APPROVED" ? "RESOLVED" : g.status === "REJECTED" ? "CLOSED" : g.status}
                       </StatusPill>
                     </td>
-                    <td className="border-b border-[#eef2f6] p-3 text-right">
+                    <td className="border-b border-[var(--surface-sunken)] p-3 text-right">
                       <button
                         className="rounded border border-slate-200 text-slate-650 hover:bg-slate-50 font-semibold text-xs px-2.5 py-1.5 transition inline-flex items-center gap-1"
                         onClick={() => setSelectedGrievance(g)}

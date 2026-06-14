@@ -659,7 +659,7 @@ export function RecruitmentConsole() {
               <div className="relative w-72">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
                 <input
-                  className="min-h-10 w-full rounded-lg border border-[#dce2eb] bg-[#f8fafc] pl-9 pr-3 text-sm outline-none transition focus:border-brand focus:bg-white"
+                  className="min-h-10 w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] pl-9 pr-3 text-sm outline-none transition focus:border-brand focus:bg-white"
                   placeholder="Search vacancies..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -668,14 +668,14 @@ export function RecruitmentConsole() {
             </div>
             <div className="overflow-auto">
               <table className="w-full min-w-[600px] border-collapse text-sm text-left">
-                <thead className="bg-[#f8fafc] text-xs uppercase text-slate-500 tracking-wider">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
                   <tr>
-                    <th className="border-b border-[#dce2eb] p-3">Job ID</th>
-                    <th className="border-b border-[#dce2eb] p-3">Job Title</th>
-                    <th className="border-b border-[#dce2eb] p-3">Openings</th>
-                    <th className="border-b border-[#dce2eb] p-3">Applicants</th>
-                    <th className="border-b border-[#dce2eb] p-3">Linked Requisition</th>
-                    <th className="border-b border-[#dce2eb] p-3">Status</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Job ID</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Job Title</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Openings</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Applicants</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Linked Requisition</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Status</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -688,14 +688,14 @@ export function RecruitmentConsole() {
                   ) : (
                     filteredPostings.map((p) => (
                       <tr key={p.id} className="hover:bg-slate-50 transition cursor-pointer">
-                        <td className="border-b border-[#eef2f6] p-3 font-mono text-xs text-slate-500">{p.id.slice(-6).toUpperCase()}</td>
-                        <td className="border-b border-[#eef2f6] p-3 font-semibold text-slate-800">{p.title}</td>
-                        <td className="border-b border-[#eef2f6] p-3 font-semibold">{p.openings}</td>
-                        <td className="border-b border-[#eef2f6] p-3 text-slate-500 font-semibold">{p.applications?.length || 0} applicants</td>
-                        <td className="border-b border-[#eef2f6] p-3 text-xs text-slate-400">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 font-mono text-xs text-slate-500">{p.id.slice(-6).toUpperCase()}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-slate-800">{p.title}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold">{p.openings}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-500 font-semibold">{p.applications?.length || 0} applicants</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-xs text-slate-400">
                           {p.requisition ? `${p.requisition.title} (${p.requisition.id.slice(-4).toUpperCase()})` : "None"}
                         </td>
-                        <td className="border-b border-[#eef2f6] p-3">
+                        <td className="border-b border-[var(--surface-sunken)] p-3">
                           <StatusPill tone={p.status === "OPEN" ? "green" : "red"}>{p.status}</StatusPill>
                         </td>
                       </tr>
@@ -769,7 +769,7 @@ export function RecruitmentConsole() {
               <div className="relative w-72">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
                 <input
-                  className="min-h-10 w-full rounded-lg border border-[#dce2eb] bg-[#f8fafc] pl-9 pr-3 text-sm outline-none transition focus:border-brand focus:bg-white"
+                  className="min-h-10 w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] pl-9 pr-3 text-sm outline-none transition focus:border-brand focus:bg-white"
                   placeholder="Search candidates..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -778,14 +778,14 @@ export function RecruitmentConsole() {
             </div>
             <div className="overflow-auto">
               <table className="w-full min-w-[700px] border-collapse text-sm text-left">
-                <thead className="bg-[#f8fafc] text-xs uppercase text-slate-500 tracking-wider">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
                   <tr>
-                    <th className="border-b border-[#dce2eb] p-3">Applicant Name</th>
-                    <th className="border-b border-[#dce2eb] p-3">Applied Job</th>
-                    <th className="border-b border-[#dce2eb] p-3">Email</th>
-                    <th className="border-b border-[#dce2eb] p-3">Sourcing Channel</th>
-                    <th className="border-b border-[#dce2eb] p-3">Pipeline Stage</th>
-                    <th className="border-b border-[#dce2eb] p-3">Date Applied</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Applicant Name</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Applied Job</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Email</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Sourcing Channel</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Pipeline Stage</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Date Applied</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -804,18 +804,18 @@ export function RecruitmentConsole() {
                           className="hover:bg-slate-50 transition cursor-pointer"
                           onClick={() => setSelectedCandidateId(c.id)}
                         >
-                          <td className="border-b border-[#eef2f6] p-3 font-semibold text-slate-800 flex items-center gap-2">
+                          <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-slate-800 flex items-center gap-2">
                             <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-600">
                               {c.fullName.split(" ").map(n => n[0]).join("")}
                             </div>
                             {c.fullName}
                           </td>
-                          <td className="border-b border-[#eef2f6] p-3 text-slate-600 font-semibold">
+                          <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-600 font-semibold">
                             {app?.jobPosting?.title || "Direct Pool"}
                           </td>
-                          <td className="border-b border-[#eef2f6] p-3 text-slate-500">{c.email}</td>
-                          <td className="border-b border-[#eef2f6] p-3 text-slate-500 font-semibold">{c.source || "Unknown"}</td>
-                          <td className="border-b border-[#eef2f6] p-3">
+                          <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-500">{c.email}</td>
+                          <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-500 font-semibold">{c.source || "Unknown"}</td>
+                          <td className="border-b border-[var(--surface-sunken)] p-3">
                             <StatusPill
                               tone={
                                 c.currentStage === "JOINED" || c.currentStage === "HIRED"
@@ -828,7 +828,7 @@ export function RecruitmentConsole() {
                               {c.currentStage}
                             </StatusPill>
                           </td>
-                          <td className="border-b border-[#eef2f6] p-3 text-xs text-slate-400">
+                          <td className="border-b border-[var(--surface-sunken)] p-3 text-xs text-slate-400">
                             {new Date(c.createdAt).toLocaleDateString("en-IN")}
                           </td>
                         </tr>
@@ -865,7 +865,7 @@ export function RecruitmentConsole() {
 
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
               {/* Profile card summary */}
-              <div className="flex items-center gap-4 rounded-xl border border-slate-100 bg-[#f8fafc] p-5">
+              <div className="flex items-center gap-4 rounded-xl border border-slate-100 bg-[var(--surface-sunken)] p-5">
                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand/10 text-xl font-bold text-brand uppercase">
                   {selectedCandidate.fullName.split(" ").map(n => n[0]).join("")}
                 </div>
@@ -932,7 +932,7 @@ export function RecruitmentConsole() {
 
               {/* Schedule Interview Form Panel */}
               {showScheduleInterview && selectedCandidate.applications?.[0] && (
-                <div className="rounded-xl border border-[#dce2eb] bg-slate-50 p-5 space-y-4 animate-in zoom-in-95 duration-100">
+                <div className="rounded-xl border border-[var(--border-default)] bg-slate-50 p-5 space-y-4 animate-in zoom-in-95 duration-100">
                   <h4 className="text-sm font-bold uppercase tracking-wider text-slate-800 flex items-center gap-2">
                     <Calendar className="h-4 w-4 text-brand" /> Schedule Interview details
                   </h4>
@@ -974,7 +974,7 @@ export function RecruitmentConsole() {
 
               {/* Create Job Offer Form Panel */}
               {showCreateOffer && selectedCandidate.applications?.[0] && (
-                <div className="rounded-xl border border-[#dce2eb] bg-slate-50 p-5 space-y-4 animate-in zoom-in-95 duration-100">
+                <div className="rounded-xl border border-[var(--border-default)] bg-slate-50 p-5 space-y-4 animate-in zoom-in-95 duration-100">
                   <h4 className="text-sm font-bold uppercase tracking-wider text-slate-800 flex items-center gap-2">
                     <FileSignature className="h-4 w-4 text-brand" /> Generate Job Offer Letter
                   </h4>
@@ -1103,7 +1103,7 @@ export function RecruitmentConsole() {
               <div className="relative w-72">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
                 <input
-                  className="min-h-10 w-full rounded-lg border border-[#dce2eb] bg-[#f8fafc] pl-9 pr-3 text-sm outline-none transition focus:border-brand focus:bg-white"
+                  className="min-h-10 w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] pl-9 pr-3 text-sm outline-none transition focus:border-brand focus:bg-white"
                   placeholder="Search requisitions..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -1112,15 +1112,15 @@ export function RecruitmentConsole() {
             </div>
             <div className="overflow-auto">
               <table className="w-full min-w-[700px] border-collapse text-sm text-left">
-                <thead className="bg-[#f8fafc] text-xs uppercase text-slate-500 tracking-wider">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
                   <tr>
-                    <th className="border-b border-[#dce2eb] p-3">Req ID</th>
-                    <th className="border-b border-[#dce2eb] p-3">Job Title Requested</th>
-                    <th className="border-b border-[#dce2eb] p-3">Department</th>
-                    <th className="border-b border-[#dce2eb] p-3">Openings</th>
-                    <th className="border-b border-[#dce2eb] p-3">Requested By</th>
-                    <th className="border-b border-[#dce2eb] p-3">Approval Status</th>
-                    {isHrOrAdmin && <th className="border-b border-[#dce2eb] p-3 text-right">Actions</th>}
+                    <th className="border-b border-[var(--border-default)] p-3">Req ID</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Job Title Requested</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Department</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Openings</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Requested By</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Approval Status</th>
+                    {isHrOrAdmin && <th className="border-b border-[var(--border-default)] p-3 text-right">Actions</th>}
                   </tr>
                 </thead>
                 <tbody>
@@ -1133,14 +1133,14 @@ export function RecruitmentConsole() {
                   ) : (
                     filteredRequisitions.map((r) => (
                       <tr key={r.id} className="hover:bg-slate-50 transition">
-                        <td className="border-b border-[#eef2f6] p-3 font-mono text-xs text-slate-500">{r.id.slice(-6).toUpperCase()}</td>
-                        <td className="border-b border-[#eef2f6] p-3 font-semibold text-slate-800">{r.title}</td>
-                        <td className="border-b border-[#eef2f6] p-3 text-slate-600 font-semibold">{r.department.name}</td>
-                        <td className="border-b border-[#eef2f6] p-3 font-semibold">{r.openings}</td>
-                        <td className="border-b border-[#eef2f6] p-3 text-slate-500">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 font-mono text-xs text-slate-500">{r.id.slice(-6).toUpperCase()}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-slate-800">{r.title}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-600 font-semibold">{r.department.name}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold">{r.openings}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-500">
                           {r.requestedBy.firstName} {r.requestedBy.lastName}
                         </td>
-                        <td className="border-b border-[#eef2f6] p-3">
+                        <td className="border-b border-[var(--surface-sunken)] p-3">
                           <StatusPill
                             tone={
                               r.status === "APPROVED"
@@ -1154,7 +1154,7 @@ export function RecruitmentConsole() {
                           </StatusPill>
                         </td>
                         {isHrOrAdmin && (
-                          <td className="border-b border-[#eef2f6] p-3 text-right space-x-1.5">
+                          <td className="border-b border-[var(--surface-sunken)] p-3 text-right space-x-1.5">
                             {r.status === "PENDING" && (
                               <>
                                 <button
@@ -1192,7 +1192,7 @@ export function RecruitmentConsole() {
               <div className="relative w-72">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
                 <input
-                  className="min-h-10 w-full rounded-lg border border-[#dce2eb] bg-[#f8fafc] pl-9 pr-3 text-sm outline-none transition focus:border-brand focus:bg-white"
+                  className="min-h-10 w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] pl-9 pr-3 text-sm outline-none transition focus:border-brand focus:bg-white"
                   placeholder="Search interviews..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -1201,16 +1201,16 @@ export function RecruitmentConsole() {
             </div>
             <div className="overflow-auto">
               <table className="w-full min-w-[700px] border-collapse text-sm text-left">
-                <thead className="bg-[#f8fafc] text-xs uppercase text-slate-500 tracking-wider">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
                   <tr>
-                    <th className="border-b border-[#dce2eb] p-3">Applicant Name</th>
-                    <th className="border-b border-[#dce2eb] p-3">Target Vacancy</th>
-                    <th className="border-b border-[#dce2eb] p-3">Scheduled Date</th>
-                    <th className="border-b border-[#dce2eb] p-3">Format Mode</th>
-                    <th className="border-b border-[#dce2eb] p-3">Interviewers</th>
-                    <th className="border-b border-[#dce2eb] p-3">Feedback Consensus</th>
-                    <th className="border-b border-[#dce2eb] p-3">Status</th>
-                    <th className="border-b border-[#dce2eb] p-3 text-right">Actions</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Applicant Name</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Target Vacancy</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Scheduled Date</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Format Mode</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Interviewers</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Feedback Consensus</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Status</th>
+                    <th className="border-b border-[var(--border-default)] p-3 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1223,26 +1223,26 @@ export function RecruitmentConsole() {
                   ) : (
                     filteredInterviews.map((i) => (
                       <tr key={i.id} className="hover:bg-slate-50 transition">
-                        <td className="border-b border-[#eef2f6] p-3 font-semibold text-slate-800">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-slate-800">
                           {i.application.candidate.fullName}
                         </td>
-                        <td className="border-b border-[#eef2f6] p-3 text-slate-600 font-semibold">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-600 font-semibold">
                           {i.application.jobPosting.title}
                         </td>
-                        <td className="border-b border-[#eef2f6] p-3 text-xs text-slate-500 font-semibold">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-xs text-slate-500 font-semibold">
                           {new Date(i.scheduledAt).toLocaleString("en-IN")}
                         </td>
-                        <td className="border-b border-[#eef2f6] p-3 text-slate-500 font-semibold">{i.mode}</td>
-                        <td className="border-b border-[#eef2f6] p-3 text-xs text-slate-500">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-500 font-semibold">{i.mode}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-xs text-slate-500">
                           {i.interviewers.map(it => `${it.employee.firstName} ${it.employee.lastName}`).join(", ") || "None"}
                         </td>
-                        <td className="border-b border-[#eef2f6] p-3 text-xs text-slate-400 font-semibold">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-xs text-slate-400 font-semibold">
                           {i.feedback || "Awaiting Scorecard"}
                         </td>
-                        <td className="border-b border-[#eef2f6] p-3">
+                        <td className="border-b border-[var(--surface-sunken)] p-3">
                           <StatusPill tone={i.status === "COMPLETED" ? "green" : "yellow"}>{i.status}</StatusPill>
                         </td>
-                        <td className="border-b border-[#eef2f6] p-3 text-right">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-right">
                           {i.status === "SCHEDULED" && (
                             <button
                               className="rounded bg-brand text-white font-semibold text-xs px-2.5 py-1.5 hover:bg-brand-dark transition"
@@ -1321,7 +1321,7 @@ export function RecruitmentConsole() {
               <div className="relative w-72">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
                 <input
-                  className="min-h-10 w-full rounded-lg border border-[#dce2eb] bg-[#f8fafc] pl-9 pr-3 text-sm outline-none transition focus:border-brand focus:bg-white"
+                  className="min-h-10 w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] pl-9 pr-3 text-sm outline-none transition focus:border-brand focus:bg-white"
                   placeholder="Search offers..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -1330,15 +1330,15 @@ export function RecruitmentConsole() {
             </div>
             <div className="overflow-auto">
               <table className="w-full min-w-[700px] border-collapse text-sm text-left">
-                <thead className="bg-[#f8fafc] text-xs uppercase text-slate-500 tracking-wider">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
                   <tr>
-                    <th className="border-b border-[#dce2eb] p-3">Offer ID</th>
-                    <th className="border-b border-[#dce2eb] p-3">Candidate</th>
-                    <th className="border-b border-[#dce2eb] p-3">Role Offered</th>
-                    <th className="border-b border-[#dce2eb] p-3">Offered CTC</th>
-                    <th className="border-b border-[#dce2eb] p-3">Expected Joining</th>
-                    <th className="border-b border-[#dce2eb] p-3">Status</th>
-                    <th className="border-b border-[#dce2eb] p-3">Date Created</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Offer ID</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Candidate</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Role Offered</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Offered CTC</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Expected Joining</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Status</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Date Created</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1351,14 +1351,14 @@ export function RecruitmentConsole() {
                   ) : (
                     filteredOffers.map((o) => (
                       <tr key={o.id} className="hover:bg-slate-50 transition">
-                        <td className="border-b border-[#eef2f6] p-3 font-mono text-xs text-slate-500">{o.id.slice(-6).toUpperCase()}</td>
-                        <td className="border-b border-[#eef2f6] p-3 font-semibold text-slate-800">{o.application.candidate.fullName}</td>
-                        <td className="border-b border-[#eef2f6] p-3 text-slate-600 font-semibold">{o.application.jobPosting.title}</td>
-                        <td className="border-b border-[#eef2f6] p-3 font-semibold">INR {o.offeredCtc.toLocaleString("en-IN")}</td>
-                        <td className="border-b border-[#eef2f6] p-3 text-xs text-slate-500 font-semibold">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 font-mono text-xs text-slate-500">{o.id.slice(-6).toUpperCase()}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-slate-800">{o.application.candidate.fullName}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-600 font-semibold">{o.application.jobPosting.title}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold">INR {o.offeredCtc.toLocaleString("en-IN")}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-xs text-slate-500 font-semibold">
                           {new Date(o.joiningDate).toLocaleDateString("en-IN")}
                         </td>
-                        <td className="border-b border-[#eef2f6] p-3">
+                        <td className="border-b border-[var(--surface-sunken)] p-3">
                           <StatusPill
                             tone={
                               o.status === "ACCEPTED"
@@ -1371,7 +1371,7 @@ export function RecruitmentConsole() {
                             {o.status}
                           </StatusPill>
                         </td>
-                        <td className="border-b border-[#eef2f6] p-3 text-xs text-slate-400">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-xs text-slate-400">
                           {new Date(o.createdAt).toLocaleDateString("en-IN")}
                         </td>
                       </tr>
@@ -1444,14 +1444,14 @@ export function RecruitmentConsole() {
             </div>
             <div className="overflow-auto">
               <table className="w-full min-w-[700px] border-collapse text-sm text-left">
-                <thead className="bg-[#f8fafc] text-xs uppercase text-slate-500 tracking-wider">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
                   <tr>
-                    <th className="border-b border-[#dce2eb] p-3">Department</th>
-                    <th className="border-b border-[#dce2eb] p-3">Designation</th>
-                    <th className="border-b border-[#dce2eb] p-3">Budgeted Headcount</th>
-                    <th className="border-b border-[#dce2eb] p-3">Current Headcount</th>
-                    <th className="border-b border-[#dce2eb] p-3">Active Vacancies</th>
-                    <th className="border-b border-[#dce2eb] p-3">Validity Period</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Department</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Designation</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Budgeted Headcount</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Current Headcount</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Active Vacancies</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Validity Period</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1464,16 +1464,16 @@ export function RecruitmentConsole() {
                   ) : (
                     staffingPlans.map((sp) => (
                       <tr key={sp.id} className="hover:bg-slate-50 transition">
-                        <td className="border-b border-[#eef2f6] p-3 font-semibold text-slate-800">{sp.department?.name || "Global"}</td>
-                        <td className="border-b border-[#eef2f6] p-3 font-semibold text-slate-600">{sp.designation?.title || "Staff"}</td>
-                        <td className="border-b border-[#eef2f6] p-3 font-bold">{sp.budgetedHeadcount}</td>
-                        <td className="border-b border-[#eef2f6] p-3 text-slate-500 font-semibold">{sp.currentHeadcount}</td>
-                        <td className="border-b border-[#eef2f6] p-3">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-slate-800">{sp.department?.name || "Global"}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-slate-600">{sp.designation?.title || "Staff"}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 font-bold">{sp.budgetedHeadcount}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-500 font-semibold">{sp.currentHeadcount}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3">
                           <StatusPill tone={sp.currentHeadcount >= sp.budgetedHeadcount ? "red" : "green"}>
                             {sp.budgetedHeadcount - sp.currentHeadcount} vacancies left
                           </StatusPill>
                         </td>
-                        <td className="border-b border-[#eef2f6] p-3 text-xs text-slate-500">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-xs text-slate-500">
                           {new Date(sp.startDate).toLocaleDateString("en-IN")} to {new Date(sp.endDate).toLocaleDateString("en-IN")}
                         </td>
                       </tr>
@@ -1543,14 +1543,14 @@ export function RecruitmentConsole() {
             </div>
             <div className="overflow-auto">
               <table className="w-full min-w-[700px] border-collapse text-sm text-left">
-                <thead className="bg-[#f8fafc] text-xs uppercase text-slate-500 tracking-wider">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
                   <tr>
-                    <th className="border-b border-[#dce2eb] p-3">Candidate</th>
-                    <th className="border-b border-[#dce2eb] p-3">Job Posting</th>
-                    <th className="border-b border-[#dce2eb] p-3">Referrer</th>
-                    <th className="border-b border-[#dce2eb] p-3">Bonus Amount</th>
-                    <th className="border-b border-[#dce2eb] p-3">Status</th>
-                    {isHrOrAdmin && <th className="border-b border-[#dce2eb] p-3 text-right">Actions</th>}
+                    <th className="border-b border-[var(--border-default)] p-3">Candidate</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Job Posting</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Referrer</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Bonus Amount</th>
+                    <th className="border-b border-[var(--border-default)] p-3">Status</th>
+                    {isHrOrAdmin && <th className="border-b border-[var(--border-default)] p-3 text-right">Actions</th>}
                   </tr>
                 </thead>
                 <tbody>
@@ -1563,22 +1563,22 @@ export function RecruitmentConsole() {
                   ) : (
                     referrals.map((ref) => (
                       <tr key={ref.id} className="hover:bg-slate-50 transition">
-                        <td className="border-b border-[#eef2f6] p-3">
+                        <td className="border-b border-[var(--surface-sunken)] p-3">
                           <div className="font-semibold text-slate-800">{ref.candidateName}</div>
                           <div className="text-xs text-slate-400">{ref.candidateEmail}</div>
                         </td>
-                        <td className="border-b border-[#eef2f6] p-3 text-slate-600 font-semibold">{ref.jobPosting?.title || "Unknown Position"}</td>
-                        <td className="border-b border-[#eef2f6] p-3 text-slate-500">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-600 font-semibold">{ref.jobPosting?.title || "Unknown Position"}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-500">
                           {ref.referrer?.firstName} {ref.referrer?.lastName}
                         </td>
-                        <td className="border-b border-[#eef2f6] p-3 font-semibold">INR {ref.bonusAmount.toLocaleString("en-IN")}</td>
-                        <td className="border-b border-[#eef2f6] p-3">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold">INR {ref.bonusAmount.toLocaleString("en-IN")}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3">
                           <StatusPill tone={ref.status === "APPROVED" || ref.status === "PAID" ? "green" : "yellow"}>
                             {ref.status}
                           </StatusPill>
                         </td>
                         {isHrOrAdmin && (
-                          <td className="border-b border-[#eef2f6] p-3 text-right space-x-1.5">
+                          <td className="border-b border-[var(--surface-sunken)] p-3 text-right space-x-1.5">
                             {ref.status === "PENDING" && (
                               <button
                                 className="rounded bg-emerald-600 text-white font-semibold text-xs px-2.5 py-1.5 hover:bg-emerald-700 transition"

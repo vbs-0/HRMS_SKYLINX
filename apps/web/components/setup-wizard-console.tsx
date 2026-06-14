@@ -246,12 +246,12 @@ export function SetupWizardConsole() {
   }
 
   function inputClass() {
-    return "min-h-11 rounded-lg border border-[#dce2eb] px-3 text-sm text-[#172033] outline-none focus:border-brand";
+    return "min-h-11 rounded-lg border border-[var(--border-default)] px-3 text-sm text-[var(--text-primary)] outline-none focus:border-brand";
   }
 
   function checkbox(name: string, label: string, checked: boolean) {
     return (
-      <label className="flex min-h-11 items-center gap-2 rounded-lg border border-[#dce2eb] px-3 text-sm font-semibold text-[#34465f]">
+      <label className="flex min-h-11 items-center gap-2 rounded-lg border border-[var(--border-default)] px-3 text-sm font-semibold text-[var(--text-secondary)]">
         <input defaultChecked={checked} name={name} type="checkbox" />
         {label}
       </label>
@@ -266,7 +266,7 @@ export function SetupWizardConsole() {
         <div className="flex flex-wrap gap-2">
           {tabs.map(({ key, label, icon: Icon }) => (
             <button
-              className={`inline-flex min-h-11 items-center gap-2 rounded-lg px-4 text-sm font-bold ${activeTab === key ? "bg-brand text-white" : "border border-[#dce2eb] bg-white text-[#34465f]"}`}
+              className={`inline-flex min-h-11 items-center gap-2 rounded-lg px-4 text-sm font-bold ${activeTab === key ? "bg-brand text-white" : "border border-[var(--border-default)] bg-white text-[var(--text-secondary)]"}`}
               key={key}
               onClick={() => {
                 setActiveTab(key);
@@ -282,7 +282,7 @@ export function SetupWizardConsole() {
         </div>
       </Card>
 
-      {message ? <div className="rounded-lg bg-[#e6f5ef] p-3 text-sm font-semibold text-[#18865a]">{message}</div> : null}
+      {message ? <div className="rounded-lg bg-[var(--success-bg)] p-3 text-sm font-semibold text-[var(--success-fg)]">{message}</div> : null}
       {error ? <DataState message={error} tone="error" /> : null}
 
       {activeTab === "company" ? <SetupBrandingForm /> : null}
@@ -299,7 +299,7 @@ export function SetupWizardConsole() {
               <input className={inputClass()} name="shiftEnd" defaultValue={valueText(rules.attendance.shiftEnd, "18:30")} type="time" />
               <input className={inputClass()} min="0" name="graceMinutes" defaultValue={valueNumber(rules.attendance.graceMinutes, 10)} type="number" />
             </div>
-            <textarea className="min-h-24 rounded-lg border border-[#dce2eb] px-3 py-2 text-sm outline-none focus:border-brand" name="holidayPolicy" defaultValue={valueText(rules.attendance.holidayPolicy, "Mandatory and optional holidays")} placeholder="Holiday policy" />
+            <textarea className="min-h-24 rounded-lg border border-[var(--border-default)] px-3 py-2 text-sm outline-none focus:border-brand" name="holidayPolicy" defaultValue={valueText(rules.attendance.holidayPolicy, "Mandatory and optional holidays")} placeholder="Holiday policy" />
             <SaveButton saving={saving === "workWeek"} label="Save Work Week" />
           </form>
         </Card>
@@ -311,21 +311,21 @@ export function SetupWizardConsole() {
           <form className="mt-5 grid gap-4" onSubmit={savePermissions}>
             <div className="overflow-auto">
               <table className="w-full min-w-[760px] border-collapse text-sm">
-                <thead className="bg-[#f8fafc] text-left text-xs uppercase text-muted">
+                <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase text-muted">
                   <tr>
-                    <th className="border-b border-[#dce2eb] p-3">Module</th>
-                    {roleKeys.map((role) => <th className="border-b border-[#dce2eb] p-3" key={role.key}>{role.label}</th>)}
+                    <th className="border-b border-[var(--border-default)] p-3">Module</th>
+                    {roleKeys.map((role) => <th className="border-b border-[var(--border-default)] p-3" key={role.key}>{role.label}</th>)}
                   </tr>
                 </thead>
                 <tbody>
                   {permissionModules.map((module) => (
                     <tr key={module}>
-                      <td className="border-b border-[#eef3f8] p-3 font-semibold">{moduleLabel(module)}</td>
+                      <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold">{moduleLabel(module)}</td>
                       {roleKeys.map((role) => {
                         const values = valueList(rules.permissions[role.key]);
                         const checked = values.includes("all") || values.includes(module);
                         return (
-                          <td className="border-b border-[#eef3f8] p-3" key={role.key}>
+                          <td className="border-b border-[var(--surface-sunken)] p-3" key={role.key}>
                             <input defaultChecked={checked} name={role.key} type="checkbox" value={module} />
                           </td>
                         );
@@ -386,8 +386,8 @@ function SetupTitle({ title, note, icon: Icon }: { title: string; note: string; 
   return (
     <div className="flex flex-wrap items-start justify-between gap-3">
       <div>
-        <div className="text-xs font-bold uppercase tracking-wide text-[#8ca0bf]">Setup Wizard</div>
-        <h2 className="mt-1 text-xl font-semibold text-[#172033]">{title}</h2>
+        <div className="text-xs font-bold uppercase tracking-wide text-[var(--text-muted)]">Setup Wizard</div>
+        <h2 className="mt-1 text-xl font-semibold text-[var(--text-primary)]">{title}</h2>
         <p className="mt-1 text-sm text-muted">{note}</p>
       </div>
       <StatusPill tone="green">

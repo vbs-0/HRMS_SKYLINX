@@ -83,7 +83,7 @@ export function RewardsDashboard() {
           <h2 className="mb-4 text-lg font-semibold">Vouchers</h2>
           <div className="grid gap-3">
             {data.vouchers.map((voucher) => (
-              <div className="rounded-lg border border-[#dce2eb] p-3" key={voucher.id}>
+              <div className="rounded-lg border border-[var(--border-default)] p-3" key={voucher.id}>
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <div className="font-semibold">{voucher.title}</div>
@@ -101,7 +101,7 @@ export function RewardsDashboard() {
           <h2 className="mb-4 text-lg font-semibold">Benefits Marketplace</h2>
           <div className="grid gap-3">
             {data.benefits.map((benefit) => (
-              <div className="rounded-lg border border-[#dce2eb] p-3" key={benefit.id}>
+              <div className="rounded-lg border border-[var(--border-default)] p-3" key={benefit.id}>
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <div className="font-semibold">{benefit.title}</div>
@@ -121,23 +121,23 @@ export function RewardsDashboard() {
         <h2 className="mb-4 text-lg font-semibold">Recognition & Points Ledger</h2>
         <div className="overflow-auto">
           <table className="w-full min-w-[760px] border-collapse text-sm">
-            <thead className="bg-[#f8fafc] text-left text-xs uppercase text-muted">
+            <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase text-muted">
               <tr>
-                <th className="border-b border-[#dce2eb] p-3">Employee</th>
-                <th className="border-b border-[#dce2eb] p-3">Reason</th>
-                <th className="border-b border-[#dce2eb] p-3">Source</th>
-                <th className="border-b border-[#dce2eb] p-3">Points</th>
-                <th className="border-b border-[#dce2eb] p-3">Date</th>
+                <th className="border-b border-[var(--border-default)] p-3">Employee</th>
+                <th className="border-b border-[var(--border-default)] p-3">Reason</th>
+                <th className="border-b border-[var(--border-default)] p-3">Source</th>
+                <th className="border-b border-[var(--border-default)] p-3">Points</th>
+                <th className="border-b border-[var(--border-default)] p-3">Date</th>
               </tr>
             </thead>
             <tbody>
               {data.ledger.map((entry) => (
                 <tr key={entry.id}>
-                  <td className="border-b border-[#dce2eb] p-3 font-semibold">{entry.employee}</td>
-                  <td className="border-b border-[#dce2eb] p-3">{entry.reason}</td>
-                  <td className="border-b border-[#dce2eb] p-3">{entry.source}</td>
-                  <td className="border-b border-[#dce2eb] p-3 font-semibold">{entry.points}</td>
-                  <td className="border-b border-[#dce2eb] p-3">{entry.createdAt}</td>
+                  <td className="border-b border-[var(--border-default)] p-3 font-semibold">{entry.employee}</td>
+                  <td className="border-b border-[var(--border-default)] p-3">{entry.reason}</td>
+                  <td className="border-b border-[var(--border-default)] p-3">{entry.source}</td>
+                  <td className="border-b border-[var(--border-default)] p-3 font-semibold">{entry.points}</td>
+                  <td className="border-b border-[var(--border-default)] p-3">{entry.createdAt}</td>
                 </tr>
               ))}
             </tbody>

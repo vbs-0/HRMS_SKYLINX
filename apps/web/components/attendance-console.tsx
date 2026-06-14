@@ -84,13 +84,13 @@ export function AttendanceConsole() {
           <h2 className="mb-4 text-lg font-semibold text-slate-800 text-left">Today&apos;s Logs</h2>
           <div className="overflow-auto">
             <table className="w-full min-w-[720px] border-collapse text-sm text-left">
-              <thead className="bg-[#f8fafc] text-xs uppercase text-slate-500 tracking-wider">
+              <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
                 <tr>
-                  <th className="border-b border-[#dce2eb] p-3">Employee</th>
-                  <th className="border-b border-[#dce2eb] p-3">Date</th>
-                  <th className="border-b border-[#dce2eb] p-3">Check In</th>
-                  <th className="border-b border-[#dce2eb] p-3">Check Out</th>
-                  <th className="border-b border-[#dce2eb] p-3">Status</th>
+                  <th className="border-b border-[var(--border-default)] p-3">Employee</th>
+                  <th className="border-b border-[var(--border-default)] p-3">Date</th>
+                  <th className="border-b border-[var(--border-default)] p-3">Check In</th>
+                  <th className="border-b border-[var(--border-default)] p-3">Check Out</th>
+                  <th className="border-b border-[var(--border-default)] p-3">Status</th>
                 </tr>
               </thead>
               <AttendanceTable search={search} status={status} month={month} />
@@ -212,16 +212,16 @@ function GeoCheckInPanel() {
   };
 
   return (
-    <Card className="p-5 border border-[#e8edf4]">
+    <Card className="p-5 border border-[var(--border-subtle)]">
       <h3 className="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2">
         <Fingerprint className="h-4 w-4 text-brand" /> Quick Geo Check-In / Out
       </h3>
 
       {message && (
-        <div className="mb-3 rounded-lg bg-[#e6f5ef] px-3 py-2 text-sm text-[#18865a] font-semibold">{message}</div>
+        <div className="mb-3 rounded-lg bg-[var(--success-bg)] px-3 py-2 text-sm text-[var(--success-fg)] font-semibold">{message}</div>
       )}
       {actionError && (
-        <div className="mb-3 rounded-lg bg-[#fde8e6] px-3 py-2 text-sm text-[#ba3d37] font-semibold">{actionError}</div>
+        <div className="mb-3 rounded-lg bg-[var(--danger-bg)] px-3 py-2 text-sm text-[var(--danger-fg)] font-semibold">{actionError}</div>
       )}
 
       <div className="grid grid-cols-[1fr_auto_auto_auto] gap-3 items-end max-md:grid-cols-1">
@@ -332,11 +332,11 @@ function BulkAttendanceUploadPanel() {
 
   return (
     <div className="grid gap-6 text-left">
-      {message && <div className="rounded-lg bg-[#e6f5ef] p-3 text-sm text-[#18865a] font-semibold">{message}</div>}
-      {error && <div className="rounded-lg bg-[#fde8e6] p-3 text-sm text-[#ba3d37] font-semibold">{error}</div>}
+      {message && <div className="rounded-lg bg-[var(--success-bg)] p-3 text-sm text-[var(--success-fg)] font-semibold">{message}</div>}
+      {error && <div className="rounded-lg bg-[var(--danger-bg)] p-3 text-sm text-[var(--danger-fg)] font-semibold">{error}</div>}
 
       <div className="grid grid-cols-[1fr_2fr] gap-6 max-lg:grid-cols-1">
-        <Card className="p-5 border border-[#e8edf4]">
+        <Card className="p-5 border border-[var(--border-subtle)]">
           <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Bulk Attendance Upload</h3>
           <p className="text-xs text-slate-400 mb-4 font-normal">Upload CSV sheet to parse multiple attendance records at once.</p>
           <form onSubmit={handleUpload} className="grid gap-4">
@@ -354,7 +354,7 @@ function BulkAttendanceUploadPanel() {
             </button>
           </form>
         </Card>
-        <Card className="p-5 border border-[#e8edf4] bg-[#f8fafc]">
+        <Card className="p-5 border border-[var(--border-subtle)] bg-[var(--surface-sunken)]">
           <h4 className="text-sm font-bold text-slate-800 mb-2">CSV Format Expected:</h4>
           <p className="text-xs text-slate-500 mb-4">Your CSV must include the following headers exactly as shown:</p>
           <ul className="list-disc pl-5 text-xs text-slate-600 font-mono space-y-1 mb-4">

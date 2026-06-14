@@ -58,7 +58,7 @@ export function ComplianceConsole() {
 
   return (
     <div className="grid gap-5">
-      {message ? <div className="rounded-lg bg-[#e6f5ef] p-3 text-sm text-[#18865a]">{message}</div> : null}
+      {message ? <div className="rounded-lg bg-[var(--success-bg)] p-3 text-sm text-[var(--success-fg)]">{message}</div> : null}
       <div className="grid grid-cols-4 gap-3 max-xl:grid-cols-2 max-md:grid-cols-1">
         <MetricCard label="Active Employees" value={String(data.activeEmployees)} note="Compliance population" />
         <MetricCard label="Salary Configured" value={String(data.configuredEmployees)} note="PF, ESI, PT, TDS mapped" />
@@ -75,7 +75,7 @@ export function ComplianceConsole() {
           <div className="flex flex-wrap gap-2">
             {["pf", "esi", "pt", "tds", "form16"].map((type) => (
               <button
-                className="flex min-h-10 items-center gap-2 rounded-lg border border-[#dce2eb] px-3 text-sm font-semibold hover:border-brand"
+                className="flex min-h-10 items-center gap-2 rounded-lg border border-[var(--border-default)] px-3 text-sm font-semibold hover:border-brand"
                 key={type}
                 onClick={() => exportCompliance(type)}
               >
@@ -86,7 +86,7 @@ export function ComplianceConsole() {
         </div>
         <div className="grid grid-cols-5 gap-3 max-xl:grid-cols-3 max-lg:grid-cols-2 max-sm:grid-cols-1">
           {data.checks.map((check: ComplianceCheck) => (
-            <div className="rounded-lg border border-[#dce2eb] p-4" key={check.name}>
+            <div className="rounded-lg border border-[var(--border-default)] p-4" key={check.name}>
               <div className="mb-3 flex items-center justify-between gap-3">
                 <Landmark className="h-5 w-5 text-brand" />
                 <StatusPill tone={toneFor(check.status)}>{check.status}</StatusPill>
@@ -102,31 +102,31 @@ export function ComplianceConsole() {
         <h2 className="mb-4 text-lg font-semibold">Employee Compliance Register</h2>
         <div className="overflow-auto">
           <table className="w-full min-w-[1040px] border-collapse text-sm">
-            <thead className="bg-[#f8fafc] text-left text-xs uppercase text-muted">
+            <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase text-muted">
               <tr>
-                <th className="border-b border-[#dce2eb] p-3">Employee</th>
-                <th className="border-b border-[#dce2eb] p-3">Department</th>
-                <th className="border-b border-[#dce2eb] p-3">Annual CTC</th>
-                <th className="border-b border-[#dce2eb] p-3">PF</th>
-                <th className="border-b border-[#dce2eb] p-3">ESI</th>
-                <th className="border-b border-[#dce2eb] p-3">PT</th>
-                <th className="border-b border-[#dce2eb] p-3">TDS</th>
-                <th className="border-b border-[#dce2eb] p-3">Form 16</th>
-                <th className="border-b border-[#dce2eb] p-3">Effective</th>
+                <th className="border-b border-[var(--border-default)] p-3">Employee</th>
+                <th className="border-b border-[var(--border-default)] p-3">Department</th>
+                <th className="border-b border-[var(--border-default)] p-3">Annual CTC</th>
+                <th className="border-b border-[var(--border-default)] p-3">PF</th>
+                <th className="border-b border-[var(--border-default)] p-3">ESI</th>
+                <th className="border-b border-[var(--border-default)] p-3">PT</th>
+                <th className="border-b border-[var(--border-default)] p-3">TDS</th>
+                <th className="border-b border-[var(--border-default)] p-3">Form 16</th>
+                <th className="border-b border-[var(--border-default)] p-3">Effective</th>
               </tr>
             </thead>
             <tbody>
               {data.rows.map((row: ComplianceRow) => (
                 <tr key={row.employeeId}>
-                  <td className="border-b border-[#dce2eb] p-3 font-semibold">{row.employee}</td>
-                  <td className="border-b border-[#dce2eb] p-3">{row.department}</td>
-                  <td className="border-b border-[#dce2eb] p-3">{money(Number(row.annualCtc))}</td>
-                  <td className="border-b border-[#dce2eb] p-3">{money(Number(row.pf))}</td>
-                  <td className="border-b border-[#dce2eb] p-3">{money(Number(row.esi))}</td>
-                  <td className="border-b border-[#dce2eb] p-3">{money(Number(row.professionalTax))}</td>
-                  <td className="border-b border-[#dce2eb] p-3">{money(Number(row.tds))}</td>
-                  <td className="border-b border-[#dce2eb] p-3"><StatusPill tone={toneFor(row.form16Status)}>{row.form16Status}</StatusPill></td>
-                  <td className="border-b border-[#dce2eb] p-3">{String(row.effectiveFrom).slice(0, 10)}</td>
+                  <td className="border-b border-[var(--border-default)] p-3 font-semibold">{row.employee}</td>
+                  <td className="border-b border-[var(--border-default)] p-3">{row.department}</td>
+                  <td className="border-b border-[var(--border-default)] p-3">{money(Number(row.annualCtc))}</td>
+                  <td className="border-b border-[var(--border-default)] p-3">{money(Number(row.pf))}</td>
+                  <td className="border-b border-[var(--border-default)] p-3">{money(Number(row.esi))}</td>
+                  <td className="border-b border-[var(--border-default)] p-3">{money(Number(row.professionalTax))}</td>
+                  <td className="border-b border-[var(--border-default)] p-3">{money(Number(row.tds))}</td>
+                  <td className="border-b border-[var(--border-default)] p-3"><StatusPill tone={toneFor(row.form16Status)}>{row.form16Status}</StatusPill></td>
+                  <td className="border-b border-[var(--border-default)] p-3">{String(row.effectiveFrom).slice(0, 10)}</td>
                 </tr>
               ))}
             </tbody>

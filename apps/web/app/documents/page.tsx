@@ -37,13 +37,13 @@ export default function DocumentsPage() {
         </div>
         <div className="overflow-auto">
           <table className="w-full min-w-[760px] border-collapse text-sm">
-            <thead className="bg-[#f8fafc] text-left text-xs uppercase text-muted">
+            <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase text-muted">
               <tr>
-                <th className="border-b border-[#dce2eb] p-3">Employee</th>
-                <th className="border-b border-[#dce2eb] p-3">Document</th>
-                <th className="border-b border-[#dce2eb] p-3">Expiry</th>
-                <th className="border-b border-[#dce2eb] p-3">File</th>
-                <th className="border-b border-[#dce2eb] p-3">Status</th>
+                <th className="border-b border-[var(--border-default)] p-3">Employee</th>
+                <th className="border-b border-[var(--border-default)] p-3">Document</th>
+                <th className="border-b border-[var(--border-default)] p-3">Expiry</th>
+                <th className="border-b border-[var(--border-default)] p-3">File</th>
+                <th className="border-b border-[var(--border-default)] p-3">Status</th>
               </tr>
             </thead>
             <DocumentsTable />

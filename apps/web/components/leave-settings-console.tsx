@@ -16,7 +16,7 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4">
-      <div className="relative w-full max-w-lg rounded-xl border border-[#dce2eb] bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 text-left">
+      <div className="relative w-full max-w-lg rounded-xl border border-[var(--border-default)] bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 text-left">
         <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
           <h3 className="text-lg font-bold text-slate-900">{title}</h3>
           <button
@@ -306,14 +306,14 @@ export function LeaveSettingsConsole() {
         </button>
       </div>
 
-      {message ? <div className="rounded-lg bg-[#e6f5ef] p-3 text-sm text-[#18865a] font-semibold transition-all">{message}</div> : null}
-      {error ? <div className="rounded-lg bg-[#fde8e6] p-3 text-sm text-[#ba3d37] font-semibold transition-all">{error}</div> : null}
+      {message ? <div className="rounded-lg bg-[var(--success-bg)] p-3 text-sm text-[var(--success-fg)] font-semibold transition-all">{message}</div> : null}
+      {error ? <div className="rounded-lg bg-[var(--danger-bg)] p-3 text-sm text-[var(--danger-fg)] font-semibold transition-all">{error}</div> : null}
 
       {activeConsoleTab === "rules" && (
         <>
-          <div className="flex justify-between items-center bg-white p-4 rounded-lg border border-[#e8edf4] shadow-sm text-left">
+          <div className="flex justify-between items-center bg-white p-4 rounded-lg border border-[var(--border-subtle)] shadow-sm text-left">
             <div>
-              <h3 className="text-base font-semibold text-[#172033]">Leave Policy Setup</h3>
+              <h3 className="text-base font-semibold text-[var(--text-primary)]">Leave Policy Setup</h3>
               <p className="text-xs text-muted">Configure active annual quotas, accrual intervals and probation applicability rules.</p>
             </div>
             <div className="flex gap-2">
@@ -355,26 +355,26 @@ export function LeaveSettingsConsole() {
               const isCompOff = type.code === "COMP_OFF" || type.name.toLowerCase().includes("comp");
 
               return (
-                <Card key={type.id} className="relative overflow-hidden transition-all duration-300 hover:shadow-md border border-[#e8edf4]">
+                <Card key={type.id} className="relative overflow-hidden transition-all duration-300 hover:shadow-md border border-[var(--border-subtle)]">
                   {/* Header block */}
-                  <div className="flex items-center justify-between border-b border-[#eef3f8] pb-3 mb-4">
+                  <div className="flex items-center justify-between border-b border-[var(--surface-sunken)] pb-3 mb-4">
                     <div className="grid gap-1 text-left">
                       {isEditing ? (
                         <input
                           type="text"
-                          className="min-h-8 text-lg font-bold rounded border border-[#dce2eb] px-2 text-ink outline-none focus:border-brand"
+                          className="min-h-8 text-lg font-bold rounded border border-[var(--border-default)] px-2 text-ink outline-none focus:border-brand"
                           value={editForm.name || ""}
                           onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
                         />
                       ) : (
-                        <h2 className="text-xl font-bold text-[#172033]">{type.name}</h2>
+                        <h2 className="text-xl font-bold text-[var(--text-primary)]">{type.name}</h2>
                       )}
                       {/* Tabs: General Settings vs Advanced Settings */}
                       <div className="flex gap-4 mt-2">
                         <button
                           onClick={() => setActiveSubTabs({ ...activeSubTabs, [type.id]: "general" })}
                           className={`text-sm font-semibold pb-1 border-b-2 transition-all ${
-                            activeSubTab === "general" ? "border-brand text-brand" : "border-transparent text-muted hover:text-[#172033]"
+                            activeSubTab === "general" ? "border-brand text-brand" : "border-transparent text-muted hover:text-[var(--text-primary)]"
                           }`}
                         >
                           General Settings
@@ -382,7 +382,7 @@ export function LeaveSettingsConsole() {
                         <button
                           onClick={() => setActiveSubTabs({ ...activeSubTabs, [type.id]: "advanced" })}
                           className={`text-sm font-semibold pb-1 border-b-2 transition-all flex items-center gap-2 ${
-                            activeSubTab === "advanced" ? "border-brand text-brand" : "border-transparent text-muted hover:text-[#172033]"
+                            activeSubTab === "advanced" ? "border-brand text-brand" : "border-transparent text-muted hover:text-[var(--text-primary)]"
                           }`}
                         >
                           Advanced Settings <span className="inline-flex h-4 w-4 items-center justify-center rounded-full bg-amber-500 text-[10px] text-white font-bold select-none">!</span>
@@ -401,7 +401,7 @@ export function LeaveSettingsConsole() {
                           </button>
                           <button
                             onClick={handleCancel}
-                            className="p-2 rounded-lg border border-[#dce2eb] bg-white text-muted hover:bg-slate-50 transition-all flex items-center gap-1 text-xs font-semibold"
+                            className="p-2 rounded-lg border border-[var(--border-default)] bg-white text-muted hover:bg-slate-50 transition-all flex items-center gap-1 text-xs font-semibold"
                           >
                             <X className="h-4 w-4" /> Cancel
                           </button>
@@ -441,69 +441,69 @@ export function LeaveSettingsConsole() {
                     <div className="grid gap-5 text-left">
                       {/* Description block */}
                       <div className="grid gap-1">
-                        <div className="flex items-center gap-1 text-xs font-bold uppercase text-[#8ca0bf]">
+                        <div className="flex items-center gap-1 text-xs font-bold uppercase text-[var(--text-muted)]">
                           Description <Info className="h-3.5 w-3.5 text-muted cursor-help" />
                         </div>
                         {isEditing ? (
                           <textarea
-                            className="min-h-16 rounded-lg border border-[#dce2eb] p-2.5 text-sm outline-none focus:border-brand text-ink w-full"
+                            className="min-h-16 rounded-lg border border-[var(--border-default)] p-2.5 text-sm outline-none focus:border-brand text-ink w-full"
                             value={editForm.description || ""}
                             onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
                           />
                         ) : (
-                          <p className="text-sm text-[#49637f]">{type.description}</p>
+                          <p className="text-sm text-[var(--text-secondary)]">{type.description}</p>
                         )}
                       </div>
 
                       {/* Short Name block */}
                       <div className="grid gap-1">
-                        <div className="flex items-center gap-1 text-xs font-bold uppercase text-[#8ca0bf]">
+                        <div className="flex items-center gap-1 text-xs font-bold uppercase text-[var(--text-muted)]">
                           Leave Short Name <Info className="h-3.5 w-3.5 text-muted" />
                         </div>
                         {isEditing ? (
                           <input
                             type="text"
-                            className="max-w-[120px] min-h-9 rounded-lg border border-[#dce2eb] px-3 text-sm text-ink outline-none focus:border-brand"
+                            className="max-w-[120px] min-h-9 rounded-lg border border-[var(--border-default)] px-3 text-sm text-ink outline-none focus:border-brand"
                             value={editForm.code || ""}
                             onChange={(e) => setEditForm({ ...editForm, code: e.target.value })}
                           />
                         ) : (
-                          <p className="text-sm font-semibold text-[#172033]">{type.code || "--"}</p>
+                          <p className="text-sm font-semibold text-[var(--text-primary)]">{type.code || "--"}</p>
                         )}
                       </div>
 
-                      <hr className="border-[#eef3f8]" />
+                      <hr className="border-[var(--surface-sunken)]" />
 
                       {/* Leaves count table Grid */}
                       <div className="grid grid-cols-3 gap-6 max-lg:grid-cols-2 max-sm:grid-cols-1">
                         {/* Column 1: Leaves Count */}
-                        <div className="rounded-lg bg-[#f8fafc] border border-[#e8edf4] p-4">
-                          <h4 className="text-xs font-bold uppercase text-[#8ca0bf] mb-3 flex items-center gap-1">
+                        <div className="rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)] p-4">
+                          <h4 className="text-xs font-bold uppercase text-[var(--text-muted)] mb-3 flex items-center gap-1">
                             Leaves Count <Info className="h-3.5 w-3.5 text-muted" />
                           </h4>
                           <div className="grid gap-3">
                             {!isCompOff && (
                               <div>
-                                <div className="text-xs font-semibold text-[#6d7f98]">Leaves Allowed {!isPaternity && "in a Year"}</div>
+                                <div className="text-xs font-semibold text-[var(--text-muted)]">Leaves Allowed {!isPaternity && "in a Year"}</div>
                                 {isEditing ? (
                                   <input
                                     type="number"
-                                    className="mt-1 max-w-[100px] min-h-8 rounded border border-[#dce2eb] px-2 text-sm text-ink"
+                                    className="mt-1 max-w-[100px] min-h-8 rounded border border-[var(--border-default)] px-2 text-sm text-ink"
                                     value={editForm.annualQuota ?? 0}
                                     onChange={(e) => setEditForm({ ...editForm, annualQuota: Number(e.target.value) })}
                                   />
                                 ) : (
-                                  <div className="text-base font-bold text-[#172033]">{Number(type.annualQuota).toFixed(1)}</div>
+                                  <div className="text-base font-bold text-[var(--text-primary)]">{Number(type.annualQuota).toFixed(1)}</div>
                                 )}
                               </div>
                             )}
                             {!isPaternity && (
                               <>
                                 <div>
-                                  <div className="text-xs font-semibold text-[#6d7f98]">Weekends Between Leave</div>
+                                  <div className="text-xs font-semibold text-[var(--text-muted)]">Weekends Between Leave</div>
                                   {isEditing ? (
                                     <select
-                                      className="mt-1 min-h-8 rounded border border-[#dce2eb] px-2 text-sm"
+                                      className="mt-1 min-h-8 rounded border border-[var(--border-default)] px-2 text-sm"
                                       value={editForm.weekendsBetweenLeave || "Not Considered"}
                                       onChange={(e) => setEditForm({ ...editForm, weekendsBetweenLeave: e.target.value })}
                                     >
@@ -511,14 +511,14 @@ export function LeaveSettingsConsole() {
                                       <option value="Considered">Considered</option>
                                     </select>
                                   ) : (
-                                    <div className="text-sm font-semibold text-[#172033]">{type.weekendsBetweenLeave}</div>
+                                    <div className="text-sm font-semibold text-[var(--text-primary)]">{type.weekendsBetweenLeave}</div>
                                   )}
                                 </div>
                                 <div>
-                                  <div className="text-xs font-semibold text-[#6d7f98]">Holidays Between Leave</div>
+                                  <div className="text-xs font-semibold text-[var(--text-muted)]">Holidays Between Leave</div>
                                   {isEditing ? (
                                     <select
-                                      className="mt-1 min-h-8 rounded border border-[#dce2eb] px-2 text-sm"
+                                      className="mt-1 min-h-8 rounded border border-[var(--border-default)] px-2 text-sm"
                                       value={editForm.holidaysBetweenLeave || "Not Considered"}
                                       onChange={(e) => setEditForm({ ...editForm, holidaysBetweenLeave: e.target.value })}
                                     >
@@ -526,14 +526,14 @@ export function LeaveSettingsConsole() {
                                       <option value="Considered">Considered</option>
                                     </select>
                                   ) : (
-                                    <div className="text-sm font-semibold text-[#172033]">{type.holidaysBetweenLeave}</div>
+                                    <div className="text-sm font-semibold text-[var(--text-primary)]">{type.holidaysBetweenLeave}</div>
                                   )}
                                 </div>
                                 <div>
-                                  <div className="text-xs font-semibold text-[#6d7f98]">Sandwich Rule Enabled</div>
+                                  <div className="text-xs font-semibold text-[var(--text-muted)]">Sandwich Rule Enabled</div>
                                   {isEditing ? (
                                     <select
-                                      className="mt-1 min-h-8 rounded border border-[#dce2eb] px-2 text-sm bg-white"
+                                      className="mt-1 min-h-8 rounded border border-[var(--border-default)] px-2 text-sm bg-white"
                                       value={editForm.sandwichRuleEnabled ? "Yes" : "No"}
                                       onChange={(e) => setEditForm({ ...editForm, sandwichRuleEnabled: e.target.value === "Yes" })}
                                     >
@@ -541,7 +541,7 @@ export function LeaveSettingsConsole() {
                                       <option value="No">No</option>
                                     </select>
                                   ) : (
-                                    <div className="text-sm font-semibold text-[#172033]">{type.sandwichRuleEnabled ? "Yes" : "No"}</div>
+                                    <div className="text-sm font-semibold text-[var(--text-primary)]">{type.sandwichRuleEnabled ? "Yes" : "No"}</div>
                                   )}
                                 </div>
                               </>
@@ -551,16 +551,16 @@ export function LeaveSettingsConsole() {
 
                         {/* Column 2: Accrual */}
                         {!isPaternity && !isCompOff ? (
-                          <div className="rounded-lg bg-[#f8fafc] border border-[#e8edf4] p-4">
-                            <h4 className="text-xs font-bold uppercase text-[#8ca0bf] mb-3 flex items-center gap-1">
+                          <div className="rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)] p-4">
+                            <h4 className="text-xs font-bold uppercase text-[var(--text-muted)] mb-3 flex items-center gap-1">
                               Accrual <Info className="h-3.5 w-3.5 text-muted" />
                             </h4>
                             <div className="grid gap-3 text-sm">
                               <div>
-                                <div className="text-xs font-semibold text-[#6d7f98]">Creditable On Accrual Basis</div>
+                                <div className="text-xs font-semibold text-[var(--text-muted)]">Creditable On Accrual Basis</div>
                                 {isEditing ? (
                                   <select
-                                    className="mt-1 min-h-8 rounded border border-[#dce2eb] px-2 text-sm"
+                                    className="mt-1 min-h-8 rounded border border-[var(--border-default)] px-2 text-sm"
                                     value={editForm.creditableOnAccrual ? "Yes" : "No"}
                                     onChange={(e) => setEditForm({ ...editForm, creditableOnAccrual: e.target.value === "Yes" })}
                                   >
@@ -568,14 +568,14 @@ export function LeaveSettingsConsole() {
                                     <option value="No">No</option>
                                   </select>
                                 ) : (
-                                  <div className="font-semibold text-[#172033]">{type.creditableOnAccrual ? "Yes" : "No"}</div>
+                                  <div className="font-semibold text-[var(--text-primary)]">{type.creditableOnAccrual ? "Yes" : "No"}</div>
                                 )}
                               </div>
                               <div>
-                                <div className="text-xs font-semibold text-[#6d7f98]">Creditable On Present Day Basis</div>
+                                <div className="text-xs font-semibold text-[var(--text-muted)]">Creditable On Present Day Basis</div>
                                 {isEditing ? (
                                   <select
-                                    className="mt-1 min-h-8 rounded border border-[#dce2eb] px-2 text-sm"
+                                    className="mt-1 min-h-8 rounded border border-[var(--border-default)] px-2 text-sm"
                                     value={editForm.creditableOnPresentDay ? "Yes" : "No"}
                                     onChange={(e) => setEditForm({ ...editForm, creditableOnPresentDay: e.target.value === "Yes" })}
                                   >
@@ -583,14 +583,14 @@ export function LeaveSettingsConsole() {
                                     <option value="No">No</option>
                                   </select>
                                 ) : (
-                                  <div className="font-semibold text-[#172033]">{type.creditableOnPresentDay ? "Yes" : "No"}</div>
+                                  <div className="font-semibold text-[var(--text-primary)]">{type.creditableOnPresentDay ? "Yes" : "No"}</div>
                                 )}
                               </div>
                               <div>
-                                <div className="text-xs font-semibold text-[#6d7f98]">Accrual Frequency</div>
+                                <div className="text-xs font-semibold text-[var(--text-muted)]">Accrual Frequency</div>
                                 {isEditing ? (
                                   <select
-                                    className="mt-1 min-h-8 rounded border border-[#dce2eb] px-2 text-sm"
+                                    className="mt-1 min-h-8 rounded border border-[var(--border-default)] px-2 text-sm"
                                     value={editForm.accrualFrequency || "Monthly"}
                                     onChange={(e) => setEditForm({ ...editForm, accrualFrequency: e.target.value })}
                                   >
@@ -599,14 +599,14 @@ export function LeaveSettingsConsole() {
                                     <option value="Yearly">Yearly</option>
                                   </select>
                                 ) : (
-                                  <div className="font-semibold text-[#172033]">{type.accrualFrequency}</div>
+                                  <div className="font-semibold text-[var(--text-primary)]">{type.accrualFrequency}</div>
                                 )}
                               </div>
                               <div>
-                                <div className="text-xs font-semibold text-[#6d7f98]">Accrual Period</div>
+                                <div className="text-xs font-semibold text-[var(--text-muted)]">Accrual Period</div>
                                 {isEditing ? (
                                   <select
-                                    className="mt-1 min-h-8 rounded border border-[#dce2eb] px-2 text-sm"
+                                    className="mt-1 min-h-8 rounded border border-[var(--border-default)] px-2 text-sm"
                                     value={editForm.accrualPeriod || "Start"}
                                     onChange={(e) => setEditForm({ ...editForm, accrualPeriod: e.target.value })}
                                   >
@@ -614,7 +614,7 @@ export function LeaveSettingsConsole() {
                                     <option value="End">End</option>
                                   </select>
                                 ) : (
-                                  <div className="font-semibold text-[#172033]">{type.accrualPeriod}</div>
+                                  <div className="font-semibold text-[var(--text-primary)]">{type.accrualPeriod}</div>
                                 )}
                               </div>
                             </div>
@@ -627,16 +627,16 @@ export function LeaveSettingsConsole() {
                         )}
 
                         {/* Column 3: Applicability & Options */}
-                        <div className="rounded-lg bg-[#f8fafc] border border-[#e8edf4] p-4 col-span-1">
-                          <h4 className="text-xs font-bold uppercase text-[#8ca0bf] mb-3 flex items-center gap-1">
+                        <div className="rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)] p-4 col-span-1">
+                          <h4 className="text-xs font-bold uppercase text-[var(--text-muted)] mb-3 flex items-center gap-1">
                             Applicability <Info className="h-3.5 w-3.5 text-muted" />
                           </h4>
                           <div className="grid gap-3 text-sm">
                             <div>
-                              <div className="text-xs font-semibold text-[#6d7f98]">Allowed under Probation</div>
+                              <div className="text-xs font-semibold text-[var(--text-muted)]">Allowed under Probation</div>
                               {isEditing ? (
                                 <select
-                                  className="mt-1 min-h-8 rounded border border-[#dce2eb] px-2 text-sm"
+                                  className="mt-1 min-h-8 rounded border border-[var(--border-default)] px-2 text-sm"
                                   value={editForm.allowedUnderProbation ? "Yes" : "No"}
                                   onChange={(e) => setEditForm({ ...editForm, allowedUnderProbation: e.target.value === "Yes" })}
                                 >
@@ -644,14 +644,14 @@ export function LeaveSettingsConsole() {
                                   <option value="No">No</option>
                                 </select>
                               ) : (
-                                <div className="font-semibold text-[#172033]">{type.allowedUnderProbation ? "Yes" : "No"}</div>
+                                <div className="font-semibold text-[var(--text-primary)]">{type.allowedUnderProbation ? "Yes" : "No"}</div>
                               )}
                             </div>
                             <div>
-                              <div className="text-xs font-semibold text-[#6d7f98]">Allowed under Notice Period</div>
+                              <div className="text-xs font-semibold text-[var(--text-muted)]">Allowed under Notice Period</div>
                               {isEditing ? (
                                 <select
-                                  className="mt-1 min-h-8 rounded border border-[#dce2eb] px-2 text-sm"
+                                  className="mt-1 min-h-8 rounded border border-[var(--border-default)] px-2 text-sm"
                                   value={editForm.allowedUnderNoticePeriod ? "Yes" : "No"}
                                   onChange={(e) => setEditForm({ ...editForm, allowedUnderNoticePeriod: e.target.value === "Yes" })}
                                 >
@@ -659,16 +659,16 @@ export function LeaveSettingsConsole() {
                                   <option value="No">No</option>
                                 </select>
                               ) : (
-                                <div className="font-semibold text-[#172033]">{type.allowedUnderNoticePeriod ? "Yes" : "No"}</div>
+                                <div className="font-semibold text-[var(--text-primary)]">{type.allowedUnderNoticePeriod ? "Yes" : "No"}</div>
                               )}
                             </div>
                             {!isPaternity && !isCompOff && (
                               <>
                                 <div>
-                                  <div className="text-xs font-semibold text-[#6d7f98]">Leave Encash Enabled</div>
+                                  <div className="text-xs font-semibold text-[var(--text-muted)]">Leave Encash Enabled</div>
                                   {isEditing ? (
                                     <select
-                                      className="mt-1 min-h-8 rounded border border-[#dce2eb] px-2 text-sm"
+                                      className="mt-1 min-h-8 rounded border border-[var(--border-default)] px-2 text-sm"
                                       value={editForm.leaveEncashEnabled ? "Yes" : "No"}
                                       onChange={(e) => setEditForm({ ...editForm, leaveEncashEnabled: e.target.value === "Yes" })}
                                     >
@@ -676,14 +676,14 @@ export function LeaveSettingsConsole() {
                                       <option value="No">No</option>
                                     </select>
                                   ) : (
-                                    <div className="font-semibold text-[#172033]">{type.leaveEncashEnabled ? "Yes" : "No"}</div>
+                                    <div className="font-semibold text-[var(--text-primary)]">{type.leaveEncashEnabled ? "Yes" : "No"}</div>
                                   )}
                                 </div>
                                 <div>
-                                  <div className="text-xs font-semibold text-[#6d7f98]">Carry Forward Enabled</div>
+                                  <div className="text-xs font-semibold text-[var(--text-muted)]">Carry Forward Enabled</div>
                                   {isEditing ? (
                                     <select
-                                      className="mt-1 min-h-8 rounded border border-[#dce2eb] px-2 text-sm"
+                                      className="mt-1 min-h-8 rounded border border-[var(--border-default)] px-2 text-sm"
                                       value={editForm.carryForwardAllowed ? "Yes" : "No"}
                                       onChange={(e) => setEditForm({ ...editForm, carryForwardAllowed: e.target.value === "Yes" })}
                                     >
@@ -691,7 +691,7 @@ export function LeaveSettingsConsole() {
                                       <option value="No">No</option>
                                     </select>
                                   ) : (
-                                    <div className="font-semibold text-[#172033]">{type.carryForwardAllowed ? "Yes" : "No"}</div>
+                                    <div className="font-semibold text-[var(--text-primary)]">{type.carryForwardAllowed ? "Yes" : "No"}</div>
                                   )}
                                 </div>
                               </>
@@ -705,51 +705,51 @@ export function LeaveSettingsConsole() {
                     <div className="grid gap-5 text-left">
                       <div className="grid grid-cols-3 gap-6 max-lg:grid-cols-2 max-sm:grid-cols-1">
                         {/* Column 1: Leaves Count */}
-                        <div className="rounded-lg bg-[#f8fafc] border border-[#e8edf4] p-4">
-                          <h4 className="text-xs font-bold uppercase text-[#8ca0bf] mb-3 flex items-center gap-1">
+                        <div className="rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)] p-4">
+                          <h4 className="text-xs font-bold uppercase text-[var(--text-muted)] mb-3 flex items-center gap-1">
                             Leaves Count <Info className="h-3.5 w-3.5 text-muted" />
                           </h4>
                           <div className="grid gap-3">
                             <div>
-                              <div className="text-xs font-semibold text-[#6d7f98]">Max. Leaves Allowed in a Month</div>
+                              <div className="text-xs font-semibold text-[var(--text-muted)]">Max. Leaves Allowed in a Month</div>
                               {isEditing ? (
                                 <input
                                   type="number"
-                                  className="mt-1 max-w-[100px] min-h-8 rounded border border-[#dce2eb] px-2 text-sm text-ink"
+                                  className="mt-1 max-w-[100px] min-h-8 rounded border border-[var(--border-default)] px-2 text-sm text-ink"
                                   value={editForm.maxLeavesPerMonth ?? 31}
                                   onChange={(e) => setEditForm({ ...editForm, maxLeavesPerMonth: Number(e.target.value) })}
                                 />
                               ) : (
-                                <div className="text-base font-bold text-[#172033]">{Number(type.maxLeavesPerMonth ?? 31).toFixed(2)}</div>
+                                <div className="text-base font-bold text-[var(--text-primary)]">{Number(type.maxLeavesPerMonth ?? 31).toFixed(2)}</div>
                               )}
                             </div>
                             <div>
-                              <div className="text-xs font-semibold text-[#6d7f98]">Continuous Leaves Allowed</div>
+                              <div className="text-xs font-semibold text-[var(--text-muted)]">Continuous Leaves Allowed</div>
                               {isEditing ? (
                                 <input
                                   type="number"
-                                  className="mt-1 max-w-[100px] min-h-8 rounded border border-[#dce2eb] px-2 text-sm text-ink"
+                                  className="mt-1 max-w-[100px] min-h-8 rounded border border-[var(--border-default)] px-2 text-sm text-ink"
                                   value={editForm.maxContinuousLeaves ?? 31}
                                   onChange={(e) => setEditForm({ ...editForm, maxContinuousLeaves: Number(e.target.value) })}
                                 />
                               ) : (
-                                <div className="text-sm font-bold text-[#172033]">{type.maxContinuousLeaves ?? 31}</div>
+                                <div className="text-sm font-bold text-[var(--text-primary)]">{type.maxContinuousLeaves ?? 31}</div>
                               )}
                             </div>
                           </div>
                         </div>
 
                         {/* Column 2: Applicability */}
-                        <div className="rounded-lg bg-[#f8fafc] border border-[#e8edf4] p-4">
-                          <h4 className="text-xs font-bold uppercase text-[#8ca0bf] mb-3 flex items-center gap-1">
+                        <div className="rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)] p-4">
+                          <h4 className="text-xs font-bold uppercase text-[var(--text-muted)] mb-3 flex items-center gap-1">
                             Applicability <Info className="h-3.5 w-3.5 text-muted" />
                           </h4>
                           <div className="grid gap-3">
                             <div>
-                              <div className="text-xs font-semibold text-[#6d7f98]">Negative Leaves Allowed</div>
+                              <div className="text-xs font-semibold text-[var(--text-muted)]">Negative Leaves Allowed</div>
                               {isEditing ? (
                                 <select
-                                  className="mt-1 min-h-8 rounded border border-[#dce2eb] px-2 text-sm bg-white"
+                                  className="mt-1 min-h-8 rounded border border-[var(--border-default)] px-2 text-sm bg-white"
                                   value={editForm.negativeLeavesAllowed ? "Yes" : "No"}
                                   onChange={(e) => setEditForm({ ...editForm, negativeLeavesAllowed: e.target.value === "Yes" })}
                                 >
@@ -757,23 +757,23 @@ export function LeaveSettingsConsole() {
                                   <option value="No">No</option>
                                 </select>
                               ) : (
-                                <div className="text-sm font-semibold text-[#172033]">{type.negativeLeavesAllowed ? "Yes" : "No"}</div>
+                                <div className="text-sm font-semibold text-[var(--text-primary)]">{type.negativeLeavesAllowed ? "Yes" : "No"}</div>
                               )}
                             </div>
                           </div>
                         </div>
 
                         {/* Column 3: Miscellaneous */}
-                        <div className="rounded-lg bg-[#f8fafc] border border-[#e8edf4] p-4">
-                          <h4 className="text-xs font-bold uppercase text-[#8ca0bf] mb-3 flex items-center gap-1">
+                        <div className="rounded-lg bg-[var(--surface-sunken)] border border-[var(--border-subtle)] p-4">
+                          <h4 className="text-xs font-bold uppercase text-[var(--text-muted)] mb-3 flex items-center gap-1">
                             Miscellaneous <Info className="h-3.5 w-3.5 text-muted" />
                           </h4>
                           <div className="grid gap-3 text-sm">
                             <div>
-                              <div className="text-xs font-semibold text-[#6d7f98]">Future-dated Leaves Allowed</div>
+                              <div className="text-xs font-semibold text-[var(--text-muted)]">Future-dated Leaves Allowed</div>
                               {isEditing ? (
                                 <select
-                                  className="mt-1 min-h-8 rounded border border-[#dce2eb] px-2 text-sm bg-white"
+                                  className="mt-1 min-h-8 rounded border border-[var(--border-default)] px-2 text-sm bg-white"
                                   value={editForm.futureDatedLeavesAllowed ? "Yes" : "No"}
                                   onChange={(e) => setEditForm({ ...editForm, futureDatedLeavesAllowed: e.target.value === "Yes" })}
                                 >
@@ -781,14 +781,14 @@ export function LeaveSettingsConsole() {
                                   <option value="No">No</option>
                                 </select>
                               ) : (
-                                <div className="font-semibold text-[#172033]">{type.futureDatedLeavesAllowed ? "Yes" : "No"}</div>
+                                <div className="font-semibold text-[var(--text-primary)]">{type.futureDatedLeavesAllowed ? "Yes" : "No"}</div>
                               )}
                             </div>
                             <div>
-                              <div className="text-xs font-semibold text-[#6d7f98]">Backdated Leaves Allowed</div>
+                              <div className="text-xs font-semibold text-[var(--text-muted)]">Backdated Leaves Allowed</div>
                               {isEditing ? (
                                 <select
-                                  className="mt-1 min-h-8 rounded border border-[#dce2eb] px-2 text-sm bg-white"
+                                  className="mt-1 min-h-8 rounded border border-[var(--border-default)] px-2 text-sm bg-white"
                                   value={editForm.backdatedLeavesAllowed ? "Yes" : "No"}
                                   onChange={(e) => setEditForm({ ...editForm, backdatedLeavesAllowed: e.target.value === "Yes" })}
                                 >
@@ -796,27 +796,27 @@ export function LeaveSettingsConsole() {
                                   <option value="No">No</option>
                                 </select>
                               ) : (
-                                <div className="font-semibold text-[#172033]">{type.backdatedLeavesAllowed ? "Yes" : "No"}</div>
+                                <div className="font-semibold text-[var(--text-primary)]">{type.backdatedLeavesAllowed ? "Yes" : "No"}</div>
                               )}
                             </div>
                             <div>
-                              <div className="text-xs font-semibold text-[#6d7f98]">Backdated Leaves Allowed up to</div>
+                              <div className="text-xs font-semibold text-[var(--text-muted)]">Backdated Leaves Allowed up to</div>
                               {isEditing ? (
                                 <input
                                   type="number"
-                                  className="mt-1 max-w-[100px] min-h-8 rounded border border-[#dce2eb] px-2 text-sm text-ink bg-white"
+                                  className="mt-1 max-w-[100px] min-h-8 rounded border border-[var(--border-default)] px-2 text-sm text-ink bg-white"
                                   value={editForm.backdatedLeavesDaysLimit ?? 90}
                                   onChange={(e) => setEditForm({ ...editForm, backdatedLeavesDaysLimit: Number(e.target.value) })}
                                 />
                               ) : (
-                                <div className="font-semibold text-[#172033]">{type.backdatedLeavesDaysLimit ?? 90} Days</div>
+                                <div className="font-semibold text-[var(--text-primary)]">{type.backdatedLeavesDaysLimit ?? 90} Days</div>
                               )}
                             </div>
                             <div>
-                              <div className="text-xs font-semibold text-[#6d7f98]">Apply Leaves for Next Year Till</div>
+                              <div className="text-xs font-semibold text-[var(--text-muted)]">Apply Leaves for Next Year Till</div>
                               {isEditing ? (
                                 <select
-                                  className="mt-1 min-h-8 rounded border border-[#dce2eb] px-2 text-sm bg-white"
+                                  className="mt-1 min-h-8 rounded border border-[var(--border-default)] px-2 text-sm bg-white"
                                   value={editForm.applyNextYearTillMonth || "February"}
                                   onChange={(e) => setEditForm({ ...editForm, applyNextYearTillMonth: e.target.value })}
                                 >
@@ -825,7 +825,7 @@ export function LeaveSettingsConsole() {
                                   ))}
                                 </select>
                               ) : (
-                                <div className="font-semibold text-[#172033]">{type.applyNextYearTillMonth || "February"}</div>
+                                <div className="font-semibold text-[var(--text-primary)]">{type.applyNextYearTillMonth || "February"}</div>
                               )}
                             </div>
                           </div>
@@ -842,7 +842,7 @@ export function LeaveSettingsConsole() {
 
       {/* Assign Leave Rules tab */}
       {activeConsoleTab === "assignments" && (
-        <div className="bg-white rounded-lg border border-[#e8edf4] p-5 shadow-sm space-y-4 text-left">
+        <div className="bg-white rounded-lg border border-[var(--border-subtle)] p-5 shadow-sm space-y-4 text-left">
           {/* Sub-header Controls */}
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
             <div className="flex flex-wrap items-center gap-3">
@@ -853,7 +853,7 @@ export function LeaveSettingsConsole() {
                   placeholder="Search"
                   value={assignSearch}
                   onChange={(e) => setAssignSearch(e.target.value)}
-                  className="min-h-10 w-full rounded-lg border border-[#cbd5e1] pl-3 pr-8 text-xs outline-none focus:border-brand"
+                  className="min-h-10 w-full rounded-lg border border-[var(--border-strong)] pl-3 pr-8 text-xs outline-none focus:border-brand"
                 />
                 <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">ðŸ”</span>
               </div>
@@ -896,7 +896,7 @@ export function LeaveSettingsConsole() {
           {/* Table */}
           <div className="overflow-x-auto">
             <table className="w-full border-collapse text-left text-xs text-slate-600">
-              <thead className="bg-[#f8fafc] text-[10px] uppercase font-bold text-slate-500 border-b">
+              <thead className="bg-[var(--surface-sunken)] text-[10px] uppercase font-bold text-slate-500 border-b">
                 <tr>
                   <th className="p-3 w-10">
                     <input
@@ -909,7 +909,7 @@ export function LeaveSettingsConsole() {
                           setSelectedEmpIds([]);
                         }
                       }}
-                      className="rounded border-[#cbd5e1] text-brand focus:ring-brand h-3.5 w-3.5"
+                      className="rounded border-[var(--border-strong)] text-brand focus:ring-brand h-3.5 w-3.5"
                     />
                   </th>
                   <th className="p-3">ID</th>
@@ -936,7 +936,7 @@ export function LeaveSettingsConsole() {
                             setSelectedEmpIds(selectedEmpIds.filter(id => id !== row.id));
                           }
                         }}
-                        className="rounded border-[#cbd5e1] text-brand focus:ring-brand h-3.5 w-3.5"
+                        className="rounded border-[var(--border-strong)] text-brand focus:ring-brand h-3.5 w-3.5"
                       />
                     </td>
                     <td className="p-3 font-semibold text-slate-700">{row.employeeCode}</td>
@@ -985,9 +985,9 @@ export function LeaveSettingsConsole() {
           <div className="flex items-center justify-between border-t border-slate-150 pt-4 text-xs font-semibold text-slate-500">
             <span>Showing 1 to {assignments.length} of {assignments.length} records</span>
             <div className="flex gap-2">
-              <button disabled className="rounded border px-3 py-1 cursor-not-allowed opacity-50 bg-[#f8fafc]">PREVIOUS</button>
+              <button disabled className="rounded border px-3 py-1 cursor-not-allowed opacity-50 bg-[var(--surface-sunken)]">PREVIOUS</button>
               <button className="rounded bg-brand text-white px-3 py-1">1</button>
-              <button disabled className="rounded border px-3 py-1 cursor-not-allowed opacity-50 bg-[#f8fafc]">NEXT</button>
+              <button disabled className="rounded border px-3 py-1 cursor-not-allowed opacity-50 bg-[var(--surface-sunken)]">NEXT</button>
             </div>
           </div>
         </div>
@@ -996,7 +996,7 @@ export function LeaveSettingsConsole() {
       {showAddModal && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-xl border border-slate-200 shadow-xl w-full max-w-2xl overflow-hidden max-h-[90vh] flex flex-col">
-            <div className="bg-[#1f2a44] text-white p-4 font-semibold text-sm flex justify-between items-center">
+            <div className="bg-[var(--text-primary)] text-white p-4 font-semibold text-sm flex justify-between items-center">
               <span>Create Custom Leave Type</span>
               <button onClick={() => setShowAddModal(false)} className="text-white/60 hover:text-white text-lg font-bold">Ã—</button>
             </div>
@@ -1304,7 +1304,7 @@ export function LeaveSettingsConsole() {
       <Modal isOpen={showAssignPopup} onClose={() => setShowAssignPopup(false)} title="Assign Leave Rules">
         <form className="grid gap-4 text-left" onSubmit={handleAssignRules}>
           <div>
-            <label className="mb-1 block text-xs font-bold text-[#49637f]">Selected Employees ({selectedEmpIds.length})</label>
+            <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Selected Employees ({selectedEmpIds.length})</label>
             <div className="max-h-24 overflow-y-auto border rounded p-2.5 bg-slate-50 text-xs font-semibold text-ink leading-relaxed">
               {selectedEmpIds.length === 0 ? (
                 <span className="text-rose-500 font-bold">No employees selected. Select employees using the table checkboxes first.</span>
@@ -1317,7 +1317,7 @@ export function LeaveSettingsConsole() {
             </div>
           </div>
           <div>
-            <label className="mb-1 block text-xs font-bold text-[#49637f]">Select Leave Rules to Assign</label>
+            <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Select Leave Rules to Assign</label>
             <div className="max-h-48 overflow-y-auto space-y-2 border rounded p-3 bg-white">
               {types.map((t) => (
                 <label key={t.id} className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer select-none">
@@ -1331,7 +1331,7 @@ export function LeaveSettingsConsole() {
                         setSelectedAssignTypes(selectedAssignTypes.filter(id => id !== t.id));
                       }
                     }}
-                    className="rounded border-[#cbd5e1] text-brand focus:ring-brand h-3.5 w-3.5"
+                    className="rounded border-[var(--border-strong)] text-brand focus:ring-brand h-3.5 w-3.5"
                   />
                   <span>{t.name} ({t.code})</span>
                 </label>
@@ -1340,12 +1340,12 @@ export function LeaveSettingsConsole() {
           </div>
 
           <div>
-            <label className="mb-1 block text-xs font-bold text-[#49637f]">Effective Date</label>
+            <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Effective Date</label>
             <input
               type="date"
               value={assignEffectiveDate}
               onChange={(e) => setAssignEffectiveDate(e.target.value)}
-              className="w-full min-h-10 rounded-lg border border-[#dce2eb] bg-white px-3 text-sm text-[#172033] outline-none"
+              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none"
               required
             />
           </div>
@@ -1353,7 +1353,7 @@ export function LeaveSettingsConsole() {
           <div className="flex gap-2 justify-end border-t pt-3 mt-2">
             <button
               type="button"
-              className="min-h-10 rounded-lg border border-[#dce2eb] bg-white px-4 text-sm font-semibold text-[#34465f]"
+              className="min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-4 text-sm font-semibold text-[var(--text-secondary)]"
               onClick={() => setShowAssignPopup(false)}
             >
               Cancel

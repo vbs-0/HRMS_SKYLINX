@@ -712,7 +712,7 @@ export function ComplianceDash() {
             </h3>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[650px] border-collapse text-sm text-left">
-                <thead className="bg-[#f8fafc] text-xs uppercase text-slate-500 border-b">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 border-b">
                   <tr>
                     <th className="p-3">Employee</th>
                     <th className="p-3">FY / Type</th>
@@ -920,7 +920,7 @@ export function ComplianceDash() {
             </h3>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[650px] border-collapse text-sm text-left">
-                <thead className="bg-[#f8fafc] text-xs uppercase text-slate-500 border-b">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 border-b">
                   <tr>
                     <th className="p-3">Employee</th>
                     <th className="p-3">Claim Date / Category</th>
@@ -1074,7 +1074,7 @@ export function ComplianceDash() {
             </h3>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[650px] border-collapse text-sm text-left">
-                <thead className="bg-[#f8fafc] text-xs uppercase text-slate-500 border-b">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 border-b">
                   <tr>
                     <th className="p-3">Employee</th>
                     <th className="p-3">Adjustment Type</th>

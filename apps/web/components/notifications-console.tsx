@@ -63,17 +63,17 @@ export function NotificationsConsole() {
       {activeTab === "Templates" ? (
         <Card>
           <div className="mb-4">
-            <h2 className="text-lg font-semibold text-[#172033]">Notification Templates</h2>
+            <h2 className="text-lg font-semibold text-[var(--text-primary)]">Notification Templates</h2>
             <p className="text-xs text-muted">Pre-configured templates for automated alerts triggered by payroll, leave, attendance, and social updates.</p>
           </div>
           <div className="grid grid-cols-2 gap-4 max-md:grid-cols-1">
             {notificationTemplates.map((template) => (
-              <div className="rounded-lg border border-[#dce2eb] bg-white p-4 shadow-sm" key={template.title}>
-                <div className="flex items-center justify-between border-b border-[#eef3f8] pb-2">
-                  <span className="font-semibold text-[#172033]">{template.title}</span>
+              <div className="rounded-lg border border-[var(--border-default)] bg-white p-4 shadow-sm" key={template.title}>
+                <div className="flex items-center justify-between border-b border-[var(--surface-sunken)] pb-2">
+                  <span className="font-semibold text-[var(--text-primary)]">{template.title}</span>
                   <div className="flex gap-1">
                     {template.channels.map((ch) => (
-                      <span className="rounded bg-[#eef5ff] px-2 py-0.5 text-[10px] font-bold text-brand" key={ch}>
+                      <span className="rounded bg-[var(--color-brand-50)] px-2 py-0.5 text-[10px] font-bold text-brand" key={ch}>
                         {ch}
                       </span>
                     ))}
@@ -81,16 +81,16 @@ export function NotificationsConsole() {
                 </div>
                 <div className="mt-3 text-xs">
                   <div className="mb-2">
-                    <strong className="text-[#8ca0bf] uppercase text-[9px] block">Trigger Condition</strong>
+                    <strong className="text-[var(--text-muted)] uppercase text-[9px] block">Trigger Condition</strong>
                     <span className="text-ink font-semibold">{template.trigger}</span>
                   </div>
                   <div className="mb-2">
-                    <strong className="text-[#8ca0bf] uppercase text-[9px] block">Subject Line</strong>
+                    <strong className="text-[var(--text-muted)] uppercase text-[9px] block">Subject Line</strong>
                     <span className="text-ink font-semibold">{template.subject}</span>
                   </div>
                   <div>
-                    <strong className="text-[#8ca0bf] uppercase text-[9px] block">Message Body</strong>
-                    <span className="text-muted block mt-0.5 rounded bg-[#f8fafc] p-2 border border-[#e8edf4]">{template.body}</span>
+                    <strong className="text-[var(--text-muted)] uppercase text-[9px] block">Message Body</strong>
+                    <span className="text-muted block mt-0.5 rounded bg-[var(--surface-sunken)] p-2 border border-[var(--border-subtle)]">{template.body}</span>
                   </div>
                 </div>
               </div>
@@ -104,14 +104,14 @@ export function NotificationsConsole() {
           </div>
           <div className="overflow-auto">
             <table className="w-full min-w-[920px] border-collapse text-sm">
-              <thead className="bg-[#f8fafc] text-left text-xs uppercase text-muted">
+              <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase text-muted">
                 <tr>
-                  <th className="border-b border-[#dce2eb] p-3">Recipient</th>
-                  <th className="border-b border-[#dce2eb] p-3">Channel</th>
-                  <th className="border-b border-[#dce2eb] p-3">Message</th>
-                  <th className="border-b border-[#dce2eb] p-3">Queued</th>
-                  <th className="border-b border-[#dce2eb] p-3">Sent</th>
-                  <th className="border-b border-[#dce2eb] p-3">Status</th>
+                  <th className="border-b border-[var(--border-default)] p-3">Recipient</th>
+                  <th className="border-b border-[var(--border-default)] p-3">Channel</th>
+                  <th className="border-b border-[var(--border-default)] p-3">Message</th>
+                  <th className="border-b border-[var(--border-default)] p-3">Queued</th>
+                  <th className="border-b border-[var(--border-default)] p-3">Sent</th>
+                  <th className="border-b border-[var(--border-default)] p-3">Status</th>
                 </tr>
               </thead>
               <NotificationsTable activeTab={activeTab} search={search} status={status} />

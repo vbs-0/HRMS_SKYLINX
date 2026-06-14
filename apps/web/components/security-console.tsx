@@ -92,7 +92,7 @@ export function SecurityConsole() {
         <h2 className="mb-4 text-lg font-semibold">Security Controls</h2>
         <div className="grid grid-cols-3 gap-3 max-lg:grid-cols-2 max-md:grid-cols-1">
           {controls.map(({ label, note, icon: Icon, tone }) => (
-            <div className="rounded-lg border border-[#dce2eb] p-4" key={label}>
+            <div className="rounded-lg border border-[var(--border-default)] p-4" key={label}>
               <div className="flex items-center justify-between gap-3">
                 <Icon className="h-5 w-5 text-brand" />
                 <StatusPill tone={tone}>{tone === "green" ? "Active" : "Configured"}</StatusPill>
@@ -108,23 +108,23 @@ export function SecurityConsole() {
         <h2 className="mb-4 text-lg font-semibold">Audit Logs</h2>
         <div className="overflow-auto">
           <table className="w-full min-w-[860px] border-collapse text-sm">
-            <thead className="bg-[#f8fafc] text-left text-xs uppercase text-muted">
+            <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase text-muted">
               <tr>
-                <th className="border-b border-[#dce2eb] p-3">Module</th>
-                <th className="border-b border-[#dce2eb] p-3">Action</th>
-                <th className="border-b border-[#dce2eb] p-3">Entity</th>
-                <th className="border-b border-[#dce2eb] p-3">Actor</th>
-                <th className="border-b border-[#dce2eb] p-3">Date</th>
+                <th className="border-b border-[var(--border-default)] p-3">Module</th>
+                <th className="border-b border-[var(--border-default)] p-3">Action</th>
+                <th className="border-b border-[var(--border-default)] p-3">Entity</th>
+                <th className="border-b border-[var(--border-default)] p-3">Actor</th>
+                <th className="border-b border-[var(--border-default)] p-3">Date</th>
               </tr>
             </thead>
             <tbody>
               {auditLogs.map((log) => (
                 <tr key={log.id}>
-                  <td className="border-b border-[#dce2eb] p-3 font-semibold">{log.module}</td>
-                  <td className="border-b border-[#dce2eb] p-3">{log.action}</td>
-                  <td className="border-b border-[#dce2eb] p-3">{log.entityType} / {log.entityId}</td>
-                  <td className="border-b border-[#dce2eb] p-3">{log.actor}</td>
-                  <td className="border-b border-[#dce2eb] p-3">{log.createdAt}</td>
+                  <td className="border-b border-[var(--border-default)] p-3 font-semibold">{log.module}</td>
+                  <td className="border-b border-[var(--border-default)] p-3">{log.action}</td>
+                  <td className="border-b border-[var(--border-default)] p-3">{log.entityType} / {log.entityId}</td>
+                  <td className="border-b border-[var(--border-default)] p-3">{log.actor}</td>
+                  <td className="border-b border-[var(--border-default)] p-3">{log.createdAt}</td>
                 </tr>
               ))}
             </tbody>

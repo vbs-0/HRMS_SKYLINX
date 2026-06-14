@@ -188,13 +188,13 @@ export function InsuranceConsole() {
       )}
 
       {activeTab === "Employee Insurance" && (
-        <Card className="border border-[#e8edf4] text-left overflow-hidden">
+        <Card className="border border-[var(--border-subtle)] text-left overflow-hidden">
           <div className="mb-4 flex items-center justify-between gap-3">
-            <h2 className="text-lg font-bold text-[#172033]">Employee Insurance Policies</h2>
+            <h2 className="text-lg font-bold text-[var(--text-primary)]">Employee Insurance Policies</h2>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[900px] border-collapse text-sm text-[#49637f]">
-              <thead className="bg-[#f8fafc] text-left text-xs uppercase font-bold text-slate-500 border-b">
+            <table className="w-full min-w-[900px] border-collapse text-sm text-[var(--text-secondary)]">
+              <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase font-bold text-slate-500 border-b">
                 <tr>
                   <th className="p-3">Employee</th>
                   <th className="p-3">Provider</th>
@@ -213,13 +213,13 @@ export function InsuranceConsole() {
       )}
 
       {activeTab === "Dependents" && (
-        <Card className="border border-[#e8edf4] text-left overflow-hidden">
+        <Card className="border border-[var(--border-subtle)] text-left overflow-hidden">
           <div className="mb-4 flex items-center justify-between gap-3">
-            <h2 className="text-lg font-bold text-[#172033]">Registered Insurance Dependents</h2>
+            <h2 className="text-lg font-bold text-[var(--text-primary)]">Registered Insurance Dependents</h2>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[760px] border-collapse text-sm text-[#49637f]">
-              <thead className="bg-[#f8fafc] text-left text-xs uppercase font-bold text-slate-500 border-b">
+            <table className="w-full min-w-[760px] border-collapse text-sm text-[var(--text-secondary)]">
+              <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase font-bold text-slate-500 border-b">
                 <tr>
                   <th className="p-3">Employee</th>
                   <th className="p-3">Policy / Provider</th>
@@ -236,13 +236,13 @@ export function InsuranceConsole() {
       )}
 
       {activeTab === "Claims" && (
-        <Card className="border border-[#e8edf4] text-left overflow-hidden">
+        <Card className="border border-[var(--border-subtle)] text-left overflow-hidden">
           <div className="mb-4 flex items-center justify-between gap-3">
-            <h2 className="text-lg font-bold text-[#172033]">Insurance Claims & Approvals</h2>
+            <h2 className="text-lg font-bold text-[var(--text-primary)]">Insurance Claims & Approvals</h2>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[900px] border-collapse text-sm text-[#49637f]">
-              <thead className="bg-[#f8fafc] text-left text-xs uppercase font-bold text-slate-500 border-b">
+            <table className="w-full min-w-[900px] border-collapse text-sm text-[var(--text-secondary)]">
+              <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase font-bold text-slate-500 border-b">
                 <tr>
                   <th className="p-3">Employee</th>
                   <th className="p-3">Provider</th>

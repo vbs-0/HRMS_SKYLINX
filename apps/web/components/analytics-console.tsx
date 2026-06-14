@@ -56,7 +56,7 @@ export function AnalyticsConsole() {
         </div>
         <div className="grid grid-cols-4 gap-3 max-xl:grid-cols-2 max-md:grid-cols-1">
           {data.insights.map((insight: Insight) => (
-            <div className="rounded-lg border border-[#dce2eb] p-4" key={insight.title}>
+            <div className="rounded-lg border border-[var(--border-default)] p-4" key={insight.title}>
               <div className="mb-3 flex items-center justify-between gap-3">
                 <TrendingUp className="h-5 w-5 text-brand" />
                 <StatusPill tone={toneFor(insight.status)}>{insight.status}</StatusPill>
@@ -79,7 +79,7 @@ export function AnalyticsConsole() {
                   <span className="font-semibold">{item.department}</span>
                   <span className="text-muted">{item.count}</span>
                 </div>
-                <div className="h-2 rounded-full bg-[#e8eef5]">
+                <div className="h-2 rounded-full bg-[var(--border-subtle)]">
                   <div className="h-2 rounded-full bg-brand" style={{ width: `${Math.max(10, (item.count / maxDepartment) * 100)}%` }} />
                 </div>
               </div>
@@ -96,7 +96,7 @@ export function AnalyticsConsole() {
                   <span className="font-semibold">{item.location}</span>
                   <span className="text-muted">{item.count}</span>
                 </div>
-                <div className="h-2 rounded-full bg-[#e8eef5]">
+                <div className="h-2 rounded-full bg-[var(--border-subtle)]">
                   <div className="h-2 rounded-full bg-[#31a9d8]" style={{ width: `${Math.max(10, (item.count / maxLocation) * 100)}%` }} />
                 </div>
               </div>
@@ -122,7 +122,7 @@ export function AnalyticsConsole() {
         <h2 className="mb-4 text-lg font-semibold">Risk Signals</h2>
         <div className="grid grid-cols-3 gap-3 max-lg:grid-cols-1">
           {data.risks.map((risk: Risk) => (
-            <div className="rounded-lg border border-[#dce2eb] p-4" key={risk.name}>
+            <div className="rounded-lg border border-[var(--border-default)] p-4" key={risk.name}>
               <div className="mb-2 flex items-center justify-between gap-3">
                 <Activity className="h-5 w-5 text-brand" />
                 <StatusPill tone={toneFor(risk.status)}>{risk.status}</StatusPill>

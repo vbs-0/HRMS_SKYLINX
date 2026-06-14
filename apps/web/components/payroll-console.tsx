@@ -1127,7 +1127,10 @@ export function PayrollConsole() {
       )}
 
       {activeTab === "IT Declaration & Proofs" && (
-        <ITDeclarationProofsTab />
+        <div className="grid gap-6">
+          <ITDeclarationForm />
+          <ITDeclarationProofsTab />
+        </div>
       )}
 
       {activeTab === "Components" && (
@@ -2893,16 +2896,325 @@ interface TaxProof {
   employee?: { firstName: string; lastName: string; employeeCode: string };
 }
 
+interface Section80CBreakdown {
+  lic?: number; fd?: number; elss?: number; ulip?: number; epf?: number;
+  ppf?: number; nsc?: number; homeLoanPrincipal?: number; pension80CCC?: number;
+  tuitionFees?: number; sukanyaSamridhi?: number; nabard?: number; vpf?: number; other80C?: number;
+}
+
 interface TaxDeclaration {
   id: string;
   employeeId: string;
   financialYear: string;
   regime: string;
   section80C: number;
+  section80CBreakdown?: Section80CBreakdown;
   section80D: number;
   section24: number;
+  section80E: number;
+  section80G: number;
+  section80TTA: number;
+  section80TTB: number;
+  section80CCD: number;
+  hra: number;
+  lta: number;
+  housePropertyLoss: number;
+  previousEmployerIncome: number;
+  reimbursements: number;
   otherExemptions: number;
   status: string;
+}
+
+const EMPTY_80C: Section80CBreakdown = {
+  lic: 0, fd: 0, elss: 0, ulip: 0, epf: 0, ppf: 0, nsc: 0,
+  homeLoanPrincipal: 0, pension80CCC: 0, tuitionFees: 0,
+  sukanyaSamridhi: 0, nabard: 0, vpf: 0, other80C: 0,
+};
+
+const BREAKDOWN_80C_LABELS: { key: keyof Section80CBreakdown; label: string; readOnly?: boolean }[] = [
+  { key: "lic",              label: "Life Insurance Premium (LIC)" },
+  { key: "fd",               label: "5-Year Tax Saving Fixed Deposit" },
+  { key: "elss",             label: "ELSS / Tax Saving Mutual Funds" },
+  { key: "ulip",             label: "ULIP (Unit Linked Insurance Plan)" },
+  { key: "epf",              label: "EPF — Employee Provident Fund", readOnly: true },
+  { key: "ppf",              label: "PPF (Public Provident Fund)" },
+  { key: "nsc",              label: "NSC (National Savings Certificate)" },
+  { key: "homeLoanPrincipal",label: "Home Loan Principal Repayment" },
+  { key: "pension80CCC",     label: "Pension Fund (80CCC)" },
+  { key: "tuitionFees",      label: "Children's Tuition Fees" },
+  { key: "sukanyaSamridhi",  label: "Sukanya Samridhi Account" },
+  { key: "nabard",           label: "NABARD Rural Bonds" },
+  { key: "vpf",              label: "VPF (Voluntary Provident Fund)" },
+  { key: "other80C",         label: "Other 80C Deductions" },
+];
+
+function sum80C(bd: Section80CBreakdown) {
+  return Object.values(bd).reduce((s, v) => s + (Number(v) || 0), 0);
+}
+
+function ITDeclarationForm() {
+  const currentFY = (() => {
+    const now = new Date();
+    const yr = now.getFullYear();
+    return now.getMonth() >= 3 ? `${yr}-${yr + 1}` : `${yr - 1}-${yr}`;
+  })();
+
+  const [existing, setExisting] = useState<TaxDeclaration | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+
+  const [regime, setRegime] = useState<"NEW" | "OLD">("NEW");
+  const [breakdown80C, setBreakdown80C] = useState<Section80CBreakdown>({ ...EMPTY_80C });
+  const [show80CBreakdown, setShow80CBreakdown] = useState(false);
+  const [fields, setFields] = useState({
+    section80D: 0, section24: 0, section80E: 0, section80G: 0,
+    section80TTA: 0, section80TTB: 0, section80CCD: 0,
+    hra: 0, lta: 0, housePropertyLoss: 0,
+    previousEmployerIncome: 0, reimbursements: 0, otherExemptions: 0,
+  });
+
+  useEffect(() => {
+    apiFetch<TaxDeclaration>("/payroll/tax-declaration/me")
+      .then((res) => {
+        if (res.data) {
+          const d = res.data;
+          setExisting(d);
+          setRegime((d.regime as "NEW" | "OLD") || "NEW");
+          if (d.section80CBreakdown) setBreakdown80C({ ...EMPTY_80C, ...d.section80CBreakdown });
+          setFields({
+            section80D: Number(d.section80D) || 0,
+            section24: Number(d.section24) || 0,
+            section80E: Number(d.section80E) || 0,
+            section80G: Number(d.section80G) || 0,
+            section80TTA: Number(d.section80TTA) || 0,
+            section80TTB: Number(d.section80TTB) || 0,
+            section80CCD: Number(d.section80CCD) || 0,
+            hra: Number(d.hra) || 0,
+            lta: Number(d.lta) || 0,
+            housePropertyLoss: Number(d.housePropertyLoss) || 0,
+            previousEmployerIncome: Number(d.previousEmployerIncome) || 0,
+            reimbursements: Number(d.reimbursements) || 0,
+            otherExemptions: Number(d.otherExemptions) || 0,
+          });
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  const total80C = Math.min(sum80C(breakdown80C), 150000);
+  const totalExemptions = regime === "OLD"
+    ? total80C + fields.section80D + fields.section24 + fields.section80E +
+      fields.section80G + fields.section80TTA + fields.section80TTB +
+      fields.section80CCD + fields.hra + fields.lta + fields.housePropertyLoss +
+      fields.reimbursements + fields.otherExemptions
+    : 0;
+  const stdDed = regime === "NEW" ? 75000 : 50000;
+  const estimatedSaving = Math.round((totalExemptions + stdDed) * 0.20); // ~20% marginal rate estimate
+
+  function fld(name: keyof typeof fields) {
+    return (
+      <input
+        type="number" min={0}
+        className="w-full min-h-9 rounded-lg border border-slate-200 px-3 text-sm outline-none focus:border-brand"
+        value={fields[name] || ""}
+        onChange={(e) => setFields((f) => ({ ...f, [name]: Number(e.target.value) || 0 }))}
+        placeholder="0"
+      />
+    );
+  }
+
+  async function handleSave(e: React.FormEvent) {
+    e.preventDefault();
+    setSaving(true); setError(""); setMessage("");
+    try {
+      await apiFetch("/payroll/tax-declaration", {
+        method: "POST",
+        body: JSON.stringify({
+          employeeId: existing?.employeeId ?? "",
+          financialYear: currentFY,
+          regime,
+          ...(regime === "OLD" ? {
+            section80CBreakdown: breakdown80C,
+            ...fields,
+          } : {
+            otherExemptions: fields.otherExemptions,
+          }),
+        }),
+      });
+      setMessage("Declaration saved successfully.");
+    } catch (err: any) {
+      setError(err?.message ?? "Failed to save declaration");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  if (loading) return <div className="py-12 text-center text-slate-400">Loading declaration…</div>;
+
+  return (
+    <form onSubmit={handleSave} className="grid gap-5">
+      {/* Regime selector */}
+      <Card>
+        <div className="mb-4 border-b pb-4 flex items-center justify-between">
+          <div>
+            <h3 className="text-base font-semibold text-slate-800">Tax Declaration — FY {currentFY}</h3>
+            <p className="text-xs text-slate-400 mt-0.5">Choose your tax regime and declare expected investments and exemptions.</p>
+          </div>
+          {existing && (
+            <span className="text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full px-3 py-1 font-semibold">
+              Last saved: {existing.status}
+            </span>
+          )}
+        </div>
+        <div className="flex gap-4">
+          {(["NEW", "OLD"] as const).map((r) => (
+            <label key={r} className={`flex-1 cursor-pointer rounded-xl border-2 p-4 transition ${regime === r ? "border-brand bg-brand/5" : "border-slate-200 hover:border-slate-300"}`}>
+              <input type="radio" name="regime" value={r} checked={regime === r} onChange={() => setRegime(r)} className="sr-only" />
+              <div className="font-semibold text-slate-800 text-sm mb-1">{r === "NEW" ? "New Tax Regime" : "Old Tax Regime"}</div>
+              <div className="text-xs text-slate-500">
+                {r === "NEW"
+                  ? "Lower rates, no exemptions. Standard deduction ₹75,000."
+                  : "Higher rates with deductions — 80C, HRA, LTA, home loan & more. Standard deduction ₹50,000."}
+              </div>
+            </label>
+          ))}
+        </div>
+      </Card>
+
+      {regime === "OLD" && (
+        <>
+          {/* Section 80C */}
+          <Card>
+            <div className="mb-4 border-b pb-4 flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-semibold text-slate-800">Section 80C — Investments</h3>
+                <p className="text-xs text-slate-400 mt-0.5">Maximum deduction: ₹1,50,000 (combined 80C + 80CCC)</p>
+              </div>
+              <div className="text-right">
+                <div className={`text-lg font-bold ${sum80C(breakdown80C) > 150000 ? "text-amber-600" : "text-emerald-600"}`}>
+                  ₹{Math.min(sum80C(breakdown80C), 150000).toLocaleString("en-IN")}
+                </div>
+                <div className="text-xs text-slate-400">of ₹1,50,000 cap</div>
+              </div>
+            </div>
+            <button type="button" onClick={() => setShow80CBreakdown((v) => !v)}
+              className="mb-4 text-xs text-brand font-semibold hover:underline">
+              {show80CBreakdown ? "▲ Hide breakdown" : "▼ Enter category-wise breakdown (14 items)"}
+            </button>
+            {show80CBreakdown && (
+              <div className="grid grid-cols-2 gap-3 max-sm:grid-cols-1">
+                {BREAKDOWN_80C_LABELS.map(({ key, label, readOnly }) => (
+                  <div key={key}>
+                    <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">{label}</label>
+                    <input
+                      type="number" min={0}
+                      className={`w-full min-h-9 rounded-lg border px-3 text-sm outline-none focus:border-brand ${readOnly ? "bg-slate-50 border-slate-200 text-slate-400" : "border-slate-200"}`}
+                      value={breakdown80C[key] || ""}
+                      readOnly={readOnly}
+                      onChange={(e) => setBreakdown80C((b) => ({ ...b, [key]: Number(e.target.value) || 0 }))}
+                      placeholder="0"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+            {sum80C(breakdown80C) > 150000 && (
+              <div className="mt-3 rounded-lg bg-amber-50 border border-amber-200 p-3 text-xs text-amber-700">
+                Total ₹{sum80C(breakdown80C).toLocaleString("en-IN")} exceeds the ₹1,50,000 cap — only ₹1,50,000 will be applied.
+              </div>
+            )}
+          </Card>
+
+          {/* Other Deductions */}
+          <Card>
+            <h3 className="text-sm font-semibold text-slate-800 mb-4 border-b pb-3">Other Deductions</h3>
+            <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
+              {([
+                ["section80D",   "80D — Medical Insurance Premium"],
+                ["section24",    "Section 24(b) — Home Loan Interest"],
+                ["section80E",   "80E — Education Loan Interest"],
+                ["section80G",   "80G — Donations to Charitable Orgs"],
+                ["section80TTA", "80TTA — Savings Interest (non-senior, max ₹10,000)"],
+                ["section80TTB", "80TTB — Savings Interest (senior citizen, max ₹50,000)"],
+                ["section80CCD", "80CCD(1B) — NPS Additional Contribution (max ₹50,000)"],
+              ] as [keyof typeof fields, string][]).map(([k, lbl]) => (
+                <div key={k}>
+                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">{lbl}</label>
+                  {fld(k)}
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          {/* Exemptions */}
+          <Card>
+            <h3 className="text-sm font-semibold text-slate-800 mb-4 border-b pb-3">Exemptions</h3>
+            <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
+              {([
+                ["hra",                    "HRA — House Rent Allowance"],
+                ["lta",                    "LTA — Leave Travel Allowance"],
+                ["housePropertyLoss",      "Loss from House Property"],
+                ["previousEmployerIncome", "Income from Previous Employer (same FY)"],
+                ["reimbursements",         "Reimbursements (meal, internet, etc.)"],
+                ["otherExemptions",        "Other Exemptions"],
+              ] as [keyof typeof fields, string][]).map(([k, lbl]) => (
+                <div key={k}>
+                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">{lbl}</label>
+                  {fld(k)}
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          {/* Summary */}
+          <Card>
+            <h3 className="text-sm font-semibold text-slate-800 mb-3 border-b pb-3">Estimated Tax Impact</h3>
+            <div className="grid grid-cols-3 gap-4 max-sm:grid-cols-1">
+              <div className="rounded-lg bg-slate-50 border border-slate-200 p-4 text-center">
+                <div className="text-lg font-bold text-slate-800">₹{(totalExemptions + stdDed).toLocaleString("en-IN")}</div>
+                <div className="text-xs text-slate-500 mt-0.5">Total Deductions (incl. std. deduction)</div>
+              </div>
+              <div className="rounded-lg bg-emerald-50 border border-emerald-200 p-4 text-center">
+                <div className="text-lg font-bold text-emerald-700">~₹{estimatedSaving.toLocaleString("en-IN")}</div>
+                <div className="text-xs text-slate-500 mt-0.5">Est. Annual Tax Saving (at ~20%)</div>
+              </div>
+              <div className="rounded-lg bg-blue-50 border border-blue-200 p-4 text-center">
+                <div className="text-lg font-bold text-blue-700">OLD Regime</div>
+                <div className="text-xs text-slate-500 mt-0.5">Std. Deduction ₹{stdDed.toLocaleString("en-IN")}</div>
+              </div>
+            </div>
+          </Card>
+        </>
+      )}
+
+      {regime === "NEW" && (
+        <Card>
+          <h3 className="text-sm font-semibold text-slate-800 mb-3 border-b pb-3">New Regime — Standard Deduction</h3>
+          <div className="rounded-lg bg-blue-50 border border-blue-200 p-4 mb-4">
+            <p className="text-sm text-blue-800 font-semibold">₹75,000 Standard Deduction applied automatically.</p>
+            <p className="text-xs text-blue-600 mt-1">Under the New Regime, most exemptions are not available. Only the standard deduction is applied.</p>
+          </div>
+          <div className="max-w-xs">
+            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Other Exemptions (if any)</label>
+            {fld("otherExemptions")}
+          </div>
+        </Card>
+      )}
+
+      {error && <div className="rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-700">{error}</div>}
+      {message && <div className="rounded-lg bg-emerald-50 border border-emerald-200 p-3 text-sm text-emerald-700">{message}</div>}
+
+      <div className="flex justify-end">
+        <button type="submit" disabled={saving}
+          className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-brand px-6 text-sm font-semibold text-white transition hover:bg-brand-dark disabled:opacity-50">
+          {saving ? "Saving…" : "Save Declaration"}
+        </button>
+      </div>
+    </form>
+  );
 }
 
 const SECTION_OPTIONS = [

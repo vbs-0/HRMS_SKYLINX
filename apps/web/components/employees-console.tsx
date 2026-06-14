@@ -78,6 +78,73 @@ interface ApiEmployeeDetail {
 }
 import { hasPermission } from "../lib/permissions";
 
+function PendingDeletionQueue() {
+  const [pending, setPending] = useState<any[]>([]);
+
+  function load() {
+    apiFetch<any[]>("/employees")
+      .then((res) => setPending((res.data || []).filter((e: any) => e.deletionStatus === "PENDING_CEO")))
+      .catch(() => {});
+  }
+
+  useEffect(() => { load(); }, []);
+  useEffect(() => onDataRefresh("employees", load), []);
+
+  if (!pending.length) return null;
+
+  return (
+    <div className="rounded-xl border border-rose-200 bg-rose-50 p-5">
+      <div className="flex items-center gap-2 mb-3">
+        <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-rose-600 text-white text-xs font-bold">
+          {pending.length}
+        </span>
+        <h3 className="text-sm font-semibold text-rose-800">Deletion Requests Awaiting Your Approval</h3>
+      </div>
+      <div className="grid gap-2">
+        {pending.map((emp: any) => (
+          <div key={emp.id} className="flex items-center justify-between rounded-lg bg-white border border-rose-200 px-4 py-3">
+            <div>
+              <span className="text-sm font-semibold text-slate-800">{emp.firstName} {emp.lastName}</span>
+              <span className="ml-2 text-xs text-slate-500">{emp.employeeCode}</span>
+              {emp.deletionRequestedAt && (
+                <span className="ml-2 text-xs text-slate-400">
+                  Requested {new Date(emp.deletionRequestedAt).toLocaleDateString("en-IN")}
+                </span>
+              )}
+            </div>
+            <div className="flex gap-2">
+              <button
+                className="inline-flex min-h-8 items-center gap-1 rounded-lg bg-rose-600 px-3 text-xs font-semibold text-white hover:bg-rose-700 transition"
+                onClick={async () => {
+                  if (confirm(`Confirm deletion of ${emp.firstName} ${emp.lastName}? They will be deactivated.`)) {
+                    try {
+                      await apiFetch(`/employees/${emp.id}/confirm-deletion`, { method: "PATCH" });
+                      requestDataRefresh("employees");
+                    } catch (err: any) { alert(err.message || "Failed"); }
+                  }
+                }}
+              >
+                Confirm Deletion
+              </button>
+              <button
+                className="inline-flex min-h-8 items-center gap-1 rounded-lg border border-slate-300 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
+                onClick={async () => {
+                  try {
+                    await apiFetch(`/employees/${emp.id}/cancel-deletion`, { method: "PATCH" });
+                    requestDataRefresh("employees");
+                  } catch (err: any) { alert(err.message || "Failed"); }
+                }}
+              >
+                Reject
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function EmployeesConsole() {
   const [activeTab, setActiveTab] = useState("All Employees");
   const [searchQuery, setSearchQuery] = useState("");
@@ -553,6 +620,8 @@ export function EmployeesConsole() {
       {/* ALL EMPLOYEES TAB */}
       {activeTab === "All Employees" && (
         <div className="grid gap-5">
+          {/* CEO — Pending Deletion Approval Queue */}
+          {hasPermission("saas.admin") && <PendingDeletionQueue />}
           {showAddPanel && (
             <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm animate-in zoom-in-95 duration-150">
               <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-800">Add New Employee Profile</h3>

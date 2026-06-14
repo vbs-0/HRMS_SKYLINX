@@ -141,7 +141,7 @@ export default function RemindersPage() {
 
       {/* Add Rule Form */}
       {showAdd && (
-        <div className="mb-6 rounded-xl border border-line bg-white p-5 shadow-sm animate-in zoom-in-95 duration-150">
+        <div className="mb-6 rounded-xl border border-line bg-raised p-5 shadow-sm animate-in zoom-in-95 duration-150">
           <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary">
             New Reminder Rule
           </h3>
@@ -151,7 +151,7 @@ export default function RemindersPage() {
               <select
                 name="event"
                 required
-                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
               >
                 <option value="">Select event</option>
                 <option value="BIRTHDAY">Birthday</option>
@@ -178,7 +178,7 @@ export default function RemindersPage() {
               <select
                 name="channel"
                 required
-                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
               >
                 <option value="EMAIL">Email</option>
                 <option value="IN_APP">In-App</option>
@@ -236,7 +236,7 @@ export default function RemindersPage() {
           {rules.map((rule) => (
             <div
               key={rule.id}
-              className={`rounded-xl border bg-white p-5 shadow-sm transition ${
+              className={`rounded-xl border bg-raised p-5 shadow-sm transition ${
                 rule.enabled ? "border-line" : "border-line opacity-60"
               }`}
             >

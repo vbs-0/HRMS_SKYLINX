@@ -574,7 +574,7 @@ export function PerformanceConsole() {
                       <h4 className="font-semibold text-text-primary text-md">{temp.name}</h4>
                       <div className="flex flex-wrap gap-2 mt-2">
                         {temp.kras.map((k: any) => (
-                          <span key={k.id} className="text-xs bg-white border border-line px-2 py-1 rounded text-text-secondary font-semibold">
+                          <span key={k.id} className="text-xs bg-raised border border-line px-2 py-1 rounded text-text-secondary font-semibold">
                             {k.title} ({k.weightagePercent}%)
                           </span>
                         ))}
@@ -620,7 +620,7 @@ export function PerformanceConsole() {
                       <div>
                         <label className="block text-xs font-semibold text-text-secondary mb-1">Self Rating (1-5)</label>
                         <select
-                          className="min-h-10 w-full rounded-lg border px-3 text-sm bg-white font-semibold"
+                          className="min-h-10 w-full rounded-lg border px-3 text-sm bg-raised font-semibold"
                           required
                           value={selfRatings[kra.id]?.rating || ""}
                           onChange={(e) =>
@@ -766,7 +766,7 @@ export function PerformanceConsole() {
                           <span className="text-xs font-semibold text-text-muted">Weightage: {kra.weightagePercent}%</span>
                         </div>
 
-                        <div className="text-xs border-l-4 border-line-strong pl-3 py-1 space-y-1 bg-white rounded p-2">
+                        <div className="text-xs border-l-4 border-line-strong pl-3 py-1 space-y-1 bg-raised rounded p-2">
                           <div className="font-semibold text-text-secondary">Employee Self Score: {goal?.selfRating ? `${goal.selfRating}/5` : "Not rated"}</div>
                           <div className="text-text-secondary font-medium">Employee Notes: {goal?.description || "No notes submitted"}</div>
                         </div>
@@ -774,7 +774,7 @@ export function PerformanceConsole() {
                         <div>
                           <label className="block text-xs font-semibold text-text-secondary mb-1">Manager Rating (1-5)</label>
                           <select
-                            className="min-h-10 w-full max-w-xs rounded-lg border px-3 text-sm bg-white font-semibold"
+                            className="min-h-10 w-full max-w-xs rounded-lg border px-3 text-sm bg-raised font-semibold"
                             required
                             value={managerRatings[kra.id]?.rating || ""}
                             onChange={(e) =>
@@ -1073,7 +1073,7 @@ export function PerformanceConsole() {
       {/* CREATE CYCLE MODAL */}
       {showCycleModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 backdrop-blur-xs p-4 animate-fade-in">
-          <div className="w-full max-w-lg rounded-xl bg-white shadow-2xl border border-line p-5 space-y-4 animate-in zoom-in-95 duration-150">
+          <div className="w-full max-w-lg rounded-xl bg-raised shadow-2xl border border-line p-5 space-y-4 animate-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b pb-3">
               <h4 className="text-md font-bold text-text-primary">Launch Appraisal Cycle</h4>
               <button className="p-1 hover:bg-sunken rounded" onClick={() => setShowCycleModal(false)}>
@@ -1126,7 +1126,7 @@ export function PerformanceConsole() {
       {/* CREATE TEMPLATE MODAL */}
       {showTemplateModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 backdrop-blur-xs p-4 animate-fade-in">
-          <div className="w-full max-w-2xl rounded-xl bg-white shadow-2xl border border-line p-5 space-y-4 animate-in zoom-in-95 duration-150">
+          <div className="w-full max-w-2xl rounded-xl bg-raised shadow-2xl border border-line p-5 space-y-4 animate-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b pb-3">
               <h4 className="text-md font-bold text-text-primary">Add Appraisal Template</h4>
               <button className="p-1 hover:bg-sunken rounded" onClick={() => setShowTemplateModal(false)}>
@@ -1223,7 +1223,7 @@ export function PerformanceConsole() {
       {/* BULK APPRAISAL MODAL */}
       {showBulkModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 backdrop-blur-xs p-4 animate-fade-in">
-          <div className="w-full max-w-lg rounded-xl bg-white shadow-2xl border border-line p-5 space-y-4 animate-in zoom-in-95 duration-150">
+          <div className="w-full max-w-lg rounded-xl bg-raised shadow-2xl border border-line p-5 space-y-4 animate-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b pb-3">
               <h4 className="text-md font-bold text-text-primary">Bulk Appraisal Creation</h4>
               <button className="p-1 hover:bg-sunken rounded" onClick={() => setShowBulkModal(false)}>
@@ -1234,7 +1234,7 @@ export function PerformanceConsole() {
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Select Appraisal Cycle</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border px-3 text-sm bg-raised"
                   required
                   value={bulkCycleId}
                   onChange={(e) => setBulkCycleId(e.target.value)}
@@ -1248,7 +1248,7 @@ export function PerformanceConsole() {
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Select KRA Template</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border px-3 text-sm bg-raised"
                   required
                   value={bulkTemplateId}
                   onChange={(e) => setBulkTemplateId(e.target.value)}
@@ -1272,7 +1272,7 @@ export function PerformanceConsole() {
       {/* DISPATCH 360 MODAL */}
       {showRequestModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 backdrop-blur-xs p-4">
-          <div className="w-full max-w-lg rounded-xl bg-white shadow-2xl border border-line p-5 space-y-4 animate-in zoom-in-95 duration-150">
+          <div className="w-full max-w-lg rounded-xl bg-raised shadow-2xl border border-line p-5 space-y-4 animate-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b pb-3">
               <h4 className="text-md font-bold text-text-primary">Request 360 Peer Review</h4>
               <button className="p-1 hover:bg-sunken rounded" onClick={() => setShowRequestModal(false)}>
@@ -1282,7 +1282,7 @@ export function PerformanceConsole() {
             <form onSubmit={handleCreateRequest} className="space-y-4">
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Feedback Requestor (Employee being reviewed)</label>
-                <select className="min-h-10 w-full rounded-lg border px-3 text-sm bg-white" name="requestorId" required>
+                <select className="min-h-10 w-full rounded-lg border px-3 text-sm bg-raised" name="requestorId" required>
                   <option value="">Select target employee...</option>
                   {employees.map(emp => (
                     <option key={emp.id} value={emp.id}>{emp.firstName} {emp.lastName} ({emp.employeeCode})</option>
@@ -1291,7 +1291,7 @@ export function PerformanceConsole() {
               </div>
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Feedback Provider (Reviewer)</label>
-                <select className="min-h-10 w-full rounded-lg border px-3 text-sm bg-white" name="providerId" required>
+                <select className="min-h-10 w-full rounded-lg border px-3 text-sm bg-raised" name="providerId" required>
                   <option value="">Select reviewer...</option>
                   {employees.map(emp => (
                     <option key={emp.id} value={emp.id}>{emp.firstName} {emp.lastName} ({emp.employeeCode})</option>
@@ -1319,7 +1319,7 @@ export function PerformanceConsole() {
       {/* PEER REVIEW RESPONSE MODAL */}
       {showResponseModal && selectedRequest && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 backdrop-blur-xs p-4">
-          <div className="w-full max-w-lg rounded-xl bg-white shadow-2xl border border-line p-5 space-y-4 animate-in zoom-in-95 duration-150">
+          <div className="w-full max-w-lg rounded-xl bg-raised shadow-2xl border border-line p-5 space-y-4 animate-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b pb-3">
               <div>
                 <h4 className="text-md font-bold text-text-primary">Submit 360 Peer Review</h4>
@@ -1338,7 +1338,7 @@ export function PerformanceConsole() {
                     <div key={cleanComp} className="flex justify-between items-center gap-3">
                       <span className="text-sm font-semibold text-text-primary">{cleanComp}</span>
                       <select
-                        className="min-h-10 rounded-lg border px-2 text-sm bg-white font-semibold"
+                        className="min-h-10 rounded-lg border px-2 text-sm bg-raised font-semibold"
                         value={peerRatings[cleanComp] || 4}
                         onChange={(e) => setPeerRatings({ ...peerRatings, [cleanComp]: Number(e.target.value) })}
                       >

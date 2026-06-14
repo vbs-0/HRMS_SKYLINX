@@ -14,7 +14,7 @@ export function AuthActions() {
 
   return (
     <button
-      className="min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-4 py-2 text-sm font-semibold text-ink"
+      className="min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-4 py-2 text-sm font-semibold text-ink"
       type="button"
       onClick={() => {
         if (hasToken) {

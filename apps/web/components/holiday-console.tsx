@@ -256,7 +256,7 @@ export function HolidayConsole() {
       {/* Add Holiday Modal Overlay */}
       {showAddModal && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl border border-line shadow-xl w-full max-w-md overflow-hidden">
+          <div className="bg-raised rounded-xl border border-line shadow-xl w-full max-w-md overflow-hidden">
             <div className="bg-[var(--text-primary)] text-white p-4 font-semibold text-sm flex justify-between items-center">
               <span>Create New Holiday</span>
               <button onClick={() => setShowAddModal(false)} className="text-white/60 hover:text-white text-lg font-bold">×</button>
@@ -343,7 +343,7 @@ export function HolidayConsole() {
             <div className="flex items-center gap-2">
               <button
                 onClick={handlePrevMonth}
-                className="h-8 w-8 rounded-lg border border-line bg-white flex items-center justify-center hover:bg-sunken"
+                className="h-8 w-8 rounded-lg border border-line bg-raised flex items-center justify-center hover:bg-sunken"
               >
                 <ChevronLeft className="h-4 w-4 text-text-secondary" />
               </button>
@@ -352,7 +352,7 @@ export function HolidayConsole() {
               </div>
               <button
                 onClick={handleNextMonth}
-                className="h-8 w-8 rounded-lg border border-line bg-white flex items-center justify-center hover:bg-sunken"
+                className="h-8 w-8 rounded-lg border border-line bg-raised flex items-center justify-center hover:bg-sunken"
               >
                 <ChevronRight className="h-4 w-4 text-text-secondary" />
               </button>
@@ -381,7 +381,7 @@ export function HolidayConsole() {
                       ? "border-[var(--surface-sunken)] bg-[var(--surface-sunken)]/50 text-text-muted"
                       : dayHolidays.length
                       ? "border-info-border bg-info-bg text-text-primary"
-                      : "border-[var(--border-subtle)] bg-white hover:bg-sunken text-text-primary"
+                      : "border-[var(--border-subtle)] bg-raised hover:bg-sunken text-text-primary"
                   }`}
                 >
                   <span className={`text-[11px] font-bold ${!cell.isCurrentMonth ? "text-text-muted" : ""}`}>
@@ -468,7 +468,7 @@ export function HolidayConsole() {
                         onClick={() => handleToggleStatus(h.id, h.status)}
                         className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-lg border transition ${
                           h.status === "ACTIVE"
-                            ? "bg-white text-text-primary border-line hover:bg-sunken"
+                            ? "bg-raised text-text-primary border-line hover:bg-sunken"
                             : "bg-[var(--color-brand-600)] text-white border-transparent hover:bg-[var(--color-brand-600)]"
                         }`}
                       >
@@ -486,7 +486,7 @@ export function HolidayConsole() {
       {/* Location Alert Modal */}
       {showLocationAlert && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-2xl">
+          <div className="w-full max-w-md rounded-xl bg-raised p-6 shadow-2xl">
             <h3 className="mb-2 text-lg font-bold text-[var(--text-primary)]">Location Settings</h3>
             <p className="text-sm text-[var(--text-secondary)] mb-6">Location configurations and holiday mapping are managed via the central organization settings module.</p>
             <div className="flex justify-end">
@@ -499,7 +499,7 @@ export function HolidayConsole() {
       {/* Rules Alert Modal */}
       {showRulesAlert && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-2xl">
+          <div className="w-full max-w-md rounded-xl bg-raised p-6 shadow-2xl">
             <h3 className="mb-2 text-lg font-bold text-[var(--text-primary)]">Holiday Rules</h3>
             <p className="text-sm text-[var(--text-secondary)] mb-6">Holiday policies and compensation rules are linked directly to the attendance and payroll calculation engines.</p>
             <div className="flex justify-end">

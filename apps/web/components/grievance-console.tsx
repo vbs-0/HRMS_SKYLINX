@@ -182,7 +182,7 @@ export function GrievanceConsole() {
         <div className="relative w-80">
           <Search className="absolute left-3 top-3 h-4 w-4 text-text-muted" />
           <input
-            className="min-h-10 w-full rounded-lg border border-[var(--border-default)] bg-white pl-9 pr-3 text-sm outline-none transition focus:border-brand"
+            className="min-h-10 w-full rounded-lg border border-[var(--border-default)] bg-raised pl-9 pr-3 text-sm outline-none transition focus:border-brand"
             placeholder="Search grievances..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
@@ -197,7 +197,7 @@ export function GrievanceConsole() {
       </div>
 
       {showAddGrievance && (
-        <div className="rounded-xl border border-line bg-white p-5 shadow-sm animate-in zoom-in-95 duration-150">
+        <div className="rounded-xl border border-line bg-raised p-5 shadow-sm animate-in zoom-in-95 duration-150">
           <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary">Log Formal Grievance</h3>
           <form onSubmit={handleRaiseGrievance} className="space-y-4">
             <div className="grid grid-cols-2 gap-4">
@@ -207,7 +207,7 @@ export function GrievanceConsole() {
               </div>
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Filing Anonymity</label>
-                <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white" name="anonymous">
+                <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised" name="anonymous">
                   <option value="false">Identified (Include my profile name)</option>
                   <option value="true">Anonymous (Conceal identity from employee against)</option>
                 </select>
@@ -288,7 +288,7 @@ export function GrievanceConsole() {
       {/* INSPECTOR & RESOLUTION MODAL */}
       {selectedGrievance && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 backdrop-blur-xs p-4">
-          <div className="w-full max-w-xl rounded-xl bg-white shadow-2xl border border-line p-6 space-y-4 animate-in zoom-in-95 duration-150">
+          <div className="w-full max-w-xl rounded-xl bg-raised shadow-2xl border border-line p-6 space-y-4 animate-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b pb-3">
               <div>
                 <h4 className="text-md font-bold text-text-primary flex items-center gap-1.5">

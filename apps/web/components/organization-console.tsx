@@ -239,7 +239,7 @@ export function OrganizationConsole() {
             </button>
 
             {isDeptDropdownOpen && (
-              <div className="absolute top-full left-0 border border-line rounded-md bg-white shadow-lg mt-1 overflow-y-auto max-h-[250px] w-full z-20">
+              <div className="absolute top-full left-0 border border-line rounded-md bg-raised shadow-lg mt-1 overflow-y-auto max-h-[250px] w-full z-20">
                 {departments.map((dept) => (
                   <button
                     key={dept.department}
@@ -329,7 +329,7 @@ export function OrganizationConsole() {
                             )}
                             
                             {/* Employee Card */}
-                            <div className="border border-line bg-white rounded-lg p-4 pt-8 text-center shadow-sm relative min-w-[180px] max-w-[200px]">
+                            <div className="border border-line bg-raised rounded-lg p-4 pt-8 text-center shadow-sm relative min-w-[180px] max-w-[200px]">
                               <div className="w-12 h-12 rounded-full border-2 border-blue-400 overflow-hidden absolute -top-6 left-1/2 -translate-x-1/2 bg-[var(--color-brand-50)] flex items-center justify-center select-none">
                                 <span className="text-sm font-bold text-info-fg">
                                   {emp.name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase()}
@@ -382,7 +382,7 @@ function EmployeeTreeNode({
   return (
     <div className="flex flex-col items-center">
       {/* Node Card */}
-      <div className="border border-blue-400 bg-white rounded-lg p-4 pt-8 text-center shadow-sm relative min-w-[200px] max-w-[220px] z-10">
+      <div className="border border-blue-400 bg-raised rounded-lg p-4 pt-8 text-center shadow-sm relative min-w-[200px] max-w-[220px] z-10">
         <div className="w-12 h-12 rounded-full border-2 border-blue-400 overflow-hidden absolute -top-6 left-1/2 -translate-x-1/2 bg-[var(--color-brand-50)] flex items-center justify-center select-none">
           <span className="text-sm font-bold text-info-fg">
             {employee.name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase()}
@@ -404,7 +404,7 @@ function EmployeeTreeNode({
           <div className="w-0.5 h-10 bg-[var(--border-strong)] relative flex justify-center">
             <button
               onClick={() => onToggleCollapse(employee.id)}
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-5 w-8 rounded border border-line bg-white flex items-center justify-center text-[10px] font-bold text-text-secondary hover:bg-sunken shadow-sm z-10 font-mono transition-all focus:outline-none"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-5 w-8 rounded border border-line bg-raised flex items-center justify-center text-[10px] font-bold text-text-secondary hover:bg-sunken shadow-sm z-10 font-mono transition-all focus:outline-none"
             >
               {isCollapsed ? `+ ${direct}` : `^ ${direct}`}
             </button>

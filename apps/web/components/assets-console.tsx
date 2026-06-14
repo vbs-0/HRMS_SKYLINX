@@ -46,7 +46,7 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4">
-      <div className="relative w-full max-w-lg rounded-xl border border-[var(--border-default)] bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 text-left">
+      <div className="relative w-full max-w-lg rounded-xl border border-[var(--border-default)] bg-raised p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 text-left">
         <div className="flex items-center justify-between border-b border-line pb-3 mb-4">
           <h3 className="text-lg font-bold text-text-primary">{title}</h3>
           <button
@@ -373,7 +373,7 @@ export function AssetsConsole() {
           <div className="col-span-2">
             <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Asset Tag / Serial No.</label>
             <input
-              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none"
+              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-3 text-sm text-[var(--text-primary)] outline-none"
               placeholder="e.g. SKY-LAP-023"
               value={newAssetTag}
               onChange={(e) => setNewAssetTag(e.target.value)}
@@ -383,7 +383,7 @@ export function AssetsConsole() {
           <div>
             <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Type</label>
             <select
-              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none"
+              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-3 text-sm text-[var(--text-primary)] outline-none"
               value={newAssetType}
               onChange={(e) => setNewAssetType(e.target.value)}
             >
@@ -396,7 +396,7 @@ export function AssetsConsole() {
           <div>
             <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Condition</label>
             <select
-              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none"
+              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-3 text-sm text-[var(--text-primary)] outline-none"
               value={newAssetCondition}
               onChange={(e) => setNewAssetCondition(e.target.value)}
             >
@@ -408,7 +408,7 @@ export function AssetsConsole() {
           <div className="col-span-2">
             <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Item Name / Description</label>
             <input
-              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none"
+              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-3 text-sm text-[var(--text-primary)] outline-none"
               placeholder="e.g. Dell Latitude 5420"
               value={newAssetItem}
               onChange={(e) => setNewAssetItem(e.target.value)}
@@ -418,7 +418,7 @@ export function AssetsConsole() {
           <div>
             <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Initial Status</label>
             <select
-              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none"
+              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-3 text-sm text-[var(--text-primary)] outline-none"
               value={newAssetStatus}
               onChange={(e) => setNewAssetStatus(e.target.value)}
             >
@@ -430,7 +430,7 @@ export function AssetsConsole() {
             <div>
               <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Assign To Employee</label>
               <select
-                className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none"
+                className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-3 text-sm text-[var(--text-primary)] outline-none"
                 value={newAssetAssignedTo}
                 onChange={(e) => setNewAssetAssignedTo(e.target.value)}
                 required
@@ -445,7 +445,7 @@ export function AssetsConsole() {
           <div className="col-span-2 flex justify-end gap-2 border-t pt-3 mt-2">
             <button
               type="button"
-              className="min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-4 text-sm font-semibold text-[var(--text-secondary)]"
+              className="min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-4 text-sm font-semibold text-[var(--text-secondary)]"
               onClick={() => setShowAddPanel(false)}
             >
               Cancel
@@ -465,7 +465,7 @@ export function AssetsConsole() {
           <div>
             <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Select Available Asset</label>
             <select
-              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none"
+              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-3 text-sm text-[var(--text-primary)] outline-none"
               value={panelAssetTag}
               onChange={(e) => setPanelAssetTag(e.target.value)}
               required
@@ -479,7 +479,7 @@ export function AssetsConsole() {
           <div>
             <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Select Employee</label>
             <select
-              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none"
+              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-3 text-sm text-[var(--text-primary)] outline-none"
               value={panelEmployeeId}
               onChange={(e) => setPanelEmployeeId(e.target.value)}
               required
@@ -493,7 +493,7 @@ export function AssetsConsole() {
           <div className="flex gap-2 justify-end border-t pt-3 mt-2">
             <button
               type="button"
-              className="min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-4 text-sm font-semibold text-[var(--text-secondary)]"
+              className="min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-4 text-sm font-semibold text-[var(--text-secondary)]"
               onClick={() => setShowAssignPanel(false)}
             >
               Cancel
@@ -513,7 +513,7 @@ export function AssetsConsole() {
           <div>
             <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Select Assigned Asset</label>
             <select
-              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none"
+              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-3 text-sm text-[var(--text-primary)] outline-none"
               value={panelAssetTag}
               onChange={(e) => setPanelAssetTag(e.target.value)}
               required
@@ -527,7 +527,7 @@ export function AssetsConsole() {
           <div>
             <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Return Condition</label>
             <select
-              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none"
+              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-3 text-sm text-[var(--text-primary)] outline-none"
               value={returnCondition}
               onChange={(e) => setReturnCondition(e.target.value)}
               required
@@ -540,7 +540,7 @@ export function AssetsConsole() {
           <div className="flex gap-2 justify-end border-t pt-3 mt-2">
             <button
               type="button"
-              className="min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-4 text-sm font-semibold text-[var(--text-secondary)]"
+              className="min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-4 text-sm font-semibold text-[var(--text-secondary)]"
               onClick={() => setShowReturnPanel(false)}
             >
               Cancel
@@ -564,7 +564,7 @@ export function AssetsConsole() {
           <div>
             <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Select Employee to Assign To</label>
             <select
-              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none"
+              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-3 text-sm text-[var(--text-primary)] outline-none"
               value={panelEmployeeId}
               onChange={(e) => setPanelEmployeeId(e.target.value)}
               required
@@ -578,7 +578,7 @@ export function AssetsConsole() {
           <div className="flex gap-2 justify-end border-t pt-3 mt-2">
             <button
               type="button"
-              className="min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-4 text-sm font-semibold text-[var(--text-secondary)]"
+              className="min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-4 text-sm font-semibold text-[var(--text-secondary)]"
               onClick={() => { setAssignTargetAsset(null); setPanelEmployeeId(""); }}
             >
               Cancel
@@ -602,7 +602,7 @@ export function AssetsConsole() {
           <div className="flex justify-end gap-2 border-t pt-3 mt-2">
             <button
               type="button"
-              className="min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-4 text-sm font-semibold text-[var(--text-secondary)]"
+              className="min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-4 text-sm font-semibold text-[var(--text-secondary)]"
               onClick={() => setDeleteTargetAsset(null)}
             >
               Cancel
@@ -635,7 +635,7 @@ export function AssetsConsole() {
               </div>
               <div className="grid grid-cols-4 gap-3 max-xl:grid-cols-2 max-md:grid-cols-1">
                 {data.categories.map((item) => (
-                  <div className="rounded-lg border border-[var(--border-default)] p-4 bg-white shadow-xs" key={item.type}>
+                  <div className="rounded-lg border border-[var(--border-default)] p-4 bg-raised shadow-xs" key={item.type}>
                     <BriefcaseBusiness className="mb-3 h-5 w-5 text-brand" />
                     <div className="font-semibold text-ink">{item.type}</div>
                     <div className="mt-2 text-2xl font-semibold text-[var(--text-primary)]">{item.count}</div>

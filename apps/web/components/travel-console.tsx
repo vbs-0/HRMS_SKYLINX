@@ -243,7 +243,7 @@ export function TravelConsole() {
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Employee</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                   value={reqEmpId}
                   onChange={(e) => setReqEmpId(e.target.value)}
                   required
@@ -430,7 +430,7 @@ export function TravelConsole() {
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Approved Travel Request</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                   value={itiReqId}
                   onChange={(e) => setItiReqId(e.target.value)}
                   required
@@ -448,7 +448,7 @@ export function TravelConsole() {
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Mode</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                   value={itiMode}
                   onChange={(e) => setItiMode(e.target.value)}
                   required
@@ -511,7 +511,7 @@ export function TravelConsole() {
                     </h4>
                     <div className="grid gap-3">
                       {r.itineraries.map((it) => (
-                        <div key={it.id} className="rounded-lg bg-white border border-line p-3 text-xs leading-relaxed">
+                        <div key={it.id} className="rounded-lg bg-raised border border-line p-3 text-xs leading-relaxed">
                           <div className="flex justify-between font-bold text-text-primary uppercase tracking-wide text-[10px]">
                             <span>{it.modeOfTravel}</span>
                             <span className="text-brand">{it.ticketNumber || "NO TICKET"}</span>

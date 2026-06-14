@@ -605,7 +605,7 @@ export function RecruitmentConsole() {
       {activeTab === "Job Openings" && (
         <div className="grid gap-5">
           {showAddPosting && (
-            <div className="rounded-xl border border-line bg-white p-5 shadow-sm animate-in zoom-in-95 duration-150">
+            <div className="rounded-xl border border-line bg-raised p-5 shadow-sm animate-in zoom-in-95 duration-150">
               <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary">Create New Job Posting</h3>
               <form onSubmit={handleAddPosting} className="grid grid-cols-3 gap-4 max-md:grid-cols-1">
                 <div>
@@ -614,14 +614,14 @@ export function RecruitmentConsole() {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Department</label>
-                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white" name="departmentId">
+                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised" name="departmentId">
                     <option value="">Select Department</option>
                     {departmentsList.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Work Location</label>
-                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white" name="locationId">
+                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised" name="locationId">
                     <option value="">Select Location</option>
                     {locationsList.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                   </select>
@@ -632,7 +632,7 @@ export function RecruitmentConsole() {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Linked Approved Requisition</label>
-                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white" name="requisitionId">
+                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised" name="requisitionId">
                     <option value="">Select Requisition (Optional)</option>
                     {requisitions
                       .filter(r => r.status === "APPROVED")
@@ -659,7 +659,7 @@ export function RecruitmentConsole() {
               <div className="relative w-72">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-text-muted" />
                 <input
-                  className="min-h-10 w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] pl-9 pr-3 text-sm outline-none transition focus:border-brand focus:bg-white"
+                  className="min-h-10 w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] pl-9 pr-3 text-sm outline-none transition focus:border-brand focus:bg-raised"
                   placeholder="Search vacancies..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -712,7 +712,7 @@ export function RecruitmentConsole() {
       {activeTab === "Candidates" && (
         <div className="grid gap-5">
           {showAddCandidate && (
-            <div className="rounded-xl border border-line bg-white p-5 shadow-sm animate-in zoom-in-95 duration-150">
+            <div className="rounded-xl border border-line bg-raised p-5 shadow-sm animate-in zoom-in-95 duration-150">
               <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary">Add Candidate Profile</h3>
               <form onSubmit={handleAddCandidate} className="grid grid-cols-3 gap-4 max-md:grid-cols-1">
                 <div>
@@ -733,7 +733,7 @@ export function RecruitmentConsole() {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Sourcing Channel</label>
-                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white" name="source">
+                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised" name="source">
                     <option value="LinkedIn">LinkedIn</option>
                     <option value="Direct Referral">Direct Referral</option>
                     <option value="Company Website">Company Careers</option>
@@ -742,7 +742,7 @@ export function RecruitmentConsole() {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Apply for Job Vacancy</label>
-                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white" name="postingId">
+                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised" name="postingId">
                     <option value="">Select open role...</option>
                     {jobPostings
                       .filter(p => p.status === "OPEN")
@@ -769,7 +769,7 @@ export function RecruitmentConsole() {
               <div className="relative w-72">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-text-muted" />
                 <input
-                  className="min-h-10 w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] pl-9 pr-3 text-sm outline-none transition focus:border-brand focus:bg-white"
+                  className="min-h-10 w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] pl-9 pr-3 text-sm outline-none transition focus:border-brand focus:bg-raised"
                   placeholder="Search candidates..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -845,7 +845,7 @@ export function RecruitmentConsole() {
       {/* CANDIDATE INSPECTOR DRAWER */}
       {selectedCandidate && (
         <div className="fixed inset-0 z-50 flex items-center justify-end bg-black/40 backdrop-blur-xs p-4">
-          <div className="h-full w-full max-w-4xl rounded-2xl bg-white shadow-2xl animate-in slide-in-from-right duration-200 border border-line flex flex-col">
+          <div className="h-full w-full max-w-4xl rounded-2xl bg-raised shadow-2xl animate-in slide-in-from-right duration-200 border border-line flex flex-col">
             <div className="flex items-center justify-between border-b p-5">
               <div>
                 <h3 className="text-lg font-bold text-text-primary">Applicant Scorecard Profile</h3>
@@ -885,7 +885,7 @@ export function RecruitmentConsole() {
                   <div className="ml-auto flex flex-col items-end gap-2">
                     <span className="text-xs text-text-muted font-semibold">Pipeline Actions:</span>
                     <select
-                      className="min-h-10 rounded-lg border border-line-strong px-3 text-xs bg-white font-semibold"
+                      className="min-h-10 rounded-lg border border-line-strong px-3 text-xs bg-raised font-semibold"
                       value={selectedCandidate.currentStage}
                       onChange={(e) => handleUpdateStage(selectedCandidate.applications![0].id, e.target.value)}
                     >
@@ -940,15 +940,15 @@ export function RecruitmentConsole() {
                     <input type="hidden" name="applicationId" value={selectedCandidate.applications[0].id} />
                     <div>
                       <label className="block text-xs font-semibold text-text-secondary mb-1">Round Name</label>
-                      <input className="min-h-10 w-full rounded-lg border bg-white px-3 text-sm" name="roundName" placeholder="Technical Round 1" required />
+                      <input className="min-h-10 w-full rounded-lg border bg-raised px-3 text-sm" name="roundName" placeholder="Technical Round 1" required />
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-text-secondary mb-1">Scheduled At</label>
-                      <input className="min-h-10 w-full rounded-lg border bg-white px-3 text-sm" name="scheduledAt" type="datetime-local" required />
+                      <input className="min-h-10 w-full rounded-lg border bg-raised px-3 text-sm" name="scheduledAt" type="datetime-local" required />
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-text-secondary mb-1">Interview Mode</label>
-                      <select className="min-h-10 w-full rounded-lg border bg-white px-3 text-sm" name="mode">
+                      <select className="min-h-10 w-full rounded-lg border bg-raised px-3 text-sm" name="mode">
                         <option value="ONLINE">Google Meet / Virtual</option>
                         <option value="IN_PERSON">In Office / Face to Face</option>
                         <option value="TELEPHONIC">Phone Call</option>
@@ -956,7 +956,7 @@ export function RecruitmentConsole() {
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-text-secondary mb-1">Select Interviewers (Ctrl + Click to multi-select)</label>
-                      <select className="min-h-20 w-full rounded-lg border bg-white px-3 py-1 text-sm" name="interviewerIds" multiple required>
+                      <select className="min-h-20 w-full rounded-lg border bg-raised px-3 py-1 text-sm" name="interviewerIds" multiple required>
                         {employees.map((emp) => (
                           <option key={emp.id} value={emp.id}>
                             {emp.firstName} {emp.lastName} ({emp.employeeCode})
@@ -965,7 +965,7 @@ export function RecruitmentConsole() {
                       </select>
                     </div>
                     <div className="col-span-2 flex justify-end gap-2 mt-1">
-                      <button className="min-h-10 rounded-lg border bg-white px-4 text-sm font-semibold hover:bg-sunken" type="button" onClick={() => setShowScheduleInterview(false)}>Cancel</button>
+                      <button className="min-h-10 rounded-lg border bg-raised px-4 text-sm font-semibold hover:bg-sunken" type="button" onClick={() => setShowScheduleInterview(false)}>Cancel</button>
                       <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white hover:bg-brand-dark" type="submit">Schedule Round</button>
                     </div>
                   </form>
@@ -982,17 +982,17 @@ export function RecruitmentConsole() {
                     <input type="hidden" name="applicationId" value={selectedCandidate.applications[0].id} />
                     <div>
                       <label className="block text-xs font-semibold text-text-secondary mb-1">Offered Annual CTC (INR)</label>
-                      <input className="min-h-10 w-full rounded-lg border bg-white px-3 text-sm" name="offeredCtc" type="number" placeholder="1200000" required />
+                      <input className="min-h-10 w-full rounded-lg border bg-raised px-3 text-sm" name="offeredCtc" type="number" placeholder="1200000" required />
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-text-secondary mb-1">Expected Joining Date</label>
-                      <input className="min-h-10 w-full rounded-lg border bg-white px-3 text-sm" name="joiningDate" type="date" required />
+                      <input className="min-h-10 w-full rounded-lg border bg-raised px-3 text-sm" name="joiningDate" type="date" required />
                     </div>
                     <p className="col-span-2 text-xs text-text-muted">
                       Standard corporate guidelines like 6-month probation and 90-day notice period will be automatically appended to the offer terms.
                     </p>
                     <div className="col-span-2 flex justify-end gap-2 mt-1">
-                      <button className="min-h-10 rounded-lg border bg-white px-4 text-sm font-semibold hover:bg-sunken" type="button" onClick={() => setShowCreateOffer(false)}>Cancel</button>
+                      <button className="min-h-10 rounded-lg border bg-raised px-4 text-sm font-semibold hover:bg-sunken" type="button" onClick={() => setShowCreateOffer(false)}>Cancel</button>
                       <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white hover:bg-brand-dark" type="submit">Issue Offer Letter</button>
                     </div>
                   </form>
@@ -1062,7 +1062,7 @@ export function RecruitmentConsole() {
       {activeTab === "Requisitions" && (
         <div className="grid gap-5">
           {showRequestRequisition && (
-            <div className="rounded-xl border border-line bg-white p-5 shadow-sm animate-in zoom-in-95 duration-150">
+            <div className="rounded-xl border border-line bg-raised p-5 shadow-sm animate-in zoom-in-95 duration-150">
               <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary">Request Headcount Budget Approval</h3>
               <form onSubmit={handleRequestRequisition} className="grid grid-cols-3 gap-4 max-md:grid-cols-1">
                 <div>
@@ -1071,14 +1071,14 @@ export function RecruitmentConsole() {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Target Department</label>
-                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white" name="departmentId" required>
+                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised" name="departmentId" required>
                     <option value="">Select Department</option>
                     {departmentsList.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Target Designation</label>
-                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white" name="designationId" required>
+                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised" name="designationId" required>
                     <option value="">Select Designation</option>
                     {designationsList.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                   </select>
@@ -1103,7 +1103,7 @@ export function RecruitmentConsole() {
               <div className="relative w-72">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-text-muted" />
                 <input
-                  className="min-h-10 w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] pl-9 pr-3 text-sm outline-none transition focus:border-brand focus:bg-white"
+                  className="min-h-10 w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] pl-9 pr-3 text-sm outline-none transition focus:border-brand focus:bg-raised"
                   placeholder="Search requisitions..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -1192,7 +1192,7 @@ export function RecruitmentConsole() {
               <div className="relative w-72">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-text-muted" />
                 <input
-                  className="min-h-10 w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] pl-9 pr-3 text-sm outline-none transition focus:border-brand focus:bg-white"
+                  className="min-h-10 w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] pl-9 pr-3 text-sm outline-none transition focus:border-brand focus:bg-raised"
                   placeholder="Search interviews..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -1266,7 +1266,7 @@ export function RecruitmentConsole() {
           {/* SUBMIT FEEDBACK SCORECARD FORM */}
           {showAddFeedback && selectedInterview && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 backdrop-blur-xs p-4">
-              <div className="w-full max-w-lg rounded-xl bg-white shadow-2xl border border-line p-5 space-y-4 animate-in zoom-in-95 duration-150">
+              <div className="w-full max-w-lg rounded-xl bg-raised shadow-2xl border border-line p-5 space-y-4 animate-in zoom-in-95 duration-150">
                 <div className="flex items-center justify-between border-b pb-3">
                   <h4 className="text-md font-bold text-text-primary">Submit Interview Scorecard</h4>
                   <button className="p-1 hover:bg-sunken rounded" onClick={() => { setShowAddFeedback(false); setSelectedInterview(null); }}>
@@ -1276,7 +1276,7 @@ export function RecruitmentConsole() {
                 <form onSubmit={handleAddFeedback} className="space-y-4">
                   <div>
                     <label className="block text-xs font-semibold text-text-secondary mb-1">Rating (1 to 5 Stars)</label>
-                    <select className="min-h-10 w-full rounded-lg border px-3 text-sm bg-white" name="rating" required>
+                    <select className="min-h-10 w-full rounded-lg border px-3 text-sm bg-raised" name="rating" required>
                       <option value="5">⭐⭐⭐⭐⭐ (Excellent)</option>
                       <option value="4">⭐⭐⭐⭐ (Good)</option>
                       <option value="3">⭐⭐⭐ (Average)</option>
@@ -1286,7 +1286,7 @@ export function RecruitmentConsole() {
                   </div>
                   <div>
                     <label className="block text-xs font-semibold text-text-secondary mb-1">Hiring Recommendation</label>
-                    <select className="min-h-10 w-full rounded-lg border px-3 text-sm bg-white" name="recommendation" required>
+                    <select className="min-h-10 w-full rounded-lg border px-3 text-sm bg-raised" name="recommendation" required>
                       <option value="HIRE">HIRE (Recommended)</option>
                       <option value="HOLD">HOLD (Conditional)</option>
                       <option value="REJECT">REJECT (Not suitable)</option>
@@ -1321,7 +1321,7 @@ export function RecruitmentConsole() {
               <div className="relative w-72">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-text-muted" />
                 <input
-                  className="min-h-10 w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] pl-9 pr-3 text-sm outline-none transition focus:border-brand focus:bg-white"
+                  className="min-h-10 w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] pl-9 pr-3 text-sm outline-none transition focus:border-brand focus:bg-raised"
                   placeholder="Search offers..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -1388,19 +1388,19 @@ export function RecruitmentConsole() {
       {activeTab === "Staffing Plans" && (
         <div className="grid gap-5">
           {showAddStaffingPlan && (
-            <div className="rounded-xl border border-line bg-white p-5 shadow-sm animate-in zoom-in-95 duration-150">
+            <div className="rounded-xl border border-line bg-raised p-5 shadow-sm animate-in zoom-in-95 duration-150">
               <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary">Create Staffing Plan</h3>
               <form onSubmit={handleAddStaffingPlan} className="grid grid-cols-3 gap-4 max-md:grid-cols-1">
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Department</label>
-                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white" name="departmentId" required>
+                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised" name="departmentId" required>
                     <option value="">Select Department</option>
                     {departmentsList.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Designation</label>
-                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white" name="designationId" required>
+                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised" name="designationId" required>
                     <option value="">Select Designation</option>
                     {designationsList.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                   </select>
@@ -1490,7 +1490,7 @@ export function RecruitmentConsole() {
       {activeTab === "Referrals" && (
         <div className="grid gap-5">
           {showAddReferral && (
-            <div className="rounded-xl border border-line bg-white p-5 shadow-sm animate-in zoom-in-95 duration-150">
+            <div className="rounded-xl border border-line bg-raised p-5 shadow-sm animate-in zoom-in-95 duration-150">
               <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary">Submit Employee Referral</h3>
               <form onSubmit={handleAddReferral} className="grid grid-cols-3 gap-4 max-md:grid-cols-1">
                 <div>
@@ -1507,7 +1507,7 @@ export function RecruitmentConsole() {
                 </div>
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Target Job Vacancy</label>
-                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white" name="jobPostingId" required>
+                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised" name="jobPostingId" required>
                     <option value="">Select Job Vacancy</option>
                     {jobPostings.map(p => <option key={p.id} value={p.id}>{p.title}</option>)}
                   </select>

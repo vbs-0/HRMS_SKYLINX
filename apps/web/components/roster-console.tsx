@@ -246,7 +246,7 @@ export function RosterConsole() {
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Select Employee</label>
               <select
-                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                 value={selectedEmp}
                 onChange={(e) => setSelectedEmp(e.target.value)}
                 required
@@ -262,7 +262,7 @@ export function RosterConsole() {
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Select Shift</label>
               <select
-                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                 value={selectedShift}
                 onChange={(e) => setSelectedShift(e.target.value)}
                 required
@@ -349,7 +349,7 @@ export function RosterConsole() {
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Select Shift</label>
               <select
-                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                 value={bulkShift}
                 onChange={(e) => setBulkShift(e.target.value)}
                 required

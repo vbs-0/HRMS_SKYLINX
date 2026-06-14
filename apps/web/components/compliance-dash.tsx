@@ -437,7 +437,7 @@ export function ComplianceDash() {
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Select Employee</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                   value={decEmp}
                   onChange={(e) => setDecEmp(e.target.value)}
                   required
@@ -455,7 +455,7 @@ export function ComplianceDash() {
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Financial Year</label>
                   <select
-                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                     value={decYear}
                     onChange={(e) => setDecYear(e.target.value)}
                     required
@@ -469,7 +469,7 @@ export function ComplianceDash() {
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Tax Regime Choice</label>
                   <select
-                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                     value={decRegime}
                     onChange={(e) => setDecRegime(e.target.value)}
                     required
@@ -489,7 +489,7 @@ export function ComplianceDash() {
                       <span>Section 80C — Investments (max ₹1,50,000)</span>
                       <span className="text-brand bg-brand-50 px-2 py-0.5 rounded text-xs">Total: ₹{dec80C}</span>
                     </summary>
-                    <div className="p-3 pt-0 grid grid-cols-2 gap-3 bg-white border-t border-line">
+                    <div className="p-3 pt-0 grid grid-cols-2 gap-3 bg-raised border-t border-line">
                       {[
                         { key: "lic", label: "LIC Premium" },
                         { key: "fd", label: "5-Year Fixed Deposit" },
@@ -626,7 +626,7 @@ export function ComplianceDash() {
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Employee</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                   value={proofEmp}
                   onChange={(e) => setProofEmp(e.target.value)}
                   required
@@ -652,7 +652,7 @@ export function ComplianceDash() {
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Exempt Type</label>
                   <select
-                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                     value={proofSection}
                     onChange={(e) => setProofSection(e.target.value)}
                     required
@@ -793,7 +793,7 @@ export function ComplianceDash() {
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Employee</label>
                   <select
-                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                     value={benefitEmp}
                     onChange={(e) => setBenefitEmp(e.target.value)}
                     required
@@ -809,7 +809,7 @@ export function ComplianceDash() {
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Benefit Head</label>
                   <select
-                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                     value={benefitName}
                     onChange={(e) => setBenefitName(e.target.value)}
                     required
@@ -846,7 +846,7 @@ export function ComplianceDash() {
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Employee</label>
                   <select
-                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                     value={benefitEmp}
                     onChange={(e) => setBenefitEmp(e.target.value)}
                     required
@@ -862,7 +862,7 @@ export function ComplianceDash() {
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Benefit Category</label>
                   <select
-                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                     value={claimName}
                     onChange={(e) => setClaimName(e.target.value)}
                     required
@@ -1001,7 +1001,7 @@ export function ComplianceDash() {
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Employee</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                   value={addEmp}
                   onChange={(e) => setAddEmp(e.target.value)}
                   required
@@ -1018,7 +1018,7 @@ export function ComplianceDash() {
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Type</label>
                   <select
-                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                     value={addType}
                     onChange={(e) => setAddType(e.target.value)}
                     required

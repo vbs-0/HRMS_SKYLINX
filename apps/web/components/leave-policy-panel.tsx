@@ -230,7 +230,7 @@ export function LeavePolicyPanel({ initialTab = "policies" }: LeavePolicyPanelPr
       {/* Leave Policies Section */}
       {activeSubTab === "policies" && (
         <div className="space-y-6 text-left">
-          <div className="flex justify-between items-center bg-white p-4 rounded-lg border border-[var(--border-subtle)] shadow-sm">
+          <div className="flex justify-between items-center bg-raised p-4 rounded-lg border border-[var(--border-subtle)] shadow-sm">
             <div>
               <h3 className="text-base font-semibold text-[var(--text-primary)]">Leave Policies</h3>
               <p className="text-xs text-muted font-medium mt-0.5">Define corporate leave policies and assign them to employees.</p>
@@ -238,7 +238,7 @@ export function LeavePolicyPanel({ initialTab = "policies" }: LeavePolicyPanelPr
             <div className="flex gap-2">
               <button
                 onClick={() => setShowAssignPolicy(true)}
-                className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-line bg-white px-4 text-xs font-bold text-text-primary hover:bg-sunken transition"
+                className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-line bg-raised px-4 text-xs font-bold text-text-primary hover:bg-sunken transition"
               >
                 <UserCheck className="h-4 w-4" /> Assign Policy
               </button>
@@ -282,7 +282,7 @@ export function LeavePolicyPanel({ initialTab = "policies" }: LeavePolicyPanelPr
       {/* Leave Block Lists Section */}
       {activeSubTab === "blocklists" && (
         <div className="space-y-6 text-left">
-          <div className="flex justify-between items-center bg-white p-4 rounded-lg border border-[var(--border-subtle)] shadow-sm">
+          <div className="flex justify-between items-center bg-raised p-4 rounded-lg border border-[var(--border-subtle)] shadow-sm">
             <div>
               <h3 className="text-base font-semibold text-[var(--text-primary)]">Leave Block Lists</h3>
               <p className="text-xs text-muted font-medium mt-0.5">Prevent leave requests during critical company periods.</p>
@@ -338,7 +338,7 @@ export function LeavePolicyPanel({ initialTab = "policies" }: LeavePolicyPanelPr
       {/* Add Policy Modal */}
       {showAddPolicy && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl text-left">
+          <div className="w-full max-w-md rounded-2xl bg-raised p-6 shadow-2xl text-left">
             <div className="flex items-center justify-between border-b pb-3 mb-4">
               <h3 className="text-base font-bold text-text-primary">Add New Leave Policy</h3>
               <button onClick={() => setShowAddPolicy(false)} className="rounded-full p-1 hover:bg-sunken">
@@ -389,7 +389,7 @@ export function LeavePolicyPanel({ initialTab = "policies" }: LeavePolicyPanelPr
       {/* Assign Policy Modal */}
       {showAssignPolicy && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl text-left">
+          <div className="w-full max-w-md rounded-2xl bg-raised p-6 shadow-2xl text-left">
             <div className="flex items-center justify-between border-b pb-3 mb-4">
               <h3 className="text-base font-bold text-text-primary">Assign Leave Policy</h3>
               <button onClick={() => setShowAssignPolicy(false)} className="rounded-full p-1 hover:bg-sunken">
@@ -403,7 +403,7 @@ export function LeavePolicyPanel({ initialTab = "policies" }: LeavePolicyPanelPr
                   required
                   value={assignForm.policyId}
                   onChange={(e) => setAssignForm({ ...assignForm, policyId: e.target.value })}
-                  className="w-full min-h-10 rounded-lg border border-line px-3 text-sm focus:border-brand outline-none bg-white"
+                  className="w-full min-h-10 rounded-lg border border-line px-3 text-sm focus:border-brand outline-none bg-raised"
                 >
                   <option value="">Select Policy</option>
                   {policies.map((p) => (
@@ -421,7 +421,7 @@ export function LeavePolicyPanel({ initialTab = "policies" }: LeavePolicyPanelPr
                     const options = Array.from(e.target.selectedOptions);
                     setAssignForm({ ...assignForm, employeeIds: options.map(o => o.value) });
                   }}
-                  className="w-full min-h-24 rounded-lg border border-line p-2 text-sm focus:border-brand outline-none bg-white"
+                  className="w-full min-h-24 rounded-lg border border-line p-2 text-sm focus:border-brand outline-none bg-raised"
                 >
                   {employees.map((emp) => (
                     <option key={emp.id} value={emp.id}>
@@ -464,7 +464,7 @@ export function LeavePolicyPanel({ initialTab = "policies" }: LeavePolicyPanelPr
       {/* Add Block List Modal */}
       {showAddBlockList && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl text-left">
+          <div className="w-full max-w-md rounded-2xl bg-raised p-6 shadow-2xl text-left">
             <div className="flex items-center justify-between border-b pb-3 mb-4">
               <h3 className="text-base font-bold text-text-primary">Add New Block List</h3>
               <button onClick={() => setShowAddBlockList(false)} className="rounded-full p-1 hover:bg-sunken">
@@ -515,7 +515,7 @@ export function LeavePolicyPanel({ initialTab = "policies" }: LeavePolicyPanelPr
       {/* Add Block Date Modal */}
       {selectedBlockListId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl text-left">
+          <div className="w-full max-w-md rounded-2xl bg-raised p-6 shadow-2xl text-left">
             <div className="flex items-center justify-between border-b pb-3 mb-4">
               <h3 className="text-base font-bold text-text-primary">Add Date to Block List</h3>
               <button onClick={() => setSelectedBlockListId(null)} className="rounded-full p-1 hover:bg-sunken">

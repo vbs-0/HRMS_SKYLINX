@@ -447,7 +447,7 @@ export function LifecycleConsole() {
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Select Employee</label>
                   <select
-                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                     value={selectedOnbEmp}
                     onChange={(e) => setSelectedOnbEmp(e.target.value)}
                     required
@@ -463,7 +463,7 @@ export function LifecycleConsole() {
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Choose Onboarding Template</label>
                   <select
-                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                     value={selectedOnbTemp}
                     onChange={(e) => setSelectedOnbTemp(e.target.value)}
                     required
@@ -603,7 +603,7 @@ export function LifecycleConsole() {
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Select Employee</label>
                   <select
-                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                     value={selectedSepEmp}
                     onChange={(e) => setSelectedSepEmp(e.target.value)}
                     required
@@ -619,7 +619,7 @@ export function LifecycleConsole() {
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Choose Separation Template</label>
                   <select
-                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                     value={selectedSepTemp}
                     onChange={(e) => setSelectedSepTemp(e.target.value)}
                     required
@@ -760,7 +760,7 @@ export function LifecycleConsole() {
                   <div>
                     <label className="block text-xs font-semibold text-text-secondary mb-1">Select Employee</label>
                     <select
-                      className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                      className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                       value={exitEmp}
                       onChange={(e) => setExitEmp(e.target.value)}
                       required
@@ -806,7 +806,7 @@ export function LifecycleConsole() {
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Interviewer (Optional)</label>
                   <select
-                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                     value={interviewerId}
                     onChange={(e) => setInterviewerId(e.target.value)}
                   >
@@ -838,7 +838,7 @@ export function LifecycleConsole() {
                   <div>
                     <label className="block text-xs font-semibold text-text-secondary mb-1">Employee</label>
                     <select
-                      className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                      className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                       value={ffEmp}
                       onChange={(e) => setFfEmp(e.target.value)}
                       required

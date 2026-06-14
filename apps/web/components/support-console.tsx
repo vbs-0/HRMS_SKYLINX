@@ -432,7 +432,7 @@ export function SupportConsole() {
                 {getFilteredQueues().map((queue) => {
                   const QueueIcon = queue.icon;
                   return (
-                    <div className="rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] p-5 hover:border-brand hover:bg-white transition-all flex flex-col justify-between" key={queue.title}>
+                    <div className="rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] p-5 hover:border-brand hover:bg-raised transition-all flex flex-col justify-between" key={queue.title}>
                       <div>
                         <div className="flex items-center justify-between gap-3">
                           <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-[var(--color-brand-50)]">
@@ -545,7 +545,7 @@ export function SupportConsole() {
                           <div className="space-y-4">
                             <div>
                               <h4 className="text-xs font-bold uppercase text-[var(--text-muted)] tracking-wide mb-1">Issue Description</h4>
-                              <p className="text-[var(--text-secondary)] bg-white p-3 rounded-lg border border-[var(--border-default)] leading-relaxed">
+                              <p className="text-[var(--text-secondary)] bg-raised p-3 rounded-lg border border-[var(--border-default)] leading-relaxed">
                                 {tkt.description}
                               </p>
                             </div>
@@ -554,7 +554,7 @@ export function SupportConsole() {
                             <div className="space-y-3 pt-2">
                               <h4 className="text-xs font-bold uppercase text-[var(--text-muted)] tracking-wide">Correspondence Log</h4>
                               {tkt.replies.map((reply, i) => (
-                                <div key={i} className="flex gap-3 items-start bg-white p-3 rounded-lg border border-[var(--surface-sunken)]">
+                                <div key={i} className="flex gap-3 items-start bg-raised p-3 rounded-lg border border-[var(--surface-sunken)]">
                                   <div className="h-8 w-8 rounded-full bg-[var(--color-brand-50)] text-brand font-bold text-xs flex items-center justify-center flex-shrink-0">
                                     {reply.author.substring(0, 2).toUpperCase()}
                                   </div>
@@ -580,7 +580,7 @@ export function SupportConsole() {
                                   value={replyText}
                                   onChange={(e) => setReplyText(e.target.value)}
                                   placeholder="Type a message or note..."
-                                  className="flex-1 min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none focus:border-brand"
+                                  className="flex-1 min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-3 text-sm text-[var(--text-primary)] outline-none focus:border-brand"
                                 />
                                 <button
                                   onClick={() => handleAddReply(tkt.id)}
@@ -669,7 +669,7 @@ export function SupportConsole() {
                   {getFilteredFAQs().map((faq) => {
                     const isFaqExpanded = expandedFaqId === faq.id;
                     return (
-                      <div key={faq.id} className="rounded-lg border border-[var(--border-default)] overflow-hidden bg-white">
+                      <div key={faq.id} className="rounded-lg border border-[var(--border-default)] overflow-hidden bg-raised">
                         <button
                           onClick={() => setExpandedFaqId(isFaqExpanded ? null : faq.id)}
                           className="w-full flex items-center justify-between text-left p-4 font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
@@ -821,12 +821,12 @@ export function SupportConsole() {
                     if (el) el.scrollIntoView({ behavior: "smooth" });
                   }, 100);
                 }}
-                className="inline-flex min-h-10 items-center justify-center rounded-lg border border-[var(--border-default)] bg-white px-4 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
+                className="inline-flex min-h-10 items-center justify-center rounded-lg border border-[var(--border-default)] bg-raised px-4 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
               >
                 View SLA Policy
               </button>
               <a
-                className="inline-flex min-h-10 items-center justify-center rounded-lg border border-[var(--border-default)] bg-white px-4 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-sunken)] transition-colors"
+                className="inline-flex min-h-10 items-center justify-center rounded-lg border border-[var(--border-default)] bg-raised px-4 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-sunken)] transition-colors"
                 download="peopleos-support-report.csv"
                 href={`data:text/csv;charset=utf-8,${supportReport}`}
               >
@@ -852,7 +852,7 @@ export function SupportConsole() {
       {/* RAISE TICKET MODAL */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-in fade-in">
-          <div className="w-full max-w-lg rounded-xl border border-[var(--border-default)] bg-white shadow-2xl animate-in zoom-in-95 duration-200">
+          <div className="w-full max-w-lg rounded-xl border border-[var(--border-default)] bg-raised shadow-2xl animate-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between border-b border-[var(--border-default)] px-5 py-4">
               <h3 className="text-lg font-semibold text-[var(--text-primary)] flex items-center gap-2">
                 <CircleHelp className="h-5 w-5 text-brand" />
@@ -877,7 +877,7 @@ export function SupportConsole() {
                   placeholder="e.g. Payslip error for May 2026"
                   value={newTitle}
                   onChange={(e) => setNewTitle(e.target.value)}
-                  className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none focus:border-brand"
+                  className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-3 text-sm text-[var(--text-primary)] outline-none focus:border-brand"
                 />
               </div>
 
@@ -889,7 +889,7 @@ export function SupportConsole() {
                   <select
                     value={newQueue}
                     onChange={(e) => setNewQueue(e.target.value)}
-                    className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none focus:border-brand"
+                    className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-3 text-sm text-[var(--text-primary)] outline-none focus:border-brand"
                   >
                     <option value="HR Helpdesk">HR Helpdesk</option>
                     <option value="Payroll Support">Payroll Support</option>
@@ -905,7 +905,7 @@ export function SupportConsole() {
                   <select
                     value={newPriority}
                     onChange={(e) => setNewPriority(e.target.value as "Low" | "Medium" | "High")}
-                    className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none focus:border-brand"
+                    className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-3 text-sm text-[var(--text-primary)] outline-none focus:border-brand"
                   >
                     <option value="Low">Low</option>
                     <option value="Medium">Medium</option>
@@ -924,7 +924,7 @@ export function SupportConsole() {
                   placeholder="Provide details about the issue to expedite resolution..."
                   value={newDescription}
                   onChange={(e) => setNewDescription(e.target.value)}
-                  className="w-full rounded-lg border border-[var(--border-default)] bg-white p-3 text-sm text-[var(--text-primary)] outline-none focus:border-brand resize-none"
+                  className="w-full rounded-lg border border-[var(--border-default)] bg-raised p-3 text-sm text-[var(--text-primary)] outline-none focus:border-brand resize-none"
                 />
               </div>
 
@@ -932,7 +932,7 @@ export function SupportConsole() {
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-4 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
+                  className="min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-4 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
@@ -951,7 +951,7 @@ export function SupportConsole() {
       {/* EMAIL COMPOSER MODAL */}
       {isEmailModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-in fade-in">
-          <div className="w-full max-w-lg rounded-xl border border-[var(--border-default)] bg-white shadow-2xl animate-in zoom-in-95 duration-200">
+          <div className="w-full max-w-lg rounded-xl border border-[var(--border-default)] bg-raised shadow-2xl animate-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between border-b border-[var(--border-default)] px-5 py-4">
               <h3 className="text-lg font-semibold text-[var(--text-primary)] flex items-center gap-2">
                 <Mail className="h-5 w-5 text-brand" />
@@ -988,7 +988,7 @@ export function SupportConsole() {
                   placeholder="Enter email subject"
                   value={emailSubject}
                   onChange={(e) => setEmailSubject(e.target.value)}
-                  className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none focus:border-brand"
+                  className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-3 text-sm text-[var(--text-primary)] outline-none focus:border-brand"
                 />
               </div>
 
@@ -1002,7 +1002,7 @@ export function SupportConsole() {
                   placeholder="Write your query or request details here..."
                   value={emailBody}
                   onChange={(e) => setEmailBody(e.target.value)}
-                  className="w-full rounded-lg border border-[var(--border-default)] bg-white p-3 text-sm text-[var(--text-primary)] outline-none focus:border-brand resize-none"
+                  className="w-full rounded-lg border border-[var(--border-default)] bg-raised p-3 text-sm text-[var(--text-primary)] outline-none focus:border-brand resize-none"
                 />
               </div>
 
@@ -1010,7 +1010,7 @@ export function SupportConsole() {
                 <button
                   type="button"
                   onClick={() => setIsEmailModalOpen(false)}
-                  className="min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-4 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
+                  className="min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-4 text-sm font-semibold text-[var(--text-primary)] hover:bg-[var(--surface-sunken)] transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>

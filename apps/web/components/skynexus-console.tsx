@@ -487,7 +487,7 @@ export function SkyNexusConsole() {
                   <select
                     value={postType}
                     onChange={(e: any) => setPostType(e.target.value)}
-                    className="rounded-lg border border-[var(--border-strong)] bg-white px-2.5 py-1.5 text-xs font-semibold text-text-secondary outline-none transition focus:border-brand"
+                    className="rounded-lg border border-[var(--border-strong)] bg-raised px-2.5 py-1.5 text-xs font-semibold text-text-secondary outline-none transition focus:border-brand"
                   >
                     <option value="POST">General Post</option>
                     <option value="ANNOUNCEMENT">Announcement</option>
@@ -534,7 +534,7 @@ export function SkyNexusConsole() {
                 return (
                   <article 
                     key={post.id} 
-                    className={`rounded-xl border bg-white p-5 shadow-sm transition hover:shadow-md ${
+                    className={`rounded-xl border bg-raised p-5 shadow-sm transition hover:shadow-md ${
                       post.pinned ? "border-warning-border ring-1 ring-warning-border" : "border-[var(--border-subtle)]"
                     }`}
                   >
@@ -731,7 +731,7 @@ export function SkyNexusConsole() {
       {/* Action Post Creator Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[var(--text-primary)]/50 p-4">
-          <div className="w-full max-w-lg rounded-xl border border-[var(--border-default)] bg-white p-6 shadow-2xl relative">
+          <div className="w-full max-w-lg rounded-xl border border-[var(--border-default)] bg-raised p-6 shadow-2xl relative">
             <button
               onClick={() => setIsModalOpen(false)}
               className="absolute right-4 top-4 text-text-muted hover:text-text-secondary transition"
@@ -762,7 +762,7 @@ export function SkyNexusConsole() {
                     value={modalTargetEmpId}
                     onChange={(e) => handleModalEmpChange(e.target.value)}
                     required
-                    className="min-h-10 rounded-lg border border-[var(--border-strong)] bg-white px-3 text-sm outline-none focus:border-brand"
+                    className="min-h-10 rounded-lg border border-[var(--border-strong)] bg-raised px-3 text-sm outline-none focus:border-brand"
                   >
                     <option value="">-- Choose Employee --</option>
                     {employeesList.map((emp) => (

@@ -3,7 +3,7 @@ import type { LucideIcon } from "lucide-react";
 
 function MiniCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-lg border border-[var(--border-default)] bg-white p-4 shadow-sm">
+    <div className="rounded-lg border border-[var(--border-default)] bg-raised p-4 shadow-sm">
       <h3 className="text-sm font-semibold text-[var(--text-primary)]">{title}</h3>
       <div className="mt-3">{children}</div>
     </div>
@@ -26,7 +26,7 @@ function FieldGrid({ rows }: { rows: Array<[string, string]> }) {
 export function EmployeeProfileWorkspace() {
   return (
     <section className="mb-5 grid grid-cols-[280px_1fr] gap-5 max-xl:grid-cols-1">
-      <div className="rounded-lg border border-[var(--border-default)] bg-white p-5 text-center shadow-sm">
+      <div className="rounded-lg border border-[var(--border-default)] bg-raised p-5 text-center shadow-sm">
         <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full bg-[var(--color-brand-50)] text-2xl font-bold text-brand">SG</div>
         <h2 className="mt-4 text-xl font-semibold text-[var(--text-primary)]">Acme Employee</h2>
         <p className="text-sm font-semibold uppercase text-brand">HR Operations</p>
@@ -100,7 +100,7 @@ export function AttendanceRulesWorkspace() {
 export function PayrollRunWorkspace() {
   const steps = ["Create Run", "Import Attendance", "Calculate Salary", "Verify Deductions", "Lock Payroll", "Publish Payslips"];
   return (
-    <section className="mb-5 rounded-lg border border-[var(--border-default)] bg-white p-5 shadow-sm">
+    <section className="mb-5 rounded-lg border border-[var(--border-default)] bg-raised p-5 shadow-sm">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold text-[var(--text-primary)]">Payroll Run Wizard</h2>
@@ -131,7 +131,7 @@ export function ReportsExportWorkspace() {
         ["Attendance Report", "Logs, late marks and regularization", CalendarCheck],
         ["Payroll Report", "Gross, deductions, net pay and statutory", BadgeIndianRupee],
       ] as Array<[string, string, LucideIcon]>).map(([title, note, Icon]) => (
-        <div className="rounded-lg border border-[var(--border-default)] bg-white p-5 shadow-sm" key={String(title)}>
+        <div className="rounded-lg border border-[var(--border-default)] bg-raised p-5 shadow-sm" key={String(title)}>
           <Icon className="h-8 w-8 text-brand" />
           <h3 className="mt-4 text-lg font-semibold text-[var(--text-primary)]">{title}</h3>
           <p className="mt-2 text-sm text-muted">{note}</p>
@@ -147,7 +147,7 @@ export function ReportsExportWorkspace() {
 
 export function OrganizationChartWorkspace() {
   return (
-    <section className="mb-5 rounded-lg border border-[var(--border-default)] bg-white p-5 shadow-sm">
+    <section className="mb-5 rounded-lg border border-[var(--border-default)] bg-raised p-5 shadow-sm">
       <h2 className="text-lg font-semibold text-[var(--text-primary)]">Visual Organization Chart</h2>
       <div className="mt-5 grid justify-items-center gap-4">
         <div className="rounded-lg bg-[var(--text-primary)] px-6 py-4 text-center text-white shadow-sm">
@@ -179,7 +179,7 @@ export function SettingsSetupWorkspace() {
         ["Attendance Settings", "Late marks, geo, biometric and overtime"],
         ["Leave Settings", "Types, balances, carry forward and sandwich rules"],
       ].map(([title, note]) => (
-        <div className="rounded-lg border border-[var(--border-default)] bg-white p-4 shadow-sm" key={title}>
+        <div className="rounded-lg border border-[var(--border-default)] bg-raised p-4 shadow-sm" key={title}>
           <div className="flex items-center gap-3">
             <LockKeyhole className="h-5 w-5 text-brand" />
             <div>
@@ -225,7 +225,7 @@ export function DocumentsVerificationWorkspace() {
         ["Employment", "Offer, experience, joining", "Direct upload"],
         ["Bank", "Account proof and cancelled cheque", "Payroll secure"],
       ].map(([title, note, status]) => (
-        <div className="rounded-lg border border-[var(--border-default)] bg-white p-5 shadow-sm" key={title}>
+        <div className="rounded-lg border border-[var(--border-default)] bg-raised p-5 shadow-sm" key={title}>
           <FileCheck2 className="h-8 w-8 text-brand" />
           <h3 className="mt-4 text-lg font-semibold text-[var(--text-primary)]">{title}</h3>
           <p className="mt-2 text-sm text-muted">{note}</p>
@@ -239,7 +239,7 @@ export function DocumentsVerificationWorkspace() {
 export function HolidayCalendarWorkspace() {
   const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   return (
-    <section className="mb-5 rounded-lg border border-[var(--border-default)] bg-white p-5 shadow-sm">
+    <section className="mb-5 rounded-lg border border-[var(--border-default)] bg-raised p-5 shadow-sm">
       <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-lg font-semibold text-[var(--text-primary)]">Calendar View</h2>
@@ -305,7 +305,7 @@ export function RewardsMarketplaceWorkspace() {
   return (
     <section className="mb-5 grid grid-cols-4 gap-4 max-xl:grid-cols-2 max-sm:grid-cols-1">
       {rewards.map(([title, note, Icon]) => (
-        <div className="overflow-hidden rounded-lg border border-[var(--border-default)] bg-white shadow-sm" key={String(title)}>
+        <div className="overflow-hidden rounded-lg border border-[var(--border-default)] bg-raised shadow-sm" key={String(title)}>
           <div className="h-24 bg-[var(--text-primary)] p-5 text-white">
             <Icon className="h-8 w-8" />
           </div>
@@ -346,7 +346,7 @@ export function ExpensePayoutWorkspace() {
 export function KonnectWorkspace() {
   return (
     <section className="mb-5 grid grid-cols-[1fr_320px] gap-5 max-xl:grid-cols-1">
-      <div className="rounded-lg border border-[var(--border-default)] bg-white p-5 shadow-sm">
+      <div className="rounded-lg border border-[var(--border-default)] bg-raised p-5 shadow-sm">
         <h2 className="text-lg font-semibold text-[var(--text-primary)]">Company Feed</h2>
         <div className="mt-4 grid gap-4">
           {[
@@ -382,7 +382,7 @@ export function PerformanceReviewWorkspace() {
         ["Recognition", "Rewards-based appraisal signals"],
         ["Review Cycle", "Manager rating and HR lock"],
       ].map(([title, note]) => (
-        <div className="rounded-lg border border-[var(--border-default)] bg-white p-5 shadow-sm" key={title}>
+        <div className="rounded-lg border border-[var(--border-default)] bg-raised p-5 shadow-sm" key={title}>
           <Target className="h-8 w-8 text-brand" />
           <h3 className="mt-4 text-lg font-semibold text-[var(--text-primary)]">{title}</h3>
           <p className="mt-2 text-sm text-muted">{note}</p>
@@ -398,7 +398,7 @@ export function PerformanceReviewWorkspace() {
 export function RecruitmentWorkflowWorkspace() {
   const stages = ["Job Posting", "Candidate Database", "Resume Upload", "Interview", "Offer Letter", "Joining"];
   return (
-    <section className="mb-5 rounded-lg border border-[var(--border-default)] bg-white p-5 shadow-sm">
+    <section className="mb-5 rounded-lg border border-[var(--border-default)] bg-raised p-5 shadow-sm">
       <h2 className="text-lg font-semibold text-[var(--text-primary)]">Recruitment Pipeline</h2>
       <div className="mt-5 grid grid-cols-6 gap-3 max-xl:grid-cols-3 max-sm:grid-cols-1">
         {stages.map((stage, index) => (
@@ -418,7 +418,7 @@ export function ComplianceWorkflowWorkspace() {
   return (
     <section className="mb-5 grid grid-cols-5 gap-3 max-xl:grid-cols-3 max-sm:grid-cols-1">
       {["PF", "ESI", "Professional Tax", "TDS", "Form 16"].map((item) => (
-        <div className="rounded-lg border border-[var(--border-default)] bg-white p-4 shadow-sm" key={item}>
+        <div className="rounded-lg border border-[var(--border-default)] bg-raised p-4 shadow-sm" key={item}>
           <ShieldCheck className="h-7 w-7 text-brand" />
           <div className="mt-3 font-semibold text-[var(--text-primary)]">{item}</div>
           <div className="mt-1 text-xs text-muted">Payroll linked statutory report</div>
@@ -439,7 +439,7 @@ export function AssetsWorkflowWorkspace() {
   return (
     <section className="mb-5 grid grid-cols-4 gap-4 max-xl:grid-cols-2 max-sm:grid-cols-1">
       {assets.map(([title, note, Icon]) => (
-        <div className="rounded-lg border border-[var(--border-default)] bg-white p-5 shadow-sm" key={String(title)}>
+        <div className="rounded-lg border border-[var(--border-default)] bg-raised p-5 shadow-sm" key={String(title)}>
           <Icon className="h-8 w-8 text-brand" />
           <h3 className="mt-4 text-lg font-semibold text-[var(--text-primary)]">{title}</h3>
           <p className="mt-2 text-sm text-muted">{note}</p>
@@ -457,7 +457,7 @@ export function NotificationsWorkflowWorkspace() {
         ["Push Notifications", "Mobile app instant alerts"],
         ["In-App Queue", "Audit-backed notification history"],
       ].map(([title, note]) => (
-        <div className="rounded-lg border border-[var(--border-default)] bg-white p-5 shadow-sm" key={title}>
+        <div className="rounded-lg border border-[var(--border-default)] bg-raised p-5 shadow-sm" key={title}>
           <BellRing className="h-8 w-8 text-brand" />
           <h3 className="mt-4 text-lg font-semibold text-[var(--text-primary)]">{title}</h3>
           <p className="mt-2 text-sm text-muted">{note}</p>
@@ -508,7 +508,7 @@ export function AnalyticsWorkflowWorkspace() {
         ["Attendance", "Presence, late and exception trends"],
         ["Payroll", "Gross, net, deductions and statutory"],
       ].map(([title, note]) => (
-        <div className="rounded-lg border border-[var(--border-default)] bg-white p-5 shadow-sm" key={title}>
+        <div className="rounded-lg border border-[var(--border-default)] bg-raised p-5 shadow-sm" key={title}>
           <Target className="h-8 w-8 text-brand" />
           <h3 className="mt-4 text-lg font-semibold text-[var(--text-primary)]">{title}</h3>
           <p className="mt-2 text-sm text-muted">{note}</p>
@@ -546,7 +546,7 @@ export function ApprovalsWorkflowWorkspace() {
         ["Expense", "Manager and HR approval"],
         ["Payroll", "Run lock and statutory checks"],
       ].map(([title, note]) => (
-        <div className="rounded-lg border border-[var(--border-default)] bg-white p-5 shadow-sm" key={title}>
+        <div className="rounded-lg border border-[var(--border-default)] bg-raised p-5 shadow-sm" key={title}>
           <CheckCircle2 className="h-8 w-8 text-brand" />
           <h3 className="mt-4 text-lg font-semibold text-[var(--text-primary)]">{title}</h3>
           <p className="mt-2 text-sm text-muted">{note}</p>

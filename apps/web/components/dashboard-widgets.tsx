@@ -87,7 +87,7 @@ export function DashboardWidgets() {
 
       {/* Pinned Announcements */}
       {announcements.length > 0 && (
-        <div className="rounded-lg border border-info-border bg-white p-4 shadow-sm">
+        <div className="rounded-lg border border-info-border bg-raised p-4 shadow-sm">
           <h3 className="flex items-center gap-1.5 text-sm font-bold text-info-fg mb-3">
             <Pin className="h-3.5 w-3.5" /> Pinned Announcements
           </h3>

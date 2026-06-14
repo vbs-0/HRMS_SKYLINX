@@ -175,7 +175,7 @@ export function OrganizationSettingsConsole() {
   }
 
   function inputClass() {
-    return "min-h-10 w-full rounded-lg border border-line px-3 py-2 text-sm bg-white outline-none focus:border-brand";
+    return "min-h-10 w-full rounded-lg border border-line px-3 py-2 text-sm bg-raised outline-none focus:border-brand";
   }
 
   return (

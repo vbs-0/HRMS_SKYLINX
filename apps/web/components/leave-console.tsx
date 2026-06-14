@@ -24,7 +24,7 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4">
-      <div className="relative w-full max-w-lg rounded-xl border border-[var(--border-default)] bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 text-left">
+      <div className="relative w-full max-w-lg rounded-xl border border-[var(--border-default)] bg-raised p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 text-left">
         <div className="flex items-center justify-between border-b border-line pb-3 mb-4">
           <h3 className="text-lg font-bold text-text-primary">{title}</h3>
           <button
@@ -395,7 +395,7 @@ function CompOffConversionPanel() {
                 name="employeeId"
                 id="compoff-employee-select"
                 required
-                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                 value={form.employeeId}
                 onChange={(e) => setForm({ ...form, employeeId: e.target.value })}
               >
@@ -428,7 +428,7 @@ function CompOffConversionPanel() {
                 name="leaveTypeId"
                 id="compoff-type-select"
                 required
-                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                 value={form.leaveTypeId}
                 onChange={(e) => setForm({ ...form, leaveTypeId: e.target.value })}
               >
@@ -507,7 +507,7 @@ function CompOffConversionPanel() {
                               </button>
                               <button
                                 onClick={() => handleDecide(conv.id, "reject")}
-                                className="border border-line text-text-primary bg-white rounded px-2 py-0.5 font-bold hover:bg-sunken"
+                                className="border border-line text-text-primary bg-raised rounded px-2 py-0.5 font-bold hover:bg-sunken"
                               >
                                 Reject
                               </button>
@@ -616,7 +616,7 @@ function LeaveEncashmentPanel() {
                 name="employeeId"
                 id="encash-employee-select"
                 required
-                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                 value={form.employeeId}
                 onChange={(e) => setForm({ ...form, employeeId: e.target.value })}
               >
@@ -635,7 +635,7 @@ function LeaveEncashmentPanel() {
                 name="leaveTypeId"
                 id="encash-type-select"
                 required
-                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                 value={form.leaveTypeId}
                 onChange={(e) => setForm({ ...form, leaveTypeId: e.target.value })}
               >
@@ -715,7 +715,7 @@ function LeaveEncashmentPanel() {
                               </button>
                               <button
                                 onClick={() => handleDecide(enc.id, "REJECTED")}
-                                className="border border-line text-text-primary bg-white rounded px-2 py-0.5 font-bold hover:bg-sunken"
+                                className="border border-line text-text-primary bg-raised rounded px-2 py-0.5 font-bold hover:bg-sunken"
                               >
                                 Reject
                               </button>
@@ -752,7 +752,7 @@ function TeamLeaveCalendar({ requests }: { requests: any[] }) {
                   {r.employee?.firstName} {r.employee?.lastName}
                   <span className="ml-2 font-normal text-xs text-text-secondary">({r.leaveType?.name})</span>
                 </div>
-                <div className="text-xs font-bold bg-white px-2 py-1 border rounded shadow-sm">
+                <div className="text-xs font-bold bg-raised px-2 py-1 border rounded shadow-sm">
                   {r.fromDate?.slice(0, 10)} to {r.toDate?.slice(0, 10)}
                 </div>
               </div>

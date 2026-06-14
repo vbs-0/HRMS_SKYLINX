@@ -91,14 +91,14 @@ export default function SurveyDetailPage() {
       )}
 
       {survey.hasResponded ? (
-        <div className="rounded-xl border border-line bg-white p-8 text-center text-text-secondary">
+        <div className="rounded-xl border border-line bg-raised p-8 text-center text-text-secondary">
           <p className="font-semibold">You have already submitted a response for this survey.</p>
           <p className="text-xs mt-1 text-text-muted">Thank you for participating!</p>
         </div>
       ) : (
         <div className="space-y-4">
           {survey.questions?.map((q, idx) => (
-            <div key={q.id} className="rounded-xl border border-line bg-white p-5">
+            <div key={q.id} className="rounded-xl border border-line bg-raised p-5">
               <p className="text-sm font-bold text-text-primary mb-4">
                 {idx + 1}. {q.text}
               </p>

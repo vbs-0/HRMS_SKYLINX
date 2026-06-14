@@ -404,7 +404,7 @@ export function TrainingConsole() {
                 <div>
                   <label className="block text-xs font-semibold text-text-secondary mb-1">Training Program</label>
                   <select
-                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                     value={evtProgId}
                     onChange={(e) => setEvtProgId(e.target.value)}
                     required
@@ -487,7 +487,7 @@ export function TrainingConsole() {
             ) : (
               <div className="grid grid-cols-2 gap-4 max-md:grid-cols-1">
                 {events.map((e) => (
-                  <div key={e.id} className="rounded-xl border border-line bg-white p-4 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                  <div key={e.id} className="rounded-xl border border-line bg-raised p-4 shadow-sm hover:shadow-md transition flex flex-col justify-between">
                     <div>
                       <div className="flex items-center justify-between gap-2">
                         <span className="text-[10px] font-bold uppercase tracking-wide text-brand bg-brand/10 px-2 py-0.5 rounded">
@@ -535,7 +535,7 @@ export function TrainingConsole() {
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Select Event</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                   value={feedEvtId}
                   onChange={(e) => setFeedEvtId(e.target.value)}
                   required
@@ -551,7 +551,7 @@ export function TrainingConsole() {
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Employee attendee</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                   value={feedEmpId}
                   onChange={(e) => setFeedEmpId(e.target.value)}
                   required
@@ -567,7 +567,7 @@ export function TrainingConsole() {
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Rating (1 to 5 Stars)</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                   value={feedRating}
                   onChange={(e) => setFeedRating(e.target.value)}
                   required
@@ -605,7 +605,7 @@ export function TrainingConsole() {
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Select Event</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                   value={resEvtId}
                   onChange={(e) => setResEvtId(e.target.value)}
                   required
@@ -621,7 +621,7 @@ export function TrainingConsole() {
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Employee attendee</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                   value={resEmpId}
                   onChange={(e) => setResEmpId(e.target.value)}
                   required
@@ -637,7 +637,7 @@ export function TrainingConsole() {
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Status Outcome</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                   value={resStatus}
                   onChange={(e) => setResStatus(e.target.value)}
                   required
@@ -710,7 +710,7 @@ export function TrainingConsole() {
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Employee</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                   value={mapEmpId}
                   onChange={(e) => setMapEmpId(e.target.value)}
                   required
@@ -726,7 +726,7 @@ export function TrainingConsole() {
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Select Skill</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                   value={mapSkillId}
                   onChange={(e) => setMapSkillId(e.target.value)}
                   required
@@ -742,7 +742,7 @@ export function TrainingConsole() {
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Proficiency Level</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                   value={mapProficiency}
                   onChange={(e) => setMapProficiency(e.target.value)}
                   required
@@ -769,7 +769,7 @@ export function TrainingConsole() {
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Designation</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                   value={desId}
                   onChange={(e) => setDesId(e.target.value)}
                   required
@@ -785,7 +785,7 @@ export function TrainingConsole() {
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Select Skill</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                   value={desSkillId}
                   onChange={(e) => setDesSkillId(e.target.value)}
                   required
@@ -801,7 +801,7 @@ export function TrainingConsole() {
               <div>
                 <label className="block text-xs font-semibold text-text-secondary mb-1">Required Proficiency</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                   value={desRequired}
                   onChange={(e) => setDesRequired(e.target.value)}
                   required
@@ -833,7 +833,7 @@ export function TrainingConsole() {
             <div>
               <label className="block text-xs font-semibold text-text-secondary mb-1">Choose Employee to Analyze</label>
               <select
-                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
+                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-raised"
                 value={gapEmpId}
                 onChange={(e) => setGapEmpId(e.target.value)}
               >

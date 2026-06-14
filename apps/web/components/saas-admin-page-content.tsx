@@ -137,7 +137,7 @@ export function SaasAdminPageContent() {
         ))}
         <button
           onClick={loadData}
-          className="ml-auto inline-flex items-center gap-1.5 rounded-lg border border-[var(--border-default)] px-3 py-1.5 text-xs font-semibold text-[var(--text-secondary)] hover:border-brand cursor-pointer bg-white"
+          className="ml-auto inline-flex items-center gap-1.5 rounded-lg border border-[var(--border-default)] px-3 py-1.5 text-xs font-semibold text-[var(--text-secondary)] hover:border-brand cursor-pointer bg-raised"
         >
           <RefreshCcw className="h-3 w-3" /> Refresh
         </button>

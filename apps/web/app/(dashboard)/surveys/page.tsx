@@ -70,7 +70,7 @@ export default function SurveysPage() {
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {surveys.map((survey) => (
-            <div key={survey.id} className="rounded-xl border border-line bg-white p-5 shadow-sm flex flex-col gap-3">
+            <div key={survey.id} className="rounded-xl border border-line bg-raised p-5 shadow-sm flex flex-col gap-3">
               <div className="flex items-start justify-between gap-2">
                 <h3 className="text-sm font-bold text-text-primary">{survey.title}</h3>
                 <span

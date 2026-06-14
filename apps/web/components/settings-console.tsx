@@ -645,7 +645,7 @@ export function SettingsConsole() {
                   type="button"
                   onClick={handleTestEmail}
                   disabled={testingEmail}
-                  className="min-h-10 rounded-lg border border-line-strong bg-white px-3 text-sm font-semibold text-text-primary hover:bg-sunken disabled:opacity-50"
+                  className="min-h-10 rounded-lg border border-line-strong bg-raised px-3 text-sm font-semibold text-text-primary hover:bg-sunken disabled:opacity-50"
                 >
                   {testingEmail ? "Sending..." : "Test SMTP Config"}
                 </button>
@@ -970,7 +970,7 @@ export function SettingsConsole() {
 
         <div className="grid grid-cols-3 gap-6 max-xl:grid-cols-1">
           {/* Departments Column */}
-          <div className="rounded-xl border border-[var(--border-default)] bg-white p-4">
+          <div className="rounded-xl border border-[var(--border-default)] bg-raised p-4">
             <h3 className="mb-3 text-sm font-bold uppercase text-muted flex items-center gap-1.5">
               🏢 Departments ({departments.length})
             </h3>
@@ -1003,7 +1003,7 @@ export function SettingsConsole() {
           </div>
 
           {/* Designations Column */}
-          <div className="rounded-xl border border-[var(--border-default)] bg-white p-4">
+          <div className="rounded-xl border border-[var(--border-default)] bg-raised p-4">
             <h3 className="mb-3 text-sm font-bold uppercase text-muted flex items-center gap-1.5">
               💼 Designations ({designations.length})
             </h3>
@@ -1049,7 +1049,7 @@ export function SettingsConsole() {
           </div>
 
           {/* Locations Column */}
-          <div className="rounded-xl border border-[var(--border-default)] bg-white p-4">
+          <div className="rounded-xl border border-[var(--border-default)] bg-raised p-4">
             <h3 className="mb-3 text-sm font-bold uppercase text-muted flex items-center gap-1.5">
               📍 Locations ({locations.length})
             </h3>
@@ -1105,7 +1105,7 @@ export function SettingsConsole() {
           {planCards.map((card) => {
             const active = card.plan === activePlan;
             return (
-              <div className={`rounded-lg border p-4 ${active ? "border-[#ff8a2a] bg-[#fff3e8]" : "border-[var(--border-default)] bg-white"}`} key={card.plan}>
+              <div className={`rounded-lg border p-4 ${active ? "border-[#ff8a2a] bg-[#fff3e8]" : "border-[var(--border-default)] bg-raised"}`} key={card.plan}>
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <div className="text-lg font-semibold text-[var(--text-primary)]">{card.title}</div>
@@ -1203,7 +1203,7 @@ export function SettingsConsole() {
           { title: "Data Export", note: "Download company settings and client rule JSON", icon: FileDown, action: "Download", onClick: downloadSettings },
           ...(isOwner ? [{ title: "License", note: "Subscription and module entitlement control", icon: KeyRound, action: "Manage Plans", href: "/saas" }] : []),
         ].map(({ title, note, icon: Icon, action, href, onClick }) => (
-          <div className="rounded-lg border border-[var(--border-default)] bg-white p-4 shadow-sm" key={title}>
+          <div className="rounded-lg border border-[var(--border-default)] bg-raised p-4 shadow-sm" key={title}>
             <Icon className="h-5 w-5 text-brand" />
             <div className="mt-3 font-semibold">{title}</div>
             <div className="mt-1 text-sm text-muted">{note}</div>

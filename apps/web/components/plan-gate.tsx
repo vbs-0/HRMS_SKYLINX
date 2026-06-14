@@ -28,7 +28,7 @@ export async function PlanGate({ children, moduleName, requiredPlan }: { childre
         <Link className="inline-flex min-h-10 items-center rounded-lg bg-brand px-5 text-sm font-semibold text-white" href="/saas">
           View Plans
         </Link>
-        <Link className="inline-flex min-h-10 items-center rounded-lg border border-[var(--border-default)] bg-white px-5 text-sm font-semibold text-[var(--text-primary)]" href="/dashboard">
+        <Link className="inline-flex min-h-10 items-center rounded-lg border border-[var(--border-default)] bg-raised px-5 text-sm font-semibold text-[var(--text-primary)]" href="/dashboard">
           Back to Dashboard
         </Link>
       </div>

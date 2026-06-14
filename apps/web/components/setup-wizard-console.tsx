@@ -266,7 +266,7 @@ export function SetupWizardConsole() {
         <div className="flex flex-wrap gap-2">
           {tabs.map(({ key, label, icon: Icon }) => (
             <button
-              className={`inline-flex min-h-11 items-center gap-2 rounded-lg px-4 text-sm font-bold ${activeTab === key ? "bg-brand text-white" : "border border-[var(--border-default)] bg-white text-[var(--text-secondary)]"}`}
+              className={`inline-flex min-h-11 items-center gap-2 rounded-lg px-4 text-sm font-bold ${activeTab === key ? "bg-brand text-white" : "border border-[var(--border-default)] bg-raised text-[var(--text-secondary)]"}`}
               key={key}
               onClick={() => {
                 setActiveTab(key);

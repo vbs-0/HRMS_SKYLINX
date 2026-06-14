@@ -68,7 +68,7 @@ export function NotificationsConsole() {
           </div>
           <div className="grid grid-cols-2 gap-4 max-md:grid-cols-1">
             {notificationTemplates.map((template) => (
-              <div className="rounded-lg border border-[var(--border-default)] bg-white p-4 shadow-sm" key={template.title}>
+              <div className="rounded-lg border border-[var(--border-default)] bg-raised p-4 shadow-sm" key={template.title}>
                 <div className="flex items-center justify-between border-b border-[var(--surface-sunken)] pb-2">
                   <span className="font-semibold text-[var(--text-primary)]">{template.title}</span>
                   <div className="flex gap-1">

@@ -116,7 +116,7 @@ export default function SurveyResultsPage() {
           : null;
 
         return (
-          <div key={q.id} className="rounded-xl border border-line bg-white p-5">
+          <div key={q.id} className="rounded-xl border border-line bg-raised p-5">
             <p className="text-sm font-bold text-text-primary mb-4">
               {idx + 1}. {q.text}
             </p>

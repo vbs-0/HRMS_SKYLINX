@@ -16,7 +16,7 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4">
-      <div className="relative w-full max-w-lg rounded-xl border border-[var(--border-default)] bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 text-left">
+      <div className="relative w-full max-w-lg rounded-xl border border-[var(--border-default)] bg-raised p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 text-left">
         <div className="flex items-center justify-between border-b border-line pb-3 mb-4">
           <h3 className="text-lg font-bold text-text-primary">{title}</h3>
           <button
@@ -311,7 +311,7 @@ export function LeaveSettingsConsole() {
 
       {activeConsoleTab === "rules" && (
         <>
-          <div className="flex justify-between items-center bg-white p-4 rounded-lg border border-[var(--border-subtle)] shadow-sm text-left">
+          <div className="flex justify-between items-center bg-raised p-4 rounded-lg border border-[var(--border-subtle)] shadow-sm text-left">
             <div>
               <h3 className="text-base font-semibold text-[var(--text-primary)]">Leave Policy Setup</h3>
               <p className="text-xs text-muted">Configure active annual quotas, accrual intervals and probation applicability rules.</p>
@@ -334,7 +334,7 @@ export function LeaveSettingsConsole() {
                   }
                 }}
                 id="process-accruals-btn"
-                className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-line bg-white px-4 text-xs font-semibold text-text-primary cursor-pointer hover:bg-sunken transition shadow-sm"
+                className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-line bg-raised px-4 text-xs font-semibold text-text-primary cursor-pointer hover:bg-sunken transition shadow-sm"
               >
                 Process Accruals
               </button>
@@ -401,7 +401,7 @@ export function LeaveSettingsConsole() {
                           </button>
                           <button
                             onClick={handleCancel}
-                            className="p-2 rounded-lg border border-[var(--border-default)] bg-white text-muted hover:bg-sunken transition-all flex items-center gap-1 text-xs font-semibold"
+                            className="p-2 rounded-lg border border-[var(--border-default)] bg-raised text-muted hover:bg-sunken transition-all flex items-center gap-1 text-xs font-semibold"
                           >
                             <X className="h-4 w-4" /> Cancel
                           </button>
@@ -533,7 +533,7 @@ export function LeaveSettingsConsole() {
                                   <div className="text-xs font-semibold text-[var(--text-muted)]">Sandwich Rule Enabled</div>
                                   {isEditing ? (
                                     <select
-                                      className="mt-1 min-h-8 rounded border border-[var(--border-default)] px-2 text-sm bg-white"
+                                      className="mt-1 min-h-8 rounded border border-[var(--border-default)] px-2 text-sm bg-raised"
                                       value={editForm.sandwichRuleEnabled ? "Yes" : "No"}
                                       onChange={(e) => setEditForm({ ...editForm, sandwichRuleEnabled: e.target.value === "Yes" })}
                                     >
@@ -749,7 +749,7 @@ export function LeaveSettingsConsole() {
                               <div className="text-xs font-semibold text-[var(--text-muted)]">Negative Leaves Allowed</div>
                               {isEditing ? (
                                 <select
-                                  className="mt-1 min-h-8 rounded border border-[var(--border-default)] px-2 text-sm bg-white"
+                                  className="mt-1 min-h-8 rounded border border-[var(--border-default)] px-2 text-sm bg-raised"
                                   value={editForm.negativeLeavesAllowed ? "Yes" : "No"}
                                   onChange={(e) => setEditForm({ ...editForm, negativeLeavesAllowed: e.target.value === "Yes" })}
                                 >
@@ -773,7 +773,7 @@ export function LeaveSettingsConsole() {
                               <div className="text-xs font-semibold text-[var(--text-muted)]">Future-dated Leaves Allowed</div>
                               {isEditing ? (
                                 <select
-                                  className="mt-1 min-h-8 rounded border border-[var(--border-default)] px-2 text-sm bg-white"
+                                  className="mt-1 min-h-8 rounded border border-[var(--border-default)] px-2 text-sm bg-raised"
                                   value={editForm.futureDatedLeavesAllowed ? "Yes" : "No"}
                                   onChange={(e) => setEditForm({ ...editForm, futureDatedLeavesAllowed: e.target.value === "Yes" })}
                                 >
@@ -788,7 +788,7 @@ export function LeaveSettingsConsole() {
                               <div className="text-xs font-semibold text-[var(--text-muted)]">Backdated Leaves Allowed</div>
                               {isEditing ? (
                                 <select
-                                  className="mt-1 min-h-8 rounded border border-[var(--border-default)] px-2 text-sm bg-white"
+                                  className="mt-1 min-h-8 rounded border border-[var(--border-default)] px-2 text-sm bg-raised"
                                   value={editForm.backdatedLeavesAllowed ? "Yes" : "No"}
                                   onChange={(e) => setEditForm({ ...editForm, backdatedLeavesAllowed: e.target.value === "Yes" })}
                                 >
@@ -804,7 +804,7 @@ export function LeaveSettingsConsole() {
                               {isEditing ? (
                                 <input
                                   type="number"
-                                  className="mt-1 max-w-[100px] min-h-8 rounded border border-[var(--border-default)] px-2 text-sm text-ink bg-white"
+                                  className="mt-1 max-w-[100px] min-h-8 rounded border border-[var(--border-default)] px-2 text-sm text-ink bg-raised"
                                   value={editForm.backdatedLeavesDaysLimit ?? 90}
                                   onChange={(e) => setEditForm({ ...editForm, backdatedLeavesDaysLimit: Number(e.target.value) })}
                                 />
@@ -816,7 +816,7 @@ export function LeaveSettingsConsole() {
                               <div className="text-xs font-semibold text-[var(--text-muted)]">Apply Leaves for Next Year Till</div>
                               {isEditing ? (
                                 <select
-                                  className="mt-1 min-h-8 rounded border border-[var(--border-default)] px-2 text-sm bg-white"
+                                  className="mt-1 min-h-8 rounded border border-[var(--border-default)] px-2 text-sm bg-raised"
                                   value={editForm.applyNextYearTillMonth || "February"}
                                   onChange={(e) => setEditForm({ ...editForm, applyNextYearTillMonth: e.target.value })}
                                 >
@@ -842,7 +842,7 @@ export function LeaveSettingsConsole() {
 
       {/* Assign Leave Rules tab */}
       {activeConsoleTab === "assignments" && (
-        <div className="bg-white rounded-lg border border-[var(--border-subtle)] p-5 shadow-sm space-y-4 text-left">
+        <div className="bg-raised rounded-lg border border-[var(--border-subtle)] p-5 shadow-sm space-y-4 text-left">
           {/* Sub-header Controls */}
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-4">
             <div className="flex flex-wrap items-center gap-3">
@@ -885,7 +885,7 @@ export function LeaveSettingsConsole() {
 
             <div className="flex items-center gap-2 text-xs font-semibold text-text-secondary">
               <span>Show</span>
-              <select className="min-h-9 rounded-lg border px-2.5 bg-white text-text-primary outline-none">
+              <select className="min-h-9 rounded-lg border px-2.5 bg-raised text-text-primary outline-none">
                 <option value="20">20</option>
                 <option value="50">50</option>
                 <option value="100">100</option>
@@ -995,7 +995,7 @@ export function LeaveSettingsConsole() {
 
       {showAddModal && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl border border-line shadow-xl w-full max-w-2xl overflow-hidden max-h-[90vh] flex flex-col">
+          <div className="bg-raised rounded-xl border border-line shadow-xl w-full max-w-2xl overflow-hidden max-h-[90vh] flex flex-col">
             <div className="bg-[var(--text-primary)] text-white p-4 font-semibold text-sm flex justify-between items-center">
               <span>Create Custom Leave Type</span>
               <button onClick={() => setShowAddModal(false)} className="text-white/60 hover:text-white text-lg font-bold">Ã—</button>
@@ -1049,7 +1049,7 @@ export function LeaveSettingsConsole() {
                       type="number"
                       value={newTypeForm.annualQuota}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, annualQuota: Number(e.target.value) })}
-                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-raised"
                     />
                   </div>
                   <div>
@@ -1057,7 +1057,7 @@ export function LeaveSettingsConsole() {
                     <select
                       value={newTypeForm.weekendsBetweenLeave}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, weekendsBetweenLeave: e.target.value })}
-                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-raised"
                     >
                       <option value="Not Considered">Not Considered</option>
                       <option value="Considered">Considered</option>
@@ -1068,7 +1068,7 @@ export function LeaveSettingsConsole() {
                     <select
                       value={newTypeForm.holidaysBetweenLeave}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, holidaysBetweenLeave: e.target.value })}
-                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-raised"
                     >
                       <option value="Not Considered">Not Considered</option>
                       <option value="Considered">Considered</option>
@@ -1079,7 +1079,7 @@ export function LeaveSettingsConsole() {
                     <select
                       value={newTypeForm.sandwichRuleEnabled ? "Yes" : "No"}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, sandwichRuleEnabled: e.target.value === "Yes" })}
-                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-raised"
                     >
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
@@ -1095,7 +1095,7 @@ export function LeaveSettingsConsole() {
                     <select
                       value={newTypeForm.creditableOnAccrual ? "Yes" : "No"}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, creditableOnAccrual: e.target.value === "Yes" })}
-                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-raised"
                     >
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
@@ -1106,7 +1106,7 @@ export function LeaveSettingsConsole() {
                     <select
                       value={newTypeForm.creditableOnPresentDay ? "Yes" : "No"}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, creditableOnPresentDay: e.target.value === "Yes" })}
-                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-raised"
                     >
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
@@ -1117,7 +1117,7 @@ export function LeaveSettingsConsole() {
                     <select
                       value={newTypeForm.accrualFrequency}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, accrualFrequency: e.target.value })}
-                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-raised"
                     >
                       <option value="Monthly">Monthly</option>
                       <option value="Quarterly">Quarterly</option>
@@ -1129,7 +1129,7 @@ export function LeaveSettingsConsole() {
                     <select
                       value={newTypeForm.accrualPeriod}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, accrualPeriod: e.target.value })}
-                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-raised"
                     >
                       <option value="Start">Start</option>
                       <option value="End">End</option>
@@ -1145,7 +1145,7 @@ export function LeaveSettingsConsole() {
                     <select
                       value={newTypeForm.allowedUnderProbation ? "Yes" : "No"}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, allowedUnderProbation: e.target.value === "Yes" })}
-                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-raised"
                     >
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
@@ -1156,7 +1156,7 @@ export function LeaveSettingsConsole() {
                     <select
                       value={newTypeForm.allowedUnderNoticePeriod ? "Yes" : "No"}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, allowedUnderNoticePeriod: e.target.value === "Yes" })}
-                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-raised"
                     >
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
@@ -1167,7 +1167,7 @@ export function LeaveSettingsConsole() {
                     <select
                       value={newTypeForm.leaveEncashEnabled ? "Yes" : "No"}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, leaveEncashEnabled: e.target.value === "Yes" })}
-                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-raised"
                     >
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
@@ -1178,7 +1178,7 @@ export function LeaveSettingsConsole() {
                     <select
                       value={newTypeForm.carryForwardAllowed ? "Yes" : "No"}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, carryForwardAllowed: e.target.value === "Yes" })}
-                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-raised"
                     >
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
@@ -1200,7 +1200,7 @@ export function LeaveSettingsConsole() {
                       type="number"
                       value={newTypeForm.maxLeavesPerMonth}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, maxLeavesPerMonth: Number(e.target.value) })}
-                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-raised"
                     />
                   </div>
                   <div>
@@ -1209,7 +1209,7 @@ export function LeaveSettingsConsole() {
                       type="number"
                       value={newTypeForm.maxContinuousLeaves}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, maxContinuousLeaves: Number(e.target.value) })}
-                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-raised"
                     />
                   </div>
                 </div>
@@ -1222,7 +1222,7 @@ export function LeaveSettingsConsole() {
                     <select
                       value={newTypeForm.negativeLeavesAllowed ? "Yes" : "No"}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, negativeLeavesAllowed: e.target.value === "Yes" })}
-                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-raised"
                     >
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
@@ -1238,7 +1238,7 @@ export function LeaveSettingsConsole() {
                     <select
                       value={newTypeForm.futureDatedLeavesAllowed ? "Yes" : "No"}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, futureDatedLeavesAllowed: e.target.value === "Yes" })}
-                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-raised"
                     >
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
@@ -1249,7 +1249,7 @@ export function LeaveSettingsConsole() {
                     <select
                       value={newTypeForm.backdatedLeavesAllowed ? "Yes" : "No"}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, backdatedLeavesAllowed: e.target.value === "Yes" })}
-                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-raised"
                     >
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
@@ -1261,7 +1261,7 @@ export function LeaveSettingsConsole() {
                       type="number"
                       value={newTypeForm.backdatedLeavesDaysLimit}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, backdatedLeavesDaysLimit: Number(e.target.value) })}
-                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-raised"
                     />
                   </div>
                   <div>
@@ -1269,7 +1269,7 @@ export function LeaveSettingsConsole() {
                     <select
                       value={newTypeForm.applyNextYearTillMonth}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, applyNextYearTillMonth: e.target.value })}
-                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-raised"
                     >
                       {["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].map((m) => (
                         <option key={m} value={m}>{m}</option>
@@ -1318,7 +1318,7 @@ export function LeaveSettingsConsole() {
           </div>
           <div>
             <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Select Leave Rules to Assign</label>
-            <div className="max-h-48 overflow-y-auto space-y-2 border rounded p-3 bg-white">
+            <div className="max-h-48 overflow-y-auto space-y-2 border rounded p-3 bg-raised">
               {types.map((t) => (
                 <label key={t.id} className="flex items-center gap-2 text-xs text-text-primary cursor-pointer select-none">
                   <input
@@ -1345,7 +1345,7 @@ export function LeaveSettingsConsole() {
               type="date"
               value={assignEffectiveDate}
               onChange={(e) => setAssignEffectiveDate(e.target.value)}
-              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none"
+              className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-3 text-sm text-[var(--text-primary)] outline-none"
               required
             />
           </div>
@@ -1353,7 +1353,7 @@ export function LeaveSettingsConsole() {
           <div className="flex gap-2 justify-end border-t pt-3 mt-2">
             <button
               type="button"
-              className="min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-4 text-sm font-semibold text-[var(--text-secondary)]"
+              className="min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-4 text-sm font-semibold text-[var(--text-secondary)]"
               onClick={() => setShowAssignPopup(false)}
             >
               Cancel

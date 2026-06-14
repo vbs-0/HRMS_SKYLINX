@@ -50,7 +50,7 @@ export default async function DashboardPage() {
             <div className="mt-5 text-sm font-semibold">Leave approvals, payroll review and attendance regularization are ready for HR action.</div>
           </div>
 
-          <div className="overflow-hidden rounded-lg border border-[var(--color-brand-600)] bg-white shadow-sm">
+          <div className="overflow-hidden rounded-lg border border-[var(--color-brand-600)] bg-raised shadow-sm">
             <div className="bg-[var(--color-brand-600)] p-2 text-center font-bold text-white">HR Desk</div>
             <div className="grid gap-1 p-4 text-xs">
               <div><strong>Company</strong> {companyProfile.legalName}</div>
@@ -99,7 +99,7 @@ export default async function DashboardPage() {
             </div>
             <div className="grid grid-cols-5 gap-3 max-2xl:grid-cols-4 max-lg:grid-cols-3 max-sm:grid-cols-2">
               {lockedModules.map(({ href, label, icon: Icon }) => (
-                <Link className="grid justify-items-center gap-2 rounded-lg border border-[var(--border-default)] bg-white p-3 text-center text-xs font-semibold text-[var(--text-muted)]" href="/saas" key={href}>
+                <Link className="grid justify-items-center gap-2 rounded-lg border border-[var(--border-default)] bg-raised p-3 text-center text-xs font-semibold text-[var(--text-muted)]" href="/saas" key={href}>
                   <Icon className="h-7 w-7 text-[var(--text-muted)]" />
                   <span>{label}</span>
                 </Link>

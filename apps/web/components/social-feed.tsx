@@ -83,7 +83,7 @@ export function SocialFeed() {
     <div className="grid gap-4">
       {message ? <div className="rounded-lg bg-[var(--success-bg)] p-3 text-sm text-[var(--success-fg)]">{message}</div> : null}
       {posts.map((post) => (
-        <article className="rounded-lg border border-[var(--border-default)] bg-white p-5 shadow-sm" key={post.id}>
+        <article className="rounded-lg border border-[var(--border-default)] bg-raised p-5 shadow-sm" key={post.id}>
           <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
             <div>
               <div className="flex items-center gap-2">
@@ -96,7 +96,7 @@ export function SocialFeed() {
           </div>
           <p className="text-sm leading-6">{post.body}</p>
           <div className="mt-4 flex flex-wrap items-center gap-2">
-            <button className="flex min-h-9 items-center gap-2 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm font-semibold" onClick={() => like(post.id)}>
+            <button className="flex min-h-9 items-center gap-2 rounded-lg border border-[var(--border-default)] bg-raised px-3 text-sm font-semibold" onClick={() => like(post.id)}>
               <Heart className="h-4 w-4" /> {post.likes}
             </button>
             <div className="flex min-h-9 items-center gap-2 rounded-lg bg-[var(--surface-canvas)] px-3 text-sm">

@@ -16,7 +16,7 @@ export function ReferenceModuleTabs({
       {tabs.map((tab) => (
         <button
           className={`min-h-9 rounded-full px-4 text-sm font-semibold ${
-            tab === activeTab ? "bg-white text-[var(--text-primary)] shadow-sm" : "text-[var(--text-muted)]"
+            tab === activeTab ? "bg-raised text-[var(--text-primary)] shadow-sm" : "text-[var(--text-muted)]"
           }`}
           key={tab}
           type="button"

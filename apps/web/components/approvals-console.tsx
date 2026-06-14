@@ -360,7 +360,7 @@ export function ApprovalsConsole() {
               className={`rounded-xl border p-4 cursor-pointer transition-all min-w-[200px] ${
                 selectedModule === m.module
                   ? "border-brand bg-brand-50/15 shadow-sm ring-1 ring-brand"
-                  : "border-[var(--border-subtle)] bg-white hover:bg-sunken"
+                  : "border-[var(--border-subtle)] bg-raised hover:bg-sunken"
               }`}
               onClick={() => setSelectedModule(selectedModule === m.module ? null : m.module)}
             >
@@ -379,7 +379,7 @@ export function ApprovalsConsole() {
             <input
               type="text"
               placeholder="Search request or name..."
-              className="min-h-9 w-full rounded-lg border border-line bg-white px-3 text-xs outline-none transition focus:border-brand"
+              className="min-h-9 w-full rounded-lg border border-line bg-raised px-3 text-xs outline-none transition focus:border-brand"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -425,7 +425,7 @@ export function ApprovalsConsole() {
                     <td className="border-b p-3 text-right">
                       <div className="flex justify-end gap-2">
                         <button
-                          className="inline-flex h-8 items-center gap-1 rounded-lg border border-line bg-white px-2.5 text-xs font-bold text-text-secondary transition hover:bg-sunken"
+                          className="inline-flex h-8 items-center gap-1 rounded-lg border border-line bg-raised px-2.5 text-xs font-bold text-text-secondary transition hover:bg-sunken"
                           onClick={() => {
                             setSelectedItem(item);
                             setShowDetailModal(true);
@@ -464,7 +464,7 @@ export function ApprovalsConsole() {
       {/* DETAIL MODAL POPUP */}
       {showDetailModal && selectedItem && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150 border border-line">
+          <div className="w-full max-w-md rounded-2xl bg-raised p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150 border border-line">
             <div className="flex items-center justify-between border-b pb-4 mb-4">
               <div>
                 <h3 className="text-lg font-bold text-text-primary">Request Audit Details</h3>

@@ -443,7 +443,7 @@ export function ExpensesTable({
                   </button>
                 ) : null}
                 {(mode === "approvals" || mode === "reimbursement") && expense.status !== "PAID" && expense.status !== "REJECTED" ? (
-                  <button className="rounded border border-[var(--border-strong)] bg-white px-2.5 py-1 text-xs font-semibold text-text-primary hover:bg-sunken transition" onClick={() => decide(expense.id, "reject")}>
+                  <button className="rounded border border-[var(--border-strong)] bg-raised px-2.5 py-1 text-xs font-semibold text-text-primary hover:bg-sunken transition" onClick={() => decide(expense.id, "reject")}>
                     Reject
                   </button>
                 ) : null}
@@ -543,7 +543,7 @@ export function OrganizationSummary() {
   return (
     <div className="mb-5 grid grid-cols-5 gap-3 max-xl:grid-cols-3 max-md:grid-cols-1">
       {departments.map((department) => (
-        <div className="rounded-lg border border-[var(--border-default)] bg-white p-4 shadow-sm" key={department.department}>
+        <div className="rounded-lg border border-[var(--border-default)] bg-raised p-4 shadow-sm" key={department.department}>
           <div className="text-xs uppercase text-muted">{department.department}</div>
           <div className="mt-2 text-2xl font-semibold">{department.count}</div>
           <div className="mt-1 text-xs text-[var(--success-fg)]">Employees mapped</div>
@@ -864,7 +864,7 @@ export function InsuranceClaimsTable({ search = "", status = "All" }: InsuranceC
                       Approve
                     </button>
                     <button
-                      className="rounded-lg border border-[var(--border-strong)] bg-white px-3 py-1 text-xs font-bold text-text-primary hover:bg-sunken transition"
+                      className="rounded-lg border border-[var(--border-strong)] bg-raised px-3 py-1 text-xs font-bold text-text-primary hover:bg-sunken transition"
                       onClick={() => decide(claim.id, "reject")}
                     >
                       Reject
@@ -1084,7 +1084,7 @@ export function RegularizationsTable({ search = "", status = "All" }: { search?:
   if (!filtered.length && !rows.length) return null;
 
   return (
-    <div className="mt-5 rounded-lg border border-[var(--border-default)] bg-white p-5 shadow-sm">
+    <div className="mt-5 rounded-lg border border-[var(--border-default)] bg-raised p-5 shadow-sm">
       <h2 className="mb-4 text-lg font-semibold">Regularization Requests</h2>
       {message ? <div className="mb-3 rounded-lg bg-[var(--success-bg)] p-3 text-sm text-[var(--success-fg)]">{message}</div> : null}
       <div className="grid gap-3">
@@ -1261,7 +1261,7 @@ export function LeaveTable({
                             Approve
                           </button>
                           <button
-                            className="rounded-lg border border-[var(--border-strong)] bg-white px-3 py-1 text-xs font-bold text-text-primary hover:bg-sunken transition"
+                            className="rounded-lg border border-[var(--border-strong)] bg-raised px-3 py-1 text-xs font-bold text-text-primary hover:bg-sunken transition"
                             onClick={() => decide(request.id, "reject")}
                           >
                             Reject

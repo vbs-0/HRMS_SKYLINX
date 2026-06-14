@@ -73,7 +73,7 @@ export function ReferenceModuleHeader({
   };
 
   return (
-    <section className="mb-5 rounded-lg border border-[var(--border-default)] bg-white shadow-sm">
+    <section className="mb-5 rounded-lg border border-[var(--border-default)] bg-raised shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-4 border-b border-[var(--border-default)] p-5">
         <div>
           <div className="text-xs font-bold uppercase tracking-wide text-[var(--text-muted)]">{eyebrow}</div>
@@ -85,7 +85,7 @@ export function ReferenceModuleHeader({
             const className =
               tone === "primary"
                 ? "inline-flex min-h-10 items-center gap-2 rounded-lg bg-brand px-4 text-sm font-semibold text-white cursor-pointer"
-                : "inline-flex min-h-10 items-center gap-2 rounded-lg border border-[var(--border-default)] bg-white px-4 text-sm font-semibold text-[var(--text-secondary)] cursor-pointer";
+                : "inline-flex min-h-10 items-center gap-2 rounded-lg border border-[var(--border-default)] bg-raised px-4 text-sm font-semibold text-[var(--text-secondary)] cursor-pointer";
             
             const isElement = React.isValidElement(icon);
             const RenderIcon = !isElement && (
@@ -135,7 +135,7 @@ export function ReferenceModuleHeader({
       </div>
 
       <div className="grid grid-cols-[1fr_180px_150px_auto] gap-3 border-t border-[var(--surface-sunken)] p-5 max-xl:grid-cols-2 max-sm:grid-cols-1">
-        <label className="flex min-h-10 items-center gap-2 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-muted">
+        <label className="flex min-h-10 items-center gap-2 rounded-lg border border-[var(--border-default)] bg-raised px-3 text-sm text-muted">
           <Search className="h-4 w-4 text-[var(--color-brand-600)]" />
           <input
             className="min-w-0 flex-1 bg-transparent text-[var(--text-primary)] outline-none placeholder:text-[var(--text-muted)]"
@@ -147,13 +147,13 @@ export function ReferenceModuleHeader({
         <input
           value={mVal}
           onChange={(e) => setMVal(e.target.value)}
-          className="min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none"
+          className="min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-3 text-sm text-[var(--text-primary)] outline-none"
           type="month"
         />
         <select
           value={stVal}
           onChange={(e) => setStVal(e.target.value)}
-          className="min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm text-[var(--text-primary)] outline-none"
+          className="min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-3 text-sm text-[var(--text-primary)] outline-none"
         >
           <option value="All">All</option>
           <option value="Pending">Pending</option>

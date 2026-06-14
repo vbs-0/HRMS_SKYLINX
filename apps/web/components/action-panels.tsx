@@ -51,7 +51,7 @@ export function EmployeeCreatePanel() {
   }
 
   return (
-    <form className="mb-5 grid grid-cols-4 gap-3 rounded-lg border border-[var(--border-default)] bg-white p-4 shadow-sm max-xl:grid-cols-2 max-md:grid-cols-1" onSubmit={submit}>
+    <form className="mb-5 grid grid-cols-4 gap-3 rounded-lg border border-[var(--border-default)] bg-raised p-4 shadow-sm max-xl:grid-cols-2 max-md:grid-cols-1" onSubmit={submit}>
       <input className={inputClass()} name="companyId" defaultValue={getCurrentCompanyId()} placeholder="Company ID" />
       <input className={inputClass()} name="employeeCode" placeholder="Employee Code" required />
       <input className={inputClass()} name="firstName" placeholder="First Name" required />
@@ -119,7 +119,7 @@ export function DocumentUploadPanel() {
   }
 
   return (
-    <form className="mb-5 grid grid-cols-4 gap-3 rounded-lg border border-[var(--border-default)] bg-white p-4 shadow-sm max-xl:grid-cols-2 max-md:grid-cols-1" onSubmit={submit}>
+    <form className="mb-5 grid grid-cols-4 gap-3 rounded-lg border border-[var(--border-default)] bg-raised p-4 shadow-sm max-xl:grid-cols-2 max-md:grid-cols-1" onSubmit={submit}>
       <select className={inputClass()} name="employeeId" required>
         {employees.map((employee) => <option key={employee.value} value={employee.value}>{employee.label}</option>)}
       </select>
@@ -222,7 +222,7 @@ export function ExpenseClaimPanel() {
   }
 
   return (
-    <form className="mb-5 grid grid-cols-4 gap-3 rounded-lg border border-[var(--border-default)] bg-white p-4 shadow-sm max-xl:grid-cols-2 max-md:grid-cols-1" onSubmit={submit}>
+    <form className="mb-5 grid grid-cols-4 gap-3 rounded-lg border border-[var(--border-default)] bg-raised p-4 shadow-sm max-xl:grid-cols-2 max-md:grid-cols-1" onSubmit={submit}>
       <select
         className={inputClass()}
         name="employeeId"
@@ -293,7 +293,7 @@ export function HolidayCreatePanel() {
   }
 
   return (
-    <form className="mb-5 grid grid-cols-4 gap-3 rounded-lg border border-[var(--border-default)] bg-white p-4 shadow-sm max-xl:grid-cols-2 max-md:grid-cols-1" onSubmit={submit}>
+    <form className="mb-5 grid grid-cols-4 gap-3 rounded-lg border border-[var(--border-default)] bg-raised p-4 shadow-sm max-xl:grid-cols-2 max-md:grid-cols-1" onSubmit={submit}>
       <input className={inputClass()} name="name" placeholder="Holiday name" required />
       <input className={inputClass()} name="date" required type="date" />
       <select className={inputClass()} name="type" required>
@@ -334,7 +334,7 @@ export function ManagerMappingPanel() {
   }
 
   return (
-    <form className="mb-5 grid grid-cols-[1fr_1fr_auto] gap-3 rounded-lg border border-[var(--border-default)] bg-white p-4 shadow-sm max-md:grid-cols-1" onSubmit={submit}>
+    <form className="mb-5 grid grid-cols-[1fr_1fr_auto] gap-3 rounded-lg border border-[var(--border-default)] bg-raised p-4 shadow-sm max-md:grid-cols-1" onSubmit={submit}>
       <select className={inputClass()} name="employeeId" required>
         <option value="">Select employee</option>
         {employees.map((employee) => <option key={employee.value} value={employee.value}>{employee.label}</option>)}
@@ -431,7 +431,7 @@ export function InsuranceActionPanel({ defaultAction = "policy" }: { defaultActi
   }
 
   return (
-    <form className="mb-5 grid grid-cols-4 gap-3 rounded-lg border border-[var(--border-default)] bg-white p-4 shadow-sm max-xl:grid-cols-2 max-md:grid-cols-1" onSubmit={submit}>
+    <form className="mb-5 grid grid-cols-4 gap-3 rounded-lg border border-[var(--border-default)] bg-raised p-4 shadow-sm max-xl:grid-cols-2 max-md:grid-cols-1" onSubmit={submit}>
       <select className={inputClass()} name="action" value={action} onChange={(event) => setAction(event.target.value as any)} required>
         <option value="policy">Create Policy</option>
         <option value="dependent">Add Dependent</option>
@@ -495,7 +495,7 @@ export function NotificationSendPanel() {
   }
 
   return (
-    <form className="mb-5 grid grid-cols-4 gap-3 rounded-lg border border-[var(--border-default)] bg-white p-4 shadow-sm max-xl:grid-cols-2 max-md:grid-cols-1" onSubmit={submit}>
+    <form className="mb-5 grid grid-cols-4 gap-3 rounded-lg border border-[var(--border-default)] bg-raised p-4 shadow-sm max-xl:grid-cols-2 max-md:grid-cols-1" onSubmit={submit}>
       <select className={inputClass()} name="audience" required>
         <option value="ALL">All active users</option>
         <option value="HR">HR/Admin users</option>
@@ -544,7 +544,7 @@ export function SocialPostPanel() {
   }
 
   return (
-    <form className="mb-5 grid grid-cols-4 gap-3 rounded-lg border border-[var(--border-default)] bg-white p-4 shadow-sm max-xl:grid-cols-2 max-md:grid-cols-1" onSubmit={submit}>
+    <form className="mb-5 grid grid-cols-4 gap-3 rounded-lg border border-[var(--border-default)] bg-raised p-4 shadow-sm max-xl:grid-cols-2 max-md:grid-cols-1" onSubmit={submit}>
       <select className={inputClass()} name="type" required>
         <option value="ANNOUNCEMENT">Announcement</option>
         <option value="POST">Employee Post</option>
@@ -634,7 +634,7 @@ export function RewardsActionPanel() {
   }
 
   return (
-    <form className="mb-5 grid grid-cols-4 gap-3 rounded-lg border border-[var(--border-default)] bg-white p-4 shadow-sm max-xl:grid-cols-2 max-md:grid-cols-1" onSubmit={submit}>
+    <form className="mb-5 grid grid-cols-4 gap-3 rounded-lg border border-[var(--border-default)] bg-raised p-4 shadow-sm max-xl:grid-cols-2 max-md:grid-cols-1" onSubmit={submit}>
       <select className={inputClass()} name="action" required>
         <option value="recognition">Recognition</option>
         <option value="points">Award Points</option>
@@ -689,7 +689,7 @@ export function AttendanceActionPanel() {
   }
 
   return (
-    <div className="mb-5 rounded-lg border border-[var(--border-default)] bg-white p-4 shadow-sm">
+    <div className="mb-5 rounded-lg border border-[var(--border-default)] bg-raised p-4 shadow-sm">
       <div className="grid grid-cols-[1fr_auto_auto] gap-3 max-md:grid-cols-1">
         <select className={inputClass()} id="attendance-employee-select" name="employeeId" value={employeeId} onChange={(event) => setEmployeeId(event.target.value)}>
           <option value="">Select employee</option>
@@ -698,7 +698,7 @@ export function AttendanceActionPanel() {
         <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white" onClick={() => action("/attendance/check-in", employeeId)}>
           Check In
         </button>
-        <button className="min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-4 text-sm font-semibold" onClick={() => action("/attendance/check-out", employeeId)}>
+        <button className="min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-4 text-sm font-semibold" onClick={() => action("/attendance/check-out", employeeId)}>
           Check Out
         </button>
       </div>
@@ -761,7 +761,7 @@ export function LeaveApplyPanel({ onSuccess }: { onSuccess?: () => void } = {}) 
   }
 
   return (
-    <form className="mb-5 grid grid-cols-3 gap-3 rounded-lg border border-[var(--border-default)] bg-white p-4 shadow-sm max-lg:grid-cols-2 max-md:grid-cols-1" onSubmit={submit}>
+    <form className="mb-5 grid grid-cols-3 gap-3 rounded-lg border border-[var(--border-default)] bg-raised p-4 shadow-sm max-lg:grid-cols-2 max-md:grid-cols-1" onSubmit={submit}>
       <select className={inputClass()} name="employeeId">
         {employees.map((employee) => <option key={employee.value} value={employee.value}>{employee.label}</option>)}
       </select>
@@ -825,16 +825,16 @@ export function PayrollActionPanel() {
   }
 
   return (
-    <div className="mb-5 rounded-lg border border-[var(--border-default)] bg-white p-4 shadow-sm" id="payroll-actions">
+    <div className="mb-5 rounded-lg border border-[var(--border-default)] bg-raised p-4 shadow-sm" id="payroll-actions">
       <div className="grid grid-cols-[1fr_repeat(4,auto)] gap-3 max-xl:grid-cols-2 max-md:grid-cols-1">
         <select className={inputClass()} id="payroll-run-select" name="payrollRunId" value={runId} onChange={(event) => setRunId(event.target.value)}>
           <option value="">Select payroll run</option>
           {payrollRuns.map((run) => <option key={run.value} value={run.value}>{run.label}</option>)}
         </select>
         <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white" onClick={createRun}>Create Run</button>
-        <button className="min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-4 text-sm font-semibold" onClick={() => runAction("/calculate", "Payroll calculated.")}>Calculate</button>
-        <button className="min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-4 text-sm font-semibold" onClick={() => runAction("/lock", "Payroll locked.")}>Lock</button>
-        <button className="min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-4 text-sm font-semibold" onClick={() => runAction("/bank-export", "Bank export generated.")}>Bank Export</button>
+        <button className="min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-4 text-sm font-semibold" onClick={() => runAction("/calculate", "Payroll calculated.")}>Calculate</button>
+        <button className="min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-4 text-sm font-semibold" onClick={() => runAction("/lock", "Payroll locked.")}>Lock</button>
+        <button className="min-h-10 rounded-lg border border-[var(--border-default)] bg-raised px-4 text-sm font-semibold" onClick={() => runAction("/bank-export", "Bank export generated.")}>Bank Export</button>
       </div>
       <div className="mt-3"><Result message={message} error={error} /></div>
     </div>

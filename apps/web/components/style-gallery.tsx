@@ -6,6 +6,21 @@ import {
   Card, CardHeader, Button, StatusPill, Badge, Field, Input, Textarea, Select,
   MetricCard, KpiCard, DataState, EmptyState, Skeleton, SkeletonRows, Avatar, Tabs,
 } from "./ui";
+import { DataTable, type Column } from "./data-table";
+
+type Person = { id: string; name: string; code: string; dept: string; status: string };
+const PEOPLE: Person[] = [
+  { id: "1", name: "Asha Rao", code: "EMP-0142", dept: "Engineering", status: "ACTIVE" },
+  { id: "2", name: "Kabir Sethi", code: "EMP-0096", dept: "Support", status: "PROBATION" },
+  { id: "3", name: "Meera Nair", code: "EMP-0203", dept: "Sales", status: "NOTICE_PERIOD" },
+  { id: "4", name: "Rahul Verma", code: "EMP-0011", dept: "Finance", status: "EXITED" },
+];
+const PEOPLE_COLS: Column<Person>[] = [
+  { id: "name", header: "Name", sortBy: (r) => r.name, cell: (r) => <span className="flex items-center gap-2"><Avatar name={r.name} size={26} />{r.name}</span> },
+  { id: "code", header: "Emp code", sortBy: (r) => r.code, cell: (r) => <span className="font-mono text-[12.5px] text-text-secondary">{r.code}</span> },
+  { id: "dept", header: "Department", sortBy: (r) => r.dept, cell: (r) => r.dept },
+  { id: "status", header: "Status", cell: (r) => <StatusPill status={r.status} /> },
+];
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -81,6 +96,22 @@ export function StyleGallery() {
               <DataState tone="error" message="Couldn't load — retry (ref a1b2)." />
               <Skeleton className="h-8 w-2/3" />
             </div></Card>
+          </div>
+
+          <div className="grid gap-2">
+            <h3 className="text-sm font-semibold text-text-primary">DataTable (sort · search · select · paginate · states)</h3>
+            <DataTable<Person>
+              columns={PEOPLE_COLS}
+              rows={PEOPLE}
+              rowKey={(r) => r.id}
+              search={(r, q) => `${r.name} ${r.code} ${r.dept}`.toLowerCase().includes(q)}
+              selectable
+              onRowClick={() => undefined}
+              rowActions={() => <Button variant="ghost" size="sm">Open</Button>}
+              bulkBar={(keys) => <Button variant="secondary" size="sm">Export {keys.length}</Button>}
+              emptyTitle="No people yet"
+              emptyMessage="Add your first teammate."
+            />
           </div>
         </>
       )}

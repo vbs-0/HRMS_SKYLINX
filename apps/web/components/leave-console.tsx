@@ -25,11 +25,11 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4">
       <div className="relative w-full max-w-lg rounded-xl border border-[var(--border-default)] bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 text-left">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
-          <h3 className="text-lg font-bold text-slate-900">{title}</h3>
+        <div className="flex items-center justify-between border-b border-line pb-3 mb-4">
+          <h3 className="text-lg font-bold text-text-primary">{title}</h3>
           <button
             type="button"
-            className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
+            className="rounded-lg p-1 text-text-muted hover:bg-sunken hover:text-text-secondary transition-colors"
             onClick={onClose}
           >
             <X className="h-5 w-5" />
@@ -214,9 +214,9 @@ export function LeaveConsole() {
       {activeTab === "Dashboard" && (
         <div className="grid gap-6">
           <LeaveRulesWorkspace />
-          <div className="rounded-lg bg-blue-50/50 border border-blue-200 p-5 text-left">
-            <h3 className="text-sm font-bold text-blue-900 mb-2">Welcome to the Leave Control Room</h3>
-            <p className="text-xs text-blue-700 leading-relaxed">
+          <div className="rounded-lg bg-info-bg border border-info-border p-5 text-left">
+            <h3 className="text-sm font-bold text-info-fg mb-2">Welcome to the Leave Control Room</h3>
+            <p className="text-xs text-info-fg leading-relaxed">
               Use the tab controls above to review individual employee leave requests, check YTD balances, apply for leave encashments, or process earned-leave accruals. Click <strong>Apply Leave</strong> to submit a new leave record.
             </p>
           </div>
@@ -248,12 +248,12 @@ export function LeaveConsole() {
               <div>
                 <div className="flex justify-between items-center mb-3">
                   <h3 className="text-lg font-bold text-[var(--text-primary)]">{type.name}</h3>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-brand bg-blue-50 px-2.5 py-1 rounded">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-brand bg-info-bg px-2.5 py-1 rounded">
                     {type.code}
                   </span>
                 </div>
-                <p className="text-xs text-slate-500 mb-4">{type.description}</p>
-                <hr className="border-slate-100 my-3" />
+                <p className="text-xs text-text-secondary mb-4">{type.description}</p>
+                <hr className="border-line my-3" />
                 <div className="space-y-2 text-xs text-[var(--text-secondary)]">
                   <div className="flex justify-between">
                     <span className="font-semibold">Annual Quota:</span>
@@ -387,15 +387,15 @@ function CompOffConversionPanel() {
 
       <div className="grid grid-cols-[1fr_2fr] gap-6 max-lg:grid-cols-1">
         <Card className="p-5 border border-[var(--border-subtle)]">
-          <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Overtime to Comp-Off Conversion</h3>
+          <h3 className="text-base font-bold text-text-primary mb-4 border-b pb-2">Overtime to Comp-Off Conversion</h3>
           <form onSubmit={handleSubmit} className="grid gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-500 mb-1">Employee</label>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Employee</label>
               <select
                 name="employeeId"
                 id="compoff-employee-select"
                 required
-                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                 value={form.employeeId}
                 onChange={(e) => setForm({ ...form, employeeId: e.target.value })}
               >
@@ -409,26 +409,26 @@ function CompOffConversionPanel() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-500 mb-1">Overtime Request ID</label>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Overtime Request ID</label>
               <input
                 type="text"
                 name="overtimeRequestId"
                 id="compoff-ot-id-input"
                 required
                 placeholder="e.g. ot_12345"
-                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                 value={form.overtimeRequestId}
                 onChange={(e) => setForm({ ...form, overtimeRequestId: e.target.value })}
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-500 mb-1">Leave Type (Comp-Off)</label>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Leave Type (Comp-Off)</label>
               <select
                 name="leaveTypeId"
                 id="compoff-type-select"
                 required
-                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                 value={form.leaveTypeId}
                 onChange={(e) => setForm({ ...form, leaveTypeId: e.target.value })}
               >
@@ -442,7 +442,7 @@ function CompOffConversionPanel() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-500 mb-1">Days Granted</label>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Days Granted</label>
               <input
                 type="number"
                 name="daysGranted"
@@ -450,7 +450,7 @@ function CompOffConversionPanel() {
                 min="0.5"
                 step="0.5"
                 required
-                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                 value={form.daysGranted}
                 onChange={(e) => setForm({ ...form, daysGranted: Number(e.target.value) })}
               />
@@ -468,10 +468,10 @@ function CompOffConversionPanel() {
         </Card>
 
         <Card className="p-5 border border-[var(--border-subtle)]">
-          <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Comp-Off Requests Log</h3>
+          <h3 className="text-base font-bold text-text-primary mb-4 border-b pb-2">Comp-Off Requests Log</h3>
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-xs text-slate-650">
-              <thead className="bg-[var(--surface-sunken)] text-[10px] uppercase font-bold text-slate-500 border-b">
+            <table className="w-full border-collapse text-xs text-text-primary">
+              <thead className="bg-[var(--surface-sunken)] text-[10px] uppercase font-bold text-text-secondary border-b">
                 <tr>
                   <th className="p-2.5">Employee</th>
                   <th className="p-2.5">Overtime Request ID</th>
@@ -483,12 +483,12 @@ function CompOffConversionPanel() {
               <tbody>
                 {!conversions.length ? (
                   <tr>
-                    <td colSpan={5} className="p-4 text-center text-slate-400">No comp-off conversion records found.</td>
+                    <td colSpan={5} className="p-4 text-center text-text-muted">No comp-off conversion records found.</td>
                   </tr>
                 ) : (
                   conversions.map((conv) => (
-                    <tr key={conv.id} className="border-b border-slate-100 hover:bg-slate-50 transition">
-                      <td className="p-2.5 font-semibold text-slate-900">{conv.employee?.firstName} {conv.employee?.lastName}</td>
+                    <tr key={conv.id} className="border-b border-line hover:bg-sunken transition">
+                      <td className="p-2.5 font-semibold text-text-primary">{conv.employee?.firstName} {conv.employee?.lastName}</td>
                       <td className="p-2.5">{conv.overtimeRequestId}</td>
                       <td className="p-2.5">{conv.leaveType?.name}</td>
                       <td className="p-2.5 font-bold">{Number(conv.daysGranted)}</td>
@@ -507,7 +507,7 @@ function CompOffConversionPanel() {
                               </button>
                               <button
                                 onClick={() => handleDecide(conv.id, "reject")}
-                                className="border border-slate-200 text-slate-700 bg-white rounded px-2 py-0.5 font-bold hover:bg-slate-50"
+                                className="border border-line text-text-primary bg-white rounded px-2 py-0.5 font-bold hover:bg-sunken"
                               >
                                 Reject
                               </button>
@@ -608,15 +608,15 @@ function LeaveEncashmentPanel() {
 
       <div className="grid grid-cols-[1fr_2fr] gap-6 max-lg:grid-cols-1">
         <Card className="p-5 border border-[var(--border-subtle)]">
-          <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Apply for Leave Encashment</h3>
+          <h3 className="text-base font-bold text-text-primary mb-4 border-b pb-2">Apply for Leave Encashment</h3>
           <form onSubmit={handleSubmit} className="grid gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-500 mb-1">Employee</label>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Employee</label>
               <select
                 name="employeeId"
                 id="encash-employee-select"
                 required
-                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                 value={form.employeeId}
                 onChange={(e) => setForm({ ...form, employeeId: e.target.value })}
               >
@@ -630,12 +630,12 @@ function LeaveEncashmentPanel() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-500 mb-1">Leave Type</label>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Leave Type</label>
               <select
                 name="leaveTypeId"
                 id="encash-type-select"
                 required
-                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                 value={form.leaveTypeId}
                 onChange={(e) => setForm({ ...form, leaveTypeId: e.target.value })}
               >
@@ -649,14 +649,14 @@ function LeaveEncashmentPanel() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-500 mb-1">Days to Encash</label>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Days to Encash</label>
               <input
                 type="number"
                 name="days"
                 id="encash-days-input"
                 min="1"
                 required
-                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                 value={form.days}
                 onChange={(e) => setForm({ ...form, days: Number(e.target.value) })}
               />
@@ -674,10 +674,10 @@ function LeaveEncashmentPanel() {
         </Card>
 
         <Card className="p-5 border border-[var(--border-subtle)]">
-          <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Encashment History & Approvals</h3>
+          <h3 className="text-base font-bold text-text-primary mb-4 border-b pb-2">Encashment History & Approvals</h3>
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-xs text-slate-650">
-              <thead className="bg-[var(--surface-sunken)] text-[10px] uppercase font-bold text-slate-500 border-b">
+            <table className="w-full border-collapse text-xs text-text-primary">
+              <thead className="bg-[var(--surface-sunken)] text-[10px] uppercase font-bold text-text-secondary border-b">
                 <tr>
                   <th className="p-2.5">Employee</th>
                   <th className="p-2.5">Leave Type</th>
@@ -690,12 +690,12 @@ function LeaveEncashmentPanel() {
               <tbody>
                 {!encashments.length ? (
                   <tr>
-                    <td colSpan={6} className="p-4 text-center text-slate-400">No encashment records found.</td>
+                    <td colSpan={6} className="p-4 text-center text-text-muted">No encashment records found.</td>
                   </tr>
                 ) : (
                   encashments.map((enc) => (
-                    <tr key={enc.id} className="border-b border-slate-100 hover:bg-slate-50 transition">
-                      <td className="p-2.5 font-semibold text-slate-900">{enc.employee?.firstName} {enc.employee?.lastName}</td>
+                    <tr key={enc.id} className="border-b border-line hover:bg-sunken transition">
+                      <td className="p-2.5 font-semibold text-text-primary">{enc.employee?.firstName} {enc.employee?.lastName}</td>
                       <td className="p-2.5">{enc.leaveType?.name}</td>
                       <td className="p-2.5 font-bold">{Number(enc.days)}</td>
                       <td className="p-2.5">₹{Number(enc.amountPerDay).toLocaleString("en-IN")}</td>
@@ -715,7 +715,7 @@ function LeaveEncashmentPanel() {
                               </button>
                               <button
                                 onClick={() => handleDecide(enc.id, "REJECTED")}
-                                className="border border-slate-200 text-slate-700 bg-white rounded px-2 py-0.5 font-bold hover:bg-slate-50"
+                                className="border border-line text-text-primary bg-white rounded px-2 py-0.5 font-bold hover:bg-sunken"
                               >
                                 Reject
                               </button>
@@ -740,17 +740,17 @@ function TeamLeaveCalendar({ requests }: { requests: any[] }) {
   
   return (
     <Card className="p-5 border border-[var(--border-subtle)]">
-      <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Team Leave Calendar</h3>
+      <h3 className="text-base font-bold text-text-primary mb-4 border-b pb-2">Team Leave Calendar</h3>
       <div className="grid gap-4">
         {!approvedRequests.length ? (
-          <div className="text-sm text-slate-500">No approved leaves to show.</div>
+          <div className="text-sm text-text-secondary">No approved leaves to show.</div>
         ) : (
           <div className="grid gap-3">
             {approvedRequests.map(r => (
-              <div key={r.id} className="flex justify-between items-center p-3 border rounded-lg bg-slate-50">
+              <div key={r.id} className="flex justify-between items-center p-3 border rounded-lg bg-sunken">
                 <div className="font-semibold text-sm">
                   {r.employee?.firstName} {r.employee?.lastName}
-                  <span className="ml-2 font-normal text-xs text-slate-500">({r.leaveType?.name})</span>
+                  <span className="ml-2 font-normal text-xs text-text-secondary">({r.leaveType?.name})</span>
                 </div>
                 <div className="text-xs font-bold bg-white px-2 py-1 border rounded shadow-sm">
                   {r.fromDate?.slice(0, 10)} to {r.toDate?.slice(0, 10)}

@@ -240,7 +240,7 @@ export function EmployeesTable({ searchQuery = "", onSelectEmployee }: { searchQ
         <tr 
           key={employee.id} 
           onClick={() => onSelectEmployee?.(employee.realId)}
-          className={onSelectEmployee ? "cursor-pointer hover:bg-slate-50 transition" : ""}
+          className={onSelectEmployee ? "cursor-pointer hover:bg-sunken transition" : ""}
         >
           <td className="border-b border-[var(--border-default)] p-3">{employee.id}</td>
           <td className="border-b border-[var(--border-default)] p-3 font-semibold text-brand hover:underline">{employee.name}</td>
@@ -408,12 +408,12 @@ export function ExpensesTable({
         {!loaded ? <EmptyRow columns={6} message="Loading expenses from database..." /> : null}
         {loaded && !filtered.length ? <EmptyRow columns={6} message="No expense claims found in database." /> : null}
         {filtered.map((expense) => (
-          <tr key={expense.id} className="hover:bg-slate-50 border-b border-slate-100 transition">
+          <tr key={expense.id} className="hover:bg-sunken border-b border-line transition">
             <td className="p-3 font-semibold text-[var(--text-primary)]">
               {expense.employee?.firstName} {expense.employee?.lastName}
             </td>
-            <td className="p-3 text-slate-650">{expense.category}</td>
-            <td className="p-3 text-slate-650">{expense.claimDate.slice(0, 10)}</td>
+            <td className="p-3 text-text-primary">{expense.category}</td>
+            <td className="p-3 text-text-primary">{expense.claimDate.slice(0, 10)}</td>
             <td className="p-3 font-semibold text-[var(--text-primary)]">
               INR {Number(expense.amount).toLocaleString("en-IN")}
             </td>
@@ -443,7 +443,7 @@ export function ExpensesTable({
                   </button>
                 ) : null}
                 {(mode === "approvals" || mode === "reimbursement") && expense.status !== "PAID" && expense.status !== "REJECTED" ? (
-                  <button className="rounded border border-[var(--border-strong)] bg-white px-2.5 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition" onClick={() => decide(expense.id, "reject")}>
+                  <button className="rounded border border-[var(--border-strong)] bg-white px-2.5 py-1 text-xs font-semibold text-text-primary hover:bg-sunken transition" onClick={() => decide(expense.id, "reject")}>
                     Reject
                   </button>
                 ) : null}
@@ -683,14 +683,14 @@ export function InsurancePoliciesTable({ search = "" }: InsurancePoliciesTablePr
       {!loaded ? <EmptyRow columns={8} message="Loading insurance policies from database..." /> : null}
       {loaded && !filtered.length ? <EmptyRow columns={8} message="No insurance policies found in database." /> : null}
       {filtered.map((policy) => (
-        <tr key={policy.id} className="hover:bg-slate-50 border-b border-slate-100 transition">
+        <tr key={policy.id} className="hover:bg-sunken border-b border-line transition">
           <td className="p-3 font-semibold text-[var(--text-primary)]">{policy.employee}</td>
-          <td className="p-3 text-slate-650">{policy.provider}</td>
-          <td className="p-3 text-slate-650">{policy.policyNumber}</td>
-          <td className="p-3 text-slate-650">{policy.policyType}</td>
+          <td className="p-3 text-text-primary">{policy.provider}</td>
+          <td className="p-3 text-text-primary">{policy.policyNumber}</td>
+          <td className="p-3 text-text-primary">{policy.policyType}</td>
           <td className="p-3 font-semibold text-[var(--text-primary)]">{policy.coverage}</td>
-          <td className="p-3 text-slate-650">{policy.validTill}</td>
-          <td className="p-3 text-slate-650">{policy.dependents}</td>
+          <td className="p-3 text-text-primary">{policy.validTill}</td>
+          <td className="p-3 text-text-primary">{policy.dependents}</td>
           <td className="p-3">
             <StatusPill tone={policy.status === "ACTIVE" ? "green" : "red"}>{policy.status}</StatusPill>
           </td>
@@ -744,16 +744,16 @@ export function InsuranceDependentsTable({ search = "" }: InsuranceDependentsTab
       {!loaded ? <EmptyRow columns={6} message="Loading dependents from database..." /> : null}
       {loaded && !filtered.length ? <EmptyRow columns={6} message="No dependents found in database." /> : null}
       {filtered.map((dep) => (
-        <tr key={dep.id} className="hover:bg-slate-50 border-b border-slate-100 transition">
+        <tr key={dep.id} className="hover:bg-sunken border-b border-line transition">
           <td className="p-3 font-semibold text-[var(--text-primary)]">
             {dep.employee?.firstName} {dep.employee?.lastName}
           </td>
-          <td className="p-3 text-slate-650">
+          <td className="p-3 text-text-primary">
             {dep.insurance ? `${dep.insurance.provider} (${dep.insurance.policyNumber})` : "-"}
           </td>
           <td className="p-3 font-semibold text-[var(--text-primary)]">{dep.fullName}</td>
-          <td className="p-3 text-slate-650">{dep.relationship}</td>
-          <td className="p-3 text-slate-650">
+          <td className="p-3 text-text-primary">{dep.relationship}</td>
+          <td className="p-3 text-text-primary">
             {dep.dateOfBirth ? dep.dateOfBirth.slice(0, 10) : "-"}
           </td>
           <td className="p-3">
@@ -842,14 +842,14 @@ export function InsuranceClaimsTable({ search = "", status = "All" }: InsuranceC
         {!loaded ? <EmptyRow columns={8} message="Loading insurance claims from database..." /> : null}
         {loaded && !filtered.length ? <EmptyRow columns={8} message="No insurance claims found in database." /> : null}
         {filtered.map((claim) => (
-          <tr key={claim.id} className="hover:bg-slate-50 border-b border-slate-100 transition">
+          <tr key={claim.id} className="hover:bg-sunken border-b border-line transition">
             <td className="p-3 font-semibold text-[var(--text-primary)]">{claim.employee}</td>
-            <td className="p-3 text-slate-650">{claim.provider}</td>
-            <td className="p-3 text-slate-650">{claim.claimNumber}</td>
-            <td className="p-3 text-slate-650">{claim.claimType}</td>
+            <td className="p-3 text-text-primary">{claim.provider}</td>
+            <td className="p-3 text-text-primary">{claim.claimNumber}</td>
+            <td className="p-3 text-text-primary">{claim.claimType}</td>
             <td className="p-3 font-semibold text-[var(--text-primary)]">{claim.amount}</td>
-            <td className="p-3 text-slate-650">{claim.claimDate}</td>
-            <td className="p-3 text-slate-650">
+            <td className="p-3 text-text-primary">{claim.claimDate}</td>
+            <td className="p-3 text-text-primary">
               {claim.documentUrl ? <a className="font-semibold text-brand hover:underline" href={claim.documentUrl} rel="noreferrer" target="_blank">Open</a> : "-"}
             </td>
             <td className="p-3">
@@ -864,7 +864,7 @@ export function InsuranceClaimsTable({ search = "", status = "All" }: InsuranceC
                       Approve
                     </button>
                     <button
-                      className="rounded-lg border border-[var(--border-strong)] bg-white px-3 py-1 text-xs font-bold text-slate-700 hover:bg-slate-50 transition"
+                      className="rounded-lg border border-[var(--border-strong)] bg-white px-3 py-1 text-xs font-bold text-text-primary hover:bg-sunken transition"
                       onClick={() => decide(claim.id, "reject")}
                     >
                       Reject
@@ -1101,7 +1101,7 @@ export function RegularizationsTable({ search = "", status = "All" }: { search?:
               <StatusPill tone={row.status === "PENDING" ? "yellow" : "green"}>{row.status}</StatusPill>
               {row.status === "PENDING" ? (
                 <>
-                  <button className="rounded-lg border border-[var(--border-default)] px-3 py-2 text-sm font-semibold hover:bg-slate-50 transition" onClick={() => decide(row.id, "reject")}>Reject</button>
+                  <button className="rounded-lg border border-[var(--border-default)] px-3 py-2 text-sm font-semibold hover:bg-sunken transition" onClick={() => decide(row.id, "reject")}>Reject</button>
                   <button className="rounded-lg bg-brand px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-brand/90 transition" onClick={() => decide(row.id, "approve")}>Approve</button>
                 </>
               ) : null}
@@ -1205,7 +1205,7 @@ export function LeaveTable({
       </div>
       <div className="overflow-x-auto">
         <table className="w-full min-w-[720px] border-collapse text-left text-sm text-[var(--text-secondary)]">
-          <thead className="bg-[var(--surface-sunken)] text-xs uppercase font-bold text-slate-500 border-b">
+          <thead className="bg-[var(--surface-sunken)] text-xs uppercase font-bold text-text-secondary border-b">
             {mode === "requests" ? (
               <tr>
                 <th className="p-3">Employee</th>
@@ -1238,7 +1238,7 @@ export function LeaveTable({
                 </tr>
               ) : null}
               {loaded && filteredRequests.map((request) => (
-                <tr key={request.id} className="hover:bg-slate-50 border-b border-slate-100 transition">
+                <tr key={request.id} className="hover:bg-sunken border-b border-line transition">
                   <td className="p-3 font-semibold text-[var(--text-primary)]">
                     {request.employee?.firstName} {request.employee?.lastName}
                   </td>
@@ -1261,7 +1261,7 @@ export function LeaveTable({
                             Approve
                           </button>
                           <button
-                            className="rounded-lg border border-[var(--border-strong)] bg-white px-3 py-1 text-xs font-bold text-slate-700 hover:bg-slate-50 transition"
+                            className="rounded-lg border border-[var(--border-strong)] bg-white px-3 py-1 text-xs font-bold text-text-primary hover:bg-sunken transition"
                             onClick={() => decide(request.id, "reject")}
                           >
                             Reject
@@ -1286,7 +1286,7 @@ export function LeaveTable({
                 </tr>
               ) : null}
               {loaded && filteredBalances.map((bal) => (
-                <tr key={bal.id} className="hover:bg-slate-50 border-b border-slate-100 transition">
+                <tr key={bal.id} className="hover:bg-sunken border-b border-line transition">
                   <td className="p-3 font-semibold text-[var(--text-primary)]">
                     {bal.employee?.firstName} {bal.employee?.lastName}
                   </td>
@@ -1409,7 +1409,7 @@ export function PenaltyLogsTable({ search = "", month = "" }: { search?: string;
   return (
     <Card>
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-slate-800">Penalty Logs (Loss of Pay)</h2>
+        <h2 className="text-lg font-semibold text-text-primary">Penalty Logs (Loss of Pay)</h2>
         <button
           onClick={bulkRevert}
           disabled={!selectedIds.length}
@@ -1421,7 +1421,7 @@ export function PenaltyLogsTable({ search = "", month = "" }: { search?: string;
       {message && <div className="mb-4 rounded bg-[var(--success-bg)] p-3 text-sm text-[var(--success-fg)] font-semibold">{message}</div>}
       <div className="overflow-auto">
         <table className="w-full min-w-[720px] border-collapse text-sm text-left">
-          <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
+          <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-text-secondary tracking-wider">
             <tr>
               <th className="border-b border-[var(--border-default)] p-3 w-10">
                 <input
@@ -1445,7 +1445,7 @@ export function PenaltyLogsTable({ search = "", month = "" }: { search?: string;
             {!loaded ? <EmptyRow columns={7} message="Loading penalty logs..." /> : null}
             {loaded && !filtered.length ? <EmptyRow columns={7} message="No penalty logs found." /> : null}
             {filtered.map((r) => (
-              <tr key={r.id} className="hover:bg-slate-50 border-b border-slate-100 transition">
+              <tr key={r.id} className="hover:bg-sunken border-b border-line transition">
                 <td className="p-3">
                   <input
                     type="checkbox"
@@ -1459,10 +1459,10 @@ export function PenaltyLogsTable({ search = "", month = "" }: { search?: string;
                 <td className="p-3 font-semibold text-[var(--text-primary)]">
                   {r.employee?.firstName} {r.employee?.lastName}
                 </td>
-                <td className="p-3 text-slate-650">{r.month}/{r.year}</td>
-                <td className="p-3 text-slate-650">{r.anomalyType}</td>
-                <td className="p-3 text-slate-650">{r.penaltyType}</td>
-                <td className="p-3 font-semibold text-red-600">{Number(r.deductionDays)}</td>
+                <td className="p-3 text-text-primary">{r.month}/{r.year}</td>
+                <td className="p-3 text-text-primary">{r.anomalyType}</td>
+                <td className="p-3 text-text-primary">{r.penaltyType}</td>
+                <td className="p-3 font-semibold text-danger-fg">{Number(r.deductionDays)}</td>
                 <td className="p-3">
                   <StatusPill tone={r.status === "CONVERTED_LOP" ? "red" : r.status === "REVERTED" ? "green" : "yellow"}>
                     {r.status}
@@ -1510,11 +1510,11 @@ export function LeaveEncashmentTable({ search = "" }: { search?: string }) {
   return (
     <Card>
       <div className="mb-4">
-        <h2 className="text-lg font-semibold text-slate-800">Leave Encashment (F&F Settings)</h2>
+        <h2 className="text-lg font-semibold text-text-primary">Leave Encashment (F&F Settings)</h2>
       </div>
       <div className="overflow-auto">
         <table className="w-full min-w-[720px] border-collapse text-sm text-left">
-          <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
+          <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-text-secondary tracking-wider">
             <tr>
               <th className="border-b border-[var(--border-default)] p-3">Leave Name</th>
               <th className="border-b border-[var(--border-default)] p-3">Max Encashable Days</th>
@@ -1525,7 +1525,7 @@ export function LeaveEncashmentTable({ search = "" }: { search?: string }) {
           <tbody>
             {!loaded ? <EmptyRow columns={4} message="Loading..." /> : null}
             {filtered.map((r) => (
-              <tr key={r.id} className="hover:bg-slate-50 border-b border-slate-100 transition">
+              <tr key={r.id} className="hover:bg-sunken border-b border-line transition">
                 <td className="p-3 font-semibold text-[var(--text-primary)]">{r.name}</td>
                 <td className="p-3">
                   <input

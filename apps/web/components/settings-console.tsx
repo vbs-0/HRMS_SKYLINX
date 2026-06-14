@@ -645,7 +645,7 @@ export function SettingsConsole() {
                   type="button"
                   onClick={handleTestEmail}
                   disabled={testingEmail}
-                  className="min-h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+                  className="min-h-10 rounded-lg border border-line-strong bg-white px-3 text-sm font-semibold text-text-primary hover:bg-sunken disabled:opacity-50"
                 >
                   {testingEmail ? "Sending..." : "Test SMTP Config"}
                 </button>

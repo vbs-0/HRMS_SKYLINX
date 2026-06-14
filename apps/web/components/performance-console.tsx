@@ -402,8 +402,8 @@ export function PerformanceConsole() {
       />
       <ReferenceFlowStrip module="PMS" />
 
-      {message && <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-semibold text-emerald-800 mt-5">{message}</div>}
-      {error && <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm font-semibold text-rose-800 mt-5">{error}</div>}
+      {message && <div className="rounded-xl border border-success-border bg-success-bg p-4 text-sm font-semibold text-success-fg mt-5">{message}</div>}
+      {error && <div className="rounded-xl border border-danger-border bg-danger-bg p-4 text-sm font-semibold text-danger-fg mt-5">{error}</div>}
 
       {/* DASHBOARD TAB */}
       {activeTab === "Dashboard" && (
@@ -478,7 +478,7 @@ export function PerformanceConsole() {
       {activeTab === "Cycles" && isAdminView && (
         <div className="grid gap-5 mt-5">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold text-slate-800">Appraisal Review Cycles</h3>
+            <h3 className="text-lg font-semibold text-text-primary">Appraisal Review Cycles</h3>
             <button
               className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white flex items-center gap-2 hover:bg-brand-dark"
               onClick={() => setShowCycleModal(true)}
@@ -490,7 +490,7 @@ export function PerformanceConsole() {
           <Card>
             <div className="overflow-auto">
               <table className="w-full min-w-[800px] border-collapse text-sm text-left">
-                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-text-secondary tracking-wider">
                   <tr>
                     <th className="border-b border-[var(--border-default)] p-3">Cycle Name</th>
                     <th className="border-b border-[var(--border-default)] p-3">Start Date</th>
@@ -502,16 +502,16 @@ export function PerformanceConsole() {
                 <tbody>
                   {cycles.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="p-8 text-center text-slate-400 font-semibold">
+                      <td colSpan={5} className="p-8 text-center text-text-muted font-semibold">
                         No appraisal cycles configured.
                       </td>
                     </tr>
                   ) : (
                     cycles.map((cy) => (
-                      <tr key={cy.id} className="hover:bg-slate-50 transition">
-                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-slate-800">{cy.name}</td>
-                        <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-600">{new Date(cy.startDate).toLocaleDateString("en-IN")}</td>
-                        <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-600">{new Date(cy.endDate).toLocaleDateString("en-IN")}</td>
+                      <tr key={cy.id} className="hover:bg-sunken transition">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-text-primary">{cy.name}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-text-secondary">{new Date(cy.startDate).toLocaleDateString("en-IN")}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-text-secondary">{new Date(cy.endDate).toLocaleDateString("en-IN")}</td>
                         <td className="border-b border-[var(--surface-sunken)] p-3">
                           <StatusPill tone={cy.status === "ACTIVE" ? "green" : cy.status === "COMPLETED" ? "blue" : "yellow"}>
                             {cy.status}
@@ -535,7 +535,7 @@ export function PerformanceConsole() {
                             </button>
                           )}
                           {cy.status === "COMPLETED" && (
-                            <span className="text-xs text-slate-400 font-semibold">Archived</span>
+                            <span className="text-xs text-text-muted font-semibold">Archived</span>
                           )}
                         </td>
                       </tr>
@@ -552,7 +552,7 @@ export function PerformanceConsole() {
       {activeTab === "Templates" && isAdminView && (
         <div className="grid gap-5 mt-5">
           <div className="flex justify-between items-center">
-            <h3 className="text-lg font-semibold text-slate-800">Appraisal KRA Templates</h3>
+            <h3 className="text-lg font-semibold text-text-primary">Appraisal KRA Templates</h3>
             <button
               className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white flex items-center gap-2 hover:bg-brand-dark"
               onClick={() => setShowTemplateModal(true)}
@@ -564,17 +564,17 @@ export function PerformanceConsole() {
           <Card>
             <div className="grid gap-4">
               {templates.length === 0 ? (
-                <div className="p-8 text-center text-slate-400 font-semibold">
+                <div className="p-8 text-center text-text-muted font-semibold">
                   No appraisal templates configured.
                 </div>
               ) : (
                 templates.map((temp) => (
-                  <div key={temp.id} className="border border-slate-200 rounded-lg p-4 bg-slate-50 flex justify-between items-start gap-4">
+                  <div key={temp.id} className="border border-line rounded-lg p-4 bg-sunken flex justify-between items-start gap-4">
                     <div>
-                      <h4 className="font-semibold text-slate-800 text-md">{temp.name}</h4>
+                      <h4 className="font-semibold text-text-primary text-md">{temp.name}</h4>
                       <div className="flex flex-wrap gap-2 mt-2">
                         {temp.kras.map((k: any) => (
-                          <span key={k.id} className="text-xs bg-white border border-slate-200 px-2 py-1 rounded text-slate-600 font-semibold">
+                          <span key={k.id} className="text-xs bg-white border border-line px-2 py-1 rounded text-text-secondary font-semibold">
                             {k.title} ({k.weightagePercent}%)
                           </span>
                         ))}
@@ -591,17 +591,17 @@ export function PerformanceConsole() {
       {/* MY APPRAISAL TAB (EMPLOYEE VIEW) */}
       {activeTab === "My Appraisal" && !isAdminView && (
         <div className="grid gap-5 mt-5">
-          <h3 className="text-lg font-semibold text-slate-800">My Appraisals</h3>
+          <h3 className="text-lg font-semibold text-text-primary">My Appraisals</h3>
 
           {selectedAppraisal ? (
             <Card>
               <div className="flex justify-between items-center border-b pb-3 mb-4">
                 <div>
-                  <h4 className="font-bold text-slate-800">Fill Self Assessment</h4>
-                  <p className="text-xs text-slate-400">Review Template: {selectedAppraisal.template?.name}</p>
+                  <h4 className="font-bold text-text-primary">Fill Self Assessment</h4>
+                  <p className="text-xs text-text-muted">Review Template: {selectedAppraisal.template?.name}</p>
                 </div>
                 <button
-                  className="p-1 hover:bg-slate-100 rounded text-slate-400"
+                  className="p-1 hover:bg-sunken rounded text-text-muted"
                   onClick={() => setSelectedAppraisal(null)}
                 >
                   Back to List
@@ -610,15 +610,15 @@ export function PerformanceConsole() {
 
               <form onSubmit={(e) => handleSelfRate(selectedAppraisal.id, e)} className="space-y-5">
                 {selectedAppraisal.template?.kras.map((kra: any) => (
-                  <div key={kra.id} className="border border-slate-100 rounded-lg p-4 bg-slate-50 space-y-3">
+                  <div key={kra.id} className="border border-line rounded-lg p-4 bg-sunken space-y-3">
                     <div className="flex justify-between items-center">
-                      <span className="font-bold text-slate-700 text-sm">{kra.title}</span>
-                      <span className="text-xs font-semibold text-slate-400">Weightage: {kra.weightagePercent}%</span>
+                      <span className="font-bold text-text-primary text-sm">{kra.title}</span>
+                      <span className="text-xs font-semibold text-text-muted">Weightage: {kra.weightagePercent}%</span>
                     </div>
 
                     <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
                       <div>
-                        <label className="block text-xs font-semibold text-slate-500 mb-1">Self Rating (1-5)</label>
+                        <label className="block text-xs font-semibold text-text-secondary mb-1">Self Rating (1-5)</label>
                         <select
                           className="min-h-10 w-full rounded-lg border px-3 text-sm bg-white font-semibold"
                           required
@@ -643,7 +643,7 @@ export function PerformanceConsole() {
                       </div>
 
                       <div>
-                        <label className="block text-xs font-semibold text-slate-500 mb-1">Observation / Achievements Description</label>
+                        <label className="block text-xs font-semibold text-text-secondary mb-1">Observation / Achievements Description</label>
                         <input
                           className="min-h-10 w-full rounded-lg border px-3 text-sm"
                           type="text"
@@ -667,7 +667,7 @@ export function PerformanceConsole() {
 
                 <div className="flex justify-end gap-2 border-t pt-4">
                   <button
-                    className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-slate-50"
+                    className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-sunken"
                     type="button"
                     onClick={() => setSelectedAppraisal(null)}
                   >
@@ -683,7 +683,7 @@ export function PerformanceConsole() {
             <Card>
               <div className="overflow-auto">
                 <table className="w-full min-w-[700px] border-collapse text-sm text-left">
-                  <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
+                  <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-text-secondary tracking-wider">
                     <tr>
                       <th className="border-b border-[var(--border-default)] p-3">Cycle Name</th>
                       <th className="border-b border-[var(--border-default)] p-3">Template Name</th>
@@ -695,16 +695,16 @@ export function PerformanceConsole() {
                   <tbody>
                     {myAppraisals.length === 0 ? (
                       <tr>
-                        <td colSpan={5} className="p-8 text-center text-slate-400 font-semibold">
+                        <td colSpan={5} className="p-8 text-center text-text-muted font-semibold">
                           No appraisals logged for you.
                         </td>
                       </tr>
                     ) : (
                       myAppraisals.map((app) => (
-                        <tr key={app.id} className="hover:bg-slate-50 transition">
-                          <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-slate-800">{app.cycle?.name}</td>
-                          <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-600">{app.template?.name}</td>
-                          <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-slate-600">
+                        <tr key={app.id} className="hover:bg-sunken transition">
+                          <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-text-primary">{app.cycle?.name}</td>
+                          <td className="border-b border-[var(--surface-sunken)] p-3 text-text-secondary">{app.template?.name}</td>
+                          <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-text-secondary">
                             {app.selfScore ? Number(app.selfScore).toFixed(2) : "-"}
                           </td>
                           <td className="border-b border-[var(--surface-sunken)] p-3">
@@ -721,7 +721,7 @@ export function PerformanceConsole() {
                                 Self Assess
                               </button>
                             ) : (
-                              <span className="text-xs text-slate-400 font-semibold">Submitted</span>
+                              <span className="text-xs text-text-muted font-semibold">Submitted</span>
                             )}
                           </td>
                         </tr>
@@ -738,17 +738,17 @@ export function PerformanceConsole() {
       {/* TEAM APPRAISALS TAB (MANAGER / HR VIEW) */}
       {activeTab === "Team Appraisals" && (
         <div className="grid gap-5 mt-5">
-          <h3 className="text-lg font-semibold text-slate-800">Team Appraisals</h3>
+          <h3 className="text-lg font-semibold text-text-primary">Team Appraisals</h3>
 
           {selectedAppraisal ? (
             <Card>
               <div className="flex justify-between items-center border-b pb-3 mb-4">
                 <div>
-                  <h4 className="font-bold text-slate-800">Grade Performance</h4>
-                  <p className="text-xs text-slate-400">Employee: {selectedAppraisal.employee?.firstName} {selectedAppraisal.employee?.lastName} ({selectedAppraisal.employee?.employeeCode})</p>
+                  <h4 className="font-bold text-text-primary">Grade Performance</h4>
+                  <p className="text-xs text-text-muted">Employee: {selectedAppraisal.employee?.firstName} {selectedAppraisal.employee?.lastName} ({selectedAppraisal.employee?.employeeCode})</p>
                 </div>
                 <button
-                  className="p-1 hover:bg-slate-100 rounded text-slate-400 text-xs font-semibold"
+                  className="p-1 hover:bg-sunken rounded text-text-muted text-xs font-semibold"
                   onClick={() => setSelectedAppraisal(null)}
                 >
                   Back to List
@@ -760,19 +760,19 @@ export function PerformanceConsole() {
                   {selectedAppraisal.template?.kras.map((kra: any) => {
                     const goal = selectedAppraisal.goals?.find((g: any) => g.kraId === kra.id);
                     return (
-                      <div key={kra.id} className="border border-slate-100 rounded-lg p-4 bg-slate-50 space-y-3">
+                      <div key={kra.id} className="border border-line rounded-lg p-4 bg-sunken space-y-3">
                         <div className="flex justify-between items-center">
-                          <span className="font-bold text-slate-700 text-sm">{kra.title}</span>
-                          <span className="text-xs font-semibold text-slate-400">Weightage: {kra.weightagePercent}%</span>
+                          <span className="font-bold text-text-primary text-sm">{kra.title}</span>
+                          <span className="text-xs font-semibold text-text-muted">Weightage: {kra.weightagePercent}%</span>
                         </div>
 
-                        <div className="text-xs border-l-4 border-slate-300 pl-3 py-1 space-y-1 bg-white rounded p-2">
-                          <div className="font-semibold text-slate-500">Employee Self Score: {goal?.selfRating ? `${goal.selfRating}/5` : "Not rated"}</div>
-                          <div className="text-slate-600 font-medium">Employee Notes: {goal?.description || "No notes submitted"}</div>
+                        <div className="text-xs border-l-4 border-line-strong pl-3 py-1 space-y-1 bg-white rounded p-2">
+                          <div className="font-semibold text-text-secondary">Employee Self Score: {goal?.selfRating ? `${goal.selfRating}/5` : "Not rated"}</div>
+                          <div className="text-text-secondary font-medium">Employee Notes: {goal?.description || "No notes submitted"}</div>
                         </div>
 
                         <div>
-                          <label className="block text-xs font-semibold text-slate-500 mb-1">Manager Rating (1-5)</label>
+                          <label className="block text-xs font-semibold text-text-secondary mb-1">Manager Rating (1-5)</label>
                           <select
                             className="min-h-10 w-full max-w-xs rounded-lg border px-3 text-sm bg-white font-semibold"
                             required
@@ -800,7 +800,7 @@ export function PerformanceConsole() {
 
                   <div className="flex justify-end gap-2 border-t pt-4">
                     <button
-                      className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-slate-50"
+                      className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-sunken"
                       type="button"
                       onClick={() => setSelectedAppraisal(null)}
                     >
@@ -813,17 +813,17 @@ export function PerformanceConsole() {
                 </form>
               ) : selectedAppraisal.status === "MANAGER_DONE" && isAdminView ? (
                 <div className="space-y-4">
-                  <div className="bg-slate-50 border rounded-lg p-4 space-y-2">
-                    <div className="flex justify-between items-center text-sm font-semibold text-slate-700">
+                  <div className="bg-sunken border rounded-lg p-4 space-y-2">
+                    <div className="flex justify-between items-center text-sm font-semibold text-text-primary">
                       <span>Self Score: {selectedAppraisal.selfScore ? Number(selectedAppraisal.selfScore).toFixed(2) : "-"}</span>
                       <span>Manager Score: {selectedAppraisal.managerScore ? Number(selectedAppraisal.managerScore).toFixed(2) : "-"}</span>
                     </div>
-                    <p className="text-xs text-slate-400">To finalize this appraisal, review and lock it below. If the score meets or exceeds the threshold, a 10% CTC increment suggestion will be created.</p>
+                    <p className="text-xs text-text-muted">To finalize this appraisal, review and lock it below. If the score meets or exceeds the threshold, a 10% CTC increment suggestion will be created.</p>
                   </div>
 
                   <div className="flex items-center gap-3">
                     <div className="flex-1">
-                      <label className="block text-xs font-semibold text-slate-500 mb-1">Increment Threshold Score</label>
+                      <label className="block text-xs font-semibold text-text-secondary mb-1">Increment Threshold Score</label>
                       <input
                         type="number"
                         step="0.1"
@@ -838,7 +838,7 @@ export function PerformanceConsole() {
 
                   <div className="flex justify-end gap-2 border-t pt-4">
                     <button
-                      className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-slate-50"
+                      className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-sunken"
                       type="button"
                       onClick={() => setSelectedAppraisal(null)}
                     >
@@ -854,7 +854,7 @@ export function PerformanceConsole() {
                   </div>
                 </div>
               ) : (
-                <div className="p-8 text-center text-slate-400 font-semibold">
+                <div className="p-8 text-center text-text-muted font-semibold">
                   This appraisal is currently in status: {selectedAppraisal.status}. No action is available.
                 </div>
               )}
@@ -863,7 +863,7 @@ export function PerformanceConsole() {
             <Card>
               <div className="overflow-auto">
                 <table className="w-full min-w-[800px] border-collapse text-sm text-left">
-                  <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
+                  <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-text-secondary tracking-wider">
                     <tr>
                       <th className="border-b border-[var(--border-default)] p-3">Employee</th>
                       <th className="border-b border-[var(--border-default)] p-3">Cycle</th>
@@ -876,21 +876,21 @@ export function PerformanceConsole() {
                   <tbody>
                     {teamAppraisals.length === 0 ? (
                       <tr>
-                        <td colSpan={6} className="p-8 text-center text-slate-400 font-semibold">
+                        <td colSpan={6} className="p-8 text-center text-text-muted font-semibold">
                           No report appraisals logged.
                         </td>
                       </tr>
                     ) : (
                       teamAppraisals.map((app) => (
-                        <tr key={app.id} className="hover:bg-slate-50 transition">
-                          <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-slate-800">
+                        <tr key={app.id} className="hover:bg-sunken transition">
+                          <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-text-primary">
                             {app.employee?.firstName} {app.employee?.lastName} ({app.employee?.employeeCode})
                           </td>
-                          <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-600">{app.cycle?.name}</td>
-                          <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-600 font-semibold">
+                          <td className="border-b border-[var(--surface-sunken)] p-3 text-text-secondary">{app.cycle?.name}</td>
+                          <td className="border-b border-[var(--surface-sunken)] p-3 text-text-secondary font-semibold">
                             {app.selfScore ? Number(app.selfScore).toFixed(2) : "-"}
                           </td>
-                          <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-600 font-semibold">
+                          <td className="border-b border-[var(--surface-sunken)] p-3 text-text-secondary font-semibold">
                             {app.managerScore ? Number(app.managerScore).toFixed(2) : "-"}
                           </td>
                           <td className="border-b border-[var(--surface-sunken)] p-3">
@@ -916,10 +916,10 @@ export function PerformanceConsole() {
                               </button>
                             )}
                             {app.status === "COMPLETED" && (
-                              <span className="text-xs text-slate-400 font-semibold">Completed</span>
+                              <span className="text-xs text-text-muted font-semibold">Completed</span>
                             )}
                             {app.status === "PENDING" && (
-                              <span className="text-xs text-slate-400 font-semibold">Awaiting Employee</span>
+                              <span className="text-xs text-text-muted font-semibold">Awaiting Employee</span>
                             )}
                           </td>
                         </tr>
@@ -936,12 +936,12 @@ export function PerformanceConsole() {
       {/* RESULTS TAB */}
       {activeTab === "Results" && (
         <div className="grid gap-5 mt-5">
-          <h3 className="text-lg font-semibold text-slate-800">Appraisal Results Summary</h3>
+          <h3 className="text-lg font-semibold text-text-primary">Appraisal Results Summary</h3>
 
           <Card>
             <div className="overflow-auto">
               <table className="w-full min-w-[800px] border-collapse text-sm text-left">
-                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-text-secondary tracking-wider">
                   <tr>
                     <th className="border-b border-[var(--border-default)] p-3">Employee</th>
                     <th className="border-b border-[var(--border-default)] p-3">Cycle Name</th>
@@ -954,21 +954,21 @@ export function PerformanceConsole() {
                 <tbody>
                   {appraisals.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="p-8 text-center text-slate-400 font-semibold">
+                      <td colSpan={6} className="p-8 text-center text-text-muted font-semibold">
                         No appraisal results logged yet.
                       </td>
                     </tr>
                   ) : (
                     appraisals.map((app) => (
-                      <tr key={app.id} className="hover:bg-slate-50 transition">
-                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-slate-800">
+                      <tr key={app.id} className="hover:bg-sunken transition">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-text-primary">
                           {app.employee?.firstName} {app.employee?.lastName} ({app.employee?.employeeCode})
                         </td>
-                        <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-600">{app.cycle?.name}</td>
-                        <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-600 font-semibold">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-text-secondary">{app.cycle?.name}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-text-secondary font-semibold">
                           {app.selfScore ? Number(app.selfScore).toFixed(2) : "-"}
                         </td>
-                        <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-600 font-semibold">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-text-secondary font-semibold">
                           {app.managerScore ? Number(app.managerScore).toFixed(2) : "-"}
                         </td>
                         <td className="border-b border-[var(--surface-sunken)] p-3 text-brand font-bold">
@@ -994,8 +994,8 @@ export function PerformanceConsole() {
         <div className="grid gap-5 mt-5">
           <div className="flex justify-between items-center">
             <div>
-              <h3 className="text-lg font-semibold text-slate-800">360-Degree Peer Feedback Requests</h3>
-              <p className="text-xs text-slate-400 mt-1">Request reviews from peers, managers, and subordinates to build multi-dimensional appraisals.</p>
+              <h3 className="text-lg font-semibold text-text-primary">360-Degree Peer Feedback Requests</h3>
+              <p className="text-xs text-text-muted mt-1">Request reviews from peers, managers, and subordinates to build multi-dimensional appraisals.</p>
             </div>
             <button
               className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white hover:bg-brand-dark flex items-center gap-2"
@@ -1008,7 +1008,7 @@ export function PerformanceConsole() {
           <Card>
             <div className="overflow-auto">
               <table className="w-full min-w-[700px] border-collapse text-sm text-left">
-                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-text-secondary tracking-wider">
                   <tr>
                     <th className="border-b border-[var(--border-default)] p-3">Review Target</th>
                     <th className="border-b border-[var(--border-default)] p-3">Reviewer Assigned</th>
@@ -1020,20 +1020,20 @@ export function PerformanceConsole() {
                 <tbody>
                   {feedbackRequests.length === 0 ? (
                     <tr>
-                      <td colSpan={5} className="p-8 text-center text-slate-400 font-semibold">
+                      <td colSpan={5} className="p-8 text-center text-text-muted font-semibold">
                         No 360 feedback requests logged.
                       </td>
                     </tr>
                   ) : (
                     feedbackRequests.map((req) => (
-                      <tr key={req.id} className="hover:bg-slate-50 transition">
-                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-slate-800">
+                      <tr key={req.id} className="hover:bg-sunken transition">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-text-primary">
                           {req.requestor?.firstName} {req.requestor?.lastName}
                         </td>
-                        <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-600 font-semibold">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-text-secondary font-semibold">
                           {req.provider?.firstName} {req.provider?.lastName}
                         </td>
-                        <td className="border-b border-[var(--surface-sunken)] p-3 text-xs text-slate-500 font-semibold">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-xs text-text-secondary font-semibold">
                           {Array.isArray(req.questions) ? req.questions.join(", ") : String(req.questions)}
                         </td>
                         <td className="border-b border-[var(--surface-sunken)] p-3">
@@ -1054,10 +1054,10 @@ export function PerformanceConsole() {
                             </button>
                           )}
                           {req.status === "PENDING" && currentUser?.employeeId !== req.providerId && (
-                            <span className="text-xs text-slate-400 font-semibold">Pending Peer Review</span>
+                            <span className="text-xs text-text-muted font-semibold">Pending Peer Review</span>
                           )}
                           {req.status === "SUBMITTED" && (
-                            <span className="text-xs text-slate-400 font-semibold">Response Logged</span>
+                            <span className="text-xs text-text-muted font-semibold">Response Logged</span>
                           )}
                         </td>
                       </tr>
@@ -1073,16 +1073,16 @@ export function PerformanceConsole() {
       {/* CREATE CYCLE MODAL */}
       {showCycleModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 backdrop-blur-xs p-4 animate-fade-in">
-          <div className="w-full max-w-lg rounded-xl bg-white shadow-2xl border border-slate-100 p-5 space-y-4 animate-in zoom-in-95 duration-150">
+          <div className="w-full max-w-lg rounded-xl bg-white shadow-2xl border border-line p-5 space-y-4 animate-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b pb-3">
-              <h4 className="text-md font-bold text-slate-800">Launch Appraisal Cycle</h4>
-              <button className="p-1 hover:bg-slate-50 rounded" onClick={() => setShowCycleModal(false)}>
-                <X className="h-5 w-5 text-slate-400" />
+              <h4 className="text-md font-bold text-text-primary">Launch Appraisal Cycle</h4>
+              <button className="p-1 hover:bg-sunken rounded" onClick={() => setShowCycleModal(false)}>
+                <X className="h-5 w-5 text-text-muted" />
               </button>
             </div>
             <form onSubmit={handleCreateCycle} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Cycle Name</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Cycle Name</label>
                 <input
                   className="min-h-10 w-full rounded-lg border px-3 text-sm"
                   type="text"
@@ -1094,7 +1094,7 @@ export function PerformanceConsole() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Start Date</label>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Start Date</label>
                   <input
                     className="min-h-10 w-full rounded-lg border px-3 text-sm"
                     type="date"
@@ -1104,7 +1104,7 @@ export function PerformanceConsole() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">End Date</label>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">End Date</label>
                   <input
                     className="min-h-10 w-full rounded-lg border px-3 text-sm"
                     type="date"
@@ -1115,7 +1115,7 @@ export function PerformanceConsole() {
                 </div>
               </div>
               <div className="flex justify-end gap-2 border-t pt-3">
-                <button className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-slate-50" type="button" onClick={() => setShowCycleModal(false)}>Cancel</button>
+                <button className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-sunken" type="button" onClick={() => setShowCycleModal(false)}>Cancel</button>
                 <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white hover:bg-brand-dark" type="submit">Create Cycle</button>
               </div>
             </form>
@@ -1126,16 +1126,16 @@ export function PerformanceConsole() {
       {/* CREATE TEMPLATE MODAL */}
       {showTemplateModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 backdrop-blur-xs p-4 animate-fade-in">
-          <div className="w-full max-w-2xl rounded-xl bg-white shadow-2xl border border-slate-100 p-5 space-y-4 animate-in zoom-in-95 duration-150">
+          <div className="w-full max-w-2xl rounded-xl bg-white shadow-2xl border border-line p-5 space-y-4 animate-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b pb-3">
-              <h4 className="text-md font-bold text-slate-800">Add Appraisal Template</h4>
-              <button className="p-1 hover:bg-slate-50 rounded" onClick={() => setShowTemplateModal(false)}>
-                <X className="h-5 w-5 text-slate-400" />
+              <h4 className="text-md font-bold text-text-primary">Add Appraisal Template</h4>
+              <button className="p-1 hover:bg-sunken rounded" onClick={() => setShowTemplateModal(false)}>
+                <X className="h-5 w-5 text-text-muted" />
               </button>
             </div>
             <form onSubmit={handleCreateTemplate} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Template Name</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Template Name</label>
                 <input
                   className="min-h-10 w-full rounded-lg border px-3 text-sm"
                   type="text"
@@ -1148,7 +1148,7 @@ export function PerformanceConsole() {
 
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <h5 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Key Result Areas (KRAs)</h5>
+                  <h5 className="text-xs font-bold text-text-secondary uppercase tracking-wider">Key Result Areas (KRAs)</h5>
                   <button
                     type="button"
                     className="text-xs text-brand font-bold hover:underline flex items-center gap-1"
@@ -1188,7 +1188,7 @@ export function PerformanceConsole() {
                     />
                     <button
                       type="button"
-                      className="p-2 text-rose-500 hover:bg-rose-50 rounded"
+                      className="p-2 text-danger-fg hover:bg-danger-bg rounded"
                       onClick={() => setKras(kras.filter((_, i) => i !== idx))}
                     >
                       <X className="h-4 w-4" />
@@ -1197,8 +1197,8 @@ export function PerformanceConsole() {
                 ))}
 
                 <div className="flex justify-between items-center border-t pt-3 mt-3">
-                  <span className="text-xs font-semibold text-slate-500">Live Weightage Sum:</span>
-                  <span className={`text-sm font-bold flex items-center gap-1 ${kraWeightageSum === 100 ? "text-emerald-600" : "text-rose-600"}`}>
+                  <span className="text-xs font-semibold text-text-secondary">Live Weightage Sum:</span>
+                  <span className={`text-sm font-bold flex items-center gap-1 ${kraWeightageSum === 100 ? "text-success-fg" : "text-danger-fg"}`}>
                     {kraWeightageSum === 100 ? <CheckCircle className="h-4 w-4" /> : <AlertCircle className="h-4 w-4" />}
                     {kraWeightageSum}%
                   </span>
@@ -1206,7 +1206,7 @@ export function PerformanceConsole() {
               </div>
 
               <div className="flex justify-end gap-2 border-t pt-3">
-                <button className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-slate-50" type="button" onClick={() => setShowTemplateModal(false)}>Cancel</button>
+                <button className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-sunken" type="button" onClick={() => setShowTemplateModal(false)}>Cancel</button>
                 <button
                   className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white hover:bg-brand-dark disabled:opacity-50"
                   type="submit"
@@ -1223,16 +1223,16 @@ export function PerformanceConsole() {
       {/* BULK APPRAISAL MODAL */}
       {showBulkModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 backdrop-blur-xs p-4 animate-fade-in">
-          <div className="w-full max-w-lg rounded-xl bg-white shadow-2xl border border-slate-100 p-5 space-y-4 animate-in zoom-in-95 duration-150">
+          <div className="w-full max-w-lg rounded-xl bg-white shadow-2xl border border-line p-5 space-y-4 animate-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b pb-3">
-              <h4 className="text-md font-bold text-slate-800">Bulk Appraisal Creation</h4>
-              <button className="p-1 hover:bg-slate-50 rounded" onClick={() => setShowBulkModal(false)}>
-                <X className="h-5 w-5 text-slate-400" />
+              <h4 className="text-md font-bold text-text-primary">Bulk Appraisal Creation</h4>
+              <button className="p-1 hover:bg-sunken rounded" onClick={() => setShowBulkModal(false)}>
+                <X className="h-5 w-5 text-text-muted" />
               </button>
             </div>
             <form onSubmit={handleBulkCreate} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Select Appraisal Cycle</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Select Appraisal Cycle</label>
                 <select
                   className="min-h-10 w-full rounded-lg border px-3 text-sm bg-white"
                   required
@@ -1246,7 +1246,7 @@ export function PerformanceConsole() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Select KRA Template</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Select KRA Template</label>
                 <select
                   className="min-h-10 w-full rounded-lg border px-3 text-sm bg-white"
                   required
@@ -1259,9 +1259,9 @@ export function PerformanceConsole() {
                   ))}
                 </select>
               </div>
-              <p className="text-xs text-slate-400">This will automatically generate pending appraisals and KRA goals for all active employees.</p>
+              <p className="text-xs text-text-muted">This will automatically generate pending appraisals and KRA goals for all active employees.</p>
               <div className="flex justify-end gap-2 border-t pt-3">
-                <button className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-slate-50" type="button" onClick={() => setShowBulkModal(false)}>Cancel</button>
+                <button className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-sunken" type="button" onClick={() => setShowBulkModal(false)}>Cancel</button>
                 <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white hover:bg-brand-dark" type="submit">Create Appraisals</button>
               </div>
             </form>
@@ -1272,16 +1272,16 @@ export function PerformanceConsole() {
       {/* DISPATCH 360 MODAL */}
       {showRequestModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 backdrop-blur-xs p-4">
-          <div className="w-full max-w-lg rounded-xl bg-white shadow-2xl border border-slate-100 p-5 space-y-4 animate-in zoom-in-95 duration-150">
+          <div className="w-full max-w-lg rounded-xl bg-white shadow-2xl border border-line p-5 space-y-4 animate-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b pb-3">
-              <h4 className="text-md font-bold text-slate-800">Request 360 Peer Review</h4>
-              <button className="p-1 hover:bg-slate-50 rounded" onClick={() => setShowRequestModal(false)}>
-                <X className="h-5 w-5 text-slate-400" />
+              <h4 className="text-md font-bold text-text-primary">Request 360 Peer Review</h4>
+              <button className="p-1 hover:bg-sunken rounded" onClick={() => setShowRequestModal(false)}>
+                <X className="h-5 w-5 text-text-muted" />
               </button>
             </div>
             <form onSubmit={handleCreateRequest} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Feedback Requestor (Employee being reviewed)</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Feedback Requestor (Employee being reviewed)</label>
                 <select className="min-h-10 w-full rounded-lg border px-3 text-sm bg-white" name="requestorId" required>
                   <option value="">Select target employee...</option>
                   {employees.map(emp => (
@@ -1290,7 +1290,7 @@ export function PerformanceConsole() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Feedback Provider (Reviewer)</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Feedback Provider (Reviewer)</label>
                 <select className="min-h-10 w-full rounded-lg border px-3 text-sm bg-white" name="providerId" required>
                   <option value="">Select reviewer...</option>
                   {employees.map(emp => (
@@ -1299,7 +1299,7 @@ export function PerformanceConsole() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Competencies to Evaluate (comma separated)</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Competencies to Evaluate (comma separated)</label>
                 <input
                   className="min-h-10 w-full rounded-lg border px-3 text-sm"
                   value={competenciesInput}
@@ -1308,7 +1308,7 @@ export function PerformanceConsole() {
                 />
               </div>
               <div className="flex justify-end gap-2 border-t pt-3">
-                <button className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-slate-50" type="button" onClick={() => setShowRequestModal(false)}>Cancel</button>
+                <button className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-sunken" type="button" onClick={() => setShowRequestModal(false)}>Cancel</button>
                 <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white hover:bg-brand-dark" type="submit">Dispatch Request</button>
               </div>
             </form>
@@ -1319,24 +1319,24 @@ export function PerformanceConsole() {
       {/* PEER REVIEW RESPONSE MODAL */}
       {showResponseModal && selectedRequest && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 backdrop-blur-xs p-4">
-          <div className="w-full max-w-lg rounded-xl bg-white shadow-2xl border border-slate-100 p-5 space-y-4 animate-in zoom-in-95 duration-150">
+          <div className="w-full max-w-lg rounded-xl bg-white shadow-2xl border border-line p-5 space-y-4 animate-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b pb-3">
               <div>
-                <h4 className="text-md font-bold text-slate-800">Submit 360 Peer Review</h4>
-                <p className="text-xs text-slate-400 mt-0.5">Target: {selectedRequest.requestor?.firstName} {selectedRequest.requestor?.lastName}</p>
+                <h4 className="text-md font-bold text-text-primary">Submit 360 Peer Review</h4>
+                <p className="text-xs text-text-muted mt-0.5">Target: {selectedRequest.requestor?.firstName} {selectedRequest.requestor?.lastName}</p>
               </div>
-              <button className="p-1 hover:bg-slate-50 rounded" onClick={() => { setShowResponseModal(false); setSelectedRequest(null); }}>
-                <X className="h-5 w-5 text-slate-400" />
+              <button className="p-1 hover:bg-sunken rounded" onClick={() => { setShowResponseModal(false); setSelectedRequest(null); }}>
+                <X className="h-5 w-5 text-text-muted" />
               </button>
             </div>
             <form onSubmit={handleSubmitResponse} className="space-y-4">
               <div className="space-y-3">
-                <h5 className="text-xs font-bold text-slate-500 uppercase tracking-wider">Competency Ratings</h5>
+                <h5 className="text-xs font-bold text-text-secondary uppercase tracking-wider">Competency Ratings</h5>
                 {(Array.isArray(selectedRequest.questions) ? selectedRequest.questions : []).map((comp: string) => {
                   const cleanComp = comp.trim();
                   return (
                     <div key={cleanComp} className="flex justify-between items-center gap-3">
-                      <span className="text-sm font-semibold text-slate-700">{cleanComp}</span>
+                      <span className="text-sm font-semibold text-text-primary">{cleanComp}</span>
                       <select
                         className="min-h-10 rounded-lg border px-2 text-sm bg-white font-semibold"
                         value={peerRatings[cleanComp] || 4}
@@ -1353,7 +1353,7 @@ export function PerformanceConsole() {
                 })}
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Qualitative Feedback / Observational Comments</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Qualitative Feedback / Observational Comments</label>
                 <textarea
                   className="w-full rounded-lg border p-3 text-sm outline-none focus:border-brand h-24"
                   value={commentsInput}
@@ -1363,7 +1363,7 @@ export function PerformanceConsole() {
                 ></textarea>
               </div>
               <div className="flex justify-end gap-2 border-t pt-3">
-                <button className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-slate-50" type="button" onClick={() => { setShowResponseModal(false); setSelectedRequest(null); }}>Cancel</button>
+                <button className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-sunken" type="button" onClick={() => { setShowResponseModal(false); setSelectedRequest(null); }}>Cancel</button>
                 <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white hover:bg-brand-dark" type="submit">Submit Feedback</button>
               </div>
             </form>

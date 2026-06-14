@@ -181,20 +181,20 @@ export function ApprovalsConsole() {
         return (
           <div className="grid gap-3 text-sm border-t pt-4">
             <div className="flex justify-between">
-              <span className="text-slate-500 font-medium">Leave Category:</span>
-              <span className="font-semibold text-slate-800">{item.title}</span>
+              <span className="text-text-secondary font-medium">Leave Category:</span>
+              <span className="font-semibold text-text-primary">{item.title}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-500 font-medium">Duration:</span>
-              <span className="font-semibold text-slate-800">{item.amount} Work Days</span>
+              <span className="text-text-secondary font-medium">Duration:</span>
+              <span className="font-semibold text-text-primary">{item.amount} Work Days</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-500 font-medium">Policy Type:</span>
-              <span className="font-semibold text-slate-800">Rule-Backed sandwich verified</span>
+              <span className="text-text-secondary font-medium">Policy Type:</span>
+              <span className="font-semibold text-text-primary">Rule-Backed sandwich verified</span>
             </div>
-            <div className="bg-[var(--surface-sunken)] p-3 rounded-lg border border-slate-100 mt-2">
-              <div className="text-xs text-slate-400 uppercase font-bold">Reason for request</div>
-              <p className="text-xs text-slate-700 font-medium mt-1">"Personal family gathering. Travel tickets verified and backup resource allocated."</p>
+            <div className="bg-[var(--surface-sunken)] p-3 rounded-lg border border-line mt-2">
+              <div className="text-xs text-text-muted uppercase font-bold">Reason for request</div>
+              <p className="text-xs text-text-primary font-medium mt-1">"Personal family gathering. Travel tickets verified and backup resource allocated."</p>
             </div>
           </div>
         );
@@ -202,22 +202,22 @@ export function ApprovalsConsole() {
         return (
           <div className="grid gap-3 text-sm border-t pt-4">
             <div className="flex justify-between">
-              <span className="text-slate-500 font-medium">Claim Category:</span>
-              <span className="font-semibold text-slate-800">{item.title}</span>
+              <span className="text-text-secondary font-medium">Claim Category:</span>
+              <span className="font-semibold text-text-primary">{item.title}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-500 font-medium">Total Amount:</span>
+              <span className="text-text-secondary font-medium">Total Amount:</span>
               <span className="font-semibold text-brand text-base">₹{Number(item.amount).toLocaleString("en-IN")}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-500 font-medium">Receipt File:</span>
+              <span className="text-text-secondary font-medium">Receipt File:</span>
               <span className="inline-flex items-center gap-1 text-xs text-brand font-bold cursor-pointer">
                 <FileText className="h-3.5 w-3.5" /> receipt_tax_invoice.png
               </span>
             </div>
-            <div className="bg-[var(--surface-sunken)] p-3 rounded-lg border border-slate-100 mt-2">
-              <div className="text-xs text-slate-400 uppercase font-bold">Description</div>
-              <p className="text-xs text-slate-700 font-medium mt-1">"Client lunch with product engineering stakeholders regarding new project milestones."</p>
+            <div className="bg-[var(--surface-sunken)] p-3 rounded-lg border border-line mt-2">
+              <div className="text-xs text-text-muted uppercase font-bold">Description</div>
+              <p className="text-xs text-text-primary font-medium mt-1">"Client lunch with product engineering stakeholders regarding new project milestones."</p>
             </div>
           </div>
         );
@@ -225,20 +225,20 @@ export function ApprovalsConsole() {
         return (
           <div className="grid gap-3 text-sm border-t pt-4">
             <div className="flex justify-between">
-              <span className="text-slate-500 font-medium">Regularization Reason:</span>
-              <span className="font-semibold text-slate-800">{item.title}</span>
+              <span className="text-text-secondary font-medium">Regularization Reason:</span>
+              <span className="font-semibold text-text-primary">{item.title}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-500 font-medium">Logged Date:</span>
-              <span className="font-semibold text-slate-800">{String(item.createdAt).slice(0, 10)}</span>
+              <span className="text-text-secondary font-medium">Logged Date:</span>
+              <span className="font-semibold text-text-primary">{String(item.createdAt).slice(0, 10)}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-500 font-medium">Regularized Shift:</span>
-              <span className="font-semibold text-slate-800">General Shift (9:30 AM - 6:30 PM)</span>
+              <span className="text-text-secondary font-medium">Regularized Shift:</span>
+              <span className="font-semibold text-text-primary">General Shift (9:30 AM - 6:30 PM)</span>
             </div>
-            <div className="bg-[var(--surface-sunken)] p-3 rounded-lg border border-slate-100 mt-2">
-              <div className="text-xs text-slate-400 uppercase font-bold">Incident Details</div>
-              <p className="text-xs text-slate-700 font-medium mt-1">Forgot to mark biometric scan when entering Bangalore premises due to security delay.</p>
+            <div className="bg-[var(--surface-sunken)] p-3 rounded-lg border border-line mt-2">
+              <div className="text-xs text-text-muted uppercase font-bold">Incident Details</div>
+              <p className="text-xs text-text-primary font-medium mt-1">Forgot to mark biometric scan when entering Bangalore premises due to security delay.</p>
             </div>
           </div>
         );
@@ -246,20 +246,20 @@ export function ApprovalsConsole() {
         return (
           <div className="grid gap-3 text-sm border-t pt-4">
             <div className="flex justify-between">
-              <span className="text-slate-500 font-medium">Claim Type:</span>
-              <span className="font-semibold text-slate-800">{item.title}</span>
+              <span className="text-text-secondary font-medium">Claim Type:</span>
+              <span className="font-semibold text-text-primary">{item.title}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-500 font-medium">Requested Reimbursement:</span>
-              <span className="font-semibold text-slate-800">₹{Number(item.amount).toLocaleString("en-IN")}</span>
+              <span className="text-text-secondary font-medium">Requested Reimbursement:</span>
+              <span className="font-semibold text-text-primary">₹{Number(item.amount).toLocaleString("en-IN")}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-500 font-medium">Insured Coverage:</span>
-              <span className="font-semibold text-slate-800">Company Group Medical Policy</span>
+              <span className="text-text-secondary font-medium">Insured Coverage:</span>
+              <span className="font-semibold text-text-primary">Company Group Medical Policy</span>
             </div>
-            <div className="bg-[var(--surface-sunken)] p-3 rounded-lg border border-slate-100 mt-2">
-              <div className="text-xs text-slate-400 uppercase font-bold">Medical Diagnosis / Comments</div>
-              <p className="text-xs text-slate-700 font-medium mt-1">Dental implant treatment. Pre-auth files uploaded and verified by insurance provider.</p>
+            <div className="bg-[var(--surface-sunken)] p-3 rounded-lg border border-line mt-2">
+              <div className="text-xs text-text-muted uppercase font-bold">Medical Diagnosis / Comments</div>
+              <p className="text-xs text-text-primary font-medium mt-1">Dental implant treatment. Pre-auth files uploaded and verified by insurance provider.</p>
             </div>
           </div>
         );
@@ -267,16 +267,16 @@ export function ApprovalsConsole() {
         return (
           <div className="grid gap-3 text-sm border-t pt-4">
             <div className="flex justify-between">
-              <span className="text-slate-500 font-medium">Payroll Period:</span>
-              <span className="font-semibold text-slate-800">Monthly Run for {item.title}</span>
+              <span className="text-text-secondary font-medium">Payroll Period:</span>
+              <span className="font-semibold text-text-primary">Monthly Run for {item.title}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-slate-500 font-medium">Processed Payouts:</span>
-              <span className="font-semibold text-slate-800">5 Active Employees calculated</span>
+              <span className="text-text-secondary font-medium">Processed Payouts:</span>
+              <span className="font-semibold text-text-primary">5 Active Employees calculated</span>
             </div>
-            <div className="bg-[var(--surface-sunken)] p-3 rounded-lg border border-slate-100 mt-2">
-              <div className="text-xs text-slate-400 uppercase font-bold">Payroll Lock Status</div>
-              <p className="text-xs text-slate-700 font-medium mt-1">Awaiting executive approval to lock components, freeze records, and compile the final direct-transfer bank export CSV lines.</p>
+            <div className="bg-[var(--surface-sunken)] p-3 rounded-lg border border-line mt-2">
+              <div className="text-xs text-text-muted uppercase font-bold">Payroll Lock Status</div>
+              <p className="text-xs text-text-primary font-medium mt-1">Awaiting executive approval to lock components, freeze records, and compile the final direct-transfer bank export CSV lines.</p>
             </div>
           </div>
         );
@@ -312,14 +312,14 @@ export function ApprovalsConsole() {
       {(message || error) && (
         <div>
           {message && (
-            <div className="rounded-xl bg-emerald-50 p-4 text-sm text-emerald-800 border border-emerald-200 flex items-center gap-2">
-              <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0" />
+            <div className="rounded-xl bg-success-bg p-4 text-sm text-success-fg border border-success-border flex items-center gap-2">
+              <CheckCircle2 className="h-5 w-5 text-success-fg shrink-0" />
               <span>{message}</span>
             </div>
           )}
           {error && (
-            <div className="rounded-xl bg-rose-50 p-4 text-sm text-rose-800 border border-rose-200 flex items-center gap-2">
-              <AlertCircle className="h-5 w-5 text-rose-600 shrink-0" />
+            <div className="rounded-xl bg-danger-bg p-4 text-sm text-danger-fg border border-danger-border flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-danger-fg shrink-0" />
               <span>{error}</span>
             </div>
           )}
@@ -338,7 +338,7 @@ export function ApprovalsConsole() {
       <Card>
         <div className="mb-4 flex items-center justify-between">
           <div>
-            <h3 className="text-base font-semibold text-slate-800">Module Filter Filters</h3>
+            <h3 className="text-base font-semibold text-text-primary">Module Filter Filters</h3>
             <p className="text-xs text-muted">Click a card to filter the queue below by a specific business module.</p>
           </div>
           {selectedModule && (
@@ -360,11 +360,11 @@ export function ApprovalsConsole() {
               className={`rounded-xl border p-4 cursor-pointer transition-all min-w-[200px] ${
                 selectedModule === m.module
                   ? "border-brand bg-brand-50/15 shadow-sm ring-1 ring-brand"
-                  : "border-[var(--border-subtle)] bg-white hover:bg-slate-50/70"
+                  : "border-[var(--border-subtle)] bg-white hover:bg-sunken"
               }`}
               onClick={() => setSelectedModule(selectedModule === m.module ? null : m.module)}
             >
-              <div className="font-bold text-slate-800 text-sm">{m.label}</div>
+              <div className="font-bold text-text-primary text-sm">{m.label}</div>
               <div className="mt-2 text-xs text-muted font-semibold">{m.count} pending items</div>
             </div>
           ))}
@@ -374,12 +374,12 @@ export function ApprovalsConsole() {
       {/* Main Request Queue Table */}
       <Card>
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-          <h3 className="text-base font-semibold text-slate-800">{activeTab} Queue</h3>
+          <h3 className="text-base font-semibold text-text-primary">{activeTab} Queue</h3>
           <div className="relative w-64 max-sm:w-full">
             <input
               type="text"
               placeholder="Search request or name..."
-              className="min-h-9 w-full rounded-lg border border-slate-200 bg-white px-3 text-xs outline-none transition focus:border-brand"
+              className="min-h-9 w-full rounded-lg border border-line bg-white px-3 text-xs outline-none transition focus:border-brand"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -387,9 +387,9 @@ export function ApprovalsConsole() {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-left text-sm text-slate-600">
+          <table className="w-full border-collapse text-left text-sm text-text-secondary">
             <thead>
-              <tr className="bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500">
+              <tr className="bg-sunken text-xs font-bold uppercase tracking-wider text-text-secondary">
                 <th className="border-b p-3">Request Type</th>
                 <th className="border-b p-3">Requester Name</th>
                 <th className="border-b p-3">Subject / Title</th>
@@ -402,22 +402,22 @@ export function ApprovalsConsole() {
             <tbody>
               {!filteredItems.length ? (
                 <tr>
-                  <td colSpan={7} className="p-8 text-center text-slate-400">
+                  <td colSpan={7} className="p-8 text-center text-text-muted">
                     No requests matching current filter options.
                   </td>
                 </tr>
               ) : (
                 filteredItems.map((item) => (
-                  <tr key={`${item.module}-${item.id}`} className="hover:bg-slate-50/50">
-                    <td className="border-b p-3 font-semibold text-slate-800">
+                  <tr key={`${item.module}-${item.id}`} className="hover:bg-sunken">
+                    <td className="border-b p-3 font-semibold text-text-primary">
                       <span className="inline-flex items-center gap-1.5 capitalize">
                         <CheckSquare className="h-4 w-4 text-brand" />
                         {item.type}
                       </span>
                     </td>
-                    <td className="border-b p-3 font-semibold text-slate-800">{item.requester}</td>
+                    <td className="border-b p-3 font-semibold text-text-primary">{item.requester}</td>
                     <td className="border-b p-3">{item.title}</td>
-                    <td className="border-b p-3 font-medium text-slate-800">{amountText(item)}</td>
+                    <td className="border-b p-3 font-medium text-text-primary">{amountText(item)}</td>
                     <td className="border-b p-3 text-xs font-medium">{String(item.createdAt).slice(0, 10)}</td>
                     <td className="border-b p-3 text-center">
                       <StatusPill tone={toneFor(item.status)}>{item.status}</StatusPill>
@@ -425,13 +425,13 @@ export function ApprovalsConsole() {
                     <td className="border-b p-3 text-right">
                       <div className="flex justify-end gap-2">
                         <button
-                          className="inline-flex h-8 items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-bold text-slate-600 transition hover:bg-slate-50"
+                          className="inline-flex h-8 items-center gap-1 rounded-lg border border-line bg-white px-2.5 text-xs font-bold text-text-secondary transition hover:bg-sunken"
                           onClick={() => {
                             setSelectedItem(item);
                             setShowDetailModal(true);
                           }}
                         >
-                          <Eye className="h-3.5 w-3.5 text-slate-400" /> Inspect
+                          <Eye className="h-3.5 w-3.5 text-text-muted" /> Inspect
                         </button>
                         {["PENDING", "DRAFT", "ACTIVE"].includes(item.status.toUpperCase()) && (
                           <>
@@ -443,7 +443,7 @@ export function ApprovalsConsole() {
                               Approve
                             </button>
                             <button
-                              className="inline-flex h-8 items-center justify-center rounded-lg border border-rose-200 text-rose-600 px-2.5 text-xs font-bold hover:bg-rose-50 transition"
+                              className="inline-flex h-8 items-center justify-center rounded-lg border border-danger-border text-danger-fg px-2.5 text-xs font-bold hover:bg-danger-bg transition"
                               onClick={() => decide(item, "reject")}
                               disabled={loading}
                             >
@@ -464,18 +464,18 @@ export function ApprovalsConsole() {
       {/* DETAIL MODAL POPUP */}
       {showDetailModal && selectedItem && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150 border border-slate-100">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150 border border-line">
             <div className="flex items-center justify-between border-b pb-4 mb-4">
               <div>
-                <h3 className="text-lg font-bold text-slate-900">Request Audit Details</h3>
-                <p className="text-xs text-slate-400">Review employee submission details below.</p>
+                <h3 className="text-lg font-bold text-text-primary">Request Audit Details</h3>
+                <p className="text-xs text-text-muted">Review employee submission details below.</p>
               </div>
               <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
                 ["APPROVED", "PAID", "OFFERED"].includes(selectedItem.status.toUpperCase())
-                  ? "bg-emerald-100 text-emerald-800"
+                  ? "bg-success-bg text-success-fg"
                   : selectedItem.status.toUpperCase() === "REJECTED"
-                  ? "bg-rose-100 text-rose-800"
-                  : "bg-amber-100 text-amber-800"
+                  ? "bg-danger-bg text-danger-fg"
+                  : "bg-warning-bg text-warning-fg"
               }`}>
                 {selectedItem.status}
               </span>
@@ -483,16 +483,16 @@ export function ApprovalsConsole() {
 
             <div className="grid gap-3 text-sm">
               <div className="flex justify-between">
-                <span className="text-slate-500 font-medium">Submitted By:</span>
-                <span className="font-bold text-slate-800">{selectedItem.requester}</span>
+                <span className="text-text-secondary font-medium">Submitted By:</span>
+                <span className="font-bold text-text-primary">{selectedItem.requester}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500 font-medium">Logged Date:</span>
-                <span className="font-semibold text-slate-700">{String(selectedItem.createdAt).slice(0, 10)}</span>
+                <span className="text-text-secondary font-medium">Logged Date:</span>
+                <span className="font-semibold text-text-primary">{String(selectedItem.createdAt).slice(0, 10)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-slate-500 font-medium">Request Type:</span>
-                <span className="font-bold text-slate-800 capitalize">{selectedItem.type} Request</span>
+                <span className="text-text-secondary font-medium">Request Type:</span>
+                <span className="font-bold text-text-primary capitalize">{selectedItem.type} Request</span>
               </div>
             </div>
 
@@ -501,7 +501,7 @@ export function ApprovalsConsole() {
             <div className="mt-6 flex justify-end gap-2 border-t pt-4">
               <button
                 type="button"
-                className="min-h-10 rounded-lg border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition"
+                className="min-h-10 rounded-lg border border-line-strong px-4 text-sm font-semibold text-text-primary hover:bg-sunken transition"
                 onClick={() => setShowDetailModal(false)}
               >
                 Close
@@ -519,7 +519,7 @@ export function ApprovalsConsole() {
                   </button>
                   <button
                     type="button"
-                    className="min-h-10 rounded-lg border border-rose-200 text-rose-600 px-4 text-sm font-semibold hover:bg-rose-50 transition"
+                    className="min-h-10 rounded-lg border border-danger-border text-danger-fg px-4 text-sm font-semibold hover:bg-danger-bg transition"
                     onClick={() => decide(selectedItem, "reject")}
                     disabled={loading}
                   >

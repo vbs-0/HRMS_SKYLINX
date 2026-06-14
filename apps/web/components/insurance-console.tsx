@@ -162,9 +162,9 @@ export function InsuranceConsole() {
       {activeTab === "Overview" && (
         <div className="grid gap-5 text-left">
           <InsuranceWorkspace />
-          <div className="rounded-lg bg-blue-50/50 border border-blue-200 p-5">
-            <h3 className="text-sm font-bold text-blue-900 mb-2">Welcome to Insurance Control Center</h3>
-            <p className="text-xs text-blue-700 leading-relaxed">
+          <div className="rounded-lg bg-info-bg border border-info-border p-5">
+            <h3 className="text-sm font-bold text-info-fg mb-2">Welcome to Insurance Control Center</h3>
+            <p className="text-xs text-info-fg leading-relaxed">
               Toggle the views above to audit policy schedules, list dependent relations, review medical/life claim requests, or download compliance CSV logs.
             </p>
           </div>
@@ -173,14 +173,14 @@ export function InsuranceConsole() {
 
       {/* Forms Section */}
       {showActionPanel && (
-        <div className="relative border border-slate-200 bg-slate-50/50 rounded-xl p-2 transition text-left">
+        <div className="relative border border-line bg-sunken rounded-xl p-2 transition text-left">
           <button
             onClick={() => setShowActionPanel(false)}
-            className="absolute right-4 top-4 text-xs font-bold text-slate-400 hover:text-slate-600 transition"
+            className="absolute right-4 top-4 text-xs font-bold text-text-muted hover:text-text-secondary transition"
           >
             Close Panel ×
           </button>
-          <div className="p-3 font-semibold text-xs text-slate-500 uppercase tracking-wider border-b pb-1 mb-3">
+          <div className="p-3 font-semibold text-xs text-text-secondary uppercase tracking-wider border-b pb-1 mb-3">
             Insurance Operations Form ({actionType === "policy" ? "Create Policy" : actionType === "dependent" ? "Add Dependent" : "Submit Claim"})
           </div>
           <InsuranceActionPanel defaultAction={actionType} />
@@ -194,7 +194,7 @@ export function InsuranceConsole() {
           </div>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[900px] border-collapse text-sm text-[var(--text-secondary)]">
-              <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase font-bold text-slate-500 border-b">
+              <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase font-bold text-text-secondary border-b">
                 <tr>
                   <th className="p-3">Employee</th>
                   <th className="p-3">Provider</th>
@@ -219,7 +219,7 @@ export function InsuranceConsole() {
           </div>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[760px] border-collapse text-sm text-[var(--text-secondary)]">
-              <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase font-bold text-slate-500 border-b">
+              <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase font-bold text-text-secondary border-b">
                 <tr>
                   <th className="p-3">Employee</th>
                   <th className="p-3">Policy / Provider</th>
@@ -242,7 +242,7 @@ export function InsuranceConsole() {
           </div>
           <div className="overflow-x-auto">
             <table className="w-full min-w-[900px] border-collapse text-sm text-[var(--text-secondary)]">
-              <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase font-bold text-slate-500 border-b">
+              <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase font-bold text-text-secondary border-b">
                 <tr>
                   <th className="p-3">Employee</th>
                   <th className="p-3">Provider</th>

@@ -93,21 +93,21 @@ function PendingDeletionQueue() {
   if (!pending.length) return null;
 
   return (
-    <div className="rounded-xl border border-rose-200 bg-rose-50 p-5">
+    <div className="rounded-xl border border-danger-border bg-danger-bg p-5">
       <div className="flex items-center gap-2 mb-3">
         <span className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-rose-600 text-white text-xs font-bold">
           {pending.length}
         </span>
-        <h3 className="text-sm font-semibold text-rose-800">Deletion Requests Awaiting Your Approval</h3>
+        <h3 className="text-sm font-semibold text-danger-fg">Deletion Requests Awaiting Your Approval</h3>
       </div>
       <div className="grid gap-2">
         {pending.map((emp: any) => (
-          <div key={emp.id} className="flex items-center justify-between rounded-lg bg-white border border-rose-200 px-4 py-3">
+          <div key={emp.id} className="flex items-center justify-between rounded-lg bg-white border border-danger-border px-4 py-3">
             <div>
-              <span className="text-sm font-semibold text-slate-800">{emp.firstName} {emp.lastName}</span>
-              <span className="ml-2 text-xs text-slate-500">{emp.employeeCode}</span>
+              <span className="text-sm font-semibold text-text-primary">{emp.firstName} {emp.lastName}</span>
+              <span className="ml-2 text-xs text-text-secondary">{emp.employeeCode}</span>
               {emp.deletionRequestedAt && (
-                <span className="ml-2 text-xs text-slate-400">
+                <span className="ml-2 text-xs text-text-muted">
                   Requested {new Date(emp.deletionRequestedAt).toLocaleDateString("en-IN")}
                 </span>
               )}
@@ -127,7 +127,7 @@ function PendingDeletionQueue() {
                 Confirm Deletion
               </button>
               <button
-                className="inline-flex min-h-8 items-center gap-1 rounded-lg border border-slate-300 px-3 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
+                className="inline-flex min-h-8 items-center gap-1 rounded-lg border border-line-strong px-3 text-xs font-semibold text-text-primary hover:bg-sunken transition"
                 onClick={async () => {
                   try {
                     await apiFetch(`/employees/${emp.id}/cancel-deletion`, { method: "PATCH" });
@@ -607,12 +607,12 @@ export function EmployeesConsole() {
       <ReferenceFlowStrip module="Directory" />
 
       {message && (
-        <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-semibold text-emerald-800 animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="mb-4 rounded-xl border border-success-border bg-success-bg p-4 text-sm font-semibold text-success-fg animate-in fade-in slide-in-from-top-2 duration-200">
           {message}
         </div>
       )}
       {error && (
-        <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm font-semibold text-rose-800 animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="mb-4 rounded-xl border border-danger-border bg-danger-bg p-4 text-sm font-semibold text-danger-fg animate-in fade-in slide-in-from-top-2 duration-200">
           {error}
         </div>
       )}
@@ -623,56 +623,56 @@ export function EmployeesConsole() {
           {/* CEO — Pending Deletion Approval Queue */}
           {hasPermission("saas.admin") && <PendingDeletionQueue />}
           {showAddPanel && (
-            <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm animate-in zoom-in-95 duration-150">
-              <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-800">Add New Employee Profile</h3>
+            <div className="rounded-xl border border-line bg-white p-5 shadow-sm animate-in zoom-in-95 duration-150">
+              <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary">Add New Employee Profile</h3>
               <form onSubmit={handleAddEmployee} className="grid grid-cols-4 gap-4 max-xl:grid-cols-2 max-md:grid-cols-1">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Employee Code</label>
-                  <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="employeeCode" placeholder="EMP-1006" required />
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Employee Code</label>
+                  <input className="min-h-10 w-full rounded-lg border border-line px-3 text-sm" name="employeeCode" placeholder="EMP-1006" required />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">First Name</label>
-                  <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="firstName" placeholder="John" required />
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">First Name</label>
+                  <input className="min-h-10 w-full rounded-lg border border-line px-3 text-sm" name="firstName" placeholder="John" required />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Last Name</label>
-                  <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="lastName" placeholder="Doe" required />
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Last Name</label>
+                  <input className="min-h-10 w-full rounded-lg border border-line px-3 text-sm" name="lastName" placeholder="Doe" required />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Email</label>
-                  <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="email" placeholder="john.doe@company.local" type="email" required />
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Email</label>
+                  <input className="min-h-10 w-full rounded-lg border border-line px-3 text-sm" name="email" placeholder="john.doe@company.local" type="email" required />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Phone</label>
-                  <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="phone" placeholder="9876543210" />
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Phone</label>
+                  <input className="min-h-10 w-full rounded-lg border border-line px-3 text-sm" name="phone" placeholder="9876543210" />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Joining Date</label>
-                  <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="joiningDate" type="date" required defaultValue={new Date().toISOString().split("T")[0]} />
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Joining Date</label>
+                  <input className="min-h-10 w-full rounded-lg border border-line px-3 text-sm" name="joiningDate" type="date" required defaultValue={new Date().toISOString().split("T")[0]} />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Department</label>
-                  <select className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white" name="departmentId">
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Department</label>
+                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white" name="departmentId">
                     <option value="">Select Department</option>
                     {departmentsList.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Designation</label>
-                  <select className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white" name="designationId">
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Designation</label>
+                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white" name="designationId">
                     <option value="">Select Designation</option>
                     {designationsList.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Work Location</label>
-                  <select className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white" name="locationId">
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Work Location</label>
+                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white" name="locationId">
                     <option value="">Select Location</option>
                     {locationsList.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                   </select>
                 </div>
                 <div className="col-span-full flex justify-end gap-2 mt-2">
-                  <button className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-slate-50" type="button" onClick={() => setShowAddPanel(false)}>Cancel</button>
+                  <button className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-sunken" type="button" onClick={() => setShowAddPanel(false)}>Cancel</button>
                   <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white hover:bg-brand-dark" type="submit" disabled={loading}>
                     {loading ? "Saving..." : "Create Employee"}
                   </button>
@@ -682,14 +682,14 @@ export function EmployeesConsole() {
           )}
 
           {showBulkPanel && (
-            <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm animate-in zoom-in-95 duration-150">
-              <h3 className="mb-2 text-sm font-bold uppercase tracking-wider text-slate-800">Bulk Upload Spreadsheet</h3>
-              <p className="text-xs text-slate-400 mb-4 font-normal">Upload CSV / Excel sheets to parse multiple employee records at once.</p>
+            <div className="rounded-xl border border-line bg-white p-5 shadow-sm animate-in zoom-in-95 duration-150">
+              <h3 className="mb-2 text-sm font-bold uppercase tracking-wider text-text-primary">Bulk Upload Spreadsheet</h3>
+              <p className="text-xs text-text-muted mb-4 font-normal">Upload CSV / Excel sheets to parse multiple employee records at once.</p>
               <form onSubmit={handleBulkUpload} className="flex flex-col gap-4 max-w-md">
-                <label className="border-2 border-dashed border-slate-200 rounded-lg p-6 text-center hover:border-brand transition cursor-pointer block">
-                  <Upload className="h-8 w-8 text-slate-400 mx-auto mb-2" />
-                  <span className="text-sm font-semibold text-slate-600 block">{bulkFileName || "Drag file here or browse"}</span>
-                  <span className="text-xs text-slate-400 block mt-1">Accepts CSV, XLSX up to 10MB</span>
+                <label className="border-2 border-dashed border-line rounded-lg p-6 text-center hover:border-brand transition cursor-pointer block">
+                  <Upload className="h-8 w-8 text-text-muted mx-auto mb-2" />
+                  <span className="text-sm font-semibold text-text-secondary block">{bulkFileName || "Drag file here or browse"}</span>
+                  <span className="text-xs text-text-muted block mt-1">Accepts CSV, XLSX up to 10MB</span>
                   <input
                     type="file"
                     accept=".csv,.xlsx,.xls"
@@ -698,7 +698,7 @@ export function EmployeesConsole() {
                   />
                 </label>
                 <div className="flex gap-2 justify-end">
-                  <button className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-slate-50" type="button" onClick={() => setShowBulkPanel(false)}>Cancel</button>
+                  <button className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-sunken" type="button" onClick={() => setShowBulkPanel(false)}>Cancel</button>
                   <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white hover:bg-brand-dark" type="submit" disabled={loading}>
                     {loading ? "Processing..." : "Import Spreadsheet"}
                   </button>
@@ -709,9 +709,9 @@ export function EmployeesConsole() {
 
           <Card>
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-              <h2 className="text-lg font-semibold text-slate-800">Active Directory Roster</h2>
+              <h2 className="text-lg font-semibold text-text-primary">Active Directory Roster</h2>
               <div className="relative w-72">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                <Search className="absolute left-3 top-3 h-4 w-4 text-text-muted" />
                 <input
                   className="min-h-10 w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] pl-9 pr-3 text-sm outline-none transition focus:border-brand focus:bg-white"
                   placeholder="Search code, name, role..."
@@ -722,7 +722,7 @@ export function EmployeesConsole() {
             </div>
             <div className="overflow-auto">
               <table className="w-full min-w-[760px] border-collapse text-sm text-left">
-                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-text-secondary tracking-wider">
                   <tr>
                     <th className="border-b border-[var(--border-default)] p-3">Code</th>
                     <th className="border-b border-[var(--border-default)] p-3">Name</th>
@@ -742,17 +742,17 @@ export function EmployeesConsole() {
       {/* MY PROFILE TAB & INSPECTOR PANEL */}
       {((activeTab === "My Profile") || (activeTab === "All Employees" && selectedEmployeeId)) && (
         <div className="fixed inset-0 z-50 flex items-center justify-end bg-black/40 backdrop-blur-xs p-4">
-          <div className="h-full w-full max-w-4xl rounded-2xl bg-white shadow-2xl animate-in slide-in-from-right duration-200 border border-slate-100 flex flex-col">
+          <div className="h-full w-full max-w-4xl rounded-2xl bg-white shadow-2xl animate-in slide-in-from-right duration-200 border border-line flex flex-col">
             {/* Drawer Header */}
             <div className="flex items-center justify-between border-b p-5">
               <div>
-                <h3 className="text-lg font-bold text-slate-900">
+                <h3 className="text-lg font-bold text-text-primary">
                   {activeTab === "My Profile" ? "My Personal Profile" : "Inspect Employee Profile"}
                 </h3>
-                <p className="text-xs text-slate-400">View detailed HR ledger and update personal details.</p>
+                <p className="text-xs text-text-muted">View detailed HR ledger and update personal details.</p>
               </div>
               <button
-                className="rounded-lg p-2 text-slate-400 hover:bg-slate-50 transition"
+                className="rounded-lg p-2 text-text-muted hover:bg-sunken transition"
                 onClick={() => {
                   setSelectedEmployeeId(null);
                   setIsEditing(false);
@@ -766,16 +766,16 @@ export function EmployeesConsole() {
             {/* Drawer Content */}
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
               {loading && !selectedEmployee ? (
-                <div className="py-20 text-center text-slate-400 font-semibold">Loading profile ledger...</div>
+                <div className="py-20 text-center text-text-muted font-semibold">Loading profile ledger...</div>
               ) : selectedEmployee ? (
                 <div className="grid gap-6">
                   {/* Summary Ribbon */}
-                  <div className="flex items-center gap-4 rounded-xl border border-slate-100 bg-[var(--surface-sunken)] p-5">
+                  <div className="flex items-center gap-4 rounded-xl border border-line bg-[var(--surface-sunken)] p-5">
                     <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand/10 text-xl font-bold text-brand uppercase">
                       {selectedEmployee.firstName.substring(0, 1) + selectedEmployee.lastName.substring(0, 1)}
                     </div>
                     <div>
-                      <p className="text-xl font-bold text-slate-900">
+                      <p className="text-xl font-bold text-text-primary">
                         {isEditing ? (
                           <div className="flex gap-2 items-center">
                             <input 
@@ -795,7 +795,7 @@ export function EmployeesConsole() {
                           <>{selectedEmployee.firstName} {selectedEmployee.lastName}</>
                         )}
                       </p>
-                      <div className="flex items-center gap-3 mt-1 text-sm text-slate-500 font-semibold">
+                      <div className="flex items-center gap-3 mt-1 text-sm text-text-secondary font-semibold">
                         <div className="flex items-center gap-1">
                           <User className="h-4 w-4" /> 
                           {isEditing ? (
@@ -809,7 +809,7 @@ export function EmployeesConsole() {
                             selectedEmployee.employeeCode
                           )}
                         </div>
-                        <span className="h-1 w-1 rounded-full bg-slate-300"></span>
+                        <span className="h-1 w-1 rounded-full bg-surface-hover"></span>
                         <StatusPill>{selectedEmployee.status}</StatusPill>
                         {isEditing ? (
                           <input 
@@ -836,7 +836,7 @@ export function EmployeesConsole() {
                       ) : (
                         <>
                           <button
-                            className="inline-flex min-h-10 items-center gap-1.5 rounded-lg border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition"
+                            className="inline-flex min-h-10 items-center gap-1.5 rounded-lg border border-line-strong px-4 text-sm font-semibold text-text-primary hover:bg-sunken transition"
                             onClick={() => setIsEditing(true)}
                           >
                             <Edit3 className="h-4 w-4" /> Edit Profile
@@ -845,10 +845,10 @@ export function EmployeesConsole() {
                             <>
                               {selectedEmployee.deletionStatus === "PENDING_CEO" ? (
                                 <div className="flex items-center gap-2">
-                                  <span className="text-xs font-semibold text-amber-600 bg-amber-50 px-2 py-1 rounded">Pending CEO Approval</span>
+                                  <span className="text-xs font-semibold text-warning-fg bg-warning-bg px-2 py-1 rounded">Pending CEO Approval</span>
                                   {hasPermission("saas.admin") && (
                                     <button
-                                      className="inline-flex min-h-10 items-center gap-1.5 rounded-lg border border-rose-300 px-4 text-sm font-semibold text-rose-700 hover:bg-rose-50 transition"
+                                      className="inline-flex min-h-10 items-center gap-1.5 rounded-lg border border-danger-border px-4 text-sm font-semibold text-danger-fg hover:bg-danger-bg transition"
                                       onClick={async () => {
                                         if (confirm("Confirm employee deletion? This will deactivate their profile.")) {
                                           try {
@@ -867,7 +867,7 @@ export function EmployeesConsole() {
                                     </button>
                                   )}
                                   <button
-                                    className="inline-flex min-h-10 items-center gap-1.5 rounded-lg border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition"
+                                    className="inline-flex min-h-10 items-center gap-1.5 rounded-lg border border-line-strong px-4 text-sm font-semibold text-text-primary hover:bg-sunken transition"
                                     onClick={async () => {
                                       if (confirm("Cancel this deletion request?")) {
                                         try {
@@ -887,7 +887,7 @@ export function EmployeesConsole() {
                                 </div>
                               ) : (
                                 <button
-                                  className="inline-flex min-h-10 items-center gap-1.5 rounded-lg border border-rose-300 px-4 text-sm font-semibold text-rose-700 hover:bg-rose-50 transition"
+                                  className="inline-flex min-h-10 items-center gap-1.5 rounded-lg border border-danger-border px-4 text-sm font-semibold text-danger-fg hover:bg-danger-bg transition"
                                   onClick={async () => {
                                     if (confirm("Are you sure you want to request deletion for this employee? CEO approval will be required.")) {
                                       try {
@@ -914,14 +914,14 @@ export function EmployeesConsole() {
 
                   <div className="grid grid-cols-2 gap-5 max-md:grid-cols-1">
                     {/* Personal Information */}
-                    <div className="rounded-xl border border-slate-200 p-5 space-y-4">
+                    <div className="rounded-xl border border-line p-5 space-y-4">
                       <div className="flex items-center gap-2 border-b pb-2">
                         <User className="h-4 w-4 text-brand" />
-                        <h4 className="text-sm font-bold uppercase tracking-wider text-slate-700">Personal Information</h4>
+                        <h4 className="text-sm font-bold uppercase tracking-wider text-text-primary">Personal Information</h4>
                       </div>
                       <div className="grid gap-3 text-sm">
                         <div className="flex justify-between">
-                          <span className="text-slate-400 font-semibold">Gender</span>
+                          <span className="text-text-muted font-semibold">Gender</span>
                           {isEditing ? (
                             <select
                               name="gender"
@@ -935,11 +935,11 @@ export function EmployeesConsole() {
                               <option value="Other">Other</option>
                             </select>
                           ) : (
-                            <span className="font-semibold text-slate-800">{selectedEmployee.gender || "Not Specified"}</span>
+                            <span className="font-semibold text-text-primary">{selectedEmployee.gender || "Not Specified"}</span>
                           )}
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-400 font-semibold">Date of Birth</span>
+                          <span className="text-text-muted font-semibold">Date of Birth</span>
                           {isEditing ? (
                             <input
                               className="rounded-lg border px-2 py-0.5 text-xs"
@@ -948,13 +948,13 @@ export function EmployeesConsole() {
                               onChange={(e) => setEditForm(prev => ({ ...prev, dateOfBirth: e.target.value }))}
                             />
                           ) : (
-                            <span className="font-semibold text-slate-800">
+                            <span className="font-semibold text-text-primary">
                               {selectedEmployee.dateOfBirth ? new Date(selectedEmployee.dateOfBirth).toLocaleDateString("en-IN") : "Update required"}
                             </span>
                           )}
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-400 font-semibold">Blood Group</span>
+                          <span className="text-text-muted font-semibold">Blood Group</span>
                           {isEditing ? (
                             <select
                               className="rounded-lg border px-2 py-0.5 text-xs bg-white"
@@ -967,11 +967,11 @@ export function EmployeesConsole() {
                               ))}
                             </select>
                           ) : (
-                            <span className="font-semibold text-slate-800">{selectedEmployee.bloodGroup || "Not recorded"}</span>
+                            <span className="font-semibold text-text-primary">{selectedEmployee.bloodGroup || "Not recorded"}</span>
                           )}
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-400 font-semibold">Marital Status</span>
+                          <span className="text-text-muted font-semibold">Marital Status</span>
                           {isEditing ? (
                             <select
                               className="rounded-lg border px-2 py-0.5 text-xs bg-white"
@@ -985,21 +985,21 @@ export function EmployeesConsole() {
                               <option value="Widowed">Widowed</option>
                             </select>
                           ) : (
-                            <span className="font-semibold text-slate-800">{selectedEmployee.maritalStatus || "Not recorded"}</span>
+                            <span className="font-semibold text-text-primary">{selectedEmployee.maritalStatus || "Not recorded"}</span>
                           )}
                         </div>
                       </div>
                     </div>
 
                     {/* Official Information */}
-                    <div className="rounded-xl border border-slate-200 p-5 space-y-4">
+                    <div className="rounded-xl border border-line p-5 space-y-4">
                       <div className="flex items-center gap-2 border-b pb-2">
                         <Briefcase className="h-4 w-4 text-brand" />
-                        <h4 className="text-sm font-bold uppercase tracking-wider text-slate-700">Official Details</h4>
+                        <h4 className="text-sm font-bold uppercase tracking-wider text-text-primary">Official Details</h4>
                       </div>
                       <div className="grid gap-3 text-sm">
                         <div className="flex justify-between">
-                          <span className="text-slate-400 font-semibold">Department</span>
+                          <span className="text-text-muted font-semibold">Department</span>
                           {isEditing ? (
                             <select
                               name="departmentId"
@@ -1011,11 +1011,11 @@ export function EmployeesConsole() {
                               {departmentsList.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                             </select>
                           ) : (
-                            <span className="font-semibold text-slate-800">{selectedEmployee.department?.name || "Unassigned"}</span>
+                            <span className="font-semibold text-text-primary">{selectedEmployee.department?.name || "Unassigned"}</span>
                           )}
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-400 font-semibold">Designation</span>
+                          <span className="text-text-muted font-semibold">Designation</span>
                           {isEditing ? (
                             <select
                               name="designationId"
@@ -1027,11 +1027,11 @@ export function EmployeesConsole() {
                               {designationsList.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                             </select>
                           ) : (
-                            <span className="font-semibold text-slate-800">{selectedEmployee.designation?.title || "Unassigned"}</span>
+                            <span className="font-semibold text-text-primary">{selectedEmployee.designation?.title || "Unassigned"}</span>
                           )}
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-400 font-semibold">Work Location</span>
+                          <span className="text-text-muted font-semibold">Work Location</span>
                           {isEditing ? (
                             <select
                               name="locationId"
@@ -1043,11 +1043,11 @@ export function EmployeesConsole() {
                               {locationsList.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                             </select>
                           ) : (
-                            <span className="font-semibold text-slate-800">{selectedEmployee.location?.name || "Unassigned"}</span>
+                            <span className="font-semibold text-text-primary">{selectedEmployee.location?.name || "Unassigned"}</span>
                           )}
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-400 font-semibold">Grade</span>
+                          <span className="text-text-muted font-semibold">Grade</span>
                           {isEditing ? (
                             <select
                               name="gradeId"
@@ -1059,11 +1059,11 @@ export function EmployeesConsole() {
                               {grades.map(g => <option key={g.id} value={g.id}>{g.name}</option>)}
                             </select>
                           ) : (
-                            <span className="font-semibold text-slate-800">{selectedEmployee.grade?.name || "Unassigned"}</span>
+                            <span className="font-semibold text-text-primary">{selectedEmployee.grade?.name || "Unassigned"}</span>
                           )}
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-400 font-semibold">Employment Type</span>
+                          <span className="text-text-muted font-semibold">Employment Type</span>
                           {isEditing ? (
                             <select
                               name="employmentTypeId"
@@ -1075,21 +1075,21 @@ export function EmployeesConsole() {
                               {employmentTypes.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
                             </select>
                           ) : (
-                            <span className="font-semibold text-slate-800">{selectedEmployee.employmentTypeRelation?.name || selectedEmployee.employmentType || "Full-Time"}</span>
+                            <span className="font-semibold text-text-primary">{selectedEmployee.employmentTypeRelation?.name || selectedEmployee.employmentType || "Full-Time"}</span>
                           )}
                         </div>
                       </div>
                     </div>
 
                     {/* Contact details */}
-                    <div className="rounded-xl border border-slate-200 p-5 space-y-4">
+                    <div className="rounded-xl border border-line p-5 space-y-4">
                       <div className="flex items-center gap-2 border-b pb-2">
                         <PhoneCall className="h-4 w-4 text-brand" />
-                        <h4 className="text-sm font-bold uppercase tracking-wider text-slate-700">Contact Details</h4>
+                        <h4 className="text-sm font-bold uppercase tracking-wider text-text-primary">Contact Details</h4>
                       </div>
                       <div className="grid gap-3 text-sm">
                         <div className="flex justify-between">
-                          <span className="text-slate-400 font-semibold">Mobile</span>
+                          <span className="text-text-muted font-semibold">Mobile</span>
                           {isEditing ? (
                             <input
                               className="rounded-lg border px-2 py-0.5 text-xs"
@@ -1097,11 +1097,11 @@ export function EmployeesConsole() {
                               onChange={(e) => setEditForm(prev => ({ ...prev, phone: e.target.value }))}
                             />
                           ) : (
-                            <span className="font-semibold text-slate-800">{selectedEmployee.phone || "Not Set"}</span>
+                            <span className="font-semibold text-text-primary">{selectedEmployee.phone || "Not Set"}</span>
                           )}
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-400 font-semibold">Email</span>
+                          <span className="text-text-muted font-semibold">Email</span>
                           {isEditing ? (
                             <input
                               type="email"
@@ -1110,11 +1110,11 @@ export function EmployeesConsole() {
                               onChange={(e) => setEditForm(prev => ({ ...prev, email: e.target.value }))}
                             />
                           ) : (
-                            <span className="font-semibold text-slate-800">{selectedEmployee.email}</span>
+                            <span className="font-semibold text-text-primary">{selectedEmployee.email}</span>
                           )}
                         </div>
-                        <div className="flex flex-col gap-1 mt-2 pt-2 border-t border-slate-100">
-                          <span className="text-slate-400 font-semibold">Emergency Contact</span>
+                        <div className="flex flex-col gap-1 mt-2 pt-2 border-t border-line">
+                          <span className="text-text-muted font-semibold">Emergency Contact</span>
                           {isEditing ? (
                             <div className="flex gap-2">
                               <input
@@ -1131,7 +1131,7 @@ export function EmployeesConsole() {
                               />
                             </div>
                           ) : (
-                            <span className="font-semibold text-slate-800">
+                            <span className="font-semibold text-text-primary">
                               {selectedEmployee.emergencyContactName ? (
                                 `${selectedEmployee.emergencyContactName} (${selectedEmployee.emergencyContactPhone || 'No Phone'})`
                               ) : (
@@ -1144,21 +1144,21 @@ export function EmployeesConsole() {
                     </div>
 
                     {/* Bank & Compliance Details */}
-                    <div className="rounded-xl border border-slate-200 p-5 space-y-4">
+                    <div className="rounded-xl border border-line p-5 space-y-4">
                       <div className="flex items-center gap-2 border-b pb-2">
                         <CreditCard className="h-4 w-4 text-brand" />
-                        <h4 className="text-sm font-bold uppercase tracking-wider text-slate-700">Bank & Accounts</h4>
+                        <h4 className="text-sm font-bold uppercase tracking-wider text-text-primary">Bank & Accounts</h4>
                       </div>
                       <div className="grid gap-3 text-sm">
                         {selectedEmployee.bankDetails?.verificationStatus && (
                           <div className="flex justify-between">
-                            <span className="text-slate-400 font-semibold">Verification</span>
+                            <span className="text-text-muted font-semibold">Verification</span>
                             <span className={`rounded px-2 py-0.5 text-[10px] font-bold uppercase ${
                               selectedEmployee.bankDetails.verificationStatus === "VERIFIED"
-                                ? "bg-emerald-50 text-emerald-700"
+                                ? "bg-success-bg text-success-fg"
                                 : selectedEmployee.bankDetails.verificationStatus === "REJECTED"
-                                ? "bg-rose-50 text-rose-700"
-                                : "bg-amber-50 text-amber-700"
+                                ? "bg-danger-bg text-danger-fg"
+                                : "bg-warning-bg text-warning-fg"
                             }`}>
                               {selectedEmployee.bankDetails.verificationStatus}
                             </span>
@@ -1166,7 +1166,7 @@ export function EmployeesConsole() {
                         )}
                         {isEditing && (
                           <div className="flex justify-between">
-                            <span className="text-slate-400 font-semibold">Account Holder</span>
+                            <span className="text-text-muted font-semibold">Account Holder</span>
                             <input
                               className="rounded-lg border px-2 py-0.5 text-xs"
                               value={editForm.accountHolderName}
@@ -1176,7 +1176,7 @@ export function EmployeesConsole() {
                           </div>
                         )}
                         <div className="flex justify-between">
-                          <span className="text-slate-400 font-semibold">Bank Name</span>
+                          <span className="text-text-muted font-semibold">Bank Name</span>
                           {isEditing ? (
                             <input
                               className="rounded-lg border px-2 py-0.5 text-xs"
@@ -1185,11 +1185,11 @@ export function EmployeesConsole() {
                               placeholder="e.g. HDFC Bank"
                             />
                           ) : (
-                            <span className="font-semibold text-slate-800">{selectedEmployee.bankDetails?.bankName || "Not Set"}</span>
+                            <span className="font-semibold text-text-primary">{selectedEmployee.bankDetails?.bankName || "Not Set"}</span>
                           )}
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-400 font-semibold">IFSC Code</span>
+                          <span className="text-text-muted font-semibold">IFSC Code</span>
                           {isEditing ? (
                             <input
                               className="rounded-lg border px-2 py-0.5 text-xs uppercase"
@@ -1198,11 +1198,11 @@ export function EmployeesConsole() {
                               placeholder="e.g. HDFC0001242"
                             />
                           ) : (
-                            <span className="font-semibold text-slate-800">{selectedEmployee.bankDetails?.ifsc || "Not Set"}</span>
+                            <span className="font-semibold text-text-primary">{selectedEmployee.bankDetails?.ifsc || "Not Set"}</span>
                           )}
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-400 font-semibold">Account Number</span>
+                          <span className="text-text-muted font-semibold">Account Number</span>
                           {isEditing ? (
                             <input
                               className="rounded-lg border px-2 py-0.5 text-xs"
@@ -1211,11 +1211,11 @@ export function EmployeesConsole() {
                               placeholder={selectedEmployee.bankDetails?.accountNumberMasked ? `Current: ${selectedEmployee.bankDetails.accountNumberMasked}` : "Enter account number"}
                             />
                           ) : (
-                            <span className="font-semibold text-slate-800">{selectedEmployee.bankDetails?.accountNumberMasked || "Not Set"}</span>
+                            <span className="font-semibold text-text-primary">{selectedEmployee.bankDetails?.accountNumberMasked || "Not Set"}</span>
                           )}
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-400 font-semibold">PAN Number</span>
+                          <span className="text-text-muted font-semibold">PAN Number</span>
                           {isEditing ? (
                             <input
                               className="rounded-lg border px-2 py-0.5 text-xs"
@@ -1224,7 +1224,7 @@ export function EmployeesConsole() {
                               placeholder="ABCDE1234F"
                             />
                           ) : (
-                            <span className="font-semibold text-slate-800">{selectedEmployee.panNumber || "Not Set"}</span>
+                            <span className="font-semibold text-text-primary">{selectedEmployee.panNumber || "Not Set"}</span>
                           )}
                         </div>
                       </div>
@@ -1233,14 +1233,14 @@ export function EmployeesConsole() {
 
                   <div className="grid grid-cols-2 gap-5 max-md:grid-cols-1">
                     {/* Address Details */}
-                    <div className="rounded-xl border border-slate-200 p-5 space-y-4">
+                    <div className="rounded-xl border border-line p-5 space-y-4">
                       <div className="flex items-center gap-2 border-b pb-2">
                         <MapPin className="h-4 w-4 text-brand" />
-                        <h4 className="text-sm font-bold uppercase tracking-wider text-slate-700">Primary Address</h4>
+                        <h4 className="text-sm font-bold uppercase tracking-wider text-text-primary">Primary Address</h4>
                       </div>
                       <div className="grid gap-3 text-sm">
                         <div className="flex justify-between">
-                          <span className="text-slate-400 font-semibold">Address</span>
+                          <span className="text-text-muted font-semibold">Address</span>
                           {isEditing ? (
                             <input
                               className="rounded-lg border px-2 py-0.5 text-xs w-2/3"
@@ -1254,11 +1254,11 @@ export function EmployeesConsole() {
                               placeholder="Line 1"
                             />
                           ) : (
-                            <span className="font-semibold text-slate-800">{selectedEmployee.addresses?.[0]?.addressLine1 || "Not Set"}</span>
+                            <span className="font-semibold text-text-primary">{selectedEmployee.addresses?.[0]?.addressLine1 || "Not Set"}</span>
                           )}
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-400 font-semibold">City/State</span>
+                          <span className="text-text-muted font-semibold">City/State</span>
                           {isEditing ? (
                             <div className="flex gap-2 w-2/3">
                               <input
@@ -1285,13 +1285,13 @@ export function EmployeesConsole() {
                               />
                             </div>
                           ) : (
-                            <span className="font-semibold text-slate-800">
+                            <span className="font-semibold text-text-primary">
                               {selectedEmployee.addresses?.[0] ? `${selectedEmployee.addresses[0].city || ''}${selectedEmployee.addresses[0].state ? ', ' + selectedEmployee.addresses[0].state : ''}` : "Not Set"}
                             </span>
                           )}
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-slate-400 font-semibold">PIN Code</span>
+                          <span className="text-text-muted font-semibold">PIN Code</span>
                           {isEditing ? (
                             <input
                               className="rounded-lg border px-2 py-0.5 text-xs w-2/3"
@@ -1305,7 +1305,7 @@ export function EmployeesConsole() {
                               placeholder="PIN Code"
                             />
                           ) : (
-                            <span className="font-semibold text-slate-800">{selectedEmployee.addresses?.[0]?.pinCode || "Not Set"}</span>
+                            <span className="font-semibold text-text-primary">{selectedEmployee.addresses?.[0]?.pinCode || "Not Set"}</span>
                           )}
                         </div>
                       </div>
@@ -1314,14 +1314,14 @@ export function EmployeesConsole() {
                     {/* Education & Family Section - stacked since Address is tall */}
                     <div className="space-y-5">
                       {/* Education History */}
-                      <div className="rounded-xl border border-slate-200 p-5 space-y-4">
+                      <div className="rounded-xl border border-line p-5 space-y-4">
                         <div className="flex items-center gap-2 border-b pb-2">
                           <GraduationCap className="h-4 w-4 text-brand" />
-                          <h4 className="text-sm font-bold uppercase tracking-wider text-slate-700">Highest Education</h4>
+                          <h4 className="text-sm font-bold uppercase tracking-wider text-text-primary">Highest Education</h4>
                         </div>
                         <div className="grid gap-3 text-sm">
                           <div className="flex justify-between">
-                            <span className="text-slate-400 font-semibold">Degree</span>
+                            <span className="text-text-muted font-semibold">Degree</span>
                             {isEditing ? (
                               <input
                                 className="rounded-lg border px-2 py-0.5 text-xs w-2/3"
@@ -1335,11 +1335,11 @@ export function EmployeesConsole() {
                                 placeholder="e.g. B.Tech"
                               />
                             ) : (
-                              <span className="font-semibold text-slate-800">{selectedEmployee.educationHistory?.[0]?.degree || "Not Set"}</span>
+                              <span className="font-semibold text-text-primary">{selectedEmployee.educationHistory?.[0]?.degree || "Not Set"}</span>
                             )}
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-slate-400 font-semibold">Institution</span>
+                            <span className="text-text-muted font-semibold">Institution</span>
                             {isEditing ? (
                               <input
                                 className="rounded-lg border px-2 py-0.5 text-xs w-2/3"
@@ -1353,11 +1353,11 @@ export function EmployeesConsole() {
                                 placeholder="University/College"
                               />
                             ) : (
-                              <span className="font-semibold text-slate-800">{selectedEmployee.educationHistory?.[0]?.institution || "Not Set"}</span>
+                              <span className="font-semibold text-text-primary">{selectedEmployee.educationHistory?.[0]?.institution || "Not Set"}</span>
                             )}
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-slate-400 font-semibold">Passing Year</span>
+                            <span className="text-text-muted font-semibold">Passing Year</span>
                             {isEditing ? (
                               <input
                                 type="number"
@@ -1372,21 +1372,21 @@ export function EmployeesConsole() {
                                 placeholder="YYYY"
                               />
                             ) : (
-                              <span className="font-semibold text-slate-800">{selectedEmployee.educationHistory?.[0]?.yearOfPassing || "Not Set"}</span>
+                              <span className="font-semibold text-text-primary">{selectedEmployee.educationHistory?.[0]?.yearOfPassing || "Not Set"}</span>
                             )}
                           </div>
                         </div>
                       </div>
 
                       {/* Family Details */}
-                      <div className="rounded-xl border border-slate-200 p-5 space-y-4">
+                      <div className="rounded-xl border border-line p-5 space-y-4">
                         <div className="flex items-center gap-2 border-b pb-2">
                           <Users className="h-4 w-4 text-brand" />
-                          <h4 className="text-sm font-bold uppercase tracking-wider text-slate-700">Primary Dependent</h4>
+                          <h4 className="text-sm font-bold uppercase tracking-wider text-text-primary">Primary Dependent</h4>
                         </div>
                         <div className="grid gap-3 text-sm">
                           <div className="flex justify-between">
-                            <span className="text-slate-400 font-semibold">Name</span>
+                            <span className="text-text-muted font-semibold">Name</span>
                             {isEditing ? (
                               <input
                                 className="rounded-lg border px-2 py-0.5 text-xs w-2/3"
@@ -1400,11 +1400,11 @@ export function EmployeesConsole() {
                                 placeholder="Full Name"
                               />
                             ) : (
-                              <span className="font-semibold text-slate-800">{selectedEmployee.familyDetails?.[0]?.name || "Not Set"}</span>
+                              <span className="font-semibold text-text-primary">{selectedEmployee.familyDetails?.[0]?.name || "Not Set"}</span>
                             )}
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-slate-400 font-semibold">Relation</span>
+                            <span className="text-text-muted font-semibold">Relation</span>
                             {isEditing ? (
                               <input
                                 className="rounded-lg border px-2 py-0.5 text-xs w-2/3"
@@ -1418,11 +1418,11 @@ export function EmployeesConsole() {
                                 placeholder="e.g. Spouse"
                               />
                             ) : (
-                              <span className="font-semibold text-slate-800">{selectedEmployee.familyDetails?.[0]?.relationship || "Not Set"}</span>
+                              <span className="font-semibold text-text-primary">{selectedEmployee.familyDetails?.[0]?.relationship || "Not Set"}</span>
                             )}
                           </div>
                           <div className="flex justify-between">
-                            <span className="text-slate-400 font-semibold">Phone</span>
+                            <span className="text-text-muted font-semibold">Phone</span>
                             {isEditing ? (
                               <input
                                 className="rounded-lg border px-2 py-0.5 text-xs w-2/3"
@@ -1436,7 +1436,7 @@ export function EmployeesConsole() {
                                 placeholder="Mobile"
                               />
                             ) : (
-                              <span className="font-semibold text-slate-800">{selectedEmployee.familyDetails?.[0]?.phone || "Not Set"}</span>
+                              <span className="font-semibold text-text-primary">{selectedEmployee.familyDetails?.[0]?.phone || "Not Set"}</span>
                             )}
                           </div>
                         </div>
@@ -1448,7 +1448,7 @@ export function EmployeesConsole() {
                   <CareerHistoryPanel employeeId={selectedEmployee.id} />
                 </div>
               ) : (
-                <div className="py-20 text-center text-slate-400">Failed to load profile details.</div>
+                <div className="py-20 text-center text-text-muted">Failed to load profile details.</div>
               )}
             </div>
 
@@ -1475,24 +1475,24 @@ export function EmployeesConsole() {
           <section className="grid grid-cols-3 gap-5 max-xl:grid-cols-1">
             <div className="rounded-xl border border-[var(--border-default)] bg-white p-5 shadow-sm text-center">
               <Building2 className="mx-auto h-8 w-8 text-brand mb-2" />
-              <h3 className="text-lg font-bold text-slate-800">{companyProfile?.company?.name || "Company"}</h3>
-              <p className="text-xs text-slate-400 uppercase font-semibold mt-1">{companyProfile?.company?.city ? `HQ - ${companyProfile.company.city}` : "HQ Corporate Office"}</p>
+              <h3 className="text-lg font-bold text-text-primary">{companyProfile?.company?.name || "Company"}</h3>
+              <p className="text-xs text-text-muted uppercase font-semibold mt-1">{companyProfile?.company?.city ? `HQ - ${companyProfile.company.city}` : "HQ Corporate Office"}</p>
               <div className="mt-4 grid gap-2 text-left text-sm">
                 <div className="rounded-lg bg-[var(--surface-sunken)] p-3"><strong>Entity Code</strong><br />{companyProfile?.company?.taxId || "N/A"}</div>
                 <div className="rounded-lg bg-[var(--surface-sunken)] p-3"><strong>Subscription</strong><br />{companyProfile?.activePlan || "Standard"}</div>
               </div>
             </div>
             <div className="rounded-xl border border-[var(--border-default)] bg-white p-5 shadow-sm space-y-4 col-span-2">
-              <h4 className="text-sm font-bold uppercase tracking-wider text-slate-700 border-b pb-2">Operational Headcount</h4>
+              <h4 className="text-sm font-bold uppercase tracking-wider text-text-primary border-b pb-2">Operational Headcount</h4>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <h5 className="font-semibold text-slate-400">Total Departments</h5>
+                  <h5 className="font-semibold text-text-muted">Total Departments</h5>
                   <div className="mt-1 flex flex-wrap gap-1.5">
-                    {companyStats.depts.map(dept => <span key={dept} className="rounded-md bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700">{dept}</span>)}
+                    {companyStats.depts.map(dept => <span key={dept} className="rounded-md bg-sunken px-2.5 py-1 text-xs font-semibold text-text-primary">{dept}</span>)}
                   </div>
                 </div>
                 <div>
-                  <h5 className="font-semibold text-slate-400">Locations Roster</h5>
+                  <h5 className="font-semibold text-text-muted">Locations Roster</h5>
                   <div className="mt-1 flex flex-wrap gap-1.5">
                     {companyStats.locs.map(loc => <span key={loc} className="rounded-md bg-brand/10 px-2.5 py-1 text-xs font-semibold text-brand">{loc}</span>)}
                   </div>
@@ -1507,14 +1507,14 @@ export function EmployeesConsole() {
       {activeTab === "Verification" && (
         <div className="grid grid-cols-[320px_1fr] gap-6 max-xl:grid-cols-1">
           {/* Left: Upload Document */}
-          <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm h-fit">
-            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 border-b pb-3 mb-4 flex items-center gap-2">
+          <div className="rounded-xl border border-line bg-white p-5 shadow-sm h-fit">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-text-primary border-b pb-3 mb-4 flex items-center gap-2">
               <Upload className="h-4 w-4 text-brand" /> Submit Document
             </h3>
             <form onSubmit={handleUploadDoc} className="grid gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Document Type</label>
-                <select className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white" name="documentType" required>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Document Type</label>
+                <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white" name="documentType" required>
                   <option value="">Select Document type</option>
                   <option value="Aadhaar">Aadhaar</option>
                   <option value="PAN">PAN</option>
@@ -1525,12 +1525,12 @@ export function EmployeesConsole() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">File URL</label>
-                <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="fileUrl" placeholder="https://secure-docs.net/my-file.pdf" required type="url" />
+                <label className="block text-xs font-semibold text-text-secondary mb-1">File URL</label>
+                <input className="min-h-10 w-full rounded-lg border border-line px-3 text-sm" name="fileUrl" placeholder="https://secure-docs.net/my-file.pdf" required type="url" />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Expiry Date</label>
-                <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="expiresAt" type="date" />
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Expiry Date</label>
+                <input className="min-h-10 w-full rounded-lg border border-line px-3 text-sm" name="expiresAt" type="date" />
               </div>
               <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white hover:bg-brand-dark transition" type="submit" disabled={loading}>
                 {loading ? "Submitting..." : "Add to Queue"}
@@ -1541,12 +1541,12 @@ export function EmployeesConsole() {
           {/* Right: Verification Queue Table */}
           <Card>
             <div className="mb-4">
-              <h2 className="text-lg font-semibold text-slate-800">Verification Ledger Queue</h2>
-              <p className="text-xs text-slate-400 mt-0.5">Documents uploaded by employee profiles awaiting HR/Admin review.</p>
+              <h2 className="text-lg font-semibold text-text-primary">Verification Ledger Queue</h2>
+              <p className="text-xs text-text-muted mt-0.5">Documents uploaded by employee profiles awaiting HR/Admin review.</p>
             </div>
             <div className="overflow-auto">
               <table className="w-full min-w-[640px] border-collapse text-sm text-left">
-                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-text-secondary tracking-wider">
                   <tr>
                     <th className="border-b border-[var(--border-default)] p-3">Employee</th>
                     <th className="border-b border-[var(--border-default)] p-3">Type</th>
@@ -1590,13 +1590,13 @@ function DocumentExpiryPanel({ expiries, loading }: { expiries: any[]; loading: 
     <Card className="p-5 border border-[var(--border-subtle)] text-left">
       <div className="mb-4 border-b pb-2 flex justify-between items-center">
         <div>
-          <h3 className="text-base font-bold text-slate-800">Upcoming Document Expiries</h3>
-          <p className="text-xs text-slate-400 mt-0.5">Documents expiring soon based on company rules & offsets.</p>
+          <h3 className="text-base font-bold text-text-primary">Upcoming Document Expiries</h3>
+          <p className="text-xs text-text-muted mt-0.5">Documents expiring soon based on company rules & offsets.</p>
         </div>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full border-collapse text-xs text-slate-650">
-          <thead className="bg-[var(--surface-sunken)] text-[10px] uppercase font-bold text-slate-500 border-b">
+        <table className="w-full border-collapse text-xs text-text-primary">
+          <thead className="bg-[var(--surface-sunken)] text-[10px] uppercase font-bold text-text-secondary border-b">
             <tr>
               <th className="p-2.5 text-left">Employee</th>
               <th className="p-2.5 text-left">Document Type</th>
@@ -1608,11 +1608,11 @@ function DocumentExpiryPanel({ expiries, loading }: { expiries: any[]; loading: 
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan={5} className="p-4 text-center text-slate-450">Loading upcoming expiries...</td>
+                <td colSpan={5} className="p-4 text-center text-text-secondary">Loading upcoming expiries...</td>
               </tr>
             ) : !expiries || expiries.length === 0 ? (
               <tr>
-                <td colSpan={5} className="p-4 text-center text-slate-400">No documents set to expire soon.</td>
+                <td colSpan={5} className="p-4 text-center text-text-muted">No documents set to expire soon.</td>
               </tr>
             ) : (
               expiries.map((doc: any) => {
@@ -1622,26 +1622,26 @@ function DocumentExpiryPanel({ expiries, loading }: { expiries: any[]; loading: 
                 const diffTime = expiryDate.getTime() - today.getTime();
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-                let textColor = "text-slate-700";
-                let badgeClass = "bg-slate-100 text-slate-700 border-slate-200";
+                let textColor = "text-text-primary";
+                let badgeClass = "bg-sunken text-text-primary border-line";
                 let statusLabel = "Normal";
 
                 if (diffDays < 7) {
-                  textColor = "text-rose-600 font-bold animate-pulse";
-                  badgeClass = "bg-rose-50 text-rose-700 border-rose-200";
+                  textColor = "text-danger-fg font-bold animate-pulse";
+                  badgeClass = "bg-danger-bg text-danger-fg border-danger-border";
                   statusLabel = "Critical";
                 } else if (diffDays < 30) {
-                  textColor = "text-amber-600 font-semibold";
-                  badgeClass = "bg-amber-50 text-amber-700 border-amber-200";
+                  textColor = "text-warning-fg font-semibold";
+                  badgeClass = "bg-warning-bg text-warning-fg border-warning-border";
                   statusLabel = "Warning";
                 } else {
-                  badgeClass = "bg-emerald-50 text-emerald-700 border-emerald-200";
+                  badgeClass = "bg-success-bg text-success-fg border-success-border";
                   statusLabel = "Good";
                 }
 
                 return (
-                  <tr key={doc.id} className="border-b border-slate-100 hover:bg-slate-50 transition">
-                    <td className="p-2.5 font-semibold text-slate-900">
+                  <tr key={doc.id} className="border-b border-line hover:bg-sunken transition">
+                    <td className="p-2.5 font-semibold text-text-primary">
                       {doc.employee ? `${doc.employee.firstName} ${doc.employee.lastName}` : "—"}
                     </td>
                     <td className="p-2.5">{doc.documentType}</td>
@@ -1763,13 +1763,13 @@ function LetterTemplatesPanel() {
 
       <div className="grid grid-cols-[1fr_2fr] gap-6 max-lg:grid-cols-1">
         <Card className="p-5 border border-[var(--border-subtle)]">
-          <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Create Document Template</h3>
+          <h3 className="text-base font-bold text-text-primary mb-4 border-b pb-2">Create Document Template</h3>
           <form onSubmit={handleCreateTemplate} className="grid gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-500 mb-1">Type</label>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Type</label>
               <select
                 name="type"
-                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                 value={form.type}
                 onChange={(e) => setForm({ ...form, type: e.target.value })}
               >
@@ -1780,23 +1780,23 @@ function LetterTemplatesPanel() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-500 mb-1">Template Title</label>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Template Title</label>
               <input
                 type="text"
                 required
                 placeholder="e.g. Standard Developer Offer"
-                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-500 mb-1">{"Body Text (use placeholders like {{employeeName}}, {{designation}})"}</label>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">{"Body Text (use placeholders like {{employeeName}}, {{designation}})"}</label>
               <textarea
                 rows={8}
                 required
-                className="w-full rounded-lg border border-slate-200 p-3 text-xs font-mono bg-slate-50"
+                className="w-full rounded-lg border border-line p-3 text-xs font-mono bg-sunken"
                 value={form.body}
                 onChange={(e) => setForm({ ...form, body: e.target.value })}
               />
@@ -1814,12 +1814,12 @@ function LetterTemplatesPanel() {
 
         <div className="grid gap-6">
           <Card className="p-5 border border-[var(--border-subtle)]">
-            <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Generate & Print Preview</h3>
+            <h3 className="text-base font-bold text-text-primary mb-4 border-b pb-2">Generate & Print Preview</h3>
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Choose Template</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Choose Template</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                   value={selectedTemplateId}
                   onChange={(e) => setSelectedTemplateId(e.target.value)}
                 >
@@ -1831,9 +1831,9 @@ function LetterTemplatesPanel() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Choose Employee</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Choose Employee</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                   value={selectedEmployeeId}
                   onChange={(e) => setSelectedEmployeeId(e.target.value)}
                 >
@@ -1855,7 +1855,7 @@ function LetterTemplatesPanel() {
               {renderedLetter && (
                 <button
                   onClick={() => window.print()}
-                  className="px-4 py-2 border border-slate-200 rounded text-xs font-bold hover:bg-slate-50"
+                  className="px-4 py-2 border border-line rounded text-xs font-bold hover:bg-sunken"
                 >
                   Print / Save PDF
                 </button>
@@ -1863,19 +1863,19 @@ function LetterTemplatesPanel() {
             </div>
 
             {renderedLetter ? (
-              <div className="print-area border border-dashed border-slate-350 p-8 bg-white rounded-lg min-h-[300px] shadow-inner print:border-none print:shadow-none" id="print-area">
+              <div className="print-area border border-dashed border-line-strong p-8 bg-white rounded-lg min-h-[300px] shadow-inner print:border-none print:shadow-none" id="print-area">
                 <div className="text-center mb-6">
-                  <h2 className="text-xl font-bold uppercase tracking-wider text-slate-800">PeopleOS</h2>
-                  <p className="text-[10px] text-slate-400">121 Innovation Way, Tech District, Mumbai</p>
-                  <hr className="my-3 border-slate-200" />
+                  <h2 className="text-xl font-bold uppercase tracking-wider text-text-primary">PeopleOS</h2>
+                  <p className="text-[10px] text-text-muted">121 Innovation Way, Tech District, Mumbai</p>
+                  <hr className="my-3 border-line" />
                 </div>
-                <div className="text-sm font-semibold text-slate-700 mb-2">Subject: {renderedLetter.title}</div>
-                <p className="text-xs text-slate-600 whitespace-pre-wrap leading-relaxed">
+                <div className="text-sm font-semibold text-text-primary mb-2">Subject: {renderedLetter.title}</div>
+                <p className="text-xs text-text-secondary whitespace-pre-wrap leading-relaxed">
                   {renderedLetter.renderedBody}
                 </p>
               </div>
             ) : (
-              <div className="border border-dashed border-slate-200 p-8 text-center text-slate-400 rounded-lg bg-slate-50/50">
+              <div className="border border-dashed border-line p-8 text-center text-text-muted rounded-lg bg-sunken">
                 Select template & employee to view preview
               </div>
             )}
@@ -1981,15 +1981,15 @@ function EmployeeLoansPanel() {
 
       <div className="grid grid-cols-[1fr_2fr] gap-6 max-lg:grid-cols-1">
         <Card className="p-5 border border-[var(--border-subtle)]">
-          <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Apply for Employee Loan</h3>
+          <h3 className="text-base font-bold text-text-primary mb-4 border-b pb-2">Apply for Employee Loan</h3>
           <form onSubmit={handleSubmit} className="grid gap-4">
             <div>
-              <label className="block text-xs font-semibold text-slate-500 mb-1">Employee</label>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Employee</label>
               <select
                 name="employeeId"
                 id="loan-employee-select"
                 required
-                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                 value={form.employeeId}
                 onChange={(e) => setForm({ ...form, employeeId: e.target.value })}
               >
@@ -2003,56 +2003,56 @@ function EmployeeLoansPanel() {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-500 mb-1">Principal Amount (₹)</label>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Principal Amount (₹)</label>
               <input
                 type="number"
                 required
                 min="1000"
-                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                 value={form.principal}
                 onChange={(e) => setForm({ ...form, principal: Number(e.target.value) })}
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-500 mb-1">Interest Rate (%)</label>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Interest Rate (%)</label>
               <input
                 type="number"
                 min="0"
-                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                 value={form.interestRate}
                 onChange={(e) => setForm({ ...form, interestRate: Number(e.target.value) })}
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-500 mb-1">Total Payable (₹)</label>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Total Payable (₹)</label>
               <input
                 type="number"
                 disabled
-                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-slate-50 font-bold"
+                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-sunken font-bold"
                 value={form.totalPayable}
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-500 mb-1">Monthly EMI (₹)</label>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Monthly EMI (₹)</label>
               <input
                 type="number"
                 required
                 min="100"
-                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                 value={form.emiAmount}
                 onChange={(e) => setForm({ ...form, emiAmount: Number(e.target.value) })}
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-500 mb-1">Repayment Start Date</label>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Repayment Start Date</label>
               <input
                 type="date"
                 required
-                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                 value={form.repaymentStart}
                 onChange={(e) => setForm({ ...form, repaymentStart: e.target.value })}
               />
@@ -2069,10 +2069,10 @@ function EmployeeLoansPanel() {
         </Card>
 
         <Card className="p-5 border border-[var(--border-subtle)]">
-          <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Active Loans & Outstanding EMI</h3>
+          <h3 className="text-base font-bold text-text-primary mb-4 border-b pb-2">Active Loans & Outstanding EMI</h3>
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-xs text-slate-650">
-              <thead className="bg-[var(--surface-sunken)] text-[10px] uppercase font-bold text-slate-500 border-b">
+            <table className="w-full border-collapse text-xs text-text-primary">
+              <thead className="bg-[var(--surface-sunken)] text-[10px] uppercase font-bold text-text-secondary border-b">
                 <tr>
                   <th className="p-2.5">Employee</th>
                   <th className="p-2.5">Principal</th>
@@ -2085,12 +2085,12 @@ function EmployeeLoansPanel() {
               <tbody>
                 {!loans.length ? (
                   <tr>
-                    <td colSpan={6} className="p-4 text-center text-slate-400">No active loans found.</td>
+                    <td colSpan={6} className="p-4 text-center text-text-muted">No active loans found.</td>
                   </tr>
                 ) : (
                   loans.map((loan) => (
-                    <tr key={loan.id} className="border-b border-slate-100 hover:bg-slate-50 transition">
-                      <td className="p-2.5 font-semibold text-slate-900">{loan.employee?.firstName} {loan.employee?.lastName}</td>
+                    <tr key={loan.id} className="border-b border-line hover:bg-sunken transition">
+                      <td className="p-2.5 font-semibold text-text-primary">{loan.employee?.firstName} {loan.employee?.lastName}</td>
                       <td className="p-2.5">₹{Number(loan.principal).toLocaleString("en-IN")}</td>
                       <td className="p-2.5">₹{Number(loan.totalPayable).toLocaleString("en-IN")}</td>
                       <td className="p-2.5 font-bold">₹{Number(loan.emiAmount).toLocaleString("en-IN")}</td>
@@ -2110,7 +2110,7 @@ function EmployeeLoansPanel() {
                               </button>
                               <button
                                 onClick={() => handleDecide(loan.id, "REJECTED")}
-                                className="border border-slate-200 text-slate-700 bg-white rounded px-2 py-0.5 font-bold hover:bg-slate-50"
+                                className="border border-line text-text-primary bg-white rounded px-2 py-0.5 font-bold hover:bg-sunken"
                               >
                                 Reject
                               </button>
@@ -2146,21 +2146,21 @@ function CareerHistoryPanel({ employeeId }: { employeeId: string }) {
   }, [employeeId]);
 
   return (
-    <div className="rounded-xl border border-slate-200 p-5 mt-4 space-y-4 text-left">
+    <div className="rounded-xl border border-line p-5 mt-4 space-y-4 text-left">
       <div className="flex items-center justify-between border-b pb-2">
-        <h4 className="text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2">
+        <h4 className="text-sm font-bold uppercase tracking-wider text-text-primary flex items-center gap-2">
           <span>Career History Timeline</span>
         </h4>
         <div className="flex gap-2 text-xs">
           <button
             onClick={() => setActiveHistoryTab("promotions")}
-            className={`px-3 py-1 rounded-md font-bold transition ${activeHistoryTab === "promotions" ? "bg-brand text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+            className={`px-3 py-1 rounded-md font-bold transition ${activeHistoryTab === "promotions" ? "bg-brand text-white" : "bg-sunken text-text-secondary hover:bg-surface-hover"}`}
           >
             Promotions ({promotions.length})
           </button>
           <button
             onClick={() => setActiveHistoryTab("transfers")}
-            className={`px-3 py-1 rounded-md font-bold transition ${activeHistoryTab === "transfers" ? "bg-brand text-white" : "bg-slate-100 text-slate-600 hover:bg-slate-200"}`}
+            className={`px-3 py-1 rounded-md font-bold transition ${activeHistoryTab === "transfers" ? "bg-brand text-white" : "bg-sunken text-text-secondary hover:bg-surface-hover"}`}
           >
             Transfers ({transfers.length})
           </button>
@@ -2170,20 +2170,20 @@ function CareerHistoryPanel({ employeeId }: { employeeId: string }) {
       {activeHistoryTab === "promotions" ? (
         <div className="space-y-4">
           {!promotions.length ? (
-            <p className="text-xs text-slate-400 italic">No promotions recorded.</p>
+            <p className="text-xs text-text-muted italic">No promotions recorded.</p>
           ) : (
             promotions.map((p) => (
               <div key={p.id} className="relative border-l-2 border-brand/20 pl-4 py-1">
                 <div className="absolute -left-1.5 top-1.5 h-3 w-3 rounded-full bg-brand"></div>
-                <div className="text-xs font-bold text-slate-800">
+                <div className="text-xs font-bold text-text-primary">
                   {p.fromDesignation?.title || "Designation"} → {p.toDesignation?.title || "New Designation"}
                 </div>
-                <div className="text-[10px] text-slate-400 mt-0.5">
+                <div className="text-[10px] text-text-muted mt-0.5">
                   Effective: {p.effectiveDate?.slice(0, 10)} | CTC Revision: {p.revisedCtc ? `₹${Number(p.revisedCtc).toLocaleString("en-IN")}` : "N/A"}
                 </div>
-                {p.reason && <p className="text-xs text-slate-500 mt-1">Reason: {p.reason}</p>}
+                {p.reason && <p className="text-xs text-text-secondary mt-1">Reason: {p.reason}</p>}
                 <div className="mt-1">
-                  <span className="rounded bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-800">{p.status}</span>
+                  <span className="rounded bg-success-bg px-2 py-0.5 text-[10px] font-bold text-success-fg">{p.status}</span>
                 </div>
               </div>
             ))
@@ -2192,19 +2192,19 @@ function CareerHistoryPanel({ employeeId }: { employeeId: string }) {
       ) : (
         <div className="space-y-4">
           {!transfers.length ? (
-            <p className="text-xs text-slate-400 italic">No transfers recorded.</p>
+            <p className="text-xs text-text-muted italic">No transfers recorded.</p>
           ) : (
             transfers.map((t) => (
               <div key={t.id} className="relative border-l-2 border-brand/20 pl-4 py-1">
                 <div className="absolute -left-1.5 top-1.5 h-3 w-3 rounded-full bg-brand"></div>
-                <div className="text-xs font-bold text-slate-800">
+                <div className="text-xs font-bold text-text-primary">
                   Department: {t.fromDepartment?.name || "N/A"} → {t.toDepartment?.name || "N/A"}
                 </div>
-                <div className="text-[10px] text-slate-400 mt-0.5">
+                <div className="text-[10px] text-text-muted mt-0.5">
                   Location: {t.fromLocation?.name || "N/A"} → {t.toLocation?.name || "N/A"} | Effective: {t.effectiveDate?.slice(0, 10)}
                 </div>
                 <div className="mt-1">
-                  <span className="rounded bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-800">{t.status}</span>
+                  <span className="rounded bg-success-bg px-2 py-0.5 text-[10px] font-bold text-success-fg">{t.status}</span>
                 </div>
               </div>
             ))
@@ -2310,13 +2310,13 @@ function CustomFieldsPanel() {
       {/* Left: Definitions + Create */}
       <div className="space-y-4">
         <Card className="p-5 border border-[var(--border-subtle)]">
-          <h3 className="text-sm font-bold text-slate-800 mb-4 border-b pb-2">Create Custom Field</h3>
-          {message && <div className="mb-3 rounded bg-[var(--success-bg)] p-2 text-xs text-green-700 font-semibold">{message}</div>}
-          {error && <div className="mb-3 rounded bg-[var(--danger-bg)] p-2 text-xs text-red-700 font-semibold">{error}</div>}
+          <h3 className="text-sm font-bold text-text-primary mb-4 border-b pb-2">Create Custom Field</h3>
+          {message && <div className="mb-3 rounded bg-[var(--success-bg)] p-2 text-xs text-success-fg font-semibold">{message}</div>}
+          {error && <div className="mb-3 rounded bg-[var(--danger-bg)] p-2 text-xs text-danger-fg font-semibold">{error}</div>}
           <form onSubmit={handleCreateField} className="grid gap-3">
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1" htmlFor="cf-name">
+                <label className="block text-xs font-semibold text-text-secondary mb-1" htmlFor="cf-name">
                   Field Key *
                 </label>
                 <input
@@ -2325,12 +2325,12 @@ function CustomFieldsPanel() {
                   required
                   value={fieldName}
                   onChange={(e) => setFieldName(e.target.value)}
-                  className="w-full rounded border border-slate-200 px-2 py-1.5 text-xs"
+                  className="w-full rounded border border-line px-2 py-1.5 text-xs"
                   placeholder="e.g. bloodGroup"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1" htmlFor="cf-label">
+                <label className="block text-xs font-semibold text-text-secondary mb-1" htmlFor="cf-label">
                   Display Label *
                 </label>
                 <input
@@ -2339,14 +2339,14 @@ function CustomFieldsPanel() {
                   required
                   value={fieldLabel}
                   onChange={(e) => setFieldLabel(e.target.value)}
-                  className="w-full rounded border border-slate-200 px-2 py-1.5 text-xs"
+                  className="w-full rounded border border-line px-2 py-1.5 text-xs"
                   placeholder="e.g. Blood Group"
                 />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3 items-center">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1" htmlFor="cf-type">
+                <label className="block text-xs font-semibold text-text-secondary mb-1" htmlFor="cf-type">
                   Field Type
                 </label>
                 <select
@@ -2354,7 +2354,7 @@ function CustomFieldsPanel() {
                   name="cf-type"
                   value={fieldType}
                   onChange={(e) => setFieldType(e.target.value)}
-                  className="w-full rounded border border-slate-200 px-2 py-1.5 text-xs"
+                  className="w-full rounded border border-line px-2 py-1.5 text-xs"
                 >
                   {["TEXT", "NUMBER", "DATE", "BOOLEAN", "SELECT"].map((t) => (
                     <option key={t} value={t}>{t}</option>
@@ -2370,7 +2370,7 @@ function CustomFieldsPanel() {
                   onChange={(e) => setFieldRequired(e.target.checked)}
                   className="h-3.5 w-3.5"
                 />
-                <label htmlFor="cf-required" className="text-xs text-slate-600">Required</label>
+                <label htmlFor="cf-required" className="text-xs text-text-secondary">Required</label>
               </div>
             </div>
             <button
@@ -2385,20 +2385,20 @@ function CustomFieldsPanel() {
         </Card>
 
         <Card className="p-4 border border-[var(--border-subtle)]">
-          <h4 className="text-xs font-bold text-slate-600 uppercase mb-3">All Field Definitions</h4>
+          <h4 className="text-xs font-bold text-text-secondary uppercase mb-3">All Field Definitions</h4>
           {loading ? (
-            <p className="text-xs text-slate-400">Loading…</p>
+            <p className="text-xs text-text-muted">Loading…</p>
           ) : definitions.length === 0 ? (
-            <p className="text-xs text-slate-400">No custom fields defined yet.</p>
+            <p className="text-xs text-text-muted">No custom fields defined yet.</p>
           ) : (
             <div className="space-y-1.5">
               {definitions.map((def) => (
-                <div key={def.id} className="flex items-center gap-2 text-xs rounded bg-slate-50 px-2 py-1.5">
-                  <span className="font-mono text-slate-500">{def.fieldKey}</span>
-                  <span className="text-slate-400">→</span>
-                  <span className="font-semibold text-slate-700">{def.label}</span>
-                  <span className="ml-auto text-[10px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded">{def.fieldType}</span>
-                  {def.required && <span className="text-[10px] bg-red-100 text-red-600 px-1 py-0.5 rounded">req</span>}
+                <div key={def.id} className="flex items-center gap-2 text-xs rounded bg-sunken px-2 py-1.5">
+                  <span className="font-mono text-text-secondary">{def.fieldKey}</span>
+                  <span className="text-text-muted">→</span>
+                  <span className="font-semibold text-text-primary">{def.label}</span>
+                  <span className="ml-auto text-[10px] bg-surface-hover text-text-secondary px-1.5 py-0.5 rounded">{def.fieldType}</span>
+                  {def.required && <span className="text-[10px] bg-danger-bg text-danger-fg px-1 py-0.5 rounded">req</span>}
                 </div>
               ))}
             </div>
@@ -2408,9 +2408,9 @@ function CustomFieldsPanel() {
 
       {/* Right: Employee Value Editor */}
       <Card className="p-5 border border-[var(--border-subtle)]">
-        <h3 className="text-sm font-bold text-slate-800 mb-3 border-b pb-2">Employee Custom Field Values</h3>
+        <h3 className="text-sm font-bold text-text-primary mb-3 border-b pb-2">Employee Custom Field Values</h3>
         <div className="mb-4">
-          <label className="block text-xs font-semibold text-slate-500 mb-1" htmlFor="cf-emp-select">
+          <label className="block text-xs font-semibold text-text-secondary mb-1" htmlFor="cf-emp-select">
             Select Employee
           </label>
           <select
@@ -2418,7 +2418,7 @@ function CustomFieldsPanel() {
             name="cf-emp-select"
             value={selectedEmpId}
             onChange={(e) => setSelectedEmpId(e.target.value)}
-            className="w-full rounded border border-slate-200 px-3 py-2 text-sm"
+            className="w-full rounded border border-line px-3 py-2 text-sm"
           >
             {employees.map((emp) => (
               <option key={emp.id} value={emp.id}>
@@ -2429,7 +2429,7 @@ function CustomFieldsPanel() {
         </div>
 
         {definitions.length === 0 ? (
-          <p className="text-xs text-slate-400 text-center py-4">Create some custom fields first.</p>
+          <p className="text-xs text-text-muted text-center py-4">Create some custom fields first.</p>
         ) : (
           <div className="space-y-3">
             {definitions.map((def) => {
@@ -2438,16 +2438,16 @@ function CustomFieldsPanel() {
               return (
                 <div key={def.id} className="grid grid-cols-[1fr_auto] gap-2 items-end">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-500 mb-1">
+                    <label className="block text-xs font-semibold text-text-secondary mb-1">
                       {def.label}
-                      {def.required && <span className="text-red-500 ml-0.5">*</span>}
-                      <span className="ml-1 text-[10px] text-slate-400">({def.fieldType})</span>
+                      {def.required && <span className="text-danger-fg ml-0.5">*</span>}
+                      <span className="ml-1 text-[10px] text-text-muted">({def.fieldType})</span>
                     </label>
                     {def.fieldType === "BOOLEAN" ? (
                       <select
                         value={editing}
                         onChange={(e) => setEditValue((prev) => ({ ...prev, [def.id]: e.target.value }))}
-                        className="w-full rounded border border-slate-200 px-2 py-1.5 text-xs"
+                        className="w-full rounded border border-line px-2 py-1.5 text-xs"
                         id={`cf-val-${def.id}`}
                         name={`cf-val-${def.id}`}
                       >
@@ -2462,7 +2462,7 @@ function CustomFieldsPanel() {
                         name={`cf-val-${def.id}`}
                         value={editing}
                         onChange={(e) => setEditValue((prev) => ({ ...prev, [def.id]: e.target.value }))}
-                        className="w-full rounded border border-slate-200 px-2 py-1.5 text-xs"
+                        className="w-full rounded border border-line px-2 py-1.5 text-xs"
                         placeholder={current || `Enter ${def.label}`}
                       />
                     )}

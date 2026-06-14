@@ -325,18 +325,18 @@ export function TrainingConsole() {
   return (
     <div className="grid gap-5 text-left">
       {message && (
-        <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-semibold text-emerald-800 animate-in fade-in duration-200">
+        <div className="rounded-xl border border-success-border bg-success-bg p-4 text-sm font-semibold text-success-fg animate-in fade-in duration-200">
           {message}
         </div>
       )}
       {error && (
-        <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm font-semibold text-rose-800 animate-in fade-in duration-200">
+        <div className="rounded-xl border border-danger-border bg-danger-bg p-4 text-sm font-semibold text-danger-fg animate-in fade-in duration-200">
           {error}
         </div>
       )}
 
       {/* SUB-TABS */}
-      <div className="flex border-b border-slate-200 gap-4 mb-4">
+      <div className="flex border-b border-line gap-4 mb-4">
         {[
           { label: "Programs & Events", val: "Events" },
           { label: "Assessments & Outcomes", val: "Outcomes" },
@@ -351,7 +351,7 @@ export function TrainingConsole() {
               setError("");
             }}
             className={`pb-2.5 text-sm font-bold border-b-2 transition cursor-pointer ${
-              activeTab === tab.val ? "border-brand text-brand" : "border-transparent text-slate-400 hover:text-slate-700"
+              activeTab === tab.val ? "border-brand text-brand" : "border-transparent text-text-muted hover:text-text-primary"
             }`}
           >
             {tab.label}
@@ -364,14 +364,14 @@ export function TrainingConsole() {
         <div className="grid grid-cols-[360px_1fr] gap-6 max-xl:grid-cols-1">
           <div className="grid gap-5 h-fit">
             <Card>
-              <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2 border-b pb-3">
+              <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary flex items-center gap-2 border-b pb-3">
                 <BookOpen className="h-5 w-5 text-brand" /> Create Program
               </h3>
               <form onSubmit={handleProgramSubmit} className="grid gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Program Name</label>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Program Name</label>
                   <input
-                    className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                     placeholder="e.g. AWS Cloud Architect"
                     value={progName}
                     onChange={(e) => setProgName(e.target.value)}
@@ -379,9 +379,9 @@ export function TrainingConsole() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Description</label>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Description</label>
                   <textarea
-                    className="min-h-20 w-full rounded-lg border border-slate-200 p-3 text-sm"
+                    className="min-h-20 w-full rounded-lg border border-line p-3 text-sm"
                     placeholder="Brief description of the course..."
                     value={progDesc}
                     onChange={(e) => setProgDesc(e.target.value)}
@@ -397,14 +397,14 @@ export function TrainingConsole() {
             </Card>
 
             <Card>
-              <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2 border-b pb-3">
+              <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary flex items-center gap-2 border-b pb-3">
                 <Plus className="h-5 w-5 text-brand" /> Schedule Event
               </h3>
               <form onSubmit={handleEventSubmit} className="grid gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Training Program</label>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Training Program</label>
                   <select
-                    className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                     value={evtProgId}
                     onChange={(e) => setEvtProgId(e.target.value)}
                     required
@@ -418,9 +418,9 @@ export function TrainingConsole() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Event Session Name</label>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Event Session Name</label>
                   <input
-                    className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                     placeholder="e.g. AWS Architecture Cohort 1"
                     value={evtName}
                     onChange={(e) => setEvtName(e.target.value)}
@@ -428,9 +428,9 @@ export function TrainingConsole() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Trainer Name</label>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Trainer Name</label>
                   <input
-                    className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                     placeholder="e.g. Dr. Robert Vance"
                     value={evtTrainer}
                     onChange={(e) => setEvtTrainer(e.target.value)}
@@ -439,9 +439,9 @@ export function TrainingConsole() {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-500 mb-1">Start Date</label>
+                    <label className="block text-xs font-semibold text-text-secondary mb-1">Start Date</label>
                     <input
-                      className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                      className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                       type="date"
                       value={evtStart}
                       onChange={(e) => setEvtStart(e.target.value)}
@@ -449,9 +449,9 @@ export function TrainingConsole() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-500 mb-1">End Date</label>
+                    <label className="block text-xs font-semibold text-text-secondary mb-1">End Date</label>
                     <input
-                      className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                      className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                       type="date"
                       value={evtEnd}
                       onChange={(e) => setEvtEnd(e.target.value)}
@@ -460,9 +460,9 @@ export function TrainingConsole() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Location / Link</label>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Location / Link</label>
                   <input
-                    className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                     placeholder="e.g. Conference Room A / Zoom Link"
                     value={evtLoc}
                     onChange={(e) => setEvtLoc(e.target.value)}
@@ -479,15 +479,15 @@ export function TrainingConsole() {
           </div>
 
           <Card>
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-700 border-b pb-3">
+            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary border-b pb-3">
               Scheduled Events Calendar
             </h3>
             {loading ? (
-              <div className="text-center p-8 text-slate-400 text-sm">Loading events...</div>
+              <div className="text-center p-8 text-text-muted text-sm">Loading events...</div>
             ) : (
               <div className="grid grid-cols-2 gap-4 max-md:grid-cols-1">
                 {events.map((e) => (
-                  <div key={e.id} className="rounded-xl border border-slate-100 bg-white p-4 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                  <div key={e.id} className="rounded-xl border border-line bg-white p-4 shadow-sm hover:shadow-md transition flex flex-col justify-between">
                     <div>
                       <div className="flex items-center justify-between gap-2">
                         <span className="text-[10px] font-bold uppercase tracking-wide text-brand bg-brand/10 px-2 py-0.5 rounded">
@@ -497,16 +497,16 @@ export function TrainingConsole() {
                           {e.status}
                         </StatusPill>
                       </div>
-                      <h4 className="font-semibold text-slate-800 mt-2 text-sm">{e.eventName}</h4>
-                      <p className="text-xs text-slate-400 mt-1">Trainer: <span className="font-semibold text-slate-700">{e.trainerName}</span></p>
+                      <h4 className="font-semibold text-text-primary mt-2 text-sm">{e.eventName}</h4>
+                      <p className="text-xs text-text-muted mt-1">Trainer: <span className="font-semibold text-text-primary">{e.trainerName}</span></p>
 
-                      <div className="grid grid-cols-2 gap-2 mt-4 text-xs text-slate-500 border-t pt-3">
+                      <div className="grid grid-cols-2 gap-2 mt-4 text-xs text-text-secondary border-t pt-3">
                         <div className="flex items-center gap-1.5">
-                          <Calendar className="h-3.5 w-3.5 text-slate-400" />
+                          <Calendar className="h-3.5 w-3.5 text-text-muted" />
                           <span>{new Date(e.startDate).toLocaleDateString()}</span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                          <MapPin className="h-3.5 w-3.5 text-slate-400" />
+                          <MapPin className="h-3.5 w-3.5 text-text-muted" />
                           <span className="truncate">{e.location || "N/A"}</span>
                         </div>
                       </div>
@@ -514,7 +514,7 @@ export function TrainingConsole() {
                   </div>
                 ))}
                 {events.length === 0 && (
-                  <div className="col-span-2 py-8 text-center text-slate-400 text-xs border border-dashed rounded-lg">
+                  <div className="col-span-2 py-8 text-center text-text-muted text-xs border border-dashed rounded-lg">
                     No scheduled events found. Schedule one on the left.
                   </div>
                 )}
@@ -528,14 +528,14 @@ export function TrainingConsole() {
       {activeTab === "Outcomes" && (
         <div className="grid grid-cols-2 gap-6 max-lg:grid-cols-1">
           <Card>
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2 border-b pb-3">
+            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary flex items-center gap-2 border-b pb-3">
               <GraduationCap className="h-5 w-5 text-brand" /> Log Event Feedback
             </h3>
             <form onSubmit={handleFeedbackSubmit} className="grid gap-3">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Select Event</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Select Event</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                   value={feedEvtId}
                   onChange={(e) => setFeedEvtId(e.target.value)}
                   required
@@ -549,9 +549,9 @@ export function TrainingConsole() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Employee attendee</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Employee attendee</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                   value={feedEmpId}
                   onChange={(e) => setFeedEmpId(e.target.value)}
                   required
@@ -565,9 +565,9 @@ export function TrainingConsole() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Rating (1 to 5 Stars)</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Rating (1 to 5 Stars)</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                   value={feedRating}
                   onChange={(e) => setFeedRating(e.target.value)}
                   required
@@ -580,9 +580,9 @@ export function TrainingConsole() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Comments</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Comments</label>
                 <textarea
-                  className="min-h-20 w-full rounded-lg border border-slate-200 p-3 text-sm"
+                  className="min-h-20 w-full rounded-lg border border-line p-3 text-sm"
                   placeholder="Feedback comments..."
                   value={feedComment}
                   onChange={(e) => setFeedComment(e.target.value)}
@@ -598,14 +598,14 @@ export function TrainingConsole() {
           </Card>
 
           <Card>
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2 border-b pb-3">
+            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary flex items-center gap-2 border-b pb-3">
               <Award className="h-5 w-5 text-brand" /> Submit Course Result
             </h3>
             <form onSubmit={handleResultSubmit} className="grid gap-3">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Select Event</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Select Event</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                   value={resEvtId}
                   onChange={(e) => setResEvtId(e.target.value)}
                   required
@@ -619,9 +619,9 @@ export function TrainingConsole() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Employee attendee</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Employee attendee</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                   value={resEmpId}
                   onChange={(e) => setResEmpId(e.target.value)}
                   required
@@ -635,9 +635,9 @@ export function TrainingConsole() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Status Outcome</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Status Outcome</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                   value={resStatus}
                   onChange={(e) => setResStatus(e.target.value)}
                   required
@@ -647,9 +647,9 @@ export function TrainingConsole() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Performance Details</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Performance Details</label>
                 <textarea
-                  className="min-h-20 w-full rounded-lg border border-slate-200 p-3 text-sm"
+                  className="min-h-20 w-full rounded-lg border border-line p-3 text-sm"
                   placeholder="Exam score, certification code, etc..."
                   value={resComment}
                   onChange={(e) => setResComment(e.target.value)}
@@ -670,14 +670,14 @@ export function TrainingConsole() {
       {activeTab === "Skills" && (
         <div className="grid grid-cols-3 gap-6 max-xl:grid-cols-1">
           <Card className="h-fit">
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2 border-b pb-3">
+            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary flex items-center gap-2 border-b pb-3">
               <Plus className="h-5 w-5 text-brand" /> Create Skill catalog
             </h3>
             <form onSubmit={handleSkillSubmit} className="grid gap-3">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Skill Name</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Skill Name</label>
                 <input
-                  className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                   placeholder="e.g. Next.js, Docker, Figma"
                   value={skillName}
                   onChange={(e) => setSkillName(e.target.value)}
@@ -685,9 +685,9 @@ export function TrainingConsole() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Skill Description</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Skill Description</label>
                 <textarea
-                  className="min-h-20 w-full rounded-lg border border-slate-200 p-3 text-sm"
+                  className="min-h-20 w-full rounded-lg border border-line p-3 text-sm"
                   placeholder="e.g. React server components, server actions, optimization..."
                   value={skillDesc}
                   onChange={(e) => setSkillDesc(e.target.value)}
@@ -703,14 +703,14 @@ export function TrainingConsole() {
           </Card>
 
           <Card className="h-fit">
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2 border-b pb-3">
+            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary flex items-center gap-2 border-b pb-3">
               <UserCheck className="h-5 w-5 text-brand" /> Assess Employee Skill
             </h3>
             <form onSubmit={handleMapSkillSubmit} className="grid gap-3">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Employee</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Employee</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                   value={mapEmpId}
                   onChange={(e) => setMapEmpId(e.target.value)}
                   required
@@ -724,9 +724,9 @@ export function TrainingConsole() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Select Skill</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Select Skill</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                   value={mapSkillId}
                   onChange={(e) => setMapSkillId(e.target.value)}
                   required
@@ -740,9 +740,9 @@ export function TrainingConsole() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Proficiency Level</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Proficiency Level</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                   value={mapProficiency}
                   onChange={(e) => setMapProficiency(e.target.value)}
                   required
@@ -762,14 +762,14 @@ export function TrainingConsole() {
           </Card>
 
           <Card className="h-fit">
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2 border-b pb-3">
+            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary flex items-center gap-2 border-b pb-3">
               <Briefcase className="h-5 w-5 text-brand" /> Map Designation Skill
             </h3>
             <form onSubmit={handleDesignationSkillSubmit} className="grid gap-3">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Designation</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Designation</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                   value={desId}
                   onChange={(e) => setDesId(e.target.value)}
                   required
@@ -783,9 +783,9 @@ export function TrainingConsole() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Select Skill</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Select Skill</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                   value={desSkillId}
                   onChange={(e) => setDesSkillId(e.target.value)}
                   required
@@ -799,9 +799,9 @@ export function TrainingConsole() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Required Proficiency</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Required Proficiency</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                   value={desRequired}
                   onChange={(e) => setDesRequired(e.target.value)}
                   required
@@ -827,13 +827,13 @@ export function TrainingConsole() {
         <div className="grid grid-cols-[320px_1fr] gap-6 max-lg:grid-cols-1">
           {/* Selector */}
           <Card className="h-fit">
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2 border-b pb-3">
+            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary flex items-center gap-2 border-b pb-3">
               <BarChart2 className="h-5 w-5 text-brand" /> Select Employee
             </h3>
             <div>
-              <label className="block text-xs font-semibold text-slate-500 mb-1">Choose Employee to Analyze</label>
+              <label className="block text-xs font-semibold text-text-secondary mb-1">Choose Employee to Analyze</label>
               <select
-                className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                 value={gapEmpId}
                 onChange={(e) => setGapEmpId(e.target.value)}
               >
@@ -844,7 +844,7 @@ export function TrainingConsole() {
                   </option>
                 ))}
               </select>
-              <p className="text-[10px] text-slate-400 mt-3 leading-relaxed">
+              <p className="text-[10px] text-text-muted mt-3 leading-relaxed">
                 This engine compares the employee's assessed skill levels against their designation's required proficiency levels to find educational gaps.
               </p>
             </div>
@@ -852,31 +852,31 @@ export function TrainingConsole() {
 
           {/* Gaps Visualizations */}
           <Card>
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-700 border-b pb-3">
+            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary border-b pb-3">
               Skill Gap Matrix Analysis
             </h3>
             {gapsData ? (
               <div className="grid gap-6">
                 <div>
-                  <h4 className="text-rose-700 font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 mb-3">
+                  <h4 className="text-danger-fg font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 mb-3">
                     <AlertCircle className="h-4 w-4" /> Detected Skill Gaps ({gapsData.gaps.length})
                   </h4>
                   <div className="grid gap-3">
                     {gapsData.gaps.map((item) => (
-                      <div key={item.skillName} className="flex items-center justify-between border border-rose-100 bg-rose-50/30 p-3 rounded-lg text-sm">
-                        <span className="font-semibold text-slate-800">{item.skillName}</span>
+                      <div key={item.skillName} className="flex items-center justify-between border border-danger-border bg-danger-bg p-3 rounded-lg text-sm">
+                        <span className="font-semibold text-text-primary">{item.skillName}</span>
                         <div className="flex items-center gap-3">
-                          <span className="text-xs text-rose-800 bg-rose-150 px-2.5 py-0.5 rounded font-bold">
+                          <span className="text-xs text-danger-fg bg-rose-150 px-2.5 py-0.5 rounded font-bold">
                             Required: {item.required}
                           </span>
-                          <span className="text-xs text-slate-500">
-                            Actual: <span className="font-semibold text-slate-700">{item.actual}</span>
+                          <span className="text-xs text-text-secondary">
+                            Actual: <span className="font-semibold text-text-primary">{item.actual}</span>
                           </span>
                         </div>
                       </div>
                     ))}
                     {gapsData.gaps.length === 0 && (
-                      <div className="text-xs text-slate-400 p-4 border border-dashed rounded-lg text-center bg-slate-50">
+                      <div className="text-xs text-text-muted p-4 border border-dashed rounded-lg text-center bg-sunken">
                         Excellent! No skill gaps detected for this employee.
                       </div>
                     )}
@@ -884,25 +884,25 @@ export function TrainingConsole() {
                 </div>
 
                 <div className="border-t pt-4">
-                  <h4 className="text-emerald-700 font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 mb-3">
+                  <h4 className="text-success-fg font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 mb-3">
                     <Check className="h-4 w-4" /> Fulfilled / Met Requirements ({gapsData.met.length})
                   </h4>
                   <div className="grid gap-3">
                     {gapsData.met.map((item) => (
-                      <div key={item.skillName} className="flex items-center justify-between border border-emerald-100 bg-emerald-50/20 p-3 rounded-lg text-sm">
-                        <span className="font-semibold text-slate-800">{item.skillName}</span>
+                      <div key={item.skillName} className="flex items-center justify-between border border-success-border bg-success-bg p-3 rounded-lg text-sm">
+                        <span className="font-semibold text-text-primary">{item.skillName}</span>
                         <div className="flex items-center gap-3">
-                          <span className="text-xs text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded font-bold">
+                          <span className="text-xs text-success-fg bg-success-bg px-2.5 py-0.5 rounded font-bold">
                             Required: {item.required}
                           </span>
-                          <span className="text-xs text-slate-500">
-                            Actual: <span className="font-semibold text-slate-700">{item.actual}</span>
+                          <span className="text-xs text-text-secondary">
+                            Actual: <span className="font-semibold text-text-primary">{item.actual}</span>
                           </span>
                         </div>
                       </div>
                     ))}
                     {gapsData.met.length === 0 && (
-                      <div className="text-xs text-slate-400 p-4 border border-dashed rounded-lg text-center bg-slate-50">
+                      <div className="text-xs text-text-muted p-4 border border-dashed rounded-lg text-center bg-sunken">
                         No fulfilled skills listed yet.
                       </div>
                     )}
@@ -910,8 +910,8 @@ export function TrainingConsole() {
                 </div>
               </div>
             ) : (
-              <div className="py-12 flex flex-col items-center justify-center text-slate-400 text-center border border-dashed rounded-lg">
-                <BarChart2 className="h-10 w-10 text-slate-200 mb-2" />
+              <div className="py-12 flex flex-col items-center justify-center text-text-muted text-center border border-dashed rounded-lg">
+                <BarChart2 className="h-10 w-10 text-text-muted mb-2" />
                 <div className="text-xs font-semibold">Select an employee from the sidebar to generate analysis.</div>
               </div>
             )}

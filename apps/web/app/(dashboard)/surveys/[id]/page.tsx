@@ -55,7 +55,7 @@ export default function SurveyDetailPage() {
 
   if (!survey) {
     return (
-      <div className="py-20 text-center text-slate-400 font-semibold">
+      <div className="py-20 text-center text-text-muted font-semibold">
         {error || "Loading survey…"}
       </div>
     );
@@ -67,39 +67,39 @@ export default function SurveyDetailPage() {
       <div className="flex items-center gap-3">
         <button
           onClick={() => router.push("/surveys")}
-          className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 transition"
+          className="rounded-lg p-2 text-text-muted hover:bg-sunken transition"
         >
           <ArrowLeft className="h-5 w-5" />
         </button>
         <div>
-          <h1 className="text-xl font-bold text-slate-900">{survey.title}</h1>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <h1 className="text-xl font-bold text-text-primary">{survey.title}</h1>
+          <p className="text-xs text-text-muted mt-0.5">
             {survey.anonymous ? "This survey is anonymous." : "Your response will be recorded with your identity."}
           </p>
         </div>
       </div>
 
       {message && (
-        <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-semibold text-emerald-800">
+        <div className="rounded-xl border border-success-border bg-success-bg p-4 text-sm font-semibold text-success-fg">
           {message}
         </div>
       )}
       {error && (
-        <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm font-semibold text-rose-800">
+        <div className="rounded-xl border border-danger-border bg-danger-bg p-4 text-sm font-semibold text-danger-fg">
           {error}
         </div>
       )}
 
       {survey.hasResponded ? (
-        <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-slate-500">
+        <div className="rounded-xl border border-line bg-white p-8 text-center text-text-secondary">
           <p className="font-semibold">You have already submitted a response for this survey.</p>
-          <p className="text-xs mt-1 text-slate-400">Thank you for participating!</p>
+          <p className="text-xs mt-1 text-text-muted">Thank you for participating!</p>
         </div>
       ) : (
         <div className="space-y-4">
           {survey.questions?.map((q, idx) => (
-            <div key={q.id} className="rounded-xl border border-slate-200 bg-white p-5">
-              <p className="text-sm font-bold text-slate-800 mb-4">
+            <div key={q.id} className="rounded-xl border border-line bg-white p-5">
+              <p className="text-sm font-bold text-text-primary mb-4">
                 {idx + 1}. {q.text}
               </p>
 
@@ -113,7 +113,7 @@ export default function SurveyDetailPage() {
                         className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border text-xs font-bold transition ${
                           answers[q.id] === n
                             ? "bg-brand border-brand text-white"
-                            : "border-slate-200 text-slate-600 hover:bg-slate-50"
+                            : "border-line text-text-secondary hover:bg-sunken"
                         }`}
                       >
                         {n}
@@ -121,8 +121,8 @@ export default function SurveyDetailPage() {
                     ))}
                   </div>
                   <div className="flex justify-between mt-1">
-                    <span className="text-xs text-slate-400">Not at all</span>
-                    <span className="text-xs text-slate-400">Absolutely</span>
+                    <span className="text-xs text-text-muted">Not at all</span>
+                    <span className="text-xs text-text-muted">Absolutely</span>
                   </div>
                 </div>
               )}
@@ -131,7 +131,7 @@ export default function SurveyDetailPage() {
                 <textarea
                   rows={3}
                   placeholder="Enter your answer…"
-                  className="w-full rounded-lg border border-slate-200 p-3 text-sm resize-none focus:outline-none focus:border-brand"
+                  className="w-full rounded-lg border border-line p-3 text-sm resize-none focus:outline-none focus:border-brand"
                   onChange={(e) => setAnswers((prev) => ({ ...prev, [q.id]: e.target.value }))}
                 />
               )}

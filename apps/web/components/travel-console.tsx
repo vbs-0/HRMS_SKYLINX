@@ -199,18 +199,18 @@ export function TravelConsole() {
   return (
     <div className="grid gap-5 text-left">
       {message && (
-        <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-semibold text-emerald-800 animate-in fade-in duration-200">
+        <div className="rounded-xl border border-success-border bg-success-bg p-4 text-sm font-semibold text-success-fg animate-in fade-in duration-200">
           {message}
         </div>
       )}
       {error && (
-        <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm font-semibold text-rose-800 animate-in fade-in duration-200">
+        <div className="rounded-xl border border-danger-border bg-danger-bg p-4 text-sm font-semibold text-danger-fg animate-in fade-in duration-200">
           {error}
         </div>
       )}
 
       {/* SUB-TABS */}
-      <div className="flex border-b border-slate-200 gap-4 mb-4">
+      <div className="flex border-b border-line gap-4 mb-4">
         {[
           { label: "Travel Requests", val: "Requests" },
           { label: "Itinerary Booking", val: "Itinerary" },
@@ -224,7 +224,7 @@ export function TravelConsole() {
               setError("");
             }}
             className={`pb-2.5 text-sm font-bold border-b-2 transition cursor-pointer ${
-              activeTab === tab.val ? "border-brand text-brand" : "border-transparent text-slate-400 hover:text-slate-700"
+              activeTab === tab.val ? "border-brand text-brand" : "border-transparent text-text-muted hover:text-text-primary"
             }`}
           >
             {tab.label}
@@ -236,14 +236,14 @@ export function TravelConsole() {
       {activeTab === "Requests" && (
         <div className="grid grid-cols-[360px_1fr] gap-6 max-xl:grid-cols-1">
           <Card className="h-fit">
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2 border-b pb-3">
+            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary flex items-center gap-2 border-b pb-3">
               <Plane className="h-5 w-5 text-brand" /> New Travel Request
             </h3>
             <form onSubmit={handleRequestSubmit} className="grid gap-3">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Employee</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Employee</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                   value={reqEmpId}
                   onChange={(e) => setReqEmpId(e.target.value)}
                   required
@@ -257,9 +257,9 @@ export function TravelConsole() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Purpose of Travel</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Purpose of Travel</label>
                 <input
-                  className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                   placeholder="e.g. Sales pitch with Client X"
                   value={reqPurpose}
                   onChange={(e) => setReqPurpose(e.target.value)}
@@ -268,9 +268,9 @@ export function TravelConsole() {
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Start Date</label>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Start Date</label>
                   <input
-                    className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                     type="date"
                     value={reqStart}
                     onChange={(e) => setReqStart(e.target.value)}
@@ -278,9 +278,9 @@ export function TravelConsole() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">End Date</label>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">End Date</label>
                   <input
-                    className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                     type="date"
                     value={reqEnd}
                     onChange={(e) => setReqEnd(e.target.value)}
@@ -290,9 +290,9 @@ export function TravelConsole() {
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Source City</label>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Source City</label>
                   <input
-                    className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                     placeholder="e.g. Mumbai"
                     value={reqSource}
                     onChange={(e) => setReqSource(e.target.value)}
@@ -300,9 +300,9 @@ export function TravelConsole() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Destination City</label>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Destination City</label>
                   <input
-                    className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                     placeholder="e.g. Bangalore"
                     value={reqDest}
                     onChange={(e) => setReqDest(e.target.value)}
@@ -312,9 +312,9 @@ export function TravelConsole() {
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Est. Cost (INR)</label>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Est. Cost (INR)</label>
                   <input
-                    className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                     type="number"
                     value={reqCost}
                     onChange={(e) => setReqCost(e.target.value)}
@@ -322,9 +322,9 @@ export function TravelConsole() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Advance Requested</label>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Advance Requested</label>
                   <input
-                    className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                     type="number"
                     value={reqAdvance}
                     onChange={(e) => setReqAdvance(e.target.value)}
@@ -342,15 +342,15 @@ export function TravelConsole() {
           </Card>
 
           <Card>
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-700 border-b pb-3">
+            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary border-b pb-3">
               Travel Request Ledger
             </h3>
             {loading ? (
-              <div className="text-center p-8 text-slate-400 text-sm">Loading travel logs...</div>
+              <div className="text-center p-8 text-text-muted text-sm">Loading travel logs...</div>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[750px] border-collapse text-sm text-left">
-                  <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 border-b">
+                  <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-text-secondary border-b">
                     <tr>
                       <th className="p-3">Employee</th>
                       <th className="p-3">Destination & Dates</th>
@@ -361,21 +361,21 @@ export function TravelConsole() {
                   </thead>
                   <tbody>
                     {requests.map((r) => (
-                      <tr key={r.id} className="border-b hover:bg-slate-50 transition">
-                        <td className="p-3 font-semibold text-slate-800">
+                      <tr key={r.id} className="border-b hover:bg-sunken transition">
+                        <td className="p-3 font-semibold text-text-primary">
                           {r.employee.firstName} {r.employee.lastName}
                         </td>
                         <td className="p-3">
-                          <div className="font-semibold text-slate-800">{r.sourceCity} ➔ {r.destinationCity}</div>
-                          <div className="text-xs text-slate-400 flex items-center gap-1 mt-0.5">
+                          <div className="font-semibold text-text-primary">{r.sourceCity} ➔ {r.destinationCity}</div>
+                          <div className="text-xs text-text-muted flex items-center gap-1 mt-0.5">
                             <Calendar className="h-3 w-3" />
                             <span>{new Date(r.startDate).toLocaleDateString()} to {new Date(r.endDate).toLocaleDateString()}</span>
                           </div>
                         </td>
-                        <td className="p-3 text-slate-600 truncate max-w-[180px]">{r.purpose}</td>
+                        <td className="p-3 text-text-secondary truncate max-w-[180px]">{r.purpose}</td>
                         <td className="p-3 text-right">
-                          <div className="font-semibold text-slate-800">₹{Number(r.estimatedCost).toLocaleString("en-IN")}</div>
-                          <div className="text-xs text-slate-400 font-mono">Adv: ₹{Number(r.advanceAmount).toLocaleString("en-IN")}</div>
+                          <div className="font-semibold text-text-primary">₹{Number(r.estimatedCost).toLocaleString("en-IN")}</div>
+                          <div className="text-xs text-text-muted font-mono">Adv: ₹{Number(r.advanceAmount).toLocaleString("en-IN")}</div>
                         </td>
                         <td className="p-3">
                           <div className="flex items-center justify-center gap-2">
@@ -386,14 +386,14 @@ export function TravelConsole() {
                               <div className="flex gap-1">
                                 <button
                                   onClick={() => handleDecideRequest(r.id, "APPROVED")}
-                                  className="p-1.5 rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition cursor-pointer"
+                                  className="p-1.5 rounded-full bg-success-bg text-success-fg hover:bg-success-bg transition cursor-pointer"
                                   title="Approve"
                                 >
                                   <Check className="h-4 w-4" />
                                 </button>
                                 <button
                                   onClick={() => handleDecideRequest(r.id, "REJECTED")}
-                                  className="p-1.5 rounded-full bg-rose-50 text-rose-600 hover:bg-rose-100 transition cursor-pointer"
+                                  className="p-1.5 rounded-full bg-danger-bg text-danger-fg hover:bg-danger-bg transition cursor-pointer"
                                   title="Reject"
                                 >
                                   <X className="h-4 w-4" />
@@ -406,7 +406,7 @@ export function TravelConsole() {
                     ))}
                     {requests.length === 0 && (
                       <tr>
-                        <td colSpan={5} className="p-8 text-center text-slate-400 text-xs">
+                        <td colSpan={5} className="p-8 text-center text-text-muted text-xs">
                           No travel requests found. Create one using the form on the left.
                         </td>
                       </tr>
@@ -423,14 +423,14 @@ export function TravelConsole() {
       {activeTab === "Itinerary" && (
         <div className="grid grid-cols-[360px_1fr] gap-6 max-xl:grid-cols-1">
           <Card className="h-fit">
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2 border-b pb-3">
+            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary flex items-center gap-2 border-b pb-3">
               <Compass className="h-5 w-5 text-brand" /> Book Itinerary Item
             </h3>
             <form onSubmit={handleItinerarySubmit} className="grid gap-3">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Approved Travel Request</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Approved Travel Request</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                   value={itiReqId}
                   onChange={(e) => setItiReqId(e.target.value)}
                   required
@@ -446,9 +446,9 @@ export function TravelConsole() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Mode</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Mode</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                   value={itiMode}
                   onChange={(e) => setItiMode(e.target.value)}
                   required
@@ -461,27 +461,27 @@ export function TravelConsole() {
                 </select>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Ticket / Booking Number</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Ticket / Booking Number</label>
                 <input
-                  className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                   placeholder="e.g. PNR-1234567 / Booking ID"
                   value={itiTicket}
                   onChange={(e) => setItiTicket(e.target.value)}
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Boarding / Check-in Date-Time</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Boarding / Check-in Date-Time</label>
                 <input
-                  className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                   type="datetime-local"
                   value={itiBoarding}
                   onChange={(e) => setItiBoarding(e.target.value)}
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Travel / Booking Details</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Travel / Booking Details</label>
                 <textarea
-                  className="min-h-20 w-full rounded-lg border border-slate-200 p-3 text-sm"
+                  className="min-h-20 w-full rounded-lg border border-line p-3 text-sm"
                   placeholder="e.g. Flight AI-101 Departs 10:00 AM, Indigo economy seat 12B..."
                   value={itiDetails}
                   onChange={(e) => setItiDetails(e.target.value)}
@@ -497,31 +497,31 @@ export function TravelConsole() {
           </Card>
 
           <Card>
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-700 border-b pb-3">
+            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary border-b pb-3">
               Itinerary Directory
             </h3>
             <div className="grid grid-cols-2 gap-4 max-md:grid-cols-1">
               {requests.map((r) => {
                 if (!r.itineraries || r.itineraries.length === 0) return null;
                 return (
-                  <div key={r.id} className="rounded-xl border border-slate-100 bg-[var(--surface-sunken)] p-4 shadow-sm">
-                    <h4 className="font-bold text-xs uppercase tracking-wider text-slate-400 mb-3 border-b pb-2 flex justify-between items-center">
+                  <div key={r.id} className="rounded-xl border border-line bg-[var(--surface-sunken)] p-4 shadow-sm">
+                    <h4 className="font-bold text-xs uppercase tracking-wider text-text-muted mb-3 border-b pb-2 flex justify-between items-center">
                       <span>Trip: {r.employee.firstName} to {r.destinationCity}</span>
                       <StatusPill tone="green">ACTIVE</StatusPill>
                     </h4>
                     <div className="grid gap-3">
                       {r.itineraries.map((it) => (
-                        <div key={it.id} className="rounded-lg bg-white border border-slate-100 p-3 text-xs leading-relaxed">
-                          <div className="flex justify-between font-bold text-slate-700 uppercase tracking-wide text-[10px]">
+                        <div key={it.id} className="rounded-lg bg-white border border-line p-3 text-xs leading-relaxed">
+                          <div className="flex justify-between font-bold text-text-primary uppercase tracking-wide text-[10px]">
                             <span>{it.modeOfTravel}</span>
                             <span className="text-brand">{it.ticketNumber || "NO TICKET"}</span>
                           </div>
                           {it.boardingAt && (
-                            <div className="text-[10px] text-slate-400 font-mono mt-1">
+                            <div className="text-[10px] text-text-muted font-mono mt-1">
                               Boarding/Check-in: {new Date(it.boardingAt).toLocaleString()}
                             </div>
                           )}
-                          <p className="text-slate-500 mt-2 italic font-mono">{it.details || "No comments"}</p>
+                          <p className="text-text-secondary mt-2 italic font-mono">{it.details || "No comments"}</p>
                         </div>
                       ))}
                     </div>
@@ -529,7 +529,7 @@ export function TravelConsole() {
                 );
               })}
               {requests.every((r) => !r.itineraries || r.itineraries.length === 0) && (
-                <div className="col-span-2 py-8 text-center text-slate-400 text-xs border border-dashed rounded-lg">
+                <div className="col-span-2 py-8 text-center text-text-muted text-xs border border-dashed rounded-lg">
                   No itineraries scheduled yet. Add one using the form on the left.
                 </div>
               )}
@@ -549,9 +549,9 @@ export function TravelConsole() {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-left text-sm text-slate-600">
+            <table className="w-full border-collapse text-left text-sm text-text-secondary">
               <thead>
-                <tr className="bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500">
+                <tr className="bg-sunken text-xs font-bold uppercase tracking-wider text-text-secondary">
                   <th className="border-b p-3">Employee</th>
                   <th className="border-b p-3">Trip Purpose</th>
                   <th className="border-b p-3">Amount Requested</th>
@@ -562,21 +562,21 @@ export function TravelConsole() {
               </thead>
               <tbody>
                 {advances.map((adv) => (
-                  <tr key={adv.id} className="hover:bg-slate-50/50">
-                    <td className="border-b p-3 font-semibold text-slate-800">
+                  <tr key={adv.id} className="hover:bg-sunken">
+                    <td className="border-b p-3 font-semibold text-text-primary">
                       {adv.employee.firstName} {adv.employee.lastName}
                     </td>
                     <td className="border-b p-3">
                       {adv.travelRequest ? (
                         <div>
-                          <div className="font-semibold text-slate-800">{adv.travelRequest.destinationCity}</div>
-                          <span className="text-xs text-slate-400">{adv.travelRequest.purpose}</span>
+                          <div className="font-semibold text-text-primary">{adv.travelRequest.destinationCity}</div>
+                          <span className="text-xs text-text-muted">{adv.travelRequest.purpose}</span>
                         </div>
                       ) : (
-                        <span className="text-xs text-slate-400">Standalone Advance</span>
+                        <span className="text-xs text-text-muted">Standalone Advance</span>
                       )}
                     </td>
-                    <td className="border-b p-3 font-semibold text-slate-800">₹{Number(adv.amount).toLocaleString("en-IN")}</td>
+                    <td className="border-b p-3 font-semibold text-text-primary">₹{Number(adv.amount).toLocaleString("en-IN")}</td>
                     <td className="border-b p-3 font-mono text-xs">
                       {adv.paymentDate ? new Date(adv.paymentDate).toLocaleDateString() : "Pending disbursement"}
                     </td>
@@ -599,7 +599,7 @@ export function TravelConsole() {
                 ))}
                 {advances.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="p-8 text-center text-slate-400 text-xs">
+                    <td colSpan={6} className="p-8 text-center text-text-muted text-xs">
                       No cash advances found.
                     </td>
                   </tr>

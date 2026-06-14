@@ -579,7 +579,7 @@ export function PayrollConsole() {
                     onClick={handleClick}
                     className={`relative rounded-xl border p-4 transition-all cursor-pointer hover:shadow-md hover:border-brand/40 ${
                       isCompleted
-                        ? "border-emerald-200 bg-emerald-50/30 text-emerald-800"
+                        ? "border-success-border bg-success-bg text-success-fg"
                         : isActive
                         ? "border-brand-300 bg-brand-50/20 shadow-sm"
                         : "border-[var(--border-subtle)] bg-[var(--surface-sunken)] text-muted"
@@ -592,15 +592,15 @@ export function PayrollConsole() {
                             ? "bg-emerald-600 text-white"
                             : isActive
                             ? "bg-brand text-white"
-                            : "bg-[#e2e8f0] text-slate-600"
+                            : "bg-[#e2e8f0] text-text-secondary"
                         }`}
                       >
                         {isCompleted ? "✓" : idx + 1}
                       </div>
                       <span className="text-xs font-bold uppercase tracking-wider">Step {idx + 1}</span>
                     </div>
-                    <div className="mt-3 text-sm font-semibold text-slate-800">{s.title}</div>
-                    <p className="mt-1 text-xs text-slate-500">{s.desc}</p>
+                    <div className="mt-3 text-sm font-semibold text-text-primary">{s.title}</div>
+                    <p className="mt-1 text-xs text-text-secondary">{s.desc}</p>
                   </div>
                 );
               })}
@@ -628,10 +628,10 @@ export function PayrollConsole() {
                   <span
                     className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${
                       selectedRun.status === "APPROVED"
-                        ? "bg-emerald-100 text-emerald-800"
+                        ? "bg-success-bg text-success-fg"
                         : selectedRun.status === "PENDING"
-                        ? "bg-amber-100 text-amber-800"
-                        : "bg-slate-100 text-slate-800"
+                        ? "bg-warning-bg text-warning-fg"
+                        : "bg-sunken text-text-primary"
                     }`}
                   >
                     Status: {selectedRun.status}
@@ -644,7 +644,7 @@ export function PayrollConsole() {
                   <button
                     className={`inline-flex min-h-10 items-center gap-2 rounded-lg px-4 text-sm font-semibold transition ${
                       selectedRun?.status === "APPROVED"
-                        ? "bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed"
+                        ? "bg-sunken text-text-muted border border-line cursor-not-allowed"
                         : "bg-brand text-white hover:bg-brand-dark cursor-pointer"
                     }`}
                     disabled={loading || selectedRun?.status === "APPROVED"}
@@ -655,8 +655,8 @@ export function PayrollConsole() {
                   <button
                     className={`inline-flex min-h-10 items-center gap-2 rounded-lg border px-4 text-sm font-semibold transition ${
                       selectedRun?.status !== "PENDING"
-                        ? "bg-slate-55 text-slate-400 border-slate-200 cursor-not-allowed"
-                        : "bg-white text-slate-700 border-slate-300 hover:bg-slate-50 cursor-pointer"
+                        ? "bg-sunken text-text-muted border-line cursor-not-allowed"
+                        : "bg-white text-text-primary border-line-strong hover:bg-sunken cursor-pointer"
                     }`}
                     disabled={loading || selectedRun?.status !== "PENDING"}
                     onClick={handleLock}
@@ -666,13 +666,13 @@ export function PayrollConsole() {
                   <button
                     className={`inline-flex min-h-10 items-center gap-2 rounded-lg border px-4 text-sm font-semibold transition ${
                       selectedRun?.status !== "APPROVED"
-                        ? "bg-slate-55 text-slate-400 border-slate-200 cursor-not-allowed"
-                        : "bg-white text-slate-700 border-slate-300 hover:bg-slate-50 cursor-pointer"
+                        ? "bg-sunken text-text-muted border-line cursor-not-allowed"
+                        : "bg-white text-text-primary border-line-strong hover:bg-sunken cursor-pointer"
                     }`}
                     disabled={loading || selectedRun?.status !== "APPROVED"}
                     onClick={handleBankExport}
                   >
-                    <Download className="h-4 w-4 text-slate-500" /> Bank CSV Export
+                    <Download className="h-4 w-4 text-text-secondary" /> Bank CSV Export
                   </button>
                 </div>
               )}
@@ -682,14 +682,14 @@ export function PayrollConsole() {
             {(message || error) && (
               <div className="mt-4">
                 {message && (
-                  <div className="rounded-lg bg-emerald-50 p-3 text-sm text-emerald-800 border border-emerald-200 flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                  <div className="rounded-lg bg-success-bg p-3 text-sm text-success-fg border border-success-border flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-success-fg" />
                     {message}
                   </div>
                 )}
                 {error && (
-                  <div className="rounded-lg bg-rose-50 p-3 text-sm text-rose-800 border border-rose-200 flex items-center gap-2">
-                    <AlertCircle className="h-4 w-4 text-rose-600" />
+                  <div className="rounded-lg bg-danger-bg p-3 text-sm text-danger-fg border border-danger-border flex items-center gap-2">
+                    <AlertCircle className="h-4 w-4 text-danger-fg" />
                     {error}
                   </div>
                 )}
@@ -705,9 +705,9 @@ export function PayrollConsole() {
             </div>
 
             <div className="overflow-x-auto">
-              <table className="w-full border-collapse text-left text-sm text-slate-600">
+              <table className="w-full border-collapse text-left text-sm text-text-secondary">
                 <thead>
-                  <tr className="bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500">
+                  <tr className="bg-sunken text-xs font-bold uppercase tracking-wider text-text-secondary">
                     <th className="border-b border-[var(--border-subtle)] p-3">Employee</th>
                     <th className="border-b border-[var(--border-subtle)] p-3">Code</th>
                     <th className="border-b border-[var(--border-subtle)] p-3">Gross (Monthly)</th>
@@ -720,38 +720,38 @@ export function PayrollConsole() {
                 <tbody>
                   {!selectedRunId ? (
                     <tr>
-                      <td colSpan={7} className="p-8 text-center text-slate-400">
+                      <td colSpan={7} className="p-8 text-center text-text-muted">
                         Please select a payroll month/run above to view payout list.
                       </td>
                     </tr>
                   ) : loading ? (
                     <tr>
-                      <td colSpan={7} className="p-8 text-center text-slate-400">
+                      <td colSpan={7} className="p-8 text-center text-text-muted">
                         Recalculating and fetching dynamic payouts...
                       </td>
                     </tr>
                   ) : !payslips.length ? (
                     <tr>
-                      <td colSpan={7} className="p-8 text-center text-slate-400">
+                      <td colSpan={7} className="p-8 text-center text-text-muted">
                         No payslips calculated yet for this month. Click "Calculate Salary" above.
                       </td>
                     </tr>
                   ) : (
                     payslips.map((p) => (
-                      <tr key={p.id} className="hover:bg-slate-50/50">
-                        <td className="border-b border-[var(--border-subtle)] p-3 font-semibold text-slate-800">
+                      <tr key={p.id} className="hover:bg-sunken">
+                        <td className="border-b border-[var(--border-subtle)] p-3 font-semibold text-text-primary">
                           {p.employee.firstName} {p.employee.lastName}
                         </td>
                         <td className="border-b border-[var(--border-subtle)] p-3 text-xs font-mono">{p.employee.employeeCode}</td>
                         <td className="border-b border-[var(--border-subtle)] p-3">₹{Number(p.grossPay).toLocaleString("en-IN")}</td>
-                        <td className="border-b border-[var(--border-subtle)] p-3 text-rose-600">₹{Number(p.deductions).toLocaleString("en-IN")}</td>
+                        <td className="border-b border-[var(--border-subtle)] p-3 text-danger-fg">₹{Number(p.deductions).toLocaleString("en-IN")}</td>
                         <td className="border-b border-[var(--border-subtle)] p-3 font-semibold text-brand">₹{Number(p.netPay).toLocaleString("en-IN")}</td>
                         <td className="border-b border-[var(--border-subtle)] p-3 text-center">
                           <span
                             className={`rounded-full px-2 py-0.5 text-xs font-semibold ${
                               p.status === "APPROVED"
-                                ? "bg-emerald-100 text-emerald-800"
-                                : "bg-slate-100 text-slate-800"
+                                ? "bg-success-bg text-success-fg"
+                                : "bg-sunken text-text-primary"
                             }`}
                           >
                             {p.status}
@@ -759,7 +759,7 @@ export function PayrollConsole() {
                         </td>
                         <td className="border-b border-[var(--border-subtle)] p-3 text-right">
                           <button
-                            className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50"
+                            className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-line bg-white px-2.5 text-xs font-semibold text-text-secondary transition hover:bg-sunken"
                             onClick={() => handleOpenPayslip(p)}
                           >
                             <Eye className="h-3.5 w-3.5" /> View Breakdown
@@ -784,23 +784,23 @@ export function PayrollConsole() {
 
           <div className="grid grid-cols-3 gap-4 max-lg:grid-cols-2 max-sm:grid-cols-1">
             {!selectedRunId ? (
-              <div className="col-span-3 py-8 text-center text-slate-400">Select a payroll run from Dashboard tab first.</div>
+              <div className="col-span-3 py-8 text-center text-text-muted">Select a payroll run from Dashboard tab first.</div>
             ) : !payslips.length ? (
-              <div className="col-span-3 py-8 text-center text-slate-400">No payslips available. Perform component calculation first.</div>
+              <div className="col-span-3 py-8 text-center text-text-muted">No payslips available. Perform component calculation first.</div>
             ) : (
               payslips.map((p) => (
                 <div key={p.id} className="rounded-xl border border-[var(--border-subtle)] bg-white p-4 shadow-sm hover:shadow-md transition">
                   <div className="flex items-start justify-between">
                     <div>
-                      <h4 className="font-semibold text-slate-800">{p.employee.firstName} {p.employee.lastName}</h4>
-                      <p className="text-xs text-slate-400">{p.employee.employeeCode}</p>
+                      <h4 className="font-semibold text-text-primary">{p.employee.firstName} {p.employee.lastName}</h4>
+                      <p className="text-xs text-text-muted">{p.employee.employeeCode}</p>
                     </div>
                     <FileText className="h-5 w-5 text-brand" />
                   </div>
-                  <div className="mt-4 border-t pt-3 flex justify-between text-xs text-slate-500">
+                  <div className="mt-4 border-t pt-3 flex justify-between text-xs text-text-secondary">
                     <div>
                       <div className="text-[10px] uppercase text-muted">Net Monthly Payout</div>
-                      <div className="text-base font-bold text-slate-800 mt-0.5">₹{Number(p.netPay).toLocaleString("en-IN")}</div>
+                      <div className="text-base font-bold text-text-primary mt-0.5">₹{Number(p.netPay).toLocaleString("en-IN")}</div>
                     </div>
                     <button
                       className="mt-auto h-8 rounded-lg bg-brand/10 text-brand px-3 text-xs font-bold hover:bg-brand hover:text-white transition"
@@ -833,17 +833,17 @@ export function PayrollConsole() {
           </div>
 
           {!selectedRunId ? (
-            <div className="py-8 text-center text-slate-400">Select a payroll run from Dashboard tab first.</div>
+            <div className="py-8 text-center text-text-muted">Select a payroll run from Dashboard tab first.</div>
           ) : selectedRun?.status !== "APPROVED" ? (
-            <div className="py-8 text-center text-amber-700 bg-amber-50 rounded-xl border border-amber-200 px-6 flex items-center gap-3">
-              <AlertCircle className="h-5 w-5 text-amber-500" />
+            <div className="py-8 text-center text-warning-fg bg-warning-bg rounded-xl border border-warning-border px-6 flex items-center gap-3">
+              <AlertCircle className="h-5 w-5 text-warning-fg" />
               <span>The bank export file is disabled because the current payroll run ({selectedRun?.month}/{selectedRun?.year}) is not locked yet. Lock the run first.</span>
             </div>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full border-collapse text-left text-sm text-slate-600">
+              <table className="w-full border-collapse text-left text-sm text-text-secondary">
                 <thead>
-                  <tr className="bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500">
+                  <tr className="bg-sunken text-xs font-bold uppercase tracking-wider text-text-secondary">
                     <th className="border-b p-3">Employee Name</th>
                     <th className="border-b p-3">Employee Code</th>
                     <th className="border-b p-3">Net Payable Amt</th>
@@ -853,8 +853,8 @@ export function PayrollConsole() {
                 </thead>
                 <tbody>
                   {payslips.map((p) => (
-                    <tr key={p.id} className="hover:bg-slate-50/50">
-                      <td className="border-b p-3 font-semibold text-slate-800">{p.employee.firstName} {p.employee.lastName}</td>
+                    <tr key={p.id} className="hover:bg-sunken">
+                      <td className="border-b p-3 font-semibold text-text-primary">{p.employee.firstName} {p.employee.lastName}</td>
                       <td className="border-b p-3 font-mono text-xs">{p.employee.employeeCode}</td>
                       <td className="border-b p-3 font-semibold text-brand">₹{Number(p.netPay).toLocaleString("en-IN")}</td>
                       <td className="border-b p-3">{p.employee.bankDetails?.bankName || "Not Configured"}</td>
@@ -903,9 +903,9 @@ export function PayrollConsole() {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-left text-sm text-slate-600">
+            <table className="w-full border-collapse text-left text-sm text-text-secondary">
               <thead>
-                <tr className="bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500">
+                <tr className="bg-sunken text-xs font-bold uppercase tracking-wider text-text-secondary">
                   <th className="border-b p-3">Employee Name</th>
                   <th className="border-b p-3">Code</th>
                   <th className="border-b p-3">Annual CTC</th>
@@ -919,27 +919,27 @@ export function PayrollConsole() {
               <tbody>
                 {!salaryStructures.length ? (
                   <tr>
-                    <td colSpan={8} className="p-8 text-center text-slate-400">No salary structures configured yet. Click "Configure CTC".</td>
+                    <td colSpan={8} className="p-8 text-center text-text-muted">No salary structures configured yet. Click "Configure CTC".</td>
                   </tr>
                 ) : (
                   salaryStructures.map((s) => (
-                    <tr key={s.id} className="hover:bg-slate-50/50">
-                      <td className="border-b p-3 font-semibold text-slate-800">{s.employee.firstName} {s.employee.lastName}</td>
+                    <tr key={s.id} className="hover:bg-sunken">
+                      <td className="border-b p-3 font-semibold text-text-primary">{s.employee.firstName} {s.employee.lastName}</td>
                       <td className="border-b p-3 font-mono text-xs">{s.employee.employeeCode}</td>
-                      <td className="border-b p-3 font-semibold text-slate-800">₹{Number(s.annualCtc).toLocaleString("en-IN")}</td>
+                      <td className="border-b p-3 font-semibold text-text-primary">₹{Number(s.annualCtc).toLocaleString("en-IN")}</td>
                       <td className="border-b p-3">₹{Number(s.basic).toLocaleString("en-IN")}</td>
                       <td className="border-b p-3">₹{Number(s.hra).toLocaleString("en-IN")}</td>
-                      <td className="border-b p-3 text-rose-600">
+                      <td className="border-b p-3 text-danger-fg">
                         ₹{(Number(s.employeePf) + Number(s.esi) + Number(s.professionalTax) + Number(s.tds)).toLocaleString("en-IN")}
                       </td>
                       <td className="border-b p-3">
-                        <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-800">
+                        <span className="rounded-full bg-success-bg px-2 py-0.5 text-xs font-semibold text-success-fg">
                           {s.status}
                         </span>
                       </td>
                       <td className="border-b p-3 text-right">
                         <button
-                          className="h-8 rounded-lg border border-slate-200 px-3 text-xs font-semibold text-slate-600 transition hover:bg-slate-50"
+                          className="h-8 rounded-lg border border-line px-3 text-xs font-semibold text-text-secondary transition hover:bg-sunken"
                           onClick={() => {
                             setSalaryForm({
                               employeeId: s.employeeId,
@@ -981,7 +981,7 @@ export function PayrollConsole() {
             
             <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
               {templates.length === 0 ? (
-                <div className="col-span-2 py-8 text-center text-slate-400 border rounded-lg bg-slate-50">
+                <div className="col-span-2 py-8 text-center text-text-muted border rounded-lg bg-sunken">
                   No templates available.
                 </div>
               ) : (
@@ -989,8 +989,8 @@ export function PayrollConsole() {
                   <div key={tpl.id} className="rounded-xl border border-[var(--border-subtle)] bg-white p-4 shadow-sm">
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <h4 className="font-semibold text-slate-800">{tpl.name}</h4>
-                        <p className="text-xs text-slate-500 mt-1">{tpl.description}</p>
+                        <h4 className="font-semibold text-text-primary">{tpl.name}</h4>
+                        <p className="text-xs text-text-secondary mt-1">{tpl.description}</p>
                       </div>
                       <button
                         className="rounded-lg bg-brand px-3 py-1.5 text-xs font-semibold text-white hover:opacity-90"
@@ -1009,8 +1009,8 @@ export function PayrollConsole() {
                       <div className="grid gap-1">
                         {(tpl.components as any[])?.map((c: any, i: number) => (
                           <div key={i} className="flex justify-between text-xs">
-                            <span className="text-slate-600">{c.name} <span className="text-[10px] text-slate-400 bg-slate-100 px-1 rounded">{c.type}</span></span>
-                            <span className="font-mono text-slate-800">
+                            <span className="text-text-secondary">{c.name} <span className="text-[10px] text-text-muted bg-sunken px-1 rounded">{c.type}</span></span>
+                            <span className="font-mono text-text-primary">
                               {c.calcType === "FORMULA" ? c.formula : c.calcType === "FIXED" ? `₹${c.amount}` : "SYSTEM"}
                             </span>
                           </div>
@@ -1036,15 +1036,15 @@ export function PayrollConsole() {
                     <div className="mt-4 grid gap-3 text-sm">
                       {assignResult.passed.length > 0 ? (
                         <div>
-                          <div className="text-xs font-bold uppercase text-emerald-600">Passed</div>
-                          <p className="mt-1 text-slate-700">{assignResult.passed.map((p) => p.name).join(", ")}</p>
+                          <div className="text-xs font-bold uppercase text-success-fg">Passed</div>
+                          <p className="mt-1 text-text-primary">{assignResult.passed.map((p) => p.name).join(", ")}</p>
                         </div>
                       ) : null}
                       {assignResult.failed.length > 0 ? (
                         <div>
-                          <div className="text-xs font-bold uppercase text-rose-600">Failed</div>
+                          <div className="text-xs font-bold uppercase text-danger-fg">Failed</div>
                           {assignResult.failed.map((f, i) => (
-                            <p key={i} className="mt-1 text-slate-700">{f.name} — <span className="text-slate-500">{f.reason}</span></p>
+                            <p key={i} className="mt-1 text-text-primary">{f.name} — <span className="text-text-secondary">{f.reason}</span></p>
                           ))}
                         </div>
                       ) : null}
@@ -1069,7 +1069,7 @@ export function PayrollConsole() {
                     <div className="mt-3 text-xs text-muted">Employees ({assignEmployeeIds.length} selected)</div>
                     <div className="mt-1 max-h-56 overflow-auto rounded-lg border border-[var(--border-default)] p-2">
                       {employeeOptions.map((opt) => (
-                        <label key={opt.value} className="flex items-center gap-2 rounded px-2 py-1.5 text-sm hover:bg-slate-50">
+                        <label key={opt.value} className="flex items-center gap-2 rounded px-2 py-1.5 text-sm hover:bg-sunken">
                           <input
                             checked={assignEmployeeIds.includes(opt.value)}
                             onChange={(e) =>
@@ -1152,9 +1152,9 @@ export function PayrollConsole() {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-left text-sm text-slate-600">
+            <table className="w-full border-collapse text-left text-sm text-text-secondary">
               <thead>
-                <tr className="bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500">
+                <tr className="bg-sunken text-xs font-bold uppercase tracking-wider text-text-secondary">
                   <th className="border-b border-[var(--border-subtle)] p-3">Name</th>
                   <th className="border-b border-[var(--border-subtle)] p-3">Category</th>
                   <th className="border-b border-[var(--border-subtle)] p-3">Kind</th>
@@ -1166,8 +1166,8 @@ export function PayrollConsole() {
               </thead>
               <tbody>
                 {componentConfigs.map((c) => (
-                  <tr key={c.id} className="hover:bg-slate-50/50">
-                    <td className="border-b border-[var(--border-subtle)] p-3 font-semibold text-slate-800">{c.name}</td>
+                  <tr key={c.id} className="hover:bg-sunken">
+                    <td className="border-b border-[var(--border-subtle)] p-3 font-semibold text-text-primary">{c.name}</td>
                     <td className="border-b border-[var(--border-subtle)] p-3">{c.category}</td>
                     <td className="border-b border-[var(--border-subtle)] p-3">{c.kind}</td>
                     <td className="border-b border-[var(--border-subtle)] p-3">{c.annualLimit ? `₹${c.annualLimit.toLocaleString()}` : "No Limit"}</td>
@@ -1175,7 +1175,7 @@ export function PayrollConsole() {
                     <td className="border-b border-[var(--border-subtle)] p-3 text-center">
                       <span
                         className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase ${
-                          c.enabled ? "bg-emerald-100 text-emerald-800" : "bg-slate-100 text-slate-600"
+                          c.enabled ? "bg-success-bg text-success-fg" : "bg-sunken text-text-secondary"
                         }`}
                       >
                         {c.enabled ? "Active" : "Disabled"}
@@ -1193,7 +1193,7 @@ export function PayrollConsole() {
                           Edit
                         </button>
                         <button
-                          className={`${c.enabled ? "text-rose-600" : "text-emerald-600"} text-xs font-medium hover:underline`}
+                          className={`${c.enabled ? "text-danger-fg" : "text-success-fg"} text-xs font-medium hover:underline`}
                           onClick={() => handleToggleComponent(c.id, c.enabled)}
                         >
                           {c.enabled ? "Disable" : "Enable"}
@@ -1204,7 +1204,7 @@ export function PayrollConsole() {
                 ))}
                 {componentConfigs.length === 0 && (
                   <tr>
-                    <td colSpan={7} className="p-8 text-center text-slate-400">No components configured. Add one to start.</td>
+                    <td colSpan={7} className="p-8 text-center text-text-muted">No components configured. Add one to start.</td>
                   </tr>
                 )}
               </tbody>
@@ -1220,7 +1220,7 @@ export function PayrollConsole() {
               <h2 className="text-lg font-bold text-[var(--text-primary)]">{componentForm.id ? "Edit" : "Add"} Component Configuration</h2>
               <button
                 onClick={() => setShowComponentModal(false)}
-                className="rounded-full p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+                className="rounded-full p-2 text-text-muted hover:bg-sunken hover:text-text-secondary"
               >
                 ✕
               </button>
@@ -1277,7 +1277,7 @@ export function PayrollConsole() {
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-x-4 gap-y-3 mt-2 border border-slate-200 rounded-lg p-3 bg-slate-50">
+                <div className="grid grid-cols-2 gap-x-4 gap-y-3 mt-2 border border-line rounded-lg p-3 bg-sunken">
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="checkbox"
@@ -1285,7 +1285,7 @@ export function PayrollConsole() {
                       checked={componentForm.taxable}
                       onChange={(e) => setComponentForm({ ...componentForm, taxable: e.target.checked })}
                     />
-                    <span className="text-sm font-medium text-slate-700">Taxable</span>
+                    <span className="text-sm font-medium text-text-primary">Taxable</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
@@ -1294,7 +1294,7 @@ export function PayrollConsole() {
                       checked={componentForm.proofRequired}
                       onChange={(e) => setComponentForm({ ...componentForm, proofRequired: e.target.checked })}
                     />
-                    <span className="text-sm font-medium text-slate-700">Proof Required</span>
+                    <span className="text-sm font-medium text-text-primary">Proof Required</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
@@ -1303,7 +1303,7 @@ export function PayrollConsole() {
                       checked={componentForm.includedInCtc}
                       onChange={(e) => setComponentForm({ ...componentForm, includedInCtc: e.target.checked })}
                     />
-                    <span className="text-sm font-medium text-slate-700">Included in CTC</span>
+                    <span className="text-sm font-medium text-text-primary">Included in CTC</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
@@ -1312,7 +1312,7 @@ export function PayrollConsole() {
                       checked={componentForm.esiApplicable}
                       onChange={(e) => setComponentForm({ ...componentForm, esiApplicable: e.target.checked })}
                     />
-                    <span className="text-sm font-medium text-slate-700">ESI Applicable</span>
+                    <span className="text-sm font-medium text-text-primary">ESI Applicable</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
@@ -1321,7 +1321,7 @@ export function PayrollConsole() {
                       checked={componentForm.individualOverride}
                       onChange={(e) => setComponentForm({ ...componentForm, individualOverride: e.target.checked })}
                     />
-                    <span className="text-sm font-medium text-slate-700">Allow Individual Override</span>
+                    <span className="text-sm font-medium text-text-primary">Allow Individual Override</span>
                   </label>
                   <label className="flex items-center gap-2 cursor-pointer">
                     <input
@@ -1330,17 +1330,17 @@ export function PayrollConsole() {
                       checked={componentForm.enabled}
                       onChange={(e) => setComponentForm({ ...componentForm, enabled: e.target.checked })}
                     />
-                    <span className="text-sm font-medium text-slate-700">Component Active</span>
+                    <span className="text-sm font-medium text-text-primary">Component Active</span>
                   </label>
                 </div>
               </form>
             </div>
 
-            <div className="flex justify-end gap-3 border-t border-[var(--border-subtle)] px-6 py-4 bg-slate-50 shrink-0 rounded-b-2xl">
+            <div className="flex justify-end gap-3 border-t border-[var(--border-subtle)] px-6 py-4 bg-sunken shrink-0 rounded-b-2xl">
               <button
                 type="button"
                 onClick={() => setShowComponentModal(false)}
-                className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50"
+                className="rounded-lg border border-line bg-white px-4 py-2 text-sm font-semibold text-text-secondary hover:bg-sunken"
               >
                 Cancel
               </button>
@@ -1361,25 +1361,25 @@ export function PayrollConsole() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
           <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center gap-3 mb-4">
-              <AlertCircle className="h-6 w-6 text-amber-500" />
-              <h3 className="text-lg font-bold text-slate-900">Missing Bank Details</h3>
+              <AlertCircle className="h-6 w-6 text-warning-fg" />
+              <h3 className="text-lg font-bold text-text-primary">Missing Bank Details</h3>
             </div>
-            <p className="text-sm text-slate-600 mb-4">
-              The following {skippedEmployees.length} employee(s) have missing or unverified bank details and will be <strong className="text-rose-600">excluded</strong> from the bank export file. Do you want to proceed anyway?
+            <p className="text-sm text-text-secondary mb-4">
+              The following {skippedEmployees.length} employee(s) have missing or unverified bank details and will be <strong className="text-danger-fg">excluded</strong> from the bank export file. Do you want to proceed anyway?
             </p>
-            <div className="max-h-60 overflow-y-auto mb-6 rounded border border-slate-200">
+            <div className="max-h-60 overflow-y-auto mb-6 rounded border border-line">
               <table className="w-full text-left text-sm">
-                <thead className="bg-slate-50 sticky top-0">
+                <thead className="bg-sunken sticky top-0">
                   <tr>
                     <th className="p-2 font-semibold border-b">Employee Name</th>
                     <th className="p-2 font-semibold border-b">Code</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-line">
                   {skippedEmployees.map(e => (
                     <tr key={e.employeeCode}>
                       <td className="p-2">{e.firstName} {e.lastName}</td>
-                      <td className="p-2 font-mono text-xs text-slate-500">{e.employeeCode}</td>
+                      <td className="p-2 font-mono text-xs text-text-secondary">{e.employeeCode}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -1387,7 +1387,7 @@ export function PayrollConsole() {
             </div>
             <div className="flex justify-end gap-3">
               <button
-                className="min-h-10 rounded-lg border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition"
+                className="min-h-10 rounded-lg border border-line-strong px-4 text-sm font-semibold text-text-primary hover:bg-sunken transition"
                 onClick={() => setShowSkippedModal(false)}
               >
                 Cancel Export
@@ -1409,11 +1409,11 @@ export function PayrollConsole() {
       {showCreateRun && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
-            <h3 className="text-lg font-bold text-slate-900 mb-2">Initialize New Payroll Cycle</h3>
-            <p className="text-xs text-slate-500 mb-4">Select month and year to initialize payslip calculations.</p>
+            <h3 className="text-lg font-bold text-text-primary mb-2">Initialize New Payroll Cycle</h3>
+            <p className="text-xs text-text-secondary mb-4">Select month and year to initialize payslip calculations.</p>
             <form onSubmit={handleCreateRun} className="grid gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Month</label>
+                <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Month</label>
                 <select
                   className="min-h-11 w-full rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
                   value={newRunMonth}
@@ -1430,7 +1430,7 @@ export function PayrollConsole() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Year</label>
+                <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Year</label>
                 <select
                   className="min-h-11 w-full rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
                   value={newRunYear}
@@ -1445,7 +1445,7 @@ export function PayrollConsole() {
               <div className="flex gap-2 justify-end mt-4">
                 <button
                   type="button"
-                  className="min-h-10 rounded-lg border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition"
+                  className="min-h-10 rounded-lg border border-line-strong px-4 text-sm font-semibold text-text-primary hover:bg-sunken transition"
                   onClick={() => setShowCreateRun(false)}
                 >
                   Cancel
@@ -1465,11 +1465,11 @@ export function PayrollConsole() {
       {/* VIEW PAYSLIP BREAKDOWN MODAL */}
       {showPayslipModal && selectedPayslip && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4">
-          <div className="print-area w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150 border border-slate-100">
+          <div className="print-area w-full max-w-2xl rounded-2xl bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150 border border-line">
             <div className="flex items-center justify-between border-b pb-4 mb-4">
               <div>
-                <h3 className="text-lg font-bold text-slate-900">Salary Slip Breakdown</h3>
-                <p className="text-xs text-slate-400">
+                <h3 className="text-lg font-bold text-text-primary">Salary Slip Breakdown</h3>
+                <p className="text-xs text-text-muted">
                   {selectedPayslip.employee.firstName} {selectedPayslip.employee.lastName} ({selectedPayslip.employee.employeeCode})
                 </p>
               </div>
@@ -1481,8 +1481,8 @@ export function PayrollConsole() {
             <div className="grid grid-cols-2 gap-6 border-b pb-6">
               {/* Earnings */}
               <div>
-                <h4 className="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-3 bg-emerald-50 rounded-lg p-2">Earnings</h4>
-                <div className="grid gap-2 text-sm text-slate-700">
+                <h4 className="text-xs font-bold text-success-fg uppercase tracking-wider mb-3 bg-success-bg rounded-lg p-2">Earnings</h4>
+                <div className="grid gap-2 text-sm text-text-primary">
                   {selectedPayslip.components && selectedPayslip.components.some(c => c.type === "EARNING") ? (
                     selectedPayslip.components
                       .filter((c) => c.type === "EARNING")
@@ -1508,7 +1508,7 @@ export function PayrollConsole() {
                       </div>
                     </>
                   )}
-                  <div className="flex justify-between border-t pt-2 font-bold text-emerald-900 text-base">
+                  <div className="flex justify-between border-t pt-2 font-bold text-success-fg text-base">
                     <span>Total Earnings</span>
                     <span>₹{Number(selectedPayslip.grossPay).toLocaleString("en-IN")}</span>
                   </div>
@@ -1517,8 +1517,8 @@ export function PayrollConsole() {
 
               {/* Deductions */}
               <div>
-                <h4 className="text-xs font-bold text-rose-800 uppercase tracking-wider mb-3 bg-rose-50 rounded-lg p-2">Deductions</h4>
-                <div className="grid gap-2 text-sm text-slate-700">
+                <h4 className="text-xs font-bold text-danger-fg uppercase tracking-wider mb-3 bg-danger-bg rounded-lg p-2">Deductions</h4>
+                <div className="grid gap-2 text-sm text-text-primary">
                   {selectedPayslip.components && selectedPayslip.components.some(c => c.type === "DEDUCTION") ? (
                     selectedPayslip.components
                       .filter((c) => c.type === "DEDUCTION")
@@ -1548,7 +1548,7 @@ export function PayrollConsole() {
                       </div>
                     </>
                   )}
-                  <div className="flex justify-between border-t pt-2 font-bold text-rose-900 text-base">
+                  <div className="flex justify-between border-t pt-2 font-bold text-danger-fg text-base">
                     <span>Total Deductions</span>
                     <span>₹{Number(selectedPayslip.deductions).toLocaleString("en-IN")}</span>
                   </div>
@@ -1556,15 +1556,15 @@ export function PayrollConsole() {
               </div>
             </div>
 
-            <div className="mt-5 flex items-center justify-between bg-slate-55 p-4 rounded-xl">
+            <div className="mt-5 flex items-center justify-between bg-sunken p-4 rounded-xl">
               <div>
-                <div className="text-[10px] uppercase font-bold text-slate-500 tracking-wider">Net Monthly Take-home</div>
+                <div className="text-[10px] uppercase font-bold text-text-secondary tracking-wider">Net Monthly Take-home</div>
                 <div className="text-2xl font-black text-brand mt-0.5">₹{Number(selectedPayslip.netPay).toLocaleString("en-IN")}</div>
               </div>
 
               <div className="flex gap-2">
                 <button
-                  className="min-h-10 rounded-lg border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition"
+                  className="min-h-10 rounded-lg border border-line-strong px-4 text-sm font-semibold text-text-primary hover:bg-sunken transition"
                   onClick={() => setShowPayslipModal(false)}
                 >
                   Close
@@ -1584,18 +1584,18 @@ export function PayrollConsole() {
       {/* CTC CONFIGURATION MODAL */}
       {showSalaryModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs p-4 overflow-y-auto">
-          <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150 border border-slate-100 my-8">
+          <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150 border border-line my-8">
             <div className="flex items-center justify-between border-b pb-4 mb-4">
               <div>
-                <h3 className="text-lg font-bold text-slate-900">Configure CTC Structure</h3>
-                <p className="text-xs text-slate-400">Configure employee compensation details and tax withholdings.</p>
+                <h3 className="text-lg font-bold text-text-primary">Configure CTC Structure</h3>
+                <p className="text-xs text-text-muted">Configure employee compensation details and tax withholdings.</p>
               </div>
             </div>
 
             <form onSubmit={handleSaveSalary} className="grid gap-4">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Employee</label>
+                  <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Employee</label>
                   <select
                     className="min-h-11 w-full rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
                     value={salaryForm.employeeId}
@@ -1610,7 +1610,7 @@ export function PayrollConsole() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Effective From</label>
+                  <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Effective From</label>
                   <input
                     type="date"
                     className="min-h-11 w-full rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
@@ -1623,7 +1623,7 @@ export function PayrollConsole() {
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Annual CTC (₹)</label>
+                  <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Annual CTC (₹)</label>
                   <input
                     type="number"
                     className="min-h-11 w-full rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
@@ -1634,7 +1634,7 @@ export function PayrollConsole() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Annual Basic (₹)</label>
+                  <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Annual Basic (₹)</label>
                   <input
                     type="number"
                     className="min-h-11 w-full rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
@@ -1645,7 +1645,7 @@ export function PayrollConsole() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Annual HRA (₹)</label>
+                  <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Annual HRA (₹)</label>
                   <input
                     type="number"
                     className="min-h-11 w-full rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
@@ -1658,7 +1658,7 @@ export function PayrollConsole() {
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Annual Allowances (₹)</label>
+                  <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Annual Allowances (₹)</label>
                   <input
                     type="number"
                     className="min-h-11 w-full rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
@@ -1668,7 +1668,7 @@ export function PayrollConsole() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Employee PF (₹)</label>
+                  <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Employee PF (₹)</label>
                   <input
                     type="number"
                     className="min-h-11 w-full rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
@@ -1678,7 +1678,7 @@ export function PayrollConsole() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Employer PF (₹)</label>
+                  <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Employer PF (₹)</label>
                   <input
                     type="number"
                     className="min-h-11 w-full rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
@@ -1690,7 +1690,7 @@ export function PayrollConsole() {
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Annual ESI (₹)</label>
+                  <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Annual ESI (₹)</label>
                   <input
                     type="number"
                     className="min-h-11 w-full rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
@@ -1700,7 +1700,7 @@ export function PayrollConsole() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Professional Tax (₹)</label>
+                  <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Professional Tax (₹)</label>
                   <input
                     type="number"
                     className="min-h-11 w-full rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
@@ -1710,7 +1710,7 @@ export function PayrollConsole() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Annual TDS (₹)</label>
+                  <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Annual TDS (₹)</label>
                   <input
                     type="number"
                     className="min-h-11 w-full rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
@@ -1723,7 +1723,7 @@ export function PayrollConsole() {
               <div className="flex gap-2 justify-end mt-4">
                 <button
                   type="button"
-                  className="min-h-10 rounded-lg border border-slate-300 px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition"
+                  className="min-h-10 rounded-lg border border-line-strong px-4 text-sm font-semibold text-text-primary hover:bg-sunken transition"
                   onClick={() => setShowSalaryModal(false)}
                 >
                   Cancel
@@ -1827,16 +1827,16 @@ function PayrollCorrectionsConsole() {
   return (
     <div className="grid grid-cols-[1fr_2fr] gap-6 max-lg:grid-cols-1 text-left">
       <Card className="p-5 border border-[var(--border-subtle)]">
-        <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Record Payroll Correction / Arrears</h3>
+        <h3 className="text-base font-bold text-text-primary mb-4 border-b pb-2">Record Payroll Correction / Arrears</h3>
         {message && <div className="rounded-lg bg-[var(--success-bg)] p-3 text-xs text-[var(--success-fg)] font-semibold mb-3">{message}</div>}
         {error && <div className="rounded-lg bg-[var(--danger-bg)] p-3 text-xs text-[var(--danger-fg)] font-semibold mb-3">{error}</div>}
         <form onSubmit={handleSubmit} className="grid gap-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1">Target Payslip</label>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Target Payslip</label>
             <select
               name="payslipId"
               required
-              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+              className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
               value={form.payslipId}
               onChange={(e) => setForm({ ...form, payslipId: e.target.value })}
             >
@@ -1850,11 +1850,11 @@ function PayrollCorrectionsConsole() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1">Correction Type</label>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Correction Type</label>
             <select
               name="type"
               required
-              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+              className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
               value={form.type}
               onChange={(e) => setForm({ ...form, type: e.target.value })}
             >
@@ -1865,26 +1865,26 @@ function PayrollCorrectionsConsole() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1">Amount (₹)</label>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Amount (₹)</label>
             <input
               type="number"
               name="amount"
               min="1"
               required
-              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+              className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
               value={form.amount || ""}
               onChange={(e) => setForm({ ...form, amount: Number(e.target.value) })}
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1">Reason / Explanation</label>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Reason / Explanation</label>
             <input
               type="text"
               name="reason"
               required
               placeholder="e.g. FY2025 appraisal backlog arrears"
-              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+              className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
               value={form.reason}
               onChange={(e) => setForm({ ...form, reason: e.target.value })}
             />
@@ -1901,10 +1901,10 @@ function PayrollCorrectionsConsole() {
       </Card>
 
       <Card className="p-5 border border-[var(--border-subtle)]">
-        <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Pending Adjustments Ledger</h3>
+        <h3 className="text-base font-bold text-text-primary mb-4 border-b pb-2">Pending Adjustments Ledger</h3>
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-xs text-slate-655">
-            <thead className="bg-[var(--surface-sunken)] text-[10px] uppercase font-bold text-slate-500 border-b">
+          <table className="w-full border-collapse text-xs text-text-primary">
+            <thead className="bg-[var(--surface-sunken)] text-[10px] uppercase font-bold text-text-secondary border-b">
               <tr>
                 <th className="p-2.5">Employee</th>
                 <th className="p-2.5">Type</th>
@@ -1916,20 +1916,20 @@ function PayrollCorrectionsConsole() {
             <tbody>
               {!corrections.length ? (
                 <tr>
-                  <td colSpan={5} className="p-4 text-center text-slate-400">No corrections registered.</td>
+                  <td colSpan={5} className="p-4 text-center text-text-muted">No corrections registered.</td>
                 </tr>
               ) : (
                 corrections.map((c) => (
-                  <tr key={c.id} className="border-b border-slate-100 hover:bg-slate-50 transition">
-                    <td className="p-2.5 font-semibold text-slate-900">
+                  <tr key={c.id} className="border-b border-line hover:bg-sunken transition">
+                    <td className="p-2.5 font-semibold text-text-primary">
                       {c.payslip?.employee?.firstName} {c.payslip?.employee?.lastName}
                     </td>
                     <td className="p-2.5 font-medium">{c.type}</td>
-                    <td className="p-2.5 font-bold text-emerald-700">₹{Number(c.amount).toLocaleString("en-IN")}</td>
+                    <td className="p-2.5 font-bold text-success-fg">₹{Number(c.amount).toLocaleString("en-IN")}</td>
                     <td className="p-2.5 max-w-[200px] truncate">{c.reason}</td>
                     <td className="p-2.5">
                       <div className="flex items-center gap-2">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${c.status === "PENDING" ? "bg-amber-100 text-amber-800" : c.status === "APPROVED" ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"}`}>
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${c.status === "PENDING" ? "bg-warning-bg text-warning-fg" : c.status === "APPROVED" ? "bg-success-bg text-success-fg" : "bg-danger-bg text-danger-fg"}`}>
                           {c.status}
                         </span>
                         {c.status === "PENDING" && (
@@ -1942,7 +1942,7 @@ function PayrollCorrectionsConsole() {
                             </button>
                             <button
                               onClick={() => handleDecide(c.id, "REJECTED")}
-                              className="border border-slate-200 text-slate-700 bg-white rounded px-2 py-0.5 font-bold hover:bg-slate-50"
+                              className="border border-line text-text-primary bg-white rounded px-2 py-0.5 font-bold hover:bg-sunken"
                             >
                               Reject
                             </button>
@@ -2024,16 +2024,16 @@ function GratuityConsole() {
   return (
     <div className="grid grid-cols-[1fr_2fr] gap-6 max-lg:grid-cols-1 text-left">
       <Card className="p-5 border border-[var(--border-subtle)]">
-        <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Calculate Gratuity Dues</h3>
+        <h3 className="text-base font-bold text-text-primary mb-4 border-b pb-2">Calculate Gratuity Dues</h3>
         {message && <div className="rounded-lg bg-[var(--success-bg)] p-3 text-xs text-[var(--success-fg)] font-semibold mb-3">{message}</div>}
         {error && <div className="rounded-lg bg-[var(--danger-bg)] p-3 text-xs text-[var(--danger-fg)] font-semibold mb-3">{error}</div>}
         <form onSubmit={handleCalculate} className="grid gap-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1">Select Employee</label>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Select Employee</label>
             <select
               name="employeeId"
               required
-              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+              className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
               value={form.employeeId}
               onChange={(e) => setForm({ ...form, employeeId: e.target.value })}
             >
@@ -2057,10 +2057,10 @@ function GratuityConsole() {
       </Card>
 
       <Card className="p-5 border border-[var(--border-subtle)]">
-        <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Gratuity Settlements</h3>
+        <h3 className="text-base font-bold text-text-primary mb-4 border-b pb-2">Gratuity Settlements</h3>
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-xs text-slate-655">
-            <thead className="bg-[var(--surface-sunken)] text-[10px] uppercase font-bold text-slate-500 border-b">
+          <table className="w-full border-collapse text-xs text-text-primary">
+            <thead className="bg-[var(--surface-sunken)] text-[10px] uppercase font-bold text-text-secondary border-b">
               <tr>
                 <th className="p-2.5">Employee</th>
                 <th className="p-2.5">Years of Service</th>
@@ -2072,12 +2072,12 @@ function GratuityConsole() {
             <tbody>
               {!records.length ? (
                 <tr>
-                  <td colSpan={5} className="p-4 text-center text-slate-400">No gratuity records computed.</td>
+                  <td colSpan={5} className="p-4 text-center text-text-muted">No gratuity records computed.</td>
                 </tr>
               ) : (
                 records.map((r) => (
-                  <tr key={r.id} className="border-b border-slate-100 hover:bg-slate-50 transition">
-                    <td className="p-2.5 font-semibold text-slate-900">
+                  <tr key={r.id} className="border-b border-line hover:bg-sunken transition">
+                    <td className="p-2.5 font-semibold text-text-primary">
                       {r.employee?.firstName} {r.employee?.lastName}
                     </td>
                     <td className="p-2.5 font-medium">{Number(r.yearsOfService).toFixed(2)} years</td>
@@ -2085,7 +2085,7 @@ function GratuityConsole() {
                     <td className="p-2.5 font-bold text-brand">₹{Number(r.amount).toLocaleString("en-IN")}</td>
                     <td className="p-2.5">
                       <div className="flex items-center gap-2">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${r.status === "PENDING" ? "bg-amber-100 text-amber-800" : r.status === "APPROVED" ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"}`}>
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${r.status === "PENDING" ? "bg-warning-bg text-warning-fg" : r.status === "APPROVED" ? "bg-success-bg text-success-fg" : "bg-danger-bg text-danger-fg"}`}>
                           {r.status}
                         </span>
                         {r.status === "PENDING" && (
@@ -2098,7 +2098,7 @@ function GratuityConsole() {
                             </button>
                             <button
                               onClick={() => handleDecide(r.id, "REJECTED")}
-                              className="border border-slate-200 text-slate-700 bg-white rounded px-2 py-0.5 font-bold hover:bg-slate-50"
+                              className="border border-line text-text-primary bg-white rounded px-2 py-0.5 font-bold hover:bg-sunken"
                             >
                               Reject
                             </button>
@@ -2168,16 +2168,16 @@ function TaxSlabConsole() {
   return (
     <div className="grid grid-cols-[1fr_2fr] gap-6 max-lg:grid-cols-1 text-left">
       <Card className="p-5 border border-[var(--border-subtle)]">
-        <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Add Income Tax Slab</h3>
+        <h3 className="text-base font-bold text-text-primary mb-4 border-b pb-2">Add Income Tax Slab</h3>
         {message && <div className="rounded-lg bg-[var(--success-bg)] p-3 text-xs text-[var(--success-fg)] font-semibold mb-3">{message}</div>}
         {error && <div className="rounded-lg bg-[var(--danger-bg)] p-3 text-xs text-[var(--danger-fg)] font-semibold mb-3">{error}</div>}
         <form onSubmit={handleSubmit} className="grid gap-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1">Regime Type</label>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Regime Type</label>
             <select
               name="regime"
               required
-              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+              className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
               value={form.regime}
               onChange={(e) => setForm({ ...form, regime: e.target.value })}
             >
@@ -2187,39 +2187,39 @@ function TaxSlabConsole() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1">From Amount (Annual ₹)</label>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">From Amount (Annual ₹)</label>
             <input
               type="number"
               name="fromAmount"
               min="0"
               required
-              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+              className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
               value={form.fromAmount}
               onChange={(e) => setForm({ ...form, fromAmount: Number(e.target.value) })}
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1">To Amount (Annual ₹, blank for no limit)</label>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">To Amount (Annual ₹, blank for no limit)</label>
             <input
               type="number"
               name="toAmount"
               min="1"
-              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+              className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
               value={form.toAmount}
               onChange={(e) => setForm({ ...form, toAmount: e.target.value })}
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1">Tax Rate (%)</label>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Tax Rate (%)</label>
             <input
               type="number"
               name="ratePercent"
               min="0"
               max="100"
               required
-              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+              className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
               value={form.ratePercent}
               onChange={(e) => setForm({ ...form, ratePercent: Number(e.target.value) })}
             />
@@ -2236,10 +2236,10 @@ function TaxSlabConsole() {
       </Card>
 
       <Card className="p-5 border border-[var(--border-subtle)]">
-        <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Active Income Tax Slabs Ledger</h3>
+        <h3 className="text-base font-bold text-text-primary mb-4 border-b pb-2">Active Income Tax Slabs Ledger</h3>
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-xs text-slate-655">
-            <thead className="bg-[var(--surface-sunken)] text-[10px] uppercase font-bold text-slate-500 border-b">
+          <table className="w-full border-collapse text-xs text-text-primary">
+            <thead className="bg-[var(--surface-sunken)] text-[10px] uppercase font-bold text-text-secondary border-b">
               <tr>
                 <th className="p-2.5">Regime</th>
                 <th className="p-2.5">Income Band</th>
@@ -2250,21 +2250,21 @@ function TaxSlabConsole() {
             <tbody>
               {!slabs.length ? (
                 <tr>
-                  <td colSpan={4} className="p-4 text-center text-slate-400">No tax slabs configured in the system.</td>
+                  <td colSpan={4} className="p-4 text-center text-text-muted">No tax slabs configured in the system.</td>
                 </tr>
               ) : (
                 slabs.map((s) => (
-                  <tr key={s.id} className="border-b border-slate-100 hover:bg-slate-50 transition">
-                    <td className="p-2.5 font-bold text-slate-800">
-                      <span className={`px-2 py-0.5 rounded text-[10px] uppercase ${s.regime === "NEW" ? "bg-blue-100 text-blue-800" : "bg-purple-100 text-purple-800"}`}>
+                  <tr key={s.id} className="border-b border-line hover:bg-sunken transition">
+                    <td className="p-2.5 font-bold text-text-primary">
+                      <span className={`px-2 py-0.5 rounded text-[10px] uppercase ${s.regime === "NEW" ? "bg-info-bg text-info-fg" : "bg-brand-50 text-brand-700"}`}>
                         {s.regime}
                       </span>
                     </td>
                     <td className="p-2.5">
                       ₹{Number(s.fromAmount).toLocaleString("en-IN")} — {s.toAmount ? `₹${Number(s.toAmount).toLocaleString("en-IN")}` : "Above"}
                     </td>
-                    <td className="p-2.5 font-bold text-slate-900">{Number(s.ratePercent)}%</td>
-                    <td className="p-2.5 text-slate-400">{Number(s.surcharge)}%</td>
+                    <td className="p-2.5 font-bold text-text-primary">{Number(s.ratePercent)}%</td>
+                    <td className="p-2.5 text-text-muted">{Number(s.surcharge)}%</td>
                   </tr>
                 ))
               )}
@@ -2355,17 +2355,17 @@ function RetentionBonusConsole() {
   return (
     <div className="grid grid-cols-[1fr_2fr] gap-6 max-lg:grid-cols-1 text-left">
       <Card className="p-5 border border-[var(--border-subtle)]">
-        <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Log Retention Bonus</h3>
+        <h3 className="text-base font-bold text-text-primary mb-4 border-b pb-2">Log Retention Bonus</h3>
         {message && <div className="rounded-lg bg-[var(--success-bg)] p-3 text-xs text-[var(--success-fg)] font-semibold mb-3">{message}</div>}
         {error && <div className="rounded-lg bg-[var(--danger-bg)] p-3 text-xs text-[var(--danger-fg)] font-semibold mb-3">{error}</div>}
         <form onSubmit={handleSubmit} className="grid gap-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1">Select Employee</label>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Select Employee</label>
             <select
               name="employeeId"
               id="rb-employeeId"
               required
-              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+              className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
               value={form.employeeId}
               onChange={(e) => setForm({ ...form, employeeId: e.target.value })}
             >
@@ -2379,40 +2379,40 @@ function RetentionBonusConsole() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1">Bonus Amount (₹)</label>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Bonus Amount (₹)</label>
             <input
               type="number"
               name="bonusAmount"
               id="rb-bonusAmount"
               min="1"
               required
-              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+              className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
               value={form.bonusAmount || ""}
               onChange={(e) => setForm({ ...form, bonusAmount: Number(e.target.value) })}
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1">Payout Target Date</label>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Payout Target Date</label>
             <input
               type="date"
               name="bonusDate"
               id="rb-bonusDate"
               required
-              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+              className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
               value={form.bonusDate}
               onChange={(e) => setForm({ ...form, bonusDate: e.target.value })}
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1">Reason / Retention Terms</label>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Reason / Retention Terms</label>
             <input
               type="text"
               name="reason"
               id="rb-reason"
               placeholder="e.g. 1-year service commitment bonus"
-              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+              className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
               value={form.reason}
               onChange={(e) => setForm({ ...form, reason: e.target.value })}
             />
@@ -2429,10 +2429,10 @@ function RetentionBonusConsole() {
       </Card>
 
       <Card className="p-5 border border-[var(--border-subtle)]">
-        <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Retention Bonuses Ledger</h3>
+        <h3 className="text-base font-bold text-text-primary mb-4 border-b pb-2">Retention Bonuses Ledger</h3>
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-xs text-slate-655">
-            <thead className="bg-[var(--surface-sunken)] text-[10px] uppercase font-bold text-slate-500 border-b">
+          <table className="w-full border-collapse text-xs text-text-primary">
+            <thead className="bg-[var(--surface-sunken)] text-[10px] uppercase font-bold text-text-secondary border-b">
               <tr>
                 <th className="p-2.5">Employee</th>
                 <th className="p-2.5">Bonus Amount</th>
@@ -2444,12 +2444,12 @@ function RetentionBonusConsole() {
             <tbody>
               {!records.length ? (
                 <tr>
-                  <td colSpan={5} className="p-4 text-center text-slate-400">No retention bonuses recorded.</td>
+                  <td colSpan={5} className="p-4 text-center text-text-muted">No retention bonuses recorded.</td>
                 </tr>
               ) : (
                 records.map((r) => (
-                  <tr key={r.id} className="border-b border-slate-100 hover:bg-slate-50 transition">
-                    <td className="p-2.5 font-semibold text-slate-900">
+                  <tr key={r.id} className="border-b border-line hover:bg-sunken transition">
+                    <td className="p-2.5 font-semibold text-text-primary">
                       {r.employee?.firstName} {r.employee?.lastName}
                     </td>
                     <td className="p-2.5 font-bold text-brand">₹{Number(r.bonusAmount).toLocaleString("en-IN")}</td>
@@ -2457,7 +2457,7 @@ function RetentionBonusConsole() {
                     <td className="p-2.5 max-w-[200px] truncate">{r.reason || "N/A"}</td>
                     <td className="p-2.5">
                       <div className="flex items-center gap-2">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${r.status === "PENDING" ? "bg-amber-100 text-amber-800" : r.status === "APPROVED" ? "bg-emerald-100 text-emerald-800" : "bg-rose-100 text-rose-800"}`}>
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${r.status === "PENDING" ? "bg-warning-bg text-warning-fg" : r.status === "APPROVED" ? "bg-success-bg text-success-fg" : "bg-danger-bg text-danger-fg"}`}>
                           {r.status}
                         </span>
                         {r.status === "PENDING" && (
@@ -2470,7 +2470,7 @@ function RetentionBonusConsole() {
                             </button>
                             <button
                               onClick={() => handleDecide(r.id, "REJECTED")}
-                              className="border border-slate-200 text-slate-700 bg-white rounded px-2.5 py-1 font-semibold text-[10px] hover:bg-slate-50 transition"
+                              className="border border-line text-text-primary bg-white rounded px-2.5 py-1 font-semibold text-[10px] hover:bg-sunken transition"
                             >
                               Reject
                             </button>
@@ -2567,17 +2567,17 @@ function SalaryWithholdingConsole() {
   return (
     <div className="grid grid-cols-[1fr_2fr] gap-6 max-lg:grid-cols-1 text-left">
       <Card className="p-5 border border-[var(--border-subtle)]">
-        <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Apply Salary Withholding</h3>
+        <h3 className="text-base font-bold text-text-primary mb-4 border-b pb-2">Apply Salary Withholding</h3>
         {message && <div className="rounded-lg bg-[var(--success-bg)] p-3 text-xs text-[var(--success-fg)] font-semibold mb-3">{message}</div>}
         {error && <div className="rounded-lg bg-[var(--danger-bg)] p-3 text-xs text-[var(--danger-fg)] font-semibold mb-3">{error}</div>}
         <form onSubmit={handleSubmit} className="grid gap-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1">Select Employee</label>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Select Employee</label>
             <select
               name="employeeId"
               id="sw-employeeId"
               required
-              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+              className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
               value={form.employeeId}
               onChange={(e) => setForm({ ...form, employeeId: e.target.value })}
             >
@@ -2591,38 +2591,38 @@ function SalaryWithholdingConsole() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1">From Date</label>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">From Date</label>
             <input
               type="date"
               name="fromDate"
               id="sw-fromDate"
               required
-              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+              className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
               value={form.fromDate}
               onChange={(e) => setForm({ ...form, fromDate: e.target.value })}
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1">To Date (Optional)</label>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">To Date (Optional)</label>
             <input
               type="date"
               name="toDate"
               id="sw-toDate"
-              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+              className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
               value={form.toDate}
               onChange={(e) => setForm({ ...form, toDate: e.target.value })}
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-500 mb-1">Reason for Withholding</label>
+            <label className="block text-xs font-semibold text-text-secondary mb-1">Reason for Withholding</label>
             <input
               type="text"
               name="reason"
               id="sw-reason"
               placeholder="e.g. Exit formalities pending"
-              className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+              className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
               value={form.reason}
               onChange={(e) => setForm({ ...form, reason: e.target.value })}
             />
@@ -2639,10 +2639,10 @@ function SalaryWithholdingConsole() {
       </Card>
 
       <Card className="p-5 border border-[var(--border-subtle)]">
-        <h3 className="text-base font-bold text-slate-800 mb-4 border-b pb-2">Salary Withholdings Ledger</h3>
+        <h3 className="text-base font-bold text-text-primary mb-4 border-b pb-2">Salary Withholdings Ledger</h3>
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-xs text-slate-655">
-            <thead className="bg-[var(--surface-sunken)] text-[10px] uppercase font-bold text-slate-500 border-b">
+          <table className="w-full border-collapse text-xs text-text-primary">
+            <thead className="bg-[var(--surface-sunken)] text-[10px] uppercase font-bold text-text-secondary border-b">
               <tr>
                 <th className="p-2.5">Employee</th>
                 <th className="p-2.5">From Date</th>
@@ -2654,12 +2654,12 @@ function SalaryWithholdingConsole() {
             <tbody>
               {!records.length ? (
                 <tr>
-                  <td colSpan={5} className="p-4 text-center text-slate-400">No salary withholdings applied.</td>
+                  <td colSpan={5} className="p-4 text-center text-text-muted">No salary withholdings applied.</td>
                 </tr>
               ) : (
                 records.map((r) => (
-                  <tr key={r.id} className="border-b border-slate-100 hover:bg-slate-50 transition">
-                    <td className="p-2.5 font-semibold text-slate-900">
+                  <tr key={r.id} className="border-b border-line hover:bg-sunken transition">
+                    <td className="p-2.5 font-semibold text-text-primary">
                       {r.employee?.firstName} {r.employee?.lastName}
                     </td>
                     <td className="p-2.5 font-medium">{new Date(r.fromDate).toLocaleDateString("en-IN")}</td>
@@ -2667,7 +2667,7 @@ function SalaryWithholdingConsole() {
                     <td className="p-2.5 max-w-[200px] truncate">{r.reason || "N/A"}</td>
                     <td className="p-2.5">
                       <div className="flex items-center gap-2">
-                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${r.status === "ACTIVE" ? "bg-[var(--danger-bg)] text-[var(--danger-fg)]" : "bg-emerald-100 text-emerald-800"}`}>
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${r.status === "ACTIVE" ? "bg-[var(--danger-bg)] text-[var(--danger-fg)]" : "bg-success-bg text-success-fg"}`}>
                           {r.status}
                         </span>
                         {r.status === "ACTIVE" && (
@@ -2728,10 +2728,10 @@ function Form16Panel() {
   return (
     <div className="grid gap-5">
       <Card className="p-5 border border-[var(--border-subtle)]">
-        <h3 className="text-base font-bold text-slate-800 mb-4">Form 16 — Annual Tax Summary</h3>
+        <h3 className="text-base font-bold text-text-primary mb-4">Form 16 — Annual Tax Summary</h3>
         <div className="flex flex-wrap gap-3 items-end">
           <div className="flex-1 min-w-[200px]">
-            <label className="block text-xs font-semibold text-slate-500 mb-1" htmlFor="form16-employee">
+            <label className="block text-xs font-semibold text-text-secondary mb-1" htmlFor="form16-employee">
               Select Employee
             </label>
             <select
@@ -2739,7 +2739,7 @@ function Form16Panel() {
               name="form16-employee"
               value={selectedEmployeeId}
               onChange={(e) => setSelectedEmployeeId(e.target.value)}
-              className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+              className="w-full rounded-lg border border-line px-3 py-2 text-sm"
             >
               <option value="">— choose employee —</option>
               {employees.map((emp) => (
@@ -2758,22 +2758,22 @@ function Form16Panel() {
             {loading ? "Loading…" : "Generate Form 16"}
           </button>
         </div>
-        {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+        {error && <p className="mt-3 text-sm text-danger-fg">{error}</p>}
       </Card>
 
       {form16 && (
         <Card className="p-6 border border-[var(--border-subtle)] print:shadow-none" id="form16-printable">
           {/* Header */}
-          <div className="border-b-2 border-slate-200 pb-4 mb-5 flex items-start justify-between flex-wrap gap-4">
+          <div className="border-b-2 border-line pb-4 mb-5 flex items-start justify-between flex-wrap gap-4">
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-widest text-slate-400">FORM 16</p>
-              <h2 className="text-xl font-extrabold text-slate-900 mt-0.5">Annual Tax Computation</h2>
-              <p className="text-sm text-slate-500 mt-0.5">Financial Year {form16.financialYear}</p>
+              <p className="text-[10px] font-bold uppercase tracking-widest text-text-muted">FORM 16</p>
+              <h2 className="text-xl font-extrabold text-text-primary mt-0.5">Annual Tax Computation</h2>
+              <p className="text-sm text-text-secondary mt-0.5">Financial Year {form16.financialYear}</p>
             </div>
             <button
               id="form16-print-btn"
               onClick={() => window.print()}
-              className="flex items-center gap-1.5 rounded-lg border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition print:hidden"
+              className="flex items-center gap-1.5 rounded-lg border border-line px-4 py-2 text-xs font-semibold text-text-secondary hover:bg-sunken transition print:hidden"
             >
               <FileText className="h-3.5 w-3.5" /> Print / Save PDF
             </button>
@@ -2781,22 +2781,22 @@ function Form16Panel() {
 
           {/* Employee Info */}
           <div className="grid grid-cols-2 gap-4 mb-6 max-sm:grid-cols-1">
-            <div className="bg-slate-50 rounded-lg p-4">
-              <p className="text-[10px] font-bold text-slate-400 uppercase mb-2">Employee Details</p>
-              <p className="text-sm font-bold text-slate-800">{form16.employeeName}</p>
-              <p className="text-xs text-slate-500">{form16.designation}</p>
+            <div className="bg-sunken rounded-lg p-4">
+              <p className="text-[10px] font-bold text-text-muted uppercase mb-2">Employee Details</p>
+              <p className="text-sm font-bold text-text-primary">{form16.employeeName}</p>
+              <p className="text-xs text-text-secondary">{form16.designation}</p>
             </div>
-            <div className="bg-slate-50 rounded-lg p-4">
-              <p className="text-[10px] font-bold text-slate-400 uppercase mb-2">Assessment Details</p>
-              <p className="text-xs text-slate-600">Financial Year: <strong>{form16.financialYear}</strong></p>
-              <p className="text-xs text-slate-600 mt-0.5">Tax Regime: <strong>{form16.regime} REGIME</strong></p>
-              <p className="text-xs text-slate-600 mt-0.5">Payslips Processed: <strong>{form16.payslipCount}</strong></p>
+            <div className="bg-sunken rounded-lg p-4">
+              <p className="text-[10px] font-bold text-text-muted uppercase mb-2">Assessment Details</p>
+              <p className="text-xs text-text-secondary">Financial Year: <strong>{form16.financialYear}</strong></p>
+              <p className="text-xs text-text-secondary mt-0.5">Tax Regime: <strong>{form16.regime} REGIME</strong></p>
+              <p className="text-xs text-text-secondary mt-0.5">Payslips Processed: <strong>{form16.payslipCount}</strong></p>
             </div>
           </div>
 
           {/* Income Computation */}
           <div className="mb-6">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 border-b pb-2">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-text-secondary mb-3 border-b pb-2">
               Part A — Income Computation
             </h4>
             <div className="space-y-1">
@@ -2808,11 +2808,11 @@ function Form16Panel() {
                 <div
                   key={row.label}
                   className={`flex justify-between text-sm py-1.5 ${
-                    row.bold ? "font-bold border-t border-slate-200 pt-2 mt-1" : ""
+                    row.bold ? "font-bold border-t border-line pt-2 mt-1" : ""
                   }`}
                 >
-                  <span className={`text-slate-700 ${row.indent ? "pl-6" : ""}`}>{row.label}</span>
-                  <span className={row.value < 0 ? "text-red-500" : "text-slate-900"}>
+                  <span className={`text-text-primary ${row.indent ? "pl-6" : ""}`}>{row.label}</span>
+                  <span className={row.value < 0 ? "text-danger-fg" : "text-text-primary"}>
                     {fmtINR(row.value)}
                   </span>
                 </div>
@@ -2822,7 +2822,7 @@ function Form16Panel() {
 
           {/* Tax Computation */}
           <div className="mb-6">
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 border-b pb-2">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-text-secondary mb-3 border-b pb-2">
               Part B — Tax Computation
             </h4>
             <div className="space-y-1">
@@ -2835,11 +2835,11 @@ function Form16Panel() {
                 <div
                   key={row.label}
                   className={`flex justify-between text-sm py-1.5 ${
-                    row.bold ? "font-bold border-t border-slate-200 pt-2 mt-1" : ""
+                    row.bold ? "font-bold border-t border-line pt-2 mt-1" : ""
                   }`}
                 >
-                  <span className="text-slate-700">{row.label}</span>
-                  <span className="text-slate-900">{fmtINR(row.value)}</span>
+                  <span className="text-text-primary">{row.label}</span>
+                  <span className="text-text-primary">{fmtINR(row.value)}</span>
                 </div>
               ))}
             </div>
@@ -2847,7 +2847,7 @@ function Form16Panel() {
 
           {/* TDS Summary */}
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3 border-b pb-2">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-text-secondary mb-3 border-b pb-2">
               Part C — TDS Deducted at Source
             </h4>
             <div className="space-y-1">
@@ -2856,12 +2856,12 @@ function Form16Panel() {
                 { label: "Total Tax Liability", value: form16.totalTaxLiability },
               ].map((row) => (
                 <div key={row.label} className="flex justify-between text-sm py-1.5">
-                  <span className="text-slate-700">{row.label}</span>
-                  <span className="text-slate-900">{fmtINR(row.value)}</span>
+                  <span className="text-text-primary">{row.label}</span>
+                  <span className="text-text-primary">{fmtINR(row.value)}</span>
                 </div>
               ))}
-              <div className={`flex justify-between text-sm py-2 font-bold border-t border-slate-200 mt-1 ${
-                form16.refundOrDue >= 0 ? "text-green-700" : "text-red-600"
+              <div className={`flex justify-between text-sm py-2 font-bold border-t border-line mt-1 ${
+                form16.refundOrDue >= 0 ? "text-success-fg" : "text-danger-fg"
               }`}>
                 <span>{form16.refundOrDue >= 0 ? "Tax Refund Due" : "Balance Tax Payable"}</span>
                 <span>{fmtINR(Math.abs(form16.refundOrDue))}</span>
@@ -2869,7 +2869,7 @@ function Form16Panel() {
             </div>
           </div>
 
-          <p className="mt-6 text-[10px] text-slate-400 text-center">
+          <p className="mt-6 text-[10px] text-text-muted text-center">
             This is a system-generated summary. For official Form 16 with employer DSC, contact the Finance team.
           </p>
         </Card>
@@ -3018,7 +3018,7 @@ function ITDeclarationForm() {
     return (
       <input
         type="number" min={0}
-        className="w-full min-h-9 rounded-lg border border-slate-200 px-3 text-sm outline-none focus:border-brand"
+        className="w-full min-h-9 rounded-lg border border-line px-3 text-sm outline-none focus:border-brand"
         value={fields[name] || ""}
         onChange={(e) => setFields((f) => ({ ...f, [name]: Number(e.target.value) || 0 }))}
         placeholder="0"
@@ -3052,7 +3052,7 @@ function ITDeclarationForm() {
     }
   }
 
-  if (loading) return <div className="py-12 text-center text-slate-400">Loading declaration…</div>;
+  if (loading) return <div className="py-12 text-center text-text-muted">Loading declaration…</div>;
 
   return (
     <form onSubmit={handleSave} className="grid gap-5">
@@ -3060,21 +3060,21 @@ function ITDeclarationForm() {
       <Card>
         <div className="mb-4 border-b pb-4 flex items-center justify-between">
           <div>
-            <h3 className="text-base font-semibold text-slate-800">Tax Declaration — FY {currentFY}</h3>
-            <p className="text-xs text-slate-400 mt-0.5">Choose your tax regime and declare expected investments and exemptions.</p>
+            <h3 className="text-base font-semibold text-text-primary">Tax Declaration — FY {currentFY}</h3>
+            <p className="text-xs text-text-muted mt-0.5">Choose your tax regime and declare expected investments and exemptions.</p>
           </div>
           {existing && (
-            <span className="text-xs bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-full px-3 py-1 font-semibold">
+            <span className="text-xs bg-success-bg text-success-fg border border-success-border rounded-full px-3 py-1 font-semibold">
               Last saved: {existing.status}
             </span>
           )}
         </div>
         <div className="flex gap-4">
           {(["NEW", "OLD"] as const).map((r) => (
-            <label key={r} className={`flex-1 cursor-pointer rounded-xl border-2 p-4 transition ${regime === r ? "border-brand bg-brand/5" : "border-slate-200 hover:border-slate-300"}`}>
+            <label key={r} className={`flex-1 cursor-pointer rounded-xl border-2 p-4 transition ${regime === r ? "border-brand bg-brand/5" : "border-line hover:border-line-strong"}`}>
               <input type="radio" name="regime" value={r} checked={regime === r} onChange={() => setRegime(r)} className="sr-only" />
-              <div className="font-semibold text-slate-800 text-sm mb-1">{r === "NEW" ? "New Tax Regime" : "Old Tax Regime"}</div>
-              <div className="text-xs text-slate-500">
+              <div className="font-semibold text-text-primary text-sm mb-1">{r === "NEW" ? "New Tax Regime" : "Old Tax Regime"}</div>
+              <div className="text-xs text-text-secondary">
                 {r === "NEW"
                   ? "Lower rates, no exemptions. Standard deduction ₹75,000."
                   : "Higher rates with deductions — 80C, HRA, LTA, home loan & more. Standard deduction ₹50,000."}
@@ -3090,14 +3090,14 @@ function ITDeclarationForm() {
           <Card>
             <div className="mb-4 border-b pb-4 flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-semibold text-slate-800">Section 80C — Investments</h3>
-                <p className="text-xs text-slate-400 mt-0.5">Maximum deduction: ₹1,50,000 (combined 80C + 80CCC)</p>
+                <h3 className="text-sm font-semibold text-text-primary">Section 80C — Investments</h3>
+                <p className="text-xs text-text-muted mt-0.5">Maximum deduction: ₹1,50,000 (combined 80C + 80CCC)</p>
               </div>
               <div className="text-right">
-                <div className={`text-lg font-bold ${sum80C(breakdown80C) > 150000 ? "text-amber-600" : "text-emerald-600"}`}>
+                <div className={`text-lg font-bold ${sum80C(breakdown80C) > 150000 ? "text-warning-fg" : "text-success-fg"}`}>
                   ₹{Math.min(sum80C(breakdown80C), 150000).toLocaleString("en-IN")}
                 </div>
-                <div className="text-xs text-slate-400">of ₹1,50,000 cap</div>
+                <div className="text-xs text-text-muted">of ₹1,50,000 cap</div>
               </div>
             </div>
             <button type="button" onClick={() => setShow80CBreakdown((v) => !v)}
@@ -3108,10 +3108,10 @@ function ITDeclarationForm() {
               <div className="grid grid-cols-2 gap-3 max-sm:grid-cols-1">
                 {BREAKDOWN_80C_LABELS.map(({ key, label, readOnly }) => (
                   <div key={key}>
-                    <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">{label}</label>
+                    <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-1">{label}</label>
                     <input
                       type="number" min={0}
-                      className={`w-full min-h-9 rounded-lg border px-3 text-sm outline-none focus:border-brand ${readOnly ? "bg-slate-50 border-slate-200 text-slate-400" : "border-slate-200"}`}
+                      className={`w-full min-h-9 rounded-lg border px-3 text-sm outline-none focus:border-brand ${readOnly ? "bg-sunken border-line text-text-muted" : "border-line"}`}
                       value={breakdown80C[key] || ""}
                       readOnly={readOnly}
                       onChange={(e) => setBreakdown80C((b) => ({ ...b, [key]: Number(e.target.value) || 0 }))}
@@ -3122,7 +3122,7 @@ function ITDeclarationForm() {
               </div>
             )}
             {sum80C(breakdown80C) > 150000 && (
-              <div className="mt-3 rounded-lg bg-amber-50 border border-amber-200 p-3 text-xs text-amber-700">
+              <div className="mt-3 rounded-lg bg-warning-bg border border-warning-border p-3 text-xs text-warning-fg">
                 Total ₹{sum80C(breakdown80C).toLocaleString("en-IN")} exceeds the ₹1,50,000 cap — only ₹1,50,000 will be applied.
               </div>
             )}
@@ -3130,7 +3130,7 @@ function ITDeclarationForm() {
 
           {/* Other Deductions */}
           <Card>
-            <h3 className="text-sm font-semibold text-slate-800 mb-4 border-b pb-3">Other Deductions</h3>
+            <h3 className="text-sm font-semibold text-text-primary mb-4 border-b pb-3">Other Deductions</h3>
             <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
               {([
                 ["section80D",   "80D — Medical Insurance Premium"],
@@ -3142,7 +3142,7 @@ function ITDeclarationForm() {
                 ["section80CCD", "80CCD(1B) — NPS Additional Contribution (max ₹50,000)"],
               ] as [keyof typeof fields, string][]).map(([k, lbl]) => (
                 <div key={k}>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">{lbl}</label>
+                  <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-1">{lbl}</label>
                   {fld(k)}
                 </div>
               ))}
@@ -3151,7 +3151,7 @@ function ITDeclarationForm() {
 
           {/* Exemptions */}
           <Card>
-            <h3 className="text-sm font-semibold text-slate-800 mb-4 border-b pb-3">Exemptions</h3>
+            <h3 className="text-sm font-semibold text-text-primary mb-4 border-b pb-3">Exemptions</h3>
             <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
               {([
                 ["hra",                    "HRA — House Rent Allowance"],
@@ -3162,7 +3162,7 @@ function ITDeclarationForm() {
                 ["otherExemptions",        "Other Exemptions"],
               ] as [keyof typeof fields, string][]).map(([k, lbl]) => (
                 <div key={k}>
-                  <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">{lbl}</label>
+                  <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-1">{lbl}</label>
                   {fld(k)}
                 </div>
               ))}
@@ -3171,19 +3171,19 @@ function ITDeclarationForm() {
 
           {/* Summary */}
           <Card>
-            <h3 className="text-sm font-semibold text-slate-800 mb-3 border-b pb-3">Estimated Tax Impact</h3>
+            <h3 className="text-sm font-semibold text-text-primary mb-3 border-b pb-3">Estimated Tax Impact</h3>
             <div className="grid grid-cols-3 gap-4 max-sm:grid-cols-1">
-              <div className="rounded-lg bg-slate-50 border border-slate-200 p-4 text-center">
-                <div className="text-lg font-bold text-slate-800">₹{(totalExemptions + stdDed).toLocaleString("en-IN")}</div>
-                <div className="text-xs text-slate-500 mt-0.5">Total Deductions (incl. std. deduction)</div>
+              <div className="rounded-lg bg-sunken border border-line p-4 text-center">
+                <div className="text-lg font-bold text-text-primary">₹{(totalExemptions + stdDed).toLocaleString("en-IN")}</div>
+                <div className="text-xs text-text-secondary mt-0.5">Total Deductions (incl. std. deduction)</div>
               </div>
-              <div className="rounded-lg bg-emerald-50 border border-emerald-200 p-4 text-center">
-                <div className="text-lg font-bold text-emerald-700">~₹{estimatedSaving.toLocaleString("en-IN")}</div>
-                <div className="text-xs text-slate-500 mt-0.5">Est. Annual Tax Saving (at ~20%)</div>
+              <div className="rounded-lg bg-success-bg border border-success-border p-4 text-center">
+                <div className="text-lg font-bold text-success-fg">~₹{estimatedSaving.toLocaleString("en-IN")}</div>
+                <div className="text-xs text-text-secondary mt-0.5">Est. Annual Tax Saving (at ~20%)</div>
               </div>
-              <div className="rounded-lg bg-blue-50 border border-blue-200 p-4 text-center">
-                <div className="text-lg font-bold text-blue-700">OLD Regime</div>
-                <div className="text-xs text-slate-500 mt-0.5">Std. Deduction ₹{stdDed.toLocaleString("en-IN")}</div>
+              <div className="rounded-lg bg-info-bg border border-info-border p-4 text-center">
+                <div className="text-lg font-bold text-info-fg">OLD Regime</div>
+                <div className="text-xs text-text-secondary mt-0.5">Std. Deduction ₹{stdDed.toLocaleString("en-IN")}</div>
               </div>
             </div>
           </Card>
@@ -3192,20 +3192,20 @@ function ITDeclarationForm() {
 
       {regime === "NEW" && (
         <Card>
-          <h3 className="text-sm font-semibold text-slate-800 mb-3 border-b pb-3">New Regime — Standard Deduction</h3>
-          <div className="rounded-lg bg-blue-50 border border-blue-200 p-4 mb-4">
-            <p className="text-sm text-blue-800 font-semibold">₹75,000 Standard Deduction applied automatically.</p>
-            <p className="text-xs text-blue-600 mt-1">Under the New Regime, most exemptions are not available. Only the standard deduction is applied.</p>
+          <h3 className="text-sm font-semibold text-text-primary mb-3 border-b pb-3">New Regime — Standard Deduction</h3>
+          <div className="rounded-lg bg-info-bg border border-info-border p-4 mb-4">
+            <p className="text-sm text-info-fg font-semibold">₹75,000 Standard Deduction applied automatically.</p>
+            <p className="text-xs text-info-fg mt-1">Under the New Regime, most exemptions are not available. Only the standard deduction is applied.</p>
           </div>
           <div className="max-w-xs">
-            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Other Exemptions (if any)</label>
+            <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-1">Other Exemptions (if any)</label>
             {fld("otherExemptions")}
           </div>
         </Card>
       )}
 
-      {error && <div className="rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-700">{error}</div>}
-      {message && <div className="rounded-lg bg-emerald-50 border border-emerald-200 p-3 text-sm text-emerald-700">{message}</div>}
+      {error && <div className="rounded-lg bg-danger-bg border border-danger-border p-3 text-sm text-danger-fg">{error}</div>}
+      {message && <div className="rounded-lg bg-success-bg border border-success-border p-3 text-sm text-success-fg">{message}</div>}
 
       <div className="flex justify-end">
         <button type="submit" disabled={saving}
@@ -3226,12 +3226,12 @@ const SECTION_OPTIONS = [
 
 function proofStatusBadge(status: string) {
   const map: Record<string, string> = {
-    PENDING: "bg-amber-100 text-amber-800",
-    APPROVED: "bg-emerald-100 text-emerald-700",
-    REJECTED: "bg-red-100 text-red-700",
+    PENDING: "bg-warning-bg text-warning-fg",
+    APPROVED: "bg-success-bg text-success-fg",
+    REJECTED: "bg-danger-bg text-danger-fg",
   };
   return (
-    <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${map[status] ?? "bg-slate-100 text-slate-500"}`}>
+    <span className={`rounded-full px-2 py-0.5 text-xs font-semibold ${map[status] ?? "bg-sunken text-text-secondary"}`}>
       {status}
     </span>
   );
@@ -3358,10 +3358,10 @@ function ITDeclarationProofsTab() {
       <Card>
         <div className="mb-4 flex items-center justify-between border-b pb-4">
           <div>
-            <h3 className="text-base font-semibold text-slate-800">IT Declaration — Section-wise Status</h3>
-            <p className="text-xs text-slate-400 mt-0.5">FY {currentFY} · Proofs are additive: verified sections use min(declared, approved proof total)</p>
+            <h3 className="text-base font-semibold text-text-primary">IT Declaration — Section-wise Status</h3>
+            <p className="text-xs text-text-muted mt-0.5">FY {currentFY} · Proofs are additive: verified sections use min(declared, approved proof total)</p>
           </div>
-          <span className="text-xs bg-blue-50 text-blue-700 border border-blue-200 rounded-full px-3 py-1 font-semibold">
+          <span className="text-xs bg-info-bg text-info-fg border border-info-border rounded-full px-3 py-1 font-semibold">
             {currentFY}
           </span>
         </div>
@@ -3369,30 +3369,30 @@ function ITDeclarationProofsTab() {
           {SECTION_OPTIONS.map((s) => {
             const st = getSectionStatus(s.value);
             const statusColor =
-              st === "Verified" ? "border-emerald-200 bg-emerald-50" :
-              st === "Rejected" ? "border-red-200 bg-red-50" :
-              st === "Proof Pending" ? "border-amber-200 bg-amber-50" :
-              "border-slate-200 bg-slate-50";
+              st === "Verified" ? "border-success-border bg-success-bg" :
+              st === "Rejected" ? "border-danger-border bg-danger-bg" :
+              st === "Proof Pending" ? "border-warning-border bg-warning-bg" :
+              "border-line bg-sunken";
             const sProofs = proofsBySection[s.value] ?? [];
             const approvedActual = sProofs.filter(p => p.status === "APPROVED").reduce((sum, p) => sum + Number(p.actualAmount), 0);
             return (
               <div key={s.value} className={`rounded-xl border p-4 ${statusColor}`}>
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm font-bold text-slate-700">{s.value}</span>
+                  <span className="text-sm font-bold text-text-primary">{s.value}</span>
                   <span className={`text-xs rounded-full px-2 py-0.5 font-semibold ${
-                    st === "Verified" ? "bg-emerald-100 text-emerald-700" :
-                    st === "Rejected" ? "bg-red-100 text-red-600" :
-                    st === "Proof Pending" ? "bg-amber-100 text-amber-700" :
-                    "bg-slate-100 text-slate-500"
+                    st === "Verified" ? "bg-success-bg text-success-fg" :
+                    st === "Rejected" ? "bg-danger-bg text-danger-fg" :
+                    st === "Proof Pending" ? "bg-warning-bg text-warning-fg" :
+                    "bg-sunken text-text-secondary"
                   }`}>{st}</span>
                 </div>
-                <p className="text-xs text-slate-500 mb-1">{s.label.split("–")[1]?.trim()}</p>
+                <p className="text-xs text-text-secondary mb-1">{s.label.split("–")[1]?.trim()}</p>
                 {approvedActual > 0 && (
-                  <p className="text-xs text-emerald-700 font-semibold">
+                  <p className="text-xs text-success-fg font-semibold">
                     ✓ Verified: ₹{approvedActual.toLocaleString("en-IN")}
                   </p>
                 )}
-                <p className="text-xs text-slate-400 mt-1">{sProofs.length} proof{sProofs.length !== 1 ? "s" : ""} submitted</p>
+                <p className="text-xs text-text-muted mt-1">{sProofs.length} proof{sProofs.length !== 1 ? "s" : ""} submitted</p>
               </div>
             );
           })}
@@ -3402,15 +3402,15 @@ function ITDeclarationProofsTab() {
       {/* Proof Upload (Employee) */}
       <Card>
         <div className="mb-4 border-b pb-4">
-          <h3 className="text-base font-semibold text-slate-800">Submit Proof Document</h3>
-          <p className="text-xs text-slate-400 mt-0.5">Upload supporting documents for each exemption section. HR will verify and update effective amounts.</p>
+          <h3 className="text-base font-semibold text-text-primary">Submit Proof Document</h3>
+          <p className="text-xs text-text-muted mt-0.5">Upload supporting documents for each exemption section. HR will verify and update effective amounts.</p>
         </div>
         <form onSubmit={handleUpload} className="grid gap-4 max-w-lg">
           <div>
-            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Section</label>
+            <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-1">Section</label>
             <select
               id="it-proof-section"
-              className="w-full min-h-9 rounded-lg border border-slate-200 px-3 text-sm text-slate-800 outline-none focus:border-brand"
+              className="w-full min-h-9 rounded-lg border border-line px-3 text-sm text-text-primary outline-none focus:border-brand"
               value={uploadSection}
               onChange={(e) => setUploadSection(e.target.value)}
             >
@@ -3421,11 +3421,11 @@ function ITDeclarationProofsTab() {
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Declared Amount (₹)</label>
+              <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-1">Declared Amount (₹)</label>
               <input
                 id="it-proof-declared"
                 type="number"
-                className="w-full min-h-9 rounded-lg border border-slate-200 px-3 text-sm outline-none focus:border-brand"
+                className="w-full min-h-9 rounded-lg border border-line px-3 text-sm outline-none focus:border-brand"
                 placeholder="e.g. 150000"
                 value={declaredAmt}
                 onChange={(e) => setDeclaredAmt(e.target.value)}
@@ -3433,11 +3433,11 @@ function ITDeclarationProofsTab() {
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Actual Amount (₹)</label>
+              <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-1">Actual Amount (₹)</label>
               <input
                 id="it-proof-actual"
                 type="number"
-                className="w-full min-h-9 rounded-lg border border-slate-200 px-3 text-sm outline-none focus:border-brand"
+                className="w-full min-h-9 rounded-lg border border-line px-3 text-sm outline-none focus:border-brand"
                 placeholder="e.g. 140000"
                 value={actualAmt}
                 onChange={(e) => setActualAmt(e.target.value)}
@@ -3446,18 +3446,18 @@ function ITDeclarationProofsTab() {
             </div>
           </div>
           <div>
-            <label className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-1">Proof File (PDF/Image)</label>
+            <label className="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-1">Proof File (PDF/Image)</label>
             <input
               id="it-proof-file"
               type="file"
               accept=".pdf,.jpg,.jpeg,.png"
-              className="w-full text-sm text-slate-600 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand/10 file:text-brand hover:file:bg-brand/20"
+              className="w-full text-sm text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand/10 file:text-brand hover:file:bg-brand/20"
               onChange={(e) => setProofFile(e.target.files?.[0] ?? null)}
               required
             />
           </div>
-          {error && <div className="rounded-lg bg-red-50 border border-red-200 p-3 text-sm text-red-700">{error}</div>}
-          {message && <div className="rounded-lg bg-emerald-50 border border-emerald-200 p-3 text-sm text-emerald-700">{message}</div>}
+          {error && <div className="rounded-lg bg-danger-bg border border-danger-border p-3 text-sm text-danger-fg">{error}</div>}
+          {message && <div className="rounded-lg bg-success-bg border border-success-border p-3 text-sm text-success-fg">{message}</div>}
           <button
             id="it-proof-submit"
             type="submit"
@@ -3472,18 +3472,18 @@ function ITDeclarationProofsTab() {
       {/* All Proofs List (HR sees all, employees see own) */}
       <Card>
         <div className="mb-4 flex items-center justify-between border-b pb-4">
-          <h3 className="text-base font-semibold text-slate-800">Proof Submissions — Verification Queue</h3>
-          <span className="text-xs text-slate-400">{proofs.filter(p => p.status === "PENDING").length} pending review</span>
+          <h3 className="text-base font-semibold text-text-primary">Proof Submissions — Verification Queue</h3>
+          <span className="text-xs text-text-muted">{proofs.filter(p => p.status === "PENDING").length} pending review</span>
         </div>
         {loading ? (
-          <div className="py-8 text-center text-slate-400">Loading proofs…</div>
+          <div className="py-8 text-center text-text-muted">Loading proofs…</div>
         ) : !proofs.length ? (
-          <div className="py-8 text-center text-slate-400">No proofs submitted yet for this financial year.</div>
+          <div className="py-8 text-center text-text-muted">No proofs submitted yet for this financial year.</div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-left text-sm text-slate-600">
+            <table className="w-full border-collapse text-left text-sm text-text-secondary">
               <thead>
-                <tr className="bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500">
+                <tr className="bg-sunken text-xs font-bold uppercase tracking-wider text-text-secondary">
                   {proofs[0]?.employee && <th className="border-b p-3">Employee</th>}
                   <th className="border-b p-3">Section</th>
                   <th className="border-b p-3">FY</th>
@@ -3497,14 +3497,14 @@ function ITDeclarationProofsTab() {
               </thead>
               <tbody>
                 {proofs.map((proof) => (
-                  <tr key={proof.id} className="hover:bg-slate-50/50">
+                  <tr key={proof.id} className="hover:bg-sunken">
                     {proof.employee && (
-                      <td className="border-b p-3 font-semibold text-slate-800">
+                      <td className="border-b p-3 font-semibold text-text-primary">
                         {proof.employee.firstName} {proof.employee.lastName}
-                        <span className="block text-xs text-slate-400 font-normal">{proof.employee.employeeCode}</span>
+                        <span className="block text-xs text-text-muted font-normal">{proof.employee.employeeCode}</span>
                       </td>
                     )}
-                    <td className="border-b p-3 font-mono text-xs font-bold text-slate-700">{proof.sectionType}</td>
+                    <td className="border-b p-3 font-mono text-xs font-bold text-text-primary">{proof.sectionType}</td>
                     <td className="border-b p-3 text-xs">{proof.financialYear}</td>
                     <td className="border-b p-3">₹{Number(proof.declaredAmount).toLocaleString("en-IN")}</td>
                     <td className="border-b p-3 font-semibold">₹{Number(proof.actualAmount).toLocaleString("en-IN")}</td>
@@ -3519,7 +3519,7 @@ function ITDeclarationProofsTab() {
                       </a>
                     </td>
                     <td className="border-b p-3">{proofStatusBadge(proof.status)}</td>
-                    <td className="border-b p-3 text-xs text-slate-500 max-w-[120px] truncate">
+                    <td className="border-b p-3 text-xs text-text-secondary max-w-[120px] truncate">
                       {proof.hrRemarks || "—"}
                     </td>
                     <td className="border-b p-3 text-right">
@@ -3527,7 +3527,7 @@ function ITDeclarationProofsTab() {
                         decidingId === proof.id ? (
                           <div className="flex flex-col gap-2 min-w-[200px]">
                             <select
-                              className="rounded border border-slate-200 px-2 py-1 text-xs"
+                              className="rounded border border-line px-2 py-1 text-xs"
                               value={decideStatus}
                               onChange={(e) => setDecideStatus(e.target.value as any)}
                             >
@@ -3536,7 +3536,7 @@ function ITDeclarationProofsTab() {
                             </select>
                             <input
                               placeholder="Remarks (optional)"
-                              className="rounded border border-slate-200 px-2 py-1 text-xs"
+                              className="rounded border border-line px-2 py-1 text-xs"
                               value={decideRemarks}
                               onChange={(e) => setDecideRemarks(e.target.value)}
                             />
@@ -3549,7 +3549,7 @@ function ITDeclarationProofsTab() {
                                 {deciding ? "…" : "Confirm"}
                               </button>
                               <button
-                                className="flex-1 rounded-lg border border-slate-200 text-xs text-slate-600 px-2 py-1.5 hover:bg-slate-50"
+                                className="flex-1 rounded-lg border border-line text-xs text-text-secondary px-2 py-1.5 hover:bg-sunken"
                                 onClick={() => { setDecidingId(null); setDecideRemarks(""); }}
                               >
                                 Cancel
@@ -3558,14 +3558,14 @@ function ITDeclarationProofsTab() {
                           </div>
                         ) : (
                           <button
-                            className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-50"
+                            className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-line bg-white px-2.5 text-xs font-semibold text-text-secondary hover:bg-sunken"
                             onClick={() => { setDecidingId(proof.id); setDecideStatus("APPROVED"); setDecideRemarks(""); }}
                           >
                             Decide
                           </button>
                         )
                       ) : (
-                        <span className="text-xs text-slate-400">
+                        <span className="text-xs text-text-muted">
                           {proof.decidedAt ? new Date(proof.decidedAt).toLocaleDateString("en-IN") : "Done"}
                         </span>
                       )}

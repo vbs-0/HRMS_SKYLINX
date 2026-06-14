@@ -17,11 +17,11 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4">
       <div className="relative w-full max-w-lg rounded-xl border border-[var(--border-default)] bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 text-left">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
-          <h3 className="text-lg font-bold text-slate-900">{title}</h3>
+        <div className="flex items-center justify-between border-b border-line pb-3 mb-4">
+          <h3 className="text-lg font-bold text-text-primary">{title}</h3>
           <button
             type="button"
-            className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
+            className="rounded-lg p-1 text-text-muted hover:bg-sunken hover:text-text-secondary transition-colors"
             onClick={onClose}
           >
             <X className="h-5 w-5" />
@@ -287,7 +287,7 @@ export function LeaveSettingsConsole() {
   return (
     <div className="grid gap-6">
       {/* Tab subnavigation */}
-      <div className="flex gap-4 border-b border-slate-200 pb-0 print:hidden text-left">
+      <div className="flex gap-4 border-b border-line pb-0 print:hidden text-left">
         <button
           onClick={() => setActiveConsoleTab("rules")}
           className={`pb-3 text-sm font-bold border-b-2 transition-all ${
@@ -334,7 +334,7 @@ export function LeaveSettingsConsole() {
                   }
                 }}
                 id="process-accruals-btn"
-                className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-xs font-semibold text-slate-700 cursor-pointer hover:bg-slate-50 transition shadow-sm"
+                className="inline-flex min-h-10 items-center gap-2 rounded-lg border border-line bg-white px-4 text-xs font-semibold text-text-primary cursor-pointer hover:bg-sunken transition shadow-sm"
               >
                 Process Accruals
               </button>
@@ -401,7 +401,7 @@ export function LeaveSettingsConsole() {
                           </button>
                           <button
                             onClick={handleCancel}
-                            className="p-2 rounded-lg border border-[var(--border-default)] bg-white text-muted hover:bg-slate-50 transition-all flex items-center gap-1 text-xs font-semibold"
+                            className="p-2 rounded-lg border border-[var(--border-default)] bg-white text-muted hover:bg-sunken transition-all flex items-center gap-1 text-xs font-semibold"
                           >
                             <X className="h-4 w-4" /> Cancel
                           </button>
@@ -426,7 +426,7 @@ export function LeaveSettingsConsole() {
                                 setError(err instanceof Error ? err.message : "Failed to delete leave type");
                               }
                             }}
-                            className="p-2 rounded-full text-muted hover:text-rose-600 hover:bg-rose-50 transition-all"
+                            className="p-2 rounded-full text-muted hover:text-danger-fg hover:bg-danger-bg transition-all"
                             title="Delete Leave Type"
                           >
                             <X className="h-4.5 w-4.5" />
@@ -620,8 +620,8 @@ export function LeaveSettingsConsole() {
                             </div>
                           </div>
                         ) : (
-                          <div className="rounded-lg bg-slate-50 border border-dashed border-slate-200 p-4 flex flex-col items-center justify-center text-center text-xs text-muted">
-                            <Info className="h-5 w-5 mb-2 text-slate-400" />
+                          <div className="rounded-lg bg-sunken border border-dashed border-line p-4 flex flex-col items-center justify-center text-center text-xs text-muted">
+                            <Info className="h-5 w-5 mb-2 text-text-muted" />
                             Accrual settings are not applicable to {type.name}.
                           </div>
                         )}
@@ -844,7 +844,7 @@ export function LeaveSettingsConsole() {
       {activeConsoleTab === "assignments" && (
         <div className="bg-white rounded-lg border border-[var(--border-subtle)] p-5 shadow-sm space-y-4 text-left">
           {/* Sub-header Controls */}
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line pb-4">
             <div className="flex flex-wrap items-center gap-3">
               {/* Search Bar */}
               <div className="relative min-w-[200px]">
@@ -855,7 +855,7 @@ export function LeaveSettingsConsole() {
                   onChange={(e) => setAssignSearch(e.target.value)}
                   className="min-h-10 w-full rounded-lg border border-[var(--border-strong)] pl-3 pr-8 text-xs outline-none focus:border-brand"
                 />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">ðŸ”</span>
+                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted text-sm">ðŸ”</span>
               </div>
 
               {/* Assign Rules Modal Trigger */}
@@ -883,9 +883,9 @@ export function LeaveSettingsConsole() {
               </button>
             </div>
 
-            <div className="flex items-center gap-2 text-xs font-semibold text-slate-500">
+            <div className="flex items-center gap-2 text-xs font-semibold text-text-secondary">
               <span>Show</span>
-              <select className="min-h-9 rounded-lg border px-2.5 bg-white text-slate-700 outline-none">
+              <select className="min-h-9 rounded-lg border px-2.5 bg-white text-text-primary outline-none">
                 <option value="20">20</option>
                 <option value="50">50</option>
                 <option value="100">100</option>
@@ -895,8 +895,8 @@ export function LeaveSettingsConsole() {
 
           {/* Table */}
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-left text-xs text-slate-600">
-              <thead className="bg-[var(--surface-sunken)] text-[10px] uppercase font-bold text-slate-500 border-b">
+            <table className="w-full border-collapse text-left text-xs text-text-secondary">
+              <thead className="bg-[var(--surface-sunken)] text-[10px] uppercase font-bold text-text-secondary border-b">
                 <tr>
                   <th className="p-3 w-10">
                     <input
@@ -924,7 +924,7 @@ export function LeaveSettingsConsole() {
                   row.name.toLowerCase().includes(assignSearch.toLowerCase()) || 
                   row.employeeCode.toLowerCase().includes(assignSearch.toLowerCase())
                 ).map((row) => (
-                  <tr key={row.id} className="hover:bg-slate-50 border-b border-slate-100 transition">
+                  <tr key={row.id} className="hover:bg-sunken border-b border-line transition">
                     <td className="p-3">
                       <input
                         type="checkbox"
@@ -939,16 +939,16 @@ export function LeaveSettingsConsole() {
                         className="rounded border-[var(--border-strong)] text-brand focus:ring-brand h-3.5 w-3.5"
                       />
                     </td>
-                    <td className="p-3 font-semibold text-slate-700">{row.employeeCode}</td>
-                    <td className="p-3 font-bold text-slate-900">{row.name}</td>
-                    <td className="p-3 text-slate-650">{row.managerName}</td>
-                    <td className="p-3 text-slate-650">{row.employmentType}</td>
+                    <td className="p-3 font-semibold text-text-primary">{row.employeeCode}</td>
+                    <td className="p-3 font-bold text-text-primary">{row.name}</td>
+                    <td className="p-3 text-text-primary">{row.managerName}</td>
+                    <td className="p-3 text-text-primary">{row.employmentType}</td>
                     <td className="p-3">
                       <div className="flex flex-wrap gap-1.5 items-center">
                         {row.rulesApplied.map((rule: any) => (
                           <span
                             key={rule.leaveTypeId}
-                            className="inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-blue-50/50 px-2.5 py-0.5"
+                            className="inline-flex items-center gap-1.5 rounded-full border border-info-border bg-info-bg px-2.5 py-0.5"
                           >
                             <span className="flex h-4 w-4 items-center justify-center rounded-full bg-brand text-[8px] font-bold text-white uppercase shrink-0">
                               {rule.code[0] || rule.name[0]}
@@ -956,7 +956,7 @@ export function LeaveSettingsConsole() {
                             <span className="text-[10px] font-semibold text-[#1e3a8a]">{rule.name}</span>
                             <button
                               onClick={() => handleRemoveSingleRule(row.id, rule.leaveTypeId)}
-                              className="text-blue-400 hover:text-rose-500 font-bold ml-1 text-xs leading-none"
+                              className="text-info-fg hover:text-danger-fg font-bold ml-1 text-xs leading-none"
                               title="Remove"
                             >
                               Ã—
@@ -968,7 +968,7 @@ export function LeaveSettingsConsole() {
                             setSelectedEmpIds([row.id]);
                             setShowAssignPopup(true);
                           }}
-                          className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-100 hover:bg-[#dbeafe] text-slate-600 hover:text-brand transition font-bold text-xs"
+                          className="flex h-5 w-5 items-center justify-center rounded-full bg-sunken hover:bg-[#dbeafe] text-text-secondary hover:text-brand transition font-bold text-xs"
                           title="Assign Rule"
                         >
                           +
@@ -982,7 +982,7 @@ export function LeaveSettingsConsole() {
           </div>
 
           {/* Pagination */}
-          <div className="flex items-center justify-between border-t border-slate-150 pt-4 text-xs font-semibold text-slate-500">
+          <div className="flex items-center justify-between border-t border-line pt-4 text-xs font-semibold text-text-secondary">
             <span>Showing 1 to {assignments.length} of {assignments.length} records</span>
             <div className="flex gap-2">
               <button disabled className="rounded border px-3 py-1 cursor-not-allowed opacity-50 bg-[var(--surface-sunken)]">PREVIOUS</button>
@@ -995,7 +995,7 @@ export function LeaveSettingsConsole() {
 
       {showAddModal && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl border border-slate-200 shadow-xl w-full max-w-2xl overflow-hidden max-h-[90vh] flex flex-col">
+          <div className="bg-white rounded-xl border border-line shadow-xl w-full max-w-2xl overflow-hidden max-h-[90vh] flex flex-col">
             <div className="bg-[var(--text-primary)] text-white p-4 font-semibold text-sm flex justify-between items-center">
               <span>Create Custom Leave Type</span>
               <button onClick={() => setShowAddModal(false)} className="text-white/60 hover:text-white text-lg font-bold">Ã—</button>
@@ -1004,82 +1004,82 @@ export function LeaveSettingsConsole() {
             <form onSubmit={handleCreateLeaveType} className="p-6 overflow-y-auto space-y-4 text-sm text-left">
               <div className="grid grid-cols-2 gap-4">
                 <div className="flex flex-col">
-                  <label className="text-xs font-bold text-slate-500 uppercase mb-1">Leave Name</label>
+                  <label className="text-xs font-bold text-text-secondary uppercase mb-1">Leave Name</label>
                   <input
                     value={newTypeForm.name}
                     onChange={(e) => setNewTypeForm({ ...newTypeForm, name: e.target.value })}
                     placeholder="e.g. Wedding Leave"
                     required
-                    className="min-h-10 rounded-lg border border-slate-200 px-3 text-sm focus:border-brand outline-none"
+                    className="min-h-10 rounded-lg border border-line px-3 text-sm focus:border-brand outline-none"
                   />
                 </div>
                 
                 <div className="flex flex-col">
-                  <label className="text-xs font-bold text-slate-500 uppercase mb-1">Short Code</label>
+                  <label className="text-xs font-bold text-text-secondary uppercase mb-1">Short Code</label>
                   <input
                     value={newTypeForm.code}
                     onChange={(e) => setNewTypeForm({ ...newTypeForm, code: e.target.value })}
                     placeholder="e.g. WL"
                     required
-                    className="min-h-10 rounded-lg border border-slate-200 px-3 text-sm focus:border-brand outline-none"
+                    className="min-h-10 rounded-lg border border-line px-3 text-sm focus:border-brand outline-none"
                   />
                 </div>
               </div>
 
               <div className="flex flex-col">
-                <label className="text-xs font-bold text-slate-500 uppercase mb-1">Description</label>
+                <label className="text-xs font-bold text-text-secondary uppercase mb-1">Description</label>
                 <textarea
                   value={newTypeForm.description}
                   onChange={(e) => setNewTypeForm({ ...newTypeForm, description: e.target.value })}
                   placeholder="Enter policy description..."
-                  className="min-h-16 rounded-lg border border-slate-200 p-2 text-sm focus:border-brand outline-none"
+                  className="min-h-16 rounded-lg border border-line p-2 text-sm focus:border-brand outline-none"
                 />
               </div>
 
-              <hr className="border-slate-100" />
-              <h4 className="text-xs font-bold uppercase text-slate-800">General Settings</h4>
+              <hr className="border-line" />
+              <h4 className="text-xs font-bold uppercase text-text-primary">General Settings</h4>
 
               <div className="grid grid-cols-3 gap-4 max-sm:grid-cols-1">
                 {/* Section 1: Leaves Count */}
-                <div className="rounded-lg bg-slate-50 border border-slate-100 p-3 space-y-3">
-                  <h4 className="text-xs font-bold uppercase text-slate-500 mb-1 border-b pb-1">Leaves Count</h4>
+                <div className="rounded-lg bg-sunken border border-line p-3 space-y-3">
+                  <h4 className="text-xs font-bold uppercase text-text-secondary mb-1 border-b pb-1">Leaves Count</h4>
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-600 block">Leaves Allowed in a Year</label>
+                    <label className="text-[11px] font-semibold text-text-secondary block">Leaves Allowed in a Year</label>
                     <input
                       type="number"
                       value={newTypeForm.annualQuota}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, annualQuota: Number(e.target.value) })}
-                      className="mt-1 w-full min-h-8 rounded border border-slate-200 px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-600 block">Weekends Between Leave</label>
+                    <label className="text-[11px] font-semibold text-text-secondary block">Weekends Between Leave</label>
                     <select
                       value={newTypeForm.weekendsBetweenLeave}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, weekendsBetweenLeave: e.target.value })}
-                      className="mt-1 w-full min-h-8 rounded border border-slate-200 px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
                     >
                       <option value="Not Considered">Not Considered</option>
                       <option value="Considered">Considered</option>
                     </select>
                   </div>
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-600 block">Holidays Between Leave</label>
+                    <label className="text-[11px] font-semibold text-text-secondary block">Holidays Between Leave</label>
                     <select
                       value={newTypeForm.holidaysBetweenLeave}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, holidaysBetweenLeave: e.target.value })}
-                      className="mt-1 w-full min-h-8 rounded border border-slate-200 px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
                     >
                       <option value="Not Considered">Not Considered</option>
                       <option value="Considered">Considered</option>
                     </select>
                   </div>
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-600 block">Sandwich Rule Enabled</label>
+                    <label className="text-[11px] font-semibold text-text-secondary block">Sandwich Rule Enabled</label>
                     <select
                       value={newTypeForm.sandwichRuleEnabled ? "Yes" : "No"}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, sandwichRuleEnabled: e.target.value === "Yes" })}
-                      className="mt-1 w-full min-h-8 rounded border border-slate-200 px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
                     >
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
@@ -1088,36 +1088,36 @@ export function LeaveSettingsConsole() {
                 </div>
 
                 {/* Section 2: Accrual */}
-                <div className="rounded-lg bg-slate-50 border border-slate-100 p-3 space-y-3">
-                  <h4 className="text-xs font-bold uppercase text-slate-500 mb-1 border-b pb-1">Accrual</h4>
+                <div className="rounded-lg bg-sunken border border-line p-3 space-y-3">
+                  <h4 className="text-xs font-bold uppercase text-text-secondary mb-1 border-b pb-1">Accrual</h4>
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-600 block">Creditable On Accrual Basis</label>
+                    <label className="text-[11px] font-semibold text-text-secondary block">Creditable On Accrual Basis</label>
                     <select
                       value={newTypeForm.creditableOnAccrual ? "Yes" : "No"}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, creditableOnAccrual: e.target.value === "Yes" })}
-                      className="mt-1 w-full min-h-8 rounded border border-slate-200 px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
                     >
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
                     </select>
                   </div>
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-600 block">Creditable On Present Day Basis</label>
+                    <label className="text-[11px] font-semibold text-text-secondary block">Creditable On Present Day Basis</label>
                     <select
                       value={newTypeForm.creditableOnPresentDay ? "Yes" : "No"}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, creditableOnPresentDay: e.target.value === "Yes" })}
-                      className="mt-1 w-full min-h-8 rounded border border-slate-200 px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
                     >
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
                     </select>
                   </div>
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-600 block">Accrual Frequency</label>
+                    <label className="text-[11px] font-semibold text-text-secondary block">Accrual Frequency</label>
                     <select
                       value={newTypeForm.accrualFrequency}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, accrualFrequency: e.target.value })}
-                      className="mt-1 w-full min-h-8 rounded border border-slate-200 px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
                     >
                       <option value="Monthly">Monthly</option>
                       <option value="Quarterly">Quarterly</option>
@@ -1125,11 +1125,11 @@ export function LeaveSettingsConsole() {
                     </select>
                   </div>
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-600 block">Accrual Period</label>
+                    <label className="text-[11px] font-semibold text-text-secondary block">Accrual Period</label>
                     <select
                       value={newTypeForm.accrualPeriod}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, accrualPeriod: e.target.value })}
-                      className="mt-1 w-full min-h-8 rounded border border-slate-200 px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
                     >
                       <option value="Start">Start</option>
                       <option value="End">End</option>
@@ -1138,47 +1138,47 @@ export function LeaveSettingsConsole() {
                 </div>
 
                 {/* Section 3: Applicability */}
-                <div className="rounded-lg bg-slate-50 border border-slate-100 p-3 space-y-3">
-                  <h4 className="text-xs font-bold uppercase text-slate-500 mb-1 border-b pb-1">Applicability</h4>
+                <div className="rounded-lg bg-sunken border border-line p-3 space-y-3">
+                  <h4 className="text-xs font-bold uppercase text-text-secondary mb-1 border-b pb-1">Applicability</h4>
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-600 block">Allowed under Probation</label>
+                    <label className="text-[11px] font-semibold text-text-secondary block">Allowed under Probation</label>
                     <select
                       value={newTypeForm.allowedUnderProbation ? "Yes" : "No"}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, allowedUnderProbation: e.target.value === "Yes" })}
-                      className="mt-1 w-full min-h-8 rounded border border-slate-200 px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
                     >
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
                     </select>
                   </div>
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-600 block">Allowed under Notice Period</label>
+                    <label className="text-[11px] font-semibold text-text-secondary block">Allowed under Notice Period</label>
                     <select
                       value={newTypeForm.allowedUnderNoticePeriod ? "Yes" : "No"}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, allowedUnderNoticePeriod: e.target.value === "Yes" })}
-                      className="mt-1 w-full min-h-8 rounded border border-slate-200 px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
                     >
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
                     </select>
                   </div>
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-600 block">Leave Encash Enabled</label>
+                    <label className="text-[11px] font-semibold text-text-secondary block">Leave Encash Enabled</label>
                     <select
                       value={newTypeForm.leaveEncashEnabled ? "Yes" : "No"}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, leaveEncashEnabled: e.target.value === "Yes" })}
-                      className="mt-1 w-full min-h-8 rounded border border-slate-200 px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
                     >
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
                     </select>
                   </div>
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-600 block">Carry Forward Enabled</label>
+                    <label className="text-[11px] font-semibold text-text-secondary block">Carry Forward Enabled</label>
                     <select
                       value={newTypeForm.carryForwardAllowed ? "Yes" : "No"}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, carryForwardAllowed: e.target.value === "Yes" })}
-                      className="mt-1 w-full min-h-8 rounded border border-slate-200 px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
                     >
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
@@ -1187,42 +1187,42 @@ export function LeaveSettingsConsole() {
                 </div>
               </div>
 
-              <hr className="border-slate-100" />
-              <h4 className="text-xs font-bold uppercase text-slate-800">Advanced Settings</h4>
+              <hr className="border-line" />
+              <h4 className="text-xs font-bold uppercase text-text-primary">Advanced Settings</h4>
 
               <div className="grid grid-cols-3 gap-4 max-sm:grid-cols-1">
                 {/* Section 4: Leaves Count (Advanced) */}
-                <div className="rounded-lg bg-slate-50 border border-slate-100 p-3 space-y-3">
-                  <h4 className="text-xs font-bold uppercase text-slate-500 mb-1 border-b pb-1">Leaves Count</h4>
+                <div className="rounded-lg bg-sunken border border-line p-3 space-y-3">
+                  <h4 className="text-xs font-bold uppercase text-text-secondary mb-1 border-b pb-1">Leaves Count</h4>
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-600 block">Max. Leaves Allowed in a Month</label>
+                    <label className="text-[11px] font-semibold text-text-secondary block">Max. Leaves Allowed in a Month</label>
                     <input
                       type="number"
                       value={newTypeForm.maxLeavesPerMonth}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, maxLeavesPerMonth: Number(e.target.value) })}
-                      className="mt-1 w-full min-h-8 rounded border border-slate-200 px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-600 block">Continuous Leaves Allowed</label>
+                    <label className="text-[11px] font-semibold text-text-secondary block">Continuous Leaves Allowed</label>
                     <input
                       type="number"
                       value={newTypeForm.maxContinuousLeaves}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, maxContinuousLeaves: Number(e.target.value) })}
-                      className="mt-1 w-full min-h-8 rounded border border-slate-200 px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
                     />
                   </div>
                 </div>
 
                 {/* Section 5: Applicability (Advanced) */}
-                <div className="rounded-lg bg-slate-50 border border-slate-100 p-3 space-y-3">
-                  <h4 className="text-xs font-bold uppercase text-slate-500 mb-1 border-b pb-1">Applicability</h4>
+                <div className="rounded-lg bg-sunken border border-line p-3 space-y-3">
+                  <h4 className="text-xs font-bold uppercase text-text-secondary mb-1 border-b pb-1">Applicability</h4>
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-600 block">Negative Leaves Allowed</label>
+                    <label className="text-[11px] font-semibold text-text-secondary block">Negative Leaves Allowed</label>
                     <select
                       value={newTypeForm.negativeLeavesAllowed ? "Yes" : "No"}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, negativeLeavesAllowed: e.target.value === "Yes" })}
-                      className="mt-1 w-full min-h-8 rounded border border-slate-200 px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
                     >
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
@@ -1231,45 +1231,45 @@ export function LeaveSettingsConsole() {
                 </div>
 
                 {/* Section 6: Miscellaneous (Advanced) */}
-                <div className="rounded-lg bg-slate-50 border border-slate-100 p-3 space-y-3">
-                  <h4 className="text-xs font-bold uppercase text-slate-500 mb-1 border-b pb-1">Miscellaneous</h4>
+                <div className="rounded-lg bg-sunken border border-line p-3 space-y-3">
+                  <h4 className="text-xs font-bold uppercase text-text-secondary mb-1 border-b pb-1">Miscellaneous</h4>
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-600 block">Future-dated Leaves Allowed</label>
+                    <label className="text-[11px] font-semibold text-text-secondary block">Future-dated Leaves Allowed</label>
                     <select
                       value={newTypeForm.futureDatedLeavesAllowed ? "Yes" : "No"}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, futureDatedLeavesAllowed: e.target.value === "Yes" })}
-                      className="mt-1 w-full min-h-8 rounded border border-slate-200 px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
                     >
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
                     </select>
                   </div>
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-600 block">Backdated Leaves Allowed</label>
+                    <label className="text-[11px] font-semibold text-text-secondary block">Backdated Leaves Allowed</label>
                     <select
                       value={newTypeForm.backdatedLeavesAllowed ? "Yes" : "No"}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, backdatedLeavesAllowed: e.target.value === "Yes" })}
-                      className="mt-1 w-full min-h-8 rounded border border-slate-200 px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
                     >
                       <option value="Yes">Yes</option>
                       <option value="No">No</option>
                     </select>
                   </div>
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-600 block">Backdated Allowed up to (Days)</label>
+                    <label className="text-[11px] font-semibold text-text-secondary block">Backdated Allowed up to (Days)</label>
                     <input
                       type="number"
                       value={newTypeForm.backdatedLeavesDaysLimit}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, backdatedLeavesDaysLimit: Number(e.target.value) })}
-                      className="mt-1 w-full min-h-8 rounded border border-slate-200 px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] font-semibold text-slate-600 block">Apply next year till month</label>
+                    <label className="text-[11px] font-semibold text-text-secondary block">Apply next year till month</label>
                     <select
                       value={newTypeForm.applyNextYearTillMonth}
                       onChange={(e) => setNewTypeForm({ ...newTypeForm, applyNextYearTillMonth: e.target.value })}
-                      className="mt-1 w-full min-h-8 rounded border border-slate-200 px-2 text-sm bg-white"
+                      className="mt-1 w-full min-h-8 rounded border border-line px-2 text-sm bg-white"
                     >
                       {["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"].map((m) => (
                         <option key={m} value={m}>{m}</option>
@@ -1279,11 +1279,11 @@ export function LeaveSettingsConsole() {
                 </div>
               </div>
 
-              <div className="flex gap-2 justify-end pt-4 border-t border-slate-100">
+              <div className="flex gap-2 justify-end pt-4 border-t border-line">
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="min-h-10 rounded-lg border border-slate-200 px-4 text-xs font-semibold hover:bg-slate-50"
+                  className="min-h-10 rounded-lg border border-line px-4 text-xs font-semibold hover:bg-sunken"
                 >
                   Cancel
                 </button>
@@ -1305,9 +1305,9 @@ export function LeaveSettingsConsole() {
         <form className="grid gap-4 text-left" onSubmit={handleAssignRules}>
           <div>
             <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Selected Employees ({selectedEmpIds.length})</label>
-            <div className="max-h-24 overflow-y-auto border rounded p-2.5 bg-slate-50 text-xs font-semibold text-ink leading-relaxed">
+            <div className="max-h-24 overflow-y-auto border rounded p-2.5 bg-sunken text-xs font-semibold text-ink leading-relaxed">
               {selectedEmpIds.length === 0 ? (
-                <span className="text-rose-500 font-bold">No employees selected. Select employees using the table checkboxes first.</span>
+                <span className="text-danger-fg font-bold">No employees selected. Select employees using the table checkboxes first.</span>
               ) : (
                 assignments
                   .filter((a) => selectedEmpIds.includes(a.id))
@@ -1320,7 +1320,7 @@ export function LeaveSettingsConsole() {
             <label className="mb-1 block text-xs font-bold text-[var(--text-secondary)]">Select Leave Rules to Assign</label>
             <div className="max-h-48 overflow-y-auto space-y-2 border rounded p-3 bg-white">
               {types.map((t) => (
-                <label key={t.id} className="flex items-center gap-2 text-xs text-slate-700 cursor-pointer select-none">
+                <label key={t.id} className="flex items-center gap-2 text-xs text-text-primary cursor-pointer select-none">
                   <input
                     type="checkbox"
                     checked={selectedAssignTypes.includes(t.id)}

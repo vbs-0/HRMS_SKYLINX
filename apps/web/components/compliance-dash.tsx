@@ -391,18 +391,18 @@ export function ComplianceDash() {
   return (
     <div className="grid gap-5 text-left">
       {message && (
-        <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-semibold text-emerald-800 animate-in fade-in duration-200">
+        <div className="rounded-xl border border-success-border bg-success-bg p-4 text-sm font-semibold text-success-fg animate-in fade-in duration-200">
           {message}
         </div>
       )}
       {error && (
-        <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm font-semibold text-rose-800 animate-in fade-in duration-200">
+        <div className="rounded-xl border border-danger-border bg-danger-bg p-4 text-sm font-semibold text-danger-fg animate-in fade-in duration-200">
           {error}
         </div>
       )}
 
       {/* SUB-TABS */}
-      <div className="flex border-b border-slate-200 gap-4 mb-4">
+      <div className="flex border-b border-line gap-4 mb-4">
         {[
           { label: "Tax Declarations", val: "Declarations" },
           { label: "Proof Submissions", val: "Proofs" },
@@ -417,7 +417,7 @@ export function ComplianceDash() {
               setError("");
             }}
             className={`pb-2.5 text-sm font-bold border-b-2 transition cursor-pointer ${
-              activeTab === tab.val ? "border-brand text-brand" : "border-transparent text-slate-400 hover:text-slate-700"
+              activeTab === tab.val ? "border-brand text-brand" : "border-transparent text-text-muted hover:text-text-primary"
             }`}
           >
             {tab.label}
@@ -430,14 +430,14 @@ export function ComplianceDash() {
         <div className="grid grid-cols-2 gap-6 max-lg:grid-cols-1">
           {/* Left: Input Declaration */}
           <Card>
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2 border-b pb-3">
+            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary flex items-center gap-2 border-b pb-3">
               <Landmark className="h-5 w-5 text-brand" /> Submit Annual Investment Declaration
             </h3>
             <form onSubmit={handleDeclarationSubmit} className="grid gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Select Employee</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Select Employee</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                   value={decEmp}
                   onChange={(e) => setDecEmp(e.target.value)}
                   required
@@ -453,9 +453,9 @@ export function ComplianceDash() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Financial Year</label>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Financial Year</label>
                   <select
-                    className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                     value={decYear}
                     onChange={(e) => setDecYear(e.target.value)}
                     required
@@ -467,9 +467,9 @@ export function ComplianceDash() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Tax Regime Choice</label>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Tax Regime Choice</label>
                   <select
-                    className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                     value={decRegime}
                     onChange={(e) => setDecRegime(e.target.value)}
                     required
@@ -482,14 +482,14 @@ export function ComplianceDash() {
 
               {decRegime === "OLD" && (
                 <div className="border-t pt-3 grid gap-4 animate-in fade-in zoom-in-95 duration-200">
-                  <div className="font-semibold text-xs text-slate-400 uppercase tracking-wide">OLD regime exemptions (Declared limits)</div>
+                  <div className="font-semibold text-xs text-text-muted uppercase tracking-wide">OLD regime exemptions (Declared limits)</div>
                   
-                  <details className="group border border-slate-200 rounded-lg bg-slate-50">
-                    <summary className="p-3 text-sm font-semibold cursor-pointer text-slate-700 hover:text-brand flex justify-between items-center">
+                  <details className="group border border-line rounded-lg bg-sunken">
+                    <summary className="p-3 text-sm font-semibold cursor-pointer text-text-primary hover:text-brand flex justify-between items-center">
                       <span>Section 80C — Investments (max ₹1,50,000)</span>
                       <span className="text-brand bg-brand-50 px-2 py-0.5 rounded text-xs">Total: ₹{dec80C}</span>
                     </summary>
-                    <div className="p-3 pt-0 grid grid-cols-2 gap-3 bg-white border-t border-slate-200">
+                    <div className="p-3 pt-0 grid grid-cols-2 gap-3 bg-white border-t border-line">
                       {[
                         { key: "lic", label: "LIC Premium" },
                         { key: "fd", label: "5-Year Fixed Deposit" },
@@ -507,9 +507,9 @@ export function ComplianceDash() {
                         { key: "other80C", label: "Other 80C Deductions" },
                       ].map(item => (
                         <div key={item.key}>
-                          <label className="block text-xs font-semibold text-slate-500 mb-1">{item.label}</label>
+                          <label className="block text-xs font-semibold text-text-secondary mb-1">{item.label}</label>
                           <input
-                            className="min-h-9 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                            className="min-h-9 w-full rounded-lg border border-line px-3 text-sm"
                             type="number"
                             readOnly={item.key === "epf"}
                             value={(dec80CBreakdown as any)[item.key]}
@@ -520,31 +520,31 @@ export function ComplianceDash() {
                     </div>
                   </details>
 
-                  <div className="p-3 border border-slate-200 rounded-lg">
-                    <h4 className="text-xs font-semibold text-slate-500 uppercase mb-3">Other Deductions</h4>
+                  <div className="p-3 border border-line rounded-lg">
+                    <h4 className="text-xs font-semibold text-text-secondary uppercase mb-3">Other Deductions</h4>
                     <div className="grid grid-cols-2 gap-3">
-                      <div><label className="block text-xs font-medium text-slate-500 mb-1">80D (Medical)</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={dec80D} onChange={e=>setDec80D(e.target.value)}/></div>
-                      <div><label className="block text-xs font-medium text-slate-500 mb-1">80E (Edu Loan Int)</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={dec80E} onChange={e=>setDec80E(e.target.value)}/></div>
-                      <div><label className="block text-xs font-medium text-slate-500 mb-1">80G (Donations)</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={dec80G} onChange={e=>setDec80G(e.target.value)}/></div>
-                      <div><label className="block text-xs font-medium text-slate-500 mb-1">80TTA (Savings Int)</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={dec80TTA} onChange={e=>setDec80TTA(e.target.value)}/></div>
-                      <div><label className="block text-xs font-medium text-slate-500 mb-1">80TTB (Senior Int)</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={dec80TTB} onChange={e=>setDec80TTB(e.target.value)}/></div>
-                      <div><label className="block text-xs font-medium text-slate-500 mb-1">80CCD(1B) (NPS)</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={dec80CCD} onChange={e=>setDec80CCD(e.target.value)}/></div>
-                      <div><label className="block text-xs font-medium text-slate-500 mb-1">Sec 24(b) (Home Int)</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={dec24} onChange={e=>setDec24(e.target.value)}/></div>
+                      <div><label className="block text-xs font-medium text-text-secondary mb-1">80D (Medical)</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={dec80D} onChange={e=>setDec80D(e.target.value)}/></div>
+                      <div><label className="block text-xs font-medium text-text-secondary mb-1">80E (Edu Loan Int)</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={dec80E} onChange={e=>setDec80E(e.target.value)}/></div>
+                      <div><label className="block text-xs font-medium text-text-secondary mb-1">80G (Donations)</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={dec80G} onChange={e=>setDec80G(e.target.value)}/></div>
+                      <div><label className="block text-xs font-medium text-text-secondary mb-1">80TTA (Savings Int)</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={dec80TTA} onChange={e=>setDec80TTA(e.target.value)}/></div>
+                      <div><label className="block text-xs font-medium text-text-secondary mb-1">80TTB (Senior Int)</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={dec80TTB} onChange={e=>setDec80TTB(e.target.value)}/></div>
+                      <div><label className="block text-xs font-medium text-text-secondary mb-1">80CCD(1B) (NPS)</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={dec80CCD} onChange={e=>setDec80CCD(e.target.value)}/></div>
+                      <div><label className="block text-xs font-medium text-text-secondary mb-1">Sec 24(b) (Home Int)</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={dec24} onChange={e=>setDec24(e.target.value)}/></div>
                     </div>
                   </div>
 
-                  <div className="p-3 border border-slate-200 rounded-lg">
-                    <h4 className="text-xs font-semibold text-slate-500 uppercase mb-3">Exemptions</h4>
+                  <div className="p-3 border border-line rounded-lg">
+                    <h4 className="text-xs font-semibold text-text-secondary uppercase mb-3">Exemptions</h4>
                     <div className="grid grid-cols-2 gap-3">
-                      <div><label className="block text-xs font-medium text-slate-500 mb-1">HRA</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={decHRA} onChange={e=>setDecHRA(e.target.value)}/></div>
-                      <div><label className="block text-xs font-medium text-slate-500 mb-1">LTA</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={decLTA} onChange={e=>setDecLTA(e.target.value)}/></div>
-                      <div><label className="block text-xs font-medium text-slate-500 mb-1">House Property Loss</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={decHousePropertyLoss} onChange={e=>setDecHousePropertyLoss(e.target.value)}/></div>
-                      <div><label className="block text-xs font-medium text-slate-500 mb-1">Prev Employer Income</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={decPrevEmployerIncome} onChange={e=>setDecPrevEmployerIncome(e.target.value)}/></div>
-                      <div><label className="block text-xs font-medium text-slate-500 mb-1">Reimbursements</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={decReimbursements} onChange={e=>setDecReimbursements(e.target.value)}/></div>
+                      <div><label className="block text-xs font-medium text-text-secondary mb-1">HRA</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={decHRA} onChange={e=>setDecHRA(e.target.value)}/></div>
+                      <div><label className="block text-xs font-medium text-text-secondary mb-1">LTA</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={decLTA} onChange={e=>setDecLTA(e.target.value)}/></div>
+                      <div><label className="block text-xs font-medium text-text-secondary mb-1">House Property Loss</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={decHousePropertyLoss} onChange={e=>setDecHousePropertyLoss(e.target.value)}/></div>
+                      <div><label className="block text-xs font-medium text-text-secondary mb-1">Prev Employer Income</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={decPrevEmployerIncome} onChange={e=>setDecPrevEmployerIncome(e.target.value)}/></div>
+                      <div><label className="block text-xs font-medium text-text-secondary mb-1">Reimbursements</label><input className="w-full rounded border px-3 py-2 text-sm" type="number" value={decReimbursements} onChange={e=>setDecReimbursements(e.target.value)}/></div>
                     </div>
                   </div>
 
-                  <div className="mt-2 text-sm font-semibold bg-emerald-50 text-emerald-800 p-3 rounded-lg border border-emerald-200 flex justify-between">
+                  <div className="mt-2 text-sm font-semibold bg-success-bg text-success-fg p-3 rounded-lg border border-success-border flex justify-between">
                     <span>Estimated Tax Saving (approx 30%)</span>
                     <span>₹{Math.round((Math.min(150000, Number(dec80C)) + Number(dec80D) + Number(dec24) + Number(dec80E) + Number(dec80G) + Number(dec80TTA) + Number(dec80TTB) + Number(dec80CCD) + Number(decHRA) + Number(decLTA) + Number(decHousePropertyLoss) + Number(decReimbursements) + Number(decOther)) * 0.3).toLocaleString("en-IN")}</span>
                   </div>
@@ -562,51 +562,51 @@ export function ComplianceDash() {
 
           {/* Right: Saved Declaration Details View */}
           <Card>
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2 border-b pb-3">
+            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary flex items-center gap-2 border-b pb-3">
               <FileCheck2 className="h-5 w-5 text-brand" /> Current Active Declaration
             </h3>
             {userDeclaration ? (
               <div className="grid gap-3 text-sm">
                 <div className="flex justify-between border-b pb-2">
-                  <span className="text-slate-500 font-semibold">Regime Scheme</span>
+                  <span className="text-text-secondary font-semibold">Regime Scheme</span>
                   <span className="font-bold text-brand uppercase tracking-wide">{userDeclaration.regime} Regime</span>
                 </div>
                 <div className="flex justify-between border-b pb-2">
-                  <span className="text-slate-500 font-semibold">Financial Year</span>
-                  <span className="font-semibold text-slate-800">{userDeclaration.financialYear}</span>
+                  <span className="text-text-secondary font-semibold">Financial Year</span>
+                  <span className="font-semibold text-text-primary">{userDeclaration.financialYear}</span>
                 </div>
                 {userDeclaration.regime === "OLD" ? (
                   <>
                     <div className="flex justify-between border-b pb-2">
-                      <span className="text-slate-500">Section 80C</span>
-                      <span className="font-semibold text-slate-800">INR {Number(userDeclaration.section80C).toLocaleString("en-IN")}</span>
+                      <span className="text-text-secondary">Section 80C</span>
+                      <span className="font-semibold text-text-primary">INR {Number(userDeclaration.section80C).toLocaleString("en-IN")}</span>
                     </div>
                     <div className="flex justify-between border-b pb-2">
-                      <span className="text-slate-500">Section 80D</span>
-                      <span className="font-semibold text-slate-800">INR {Number(userDeclaration.section80D).toLocaleString("en-IN")}</span>
+                      <span className="text-text-secondary">Section 80D</span>
+                      <span className="font-semibold text-text-primary">INR {Number(userDeclaration.section80D).toLocaleString("en-IN")}</span>
                     </div>
                     <div className="flex justify-between border-b pb-2">
-                      <span className="text-slate-500">Section 24 (Housing)</span>
-                      <span className="font-semibold text-slate-800">INR {Number(userDeclaration.section24).toLocaleString("en-IN")}</span>
+                      <span className="text-text-secondary">Section 24 (Housing)</span>
+                      <span className="font-semibold text-text-primary">INR {Number(userDeclaration.section24).toLocaleString("en-IN")}</span>
                     </div>
                     <div className="flex justify-between border-b pb-2">
-                      <span className="text-slate-500">Other Exemptions</span>
-                      <span className="font-semibold text-slate-800">INR {Number(userDeclaration.otherExemptions).toLocaleString("en-IN")}</span>
+                      <span className="text-text-secondary">Other Exemptions</span>
+                      <span className="font-semibold text-text-primary">INR {Number(userDeclaration.otherExemptions).toLocaleString("en-IN")}</span>
                     </div>
                   </>
                 ) : (
-                  <div className="rounded bg-slate-50 p-3 text-xs text-slate-400 leading-relaxed mt-2">
+                  <div className="rounded bg-sunken p-3 text-xs text-text-muted leading-relaxed mt-2">
                     Under the NEW Tax Regime, standard deductions are set to ₹75,000, and standard rebate policies under Section 87A are auto-applied. Extra exemptions under 80C, 80D, and 24 are not deductible.
                   </div>
                 )}
                 <div className="flex justify-between pt-2">
-                  <span className="text-slate-500">Status</span>
+                  <span className="text-text-secondary">Status</span>
                   <StatusPill tone="green">{userDeclaration.status}</StatusPill>
                 </div>
               </div>
             ) : (
-              <div className="h-full flex flex-col items-center justify-center text-slate-400 p-8 border border-dashed rounded-lg text-center">
-                <SlidersHorizontal className="h-10 w-10 text-slate-200 mb-2" />
+              <div className="h-full flex flex-col items-center justify-center text-text-muted p-8 border border-dashed rounded-lg text-center">
+                <SlidersHorizontal className="h-10 w-10 text-text-muted mb-2" />
                 <div className="text-xs font-semibold">No declaration found. Select an employee to inspect.</div>
               </div>
             )}
@@ -619,14 +619,14 @@ export function ComplianceDash() {
         <div className="grid grid-cols-[320px_1fr] gap-6 max-xl:grid-cols-1">
           {/* Left Form */}
           <Card className="h-fit">
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2 border-b pb-3">
+            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary flex items-center gap-2 border-b pb-3">
               <Landmark className="h-5 w-5 text-brand" /> Submit Tax Proof
             </h3>
             <form onSubmit={handleProofSubmit} className="grid gap-3">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Employee</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Employee</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                   value={proofEmp}
                   onChange={(e) => setProofEmp(e.target.value)}
                   required
@@ -641,18 +641,18 @@ export function ComplianceDash() {
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Year</label>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Year</label>
                   <input
-                    className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                     value={proofYear}
                     onChange={(e) => setProofYear(e.target.value)}
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Exempt Type</label>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Exempt Type</label>
                   <select
-                    className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                     value={proofSection}
                     onChange={(e) => setProofSection(e.target.value)}
                     required
@@ -666,9 +666,9 @@ export function ComplianceDash() {
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Declared</label>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Declared</label>
                   <input
-                    className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                     type="number"
                     value={proofDeclared}
                     onChange={(e) => setProofDeclared(e.target.value)}
@@ -676,9 +676,9 @@ export function ComplianceDash() {
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Actual</label>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Actual</label>
                   <input
-                    className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                     type="number"
                     value={proofActual}
                     onChange={(e) => setProofActual(e.target.value)}
@@ -687,9 +687,9 @@ export function ComplianceDash() {
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">File URL Proof</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">File URL Proof</label>
                 <input
-                  className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                   placeholder="https://proof-links.com/file.pdf"
                   value={proofFile}
                   onChange={(e) => setProofFile(e.target.value)}
@@ -707,12 +707,12 @@ export function ComplianceDash() {
 
           {/* Right Table */}
           <Card>
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-700 border-b pb-3">
+            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary border-b pb-3">
               Tax Exemption Proof Ledger
             </h3>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[650px] border-collapse text-sm text-left">
-                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 border-b">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-text-secondary border-b">
                   <tr>
                     <th className="p-3">Employee</th>
                     <th className="p-3">FY / Type</th>
@@ -723,16 +723,16 @@ export function ComplianceDash() {
                 </thead>
                 <tbody>
                   {proofs.map((p) => (
-                    <tr key={p.id} className="border-b hover:bg-slate-50 transition">
-                      <td className="p-3 font-semibold text-slate-800">
+                    <tr key={p.id} className="border-b hover:bg-sunken transition">
+                      <td className="p-3 font-semibold text-text-primary">
                         {p.employee?.firstName} {p.employee?.lastName}
                       </td>
-                      <td className="p-3 text-slate-600">
+                      <td className="p-3 text-text-secondary">
                         {p.financialYear} / <span className="font-bold text-brand">{p.sectionType}</span>
                       </td>
                       <td className="p-3">
-                        <div className="text-xs text-slate-400">Dec: INR {Number(p.declaredAmount).toLocaleString("en-IN")}</div>
-                        <div className="font-semibold text-slate-800">Act: INR {Number(p.actualAmount).toLocaleString("en-IN")}</div>
+                        <div className="text-xs text-text-muted">Dec: INR {Number(p.declaredAmount).toLocaleString("en-IN")}</div>
+                        <div className="font-semibold text-text-primary">Act: INR {Number(p.actualAmount).toLocaleString("en-IN")}</div>
                       </td>
                       <td className="p-3">
                         <a className="font-bold text-brand hover:underline" href={p.fileUrl} rel="noreferrer" target="_blank">
@@ -748,14 +748,14 @@ export function ComplianceDash() {
                             <div className="flex gap-1">
                               <button
                                 onClick={() => handleDecideProof(p.id, "APPROVED")}
-                                className="p-1.5 rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition"
+                                className="p-1.5 rounded-full bg-success-bg text-success-fg hover:bg-success-bg transition"
                                 title="Approve"
                               >
                                 <Check className="h-4 w-4" />
                               </button>
                               <button
                                 onClick={() => handleDecideProof(p.id, "REJECTED")}
-                                className="p-1.5 rounded-full bg-rose-50 text-rose-600 hover:bg-rose-100 transition"
+                                className="p-1.5 rounded-full bg-danger-bg text-danger-fg hover:bg-danger-bg transition"
                                 title="Reject"
                               >
                                 <X className="h-4 w-4" />
@@ -786,14 +786,14 @@ export function ComplianceDash() {
           {/* Left forms */}
           <div className="grid gap-5 h-fit">
             <Card>
-              <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2 border-b pb-3">
+              <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary flex items-center gap-2 border-b pb-3">
                 <ShieldCheck className="h-5 w-5 text-brand" /> Approve Benefit Limit
               </h3>
               <form onSubmit={handleBenefitApply} className="grid gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Employee</label>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Employee</label>
                   <select
-                    className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                     value={benefitEmp}
                     onChange={(e) => setBenefitEmp(e.target.value)}
                     required
@@ -807,9 +807,9 @@ export function ComplianceDash() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Benefit Head</label>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Benefit Head</label>
                   <select
-                    className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                     value={benefitName}
                     onChange={(e) => setBenefitName(e.target.value)}
                     required
@@ -820,9 +820,9 @@ export function ComplianceDash() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Annual Max limit</label>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Annual Max limit</label>
                   <input
-                    className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                     type="number"
                     value={benefitMax}
                     onChange={(e) => setBenefitMax(e.target.value)}
@@ -839,14 +839,14 @@ export function ComplianceDash() {
             </Card>
 
             <Card>
-              <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2 border-b pb-3">
+              <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary flex items-center gap-2 border-b pb-3">
                 <Plus className="h-5 w-5 text-brand" /> Claim Flexible Benefit
               </h3>
               <form onSubmit={handleBenefitClaim} className="grid gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Employee</label>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Employee</label>
                   <select
-                    className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                     value={benefitEmp}
                     onChange={(e) => setBenefitEmp(e.target.value)}
                     required
@@ -860,9 +860,9 @@ export function ComplianceDash() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Benefit Category</label>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Benefit Category</label>
                   <select
-                    className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                     value={claimName}
                     onChange={(e) => setClaimName(e.target.value)}
                     required
@@ -874,9 +874,9 @@ export function ComplianceDash() {
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-500 mb-1">Claim Amount</label>
+                    <label className="block text-xs font-semibold text-text-secondary mb-1">Claim Amount</label>
                     <input
-                      className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                      className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                       type="number"
                       value={claimAmount}
                       onChange={(e) => setClaimAmount(e.target.value)}
@@ -884,9 +884,9 @@ export function ComplianceDash() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-500 mb-1">Claim Date</label>
+                    <label className="block text-xs font-semibold text-text-secondary mb-1">Claim Date</label>
                     <input
-                      className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-xs"
+                      className="min-h-10 w-full rounded-lg border border-line px-3 text-xs"
                       type="date"
                       value={claimDate}
                       onChange={(e) => setClaimDate(e.target.value)}
@@ -895,9 +895,9 @@ export function ComplianceDash() {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Receipt URL Attachment</label>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Receipt URL Attachment</label>
                   <input
-                    className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                     placeholder="https://proof-links.com/receipt.jpg"
                     value={claimReceipt}
                     onChange={(e) => setClaimReceipt(e.target.value)}
@@ -915,12 +915,12 @@ export function ComplianceDash() {
 
           {/* Right Table */}
           <Card>
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-700 border-b pb-3">
+            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary border-b pb-3">
               Flexible Benefit Claims Queue
             </h3>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[650px] border-collapse text-sm text-left">
-                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 border-b">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-text-secondary border-b">
                   <tr>
                     <th className="p-3">Employee</th>
                     <th className="p-3">Claim Date / Category</th>
@@ -931,14 +931,14 @@ export function ComplianceDash() {
                 </thead>
                 <tbody>
                   {claims.map((c) => (
-                    <tr key={c.id} className="border-b hover:bg-slate-50 transition">
-                      <td className="p-3 font-semibold text-slate-800">
+                    <tr key={c.id} className="border-b hover:bg-sunken transition">
+                      <td className="p-3 font-semibold text-text-primary">
                         {c.employee?.firstName} {c.employee?.lastName}
                       </td>
-                      <td className="p-3 text-slate-600">
+                      <td className="p-3 text-text-secondary">
                         {c.claimDate?.slice(0, 10)} / <span className="font-bold text-brand">{c.benefitName}</span>
                       </td>
-                      <td className="p-3 font-semibold text-slate-800">
+                      <td className="p-3 font-semibold text-text-primary">
                         INR {Number(c.claimAmount).toLocaleString("en-IN")}
                       </td>
                       <td className="p-3">
@@ -957,14 +957,14 @@ export function ComplianceDash() {
                             <div className="flex gap-1">
                               <button
                                 onClick={() => handleDecideClaim(c.id, "APPROVED")}
-                                className="p-1.5 rounded-full bg-emerald-50 text-emerald-600 hover:bg-emerald-100 transition"
+                                className="p-1.5 rounded-full bg-success-bg text-success-fg hover:bg-success-bg transition"
                                 title="Approve"
                               >
                                 <Check className="h-4 w-4" />
                               </button>
                               <button
                                 onClick={() => handleDecideClaim(c.id, "REJECTED")}
-                                className="p-1.5 rounded-full bg-rose-50 text-rose-600 hover:bg-rose-100 transition"
+                                className="p-1.5 rounded-full bg-danger-bg text-danger-fg hover:bg-danger-bg transition"
                                 title="Reject"
                               >
                                 <X className="h-4 w-4" />
@@ -994,14 +994,14 @@ export function ComplianceDash() {
         <div className="grid grid-cols-[320px_1fr] gap-6 max-xl:grid-cols-1">
           {/* Left Form */}
           <Card className="h-fit">
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-700 flex items-center gap-2 border-b pb-3">
+            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary flex items-center gap-2 border-b pb-3">
               <Landmark className="h-5 w-5 text-brand" /> Additional Salary Adjustment
             </h3>
             <form onSubmit={handleAdditionalSalarySubmit} className="grid gap-3">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Employee</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Employee</label>
                 <select
-                  className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                   value={addEmp}
                   onChange={(e) => setAddEmp(e.target.value)}
                   required
@@ -1016,9 +1016,9 @@ export function ComplianceDash() {
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Type</label>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Type</label>
                   <select
-                    className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white"
                     value={addType}
                     onChange={(e) => setAddType(e.target.value)}
                     required
@@ -1028,9 +1028,9 @@ export function ComplianceDash() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Amount</label>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Amount</label>
                   <input
-                    className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                    className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                     type="number"
                     value={addAmount}
                     onChange={(e) => setAddAmount(e.target.value)}
@@ -1039,9 +1039,9 @@ export function ComplianceDash() {
                 </div>
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Description / Name</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Description / Name</label>
                 <input
-                  className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-sm"
                   placeholder="e.g. Performance Bonus, Laptop Fine"
                   value={addName}
                   onChange={(e) => setAddName(e.target.value)}
@@ -1049,9 +1049,9 @@ export function ComplianceDash() {
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Effective Date</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Effective Date</label>
                 <input
-                  className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-xs"
+                  className="min-h-10 w-full rounded-lg border border-line px-3 text-xs"
                   type="date"
                   value={addDate}
                   onChange={(e) => setAddDate(e.target.value)}
@@ -1069,12 +1069,12 @@ export function ComplianceDash() {
 
           {/* Right Table */}
           <Card>
-            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-700 border-b pb-3">
+            <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary border-b pb-3">
               Active Additional Salary Adjustment Records
             </h3>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[650px] border-collapse text-sm text-left">
-                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 border-b">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-text-secondary border-b">
                   <tr>
                     <th className="p-3">Employee</th>
                     <th className="p-3">Adjustment Type</th>
@@ -1085,16 +1085,16 @@ export function ComplianceDash() {
                 </thead>
                 <tbody>
                   {additions.map((a) => (
-                    <tr key={a.id} className="border-b hover:bg-slate-50 transition">
-                      <td className="p-3 font-semibold text-slate-800">
+                    <tr key={a.id} className="border-b hover:bg-sunken transition">
+                      <td className="p-3 font-semibold text-text-primary">
                         {a.employee?.firstName} {a.employee?.lastName}
                       </td>
                       <td className="p-3">
                         <StatusPill tone={a.type === "ADDITION" ? "green" : "red"}>{a.type}</StatusPill>
                       </td>
-                      <td className="p-3 font-medium text-slate-700">{a.name}</td>
-                      <td className="p-3 text-slate-650">{a.date?.slice(0, 10)}</td>
-                      <td className="p-3 font-bold text-slate-800">
+                      <td className="p-3 font-medium text-text-primary">{a.name}</td>
+                      <td className="p-3 text-text-primary">{a.date?.slice(0, 10)}</td>
+                      <td className="p-3 font-bold text-text-primary">
                         INR {Number(a.amount).toLocaleString("en-IN")}
                       </td>
                     </tr>

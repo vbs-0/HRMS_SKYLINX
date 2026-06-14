@@ -241,12 +241,12 @@ export function HolidayConsole() {
       {(message || error) && (
         <div className="mb-4">
           {message && (
-            <div className="rounded-lg bg-emerald-50 p-3 text-sm text-emerald-800 border border-emerald-200">
+            <div className="rounded-lg bg-success-bg p-3 text-sm text-success-fg border border-success-border">
               {message}
             </div>
           )}
           {error && (
-            <div className="rounded-lg bg-rose-50 p-3 text-sm text-rose-800 border border-rose-200">
+            <div className="rounded-lg bg-danger-bg p-3 text-sm text-danger-fg border border-danger-border">
               {error}
             </div>
           )}
@@ -256,40 +256,40 @@ export function HolidayConsole() {
       {/* Add Holiday Modal Overlay */}
       {showAddModal && (
         <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl border border-slate-200 shadow-xl w-full max-w-md overflow-hidden">
+          <div className="bg-white rounded-xl border border-line shadow-xl w-full max-w-md overflow-hidden">
             <div className="bg-[var(--text-primary)] text-white p-4 font-semibold text-sm flex justify-between items-center">
               <span>Create New Holiday</span>
               <button onClick={() => setShowAddModal(false)} className="text-white/60 hover:text-white text-lg font-bold">×</button>
             </div>
             <form onSubmit={handleCreateHoliday} className="p-5 space-y-4">
               <div className="flex flex-col">
-                <label className="text-xs font-bold text-slate-500 uppercase mb-1">Holiday Name</label>
+                <label className="text-xs font-bold text-text-secondary uppercase mb-1">Holiday Name</label>
                 <input
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
                   placeholder="e.g. Independence Day"
                   required
-                  className="min-h-10 rounded-lg border border-slate-200 px-3 text-sm focus:border-[var(--color-brand-600)] outline-none"
+                  className="min-h-10 rounded-lg border border-line px-3 text-sm focus:border-[var(--color-brand-600)] outline-none"
                 />
               </div>
 
               <div className="flex flex-col">
-                <label className="text-xs font-bold text-slate-500 uppercase mb-1">Date</label>
+                <label className="text-xs font-bold text-text-secondary uppercase mb-1">Date</label>
                 <input
                   type="date"
                   value={formDate}
                   onChange={(e) => setFormDate(e.target.value)}
                   required
-                  className="min-h-10 rounded-lg border border-slate-200 px-3 text-sm focus:border-[var(--color-brand-600)] outline-none"
+                  className="min-h-10 rounded-lg border border-line px-3 text-sm focus:border-[var(--color-brand-600)] outline-none"
                 />
               </div>
 
               <div className="flex flex-col">
-                <label className="text-xs font-bold text-slate-500 uppercase mb-1">Type</label>
+                <label className="text-xs font-bold text-text-secondary uppercase mb-1">Type</label>
                 <select
                   value={formType}
                   onChange={(e) => setFormType(e.target.value)}
-                  className="min-h-10 rounded-lg border border-slate-200 px-3 text-sm focus:border-[var(--color-brand-600)] outline-none"
+                  className="min-h-10 rounded-lg border border-line px-3 text-sm focus:border-[var(--color-brand-600)] outline-none"
                 >
                   <option value="MANDATORY">Mandatory</option>
                   <option value="OPTIONAL">Optional</option>
@@ -298,11 +298,11 @@ export function HolidayConsole() {
               </div>
 
               <div className="flex flex-col">
-                <label className="text-xs font-bold text-slate-500 uppercase mb-1">Location (Optional)</label>
+                <label className="text-xs font-bold text-text-secondary uppercase mb-1">Location (Optional)</label>
                 <select
                   value={formLocationId}
                   onChange={(e) => setFormLocationId(e.target.value)}
-                  className="min-h-10 rounded-lg border border-slate-200 px-3 text-sm focus:border-[var(--color-brand-600)] outline-none"
+                  className="min-h-10 rounded-lg border border-line px-3 text-sm focus:border-[var(--color-brand-600)] outline-none"
                 >
                   <option value="">All Locations</option>
                   {locations.map((loc) => (
@@ -315,7 +315,7 @@ export function HolidayConsole() {
                 <button
                   type="button"
                   onClick={() => setShowAddModal(false)}
-                  className="min-h-10 rounded-lg border border-slate-200 px-4 text-xs font-semibold hover:bg-slate-50"
+                  className="min-h-10 rounded-lg border border-line px-4 text-xs font-semibold hover:bg-sunken"
                 >
                   Cancel
                 </button>
@@ -335,7 +335,7 @@ export function HolidayConsole() {
       {/* Main Views */}
       {activeTab === "Calendar" ? (
         <Card>
-          <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-4">
+          <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-line pb-4">
             <div>
               <h2 className="text-base font-semibold text-[var(--text-primary)]">Monthly Calendar Grid</h2>
               <p className="text-xs text-muted">Mandatory, optional and regional holidays marked directly in the monthly view.</p>
@@ -343,18 +343,18 @@ export function HolidayConsole() {
             <div className="flex items-center gap-2">
               <button
                 onClick={handlePrevMonth}
-                className="h-8 w-8 rounded-lg border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50"
+                className="h-8 w-8 rounded-lg border border-line bg-white flex items-center justify-center hover:bg-sunken"
               >
-                <ChevronLeft className="h-4 w-4 text-slate-600" />
+                <ChevronLeft className="h-4 w-4 text-text-secondary" />
               </button>
-              <div className="rounded-lg border border-slate-200 px-4 py-1.5 text-xs font-bold text-slate-700 bg-slate-50 min-w-[120px] text-center">
+              <div className="rounded-lg border border-line px-4 py-1.5 text-xs font-bold text-text-primary bg-sunken min-w-[120px] text-center">
                 {monthNames[currentMonthIdx]} {currentYear}
               </div>
               <button
                 onClick={handleNextMonth}
-                className="h-8 w-8 rounded-lg border border-slate-200 bg-white flex items-center justify-center hover:bg-slate-50"
+                className="h-8 w-8 rounded-lg border border-line bg-white flex items-center justify-center hover:bg-sunken"
               >
-                <ChevronRight className="h-4 w-4 text-slate-600" />
+                <ChevronRight className="h-4 w-4 text-text-secondary" />
               </button>
             </div>
           </div>
@@ -378,23 +378,23 @@ export function HolidayConsole() {
                   key={`${cell.dateString}-${idx}`}
                   className={`min-h-[96px] rounded-lg border p-2 flex flex-col justify-between text-left transition-all ${
                     !cell.isCurrentMonth
-                      ? "border-[var(--surface-sunken)] bg-[var(--surface-sunken)]/50 text-slate-350"
+                      ? "border-[var(--surface-sunken)] bg-[var(--surface-sunken)]/50 text-text-muted"
                       : dayHolidays.length
-                      ? "border-blue-200 bg-blue-50/20 text-slate-800"
-                      : "border-[var(--border-subtle)] bg-white hover:bg-slate-50/50 text-slate-700"
+                      ? "border-info-border bg-info-bg text-text-primary"
+                      : "border-[var(--border-subtle)] bg-white hover:bg-sunken text-text-primary"
                   }`}
                 >
-                  <span className={`text-[11px] font-bold ${!cell.isCurrentMonth ? "text-slate-300" : ""}`}>
+                  <span className={`text-[11px] font-bold ${!cell.isCurrentMonth ? "text-text-muted" : ""}`}>
                     {cell.dateNum}
                   </span>
 
                   {dayHolidays.map((h) => {
                     const badgeColor =
                       h.type === "MANDATORY"
-                        ? "bg-rose-50 border border-rose-100 text-rose-700"
+                        ? "bg-danger-bg border border-danger-border text-danger-fg"
                         : h.type === "OPTIONAL"
-                        ? "bg-emerald-50 border border-emerald-100 text-emerald-700"
-                        : "bg-indigo-50 border border-indigo-100 text-indigo-700";
+                        ? "bg-success-bg border border-success-border text-success-fg"
+                        : "bg-brand-50 border border-brand-300 text-brand-700";
 
                     return (
                       <div
@@ -422,8 +422,8 @@ export function HolidayConsole() {
           </div>
 
           <div className="overflow-auto">
-            <table className="w-full min-w-[760px] border-collapse text-sm text-left text-slate-600">
-              <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 font-bold">
+            <table className="w-full min-w-[760px] border-collapse text-sm text-left text-text-secondary">
+              <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-text-secondary font-bold">
                 <tr>
                   <th className="border-b border-[var(--border-default)] p-3">Holiday Name</th>
                   <th className="border-b border-[var(--border-default)] p-3">Date</th>
@@ -436,25 +436,25 @@ export function HolidayConsole() {
               <tbody>
                 {!loaded && (
                   <tr>
-                    <td colSpan={6} className="p-8 text-center text-slate-400">Loading holidays from database...</td>
+                    <td colSpan={6} className="p-8 text-center text-text-muted">Loading holidays from database...</td>
                   </tr>
                 )}
                 {loaded && !filteredListHolidays.length && (
                   <tr>
-                    <td colSpan={6} className="p-8 text-center text-slate-400">No {activeTab.toLowerCase()} holidays found.</td>
+                    <td colSpan={6} className="p-8 text-center text-text-muted">No {activeTab.toLowerCase()} holidays found.</td>
                   </tr>
                 )}
                 {filteredListHolidays.map((h) => (
-                  <tr key={h.id} className="hover:bg-slate-50/50">
-                    <td className="border-b border-[var(--border-default)] p-3 font-semibold text-slate-800">{h.name}</td>
+                  <tr key={h.id} className="hover:bg-sunken">
+                    <td className="border-b border-[var(--border-default)] p-3 font-semibold text-text-primary">{h.name}</td>
                     <td className="border-b border-[var(--border-default)] p-3">{h.date.slice(0, 10)}</td>
                     <td className="border-b border-[var(--border-default)] p-3">
                       <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                         h.type === "MANDATORY"
-                          ? "bg-rose-100 text-rose-800"
+                          ? "bg-danger-bg text-danger-fg"
                           : h.type === "OPTIONAL"
-                          ? "bg-emerald-100 text-emerald-800"
-                          : "bg-indigo-100 text-indigo-800"
+                          ? "bg-success-bg text-success-fg"
+                          : "bg-brand-50 text-brand-700"
                       }`}>
                         {h.type}
                       </span>
@@ -468,7 +468,7 @@ export function HolidayConsole() {
                         onClick={() => handleToggleStatus(h.id, h.status)}
                         className={`inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-lg border transition ${
                           h.status === "ACTIVE"
-                            ? "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+                            ? "bg-white text-text-primary border-line hover:bg-sunken"
                             : "bg-[var(--color-brand-600)] text-white border-transparent hover:bg-[var(--color-brand-600)]"
                         }`}
                       >

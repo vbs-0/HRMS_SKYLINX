@@ -179,7 +179,7 @@ export function OrganizationConsole() {
           className={`px-6 py-3 font-bold text-sm transition-all focus:outline-none ${
             activeTab === "Employee Tree"
               ? "bg-[var(--color-brand-600)] text-white"
-              : "bg-transparent text-slate-800 hover:bg-slate-100"
+              : "bg-transparent text-text-primary hover:bg-sunken"
           }`}
         >
           Employee Tree
@@ -189,7 +189,7 @@ export function OrganizationConsole() {
           className={`px-6 py-3 font-bold text-sm transition-all focus:outline-none ${
             activeTab === "Department Tree"
               ? "bg-[var(--color-brand-600)] text-white"
-              : "bg-transparent text-slate-800 hover:bg-slate-100"
+              : "bg-transparent text-text-primary hover:bg-sunken"
           }`}
         >
           Department Tree
@@ -239,7 +239,7 @@ export function OrganizationConsole() {
             </button>
 
             {isDeptDropdownOpen && (
-              <div className="absolute top-full left-0 border border-slate-200 rounded-md bg-white shadow-lg mt-1 overflow-y-auto max-h-[250px] w-full z-20">
+              <div className="absolute top-full left-0 border border-line rounded-md bg-white shadow-lg mt-1 overflow-y-auto max-h-[250px] w-full z-20">
                 {departments.map((dept) => (
                   <button
                     key={dept.department}
@@ -247,10 +247,10 @@ export function OrganizationConsole() {
                       setSelectedDepartment(dept.department);
                       setIsDeptDropdownOpen(false);
                     }}
-                    className={`w-full text-left px-4 py-2.5 text-xs font-semibold border-b last:border-0 border-slate-100 transition-all ${
+                    className={`w-full text-left px-4 py-2.5 text-xs font-semibold border-b last:border-0 border-line transition-all ${
                       selectedDepartment === dept.department
-                        ? "bg-blue-50 text-blue-600 font-bold"
-                        : "text-slate-700 hover:bg-slate-55"
+                        ? "bg-info-bg text-info-fg font-bold"
+                        : "text-text-primary hover:bg-sunken"
                     }`}
                   >
                     {dept.department}
@@ -263,17 +263,17 @@ export function OrganizationConsole() {
           {/* Right Column Tree Panel */}
           <div className="flex flex-col items-center w-full min-h-[400px]">
             {!selectedDepartment ? (
-              <div className="text-slate-500 text-sm mt-12">Select a department to view.</div>
+              <div className="text-text-secondary text-sm mt-12">Select a department to view.</div>
             ) : activeDeptData ? (
               <div className="flex flex-col items-center w-full pt-4">
                 {/* Department Node Card */}
-                <div className="flex items-center gap-3 bg-blue-50 border border-blue-200 rounded-lg p-3 px-5 shadow-sm min-w-[220px]">
+                <div className="flex items-center gap-3 bg-info-bg border border-info-border rounded-lg p-3 px-5 shadow-sm min-w-[220px]">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-600 text-white font-bold text-lg">
                     {selectedDepartment.charAt(0).toUpperCase()}
                   </div>
                   <div>
-                    <div className="text-sm font-bold text-slate-800">{selectedDepartment}</div>
-                    <div className="text-xs font-semibold text-blue-600 mt-0.5">{activeDeptData.employees.length} Employees</div>
+                    <div className="text-sm font-bold text-text-primary">{selectedDepartment}</div>
+                    <div className="text-xs font-semibold text-info-fg mt-0.5">{activeDeptData.employees.length} Employees</div>
                   </div>
                 </div>
 
@@ -329,14 +329,14 @@ export function OrganizationConsole() {
                             )}
                             
                             {/* Employee Card */}
-                            <div className="border border-slate-200 bg-white rounded-lg p-4 pt-8 text-center shadow-sm relative min-w-[180px] max-w-[200px]">
+                            <div className="border border-line bg-white rounded-lg p-4 pt-8 text-center shadow-sm relative min-w-[180px] max-w-[200px]">
                               <div className="w-12 h-12 rounded-full border-2 border-blue-400 overflow-hidden absolute -top-6 left-1/2 -translate-x-1/2 bg-[var(--color-brand-50)] flex items-center justify-center select-none">
-                                <span className="text-sm font-bold text-blue-500">
+                                <span className="text-sm font-bold text-info-fg">
                                   {emp.name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase()}
                                 </span>
                               </div>
-                              <div className="text-[11px] font-bold text-blue-500 truncate">{emp.designation}</div>
-                              <div className="text-xs font-bold text-slate-800 mt-1 truncate">{emp.name}</div>
+                              <div className="text-[11px] font-bold text-info-fg truncate">{emp.designation}</div>
+                              <div className="text-xs font-bold text-text-primary mt-1 truncate">{emp.name}</div>
                             </div>
                           </div>
                         );
@@ -346,7 +346,7 @@ export function OrganizationConsole() {
                 )}
               </div>
             ) : (
-              <div className="text-slate-500 text-sm mt-12">No data found.</div>
+              <div className="text-text-secondary text-sm mt-12">No data found.</div>
             )}
           </div>
 
@@ -384,16 +384,16 @@ function EmployeeTreeNode({
       {/* Node Card */}
       <div className="border border-blue-400 bg-white rounded-lg p-4 pt-8 text-center shadow-sm relative min-w-[200px] max-w-[220px] z-10">
         <div className="w-12 h-12 rounded-full border-2 border-blue-400 overflow-hidden absolute -top-6 left-1/2 -translate-x-1/2 bg-[var(--color-brand-50)] flex items-center justify-center select-none">
-          <span className="text-sm font-bold text-blue-500">
+          <span className="text-sm font-bold text-info-fg">
             {employee.name.split(" ").map(w => w[0]).join("").slice(0, 2).toUpperCase()}
           </span>
         </div>
-        <div className="text-xs font-bold text-slate-800 uppercase truncate">{employee.name}</div>
-        <div className="text-[10px] text-slate-500 mt-0.5 truncate">{employee.designation}</div>
+        <div className="text-xs font-bold text-text-primary uppercase truncate">{employee.name}</div>
+        <div className="text-[10px] text-text-secondary mt-0.5 truncate">{employee.designation}</div>
         
-        <div className="text-[10px] text-slate-500 text-left mt-3 border-t pt-2 space-y-0.5">
-          <div>Direct Reportees: <span className="font-bold text-slate-700">{direct}</span></div>
-          <div>Indirect Reportees: <span className="font-bold text-slate-700">{indirect}</span></div>
+        <div className="text-[10px] text-text-secondary text-left mt-3 border-t pt-2 space-y-0.5">
+          <div>Direct Reportees: <span className="font-bold text-text-primary">{direct}</span></div>
+          <div>Indirect Reportees: <span className="font-bold text-text-primary">{indirect}</span></div>
         </div>
       </div>
 
@@ -404,7 +404,7 @@ function EmployeeTreeNode({
           <div className="w-0.5 h-10 bg-[var(--border-strong)] relative flex justify-center">
             <button
               onClick={() => onToggleCollapse(employee.id)}
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-5 w-8 rounded border border-slate-200 bg-white flex items-center justify-center text-[10px] font-bold text-slate-500 hover:bg-slate-55 shadow-sm z-10 font-mono transition-all focus:outline-none"
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-5 w-8 rounded border border-line bg-white flex items-center justify-center text-[10px] font-bold text-text-secondary hover:bg-sunken shadow-sm z-10 font-mono transition-all focus:outline-none"
             >
               {isCollapsed ? `+ ${direct}` : `^ ${direct}`}
             </button>

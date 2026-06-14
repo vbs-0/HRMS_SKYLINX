@@ -93,9 +93,9 @@ export function SaasAdminPageContent() {
 
   if (!isOwner) {
     return (
-      <Card className="p-8 text-center max-w-lg mx-auto mt-10 border-rose-100 bg-rose-50/20">
-        <ShieldAlert className="h-12 w-12 text-rose-500 mx-auto mb-4" />
-        <h3 className="text-lg font-bold text-slate-800">Owner Credentials Required</h3>
+      <Card className="p-8 text-center max-w-lg mx-auto mt-10 border-danger-border bg-danger-bg">
+        <ShieldAlert className="h-12 w-12 text-danger-fg mx-auto mb-4" />
+        <h3 className="text-lg font-bold text-text-primary">Owner Credentials Required</h3>
         <p className="text-sm text-muted mt-2">Access to the SaaS Control Room is strictly restricted to system owner credentials.</p>
       </Card>
     );
@@ -214,14 +214,14 @@ export function SaasAdminPageContent() {
                     <div className="bg-[var(--surface-sunken)] border border-[var(--border-default)] p-3 rounded-lg">
                       <span className="text-muted block text-xs">CPU Utilization</span>
                       <span className="font-bold text-[var(--text-primary)] text-lg">14.2%</span>
-                      <div className="h-1.5 w-full bg-slate-200 rounded-full mt-2 overflow-hidden">
+                      <div className="h-1.5 w-full bg-surface-hover rounded-full mt-2 overflow-hidden">
                         <div className="h-full bg-emerald-500" style={{ width: "14.2%" }} />
                       </div>
                     </div>
                     <div className="bg-[var(--surface-sunken)] border border-[var(--border-default)] p-3 rounded-lg">
                       <span className="text-muted block text-xs">Memory allocation</span>
                       <span className="font-bold text-[var(--text-primary)] text-lg">512MB / 1GB</span>
-                      <div className="h-1.5 w-full bg-slate-200 rounded-full mt-2 overflow-hidden">
+                      <div className="h-1.5 w-full bg-surface-hover rounded-full mt-2 overflow-hidden">
                         <div className="h-full bg-emerald-500" style={{ width: "50%" }} />
                       </div>
                     </div>
@@ -296,7 +296,7 @@ export function SaasAdminPageContent() {
                           <div className="text-xs text-muted">{t.legalName}</div>
                         </td>
                         <td className="p-4 border-b border-[var(--border-default)]">
-                          <code className="bg-slate-100 px-2 py-1 rounded text-xs text-brand font-semibold">{t.id}</code>
+                          <code className="bg-sunken px-2 py-1 rounded text-xs text-brand font-semibold">{t.id}</code>
                         </td>
                         <td className="p-4 border-b border-[var(--border-default)] text-xs text-muted">
                           {new Date(t.createdAt).toLocaleDateString()}
@@ -312,8 +312,8 @@ export function SaasAdminPageContent() {
                             onClick={() => handleToggleTenantStatus(t.id, t.status)}
                             className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                               t.status === "ACTIVE"
-                                ? "bg-red-50 text-red-600 hover:bg-red-100"
-                                : "bg-emerald-50 text-emerald-600 hover:bg-emerald-100"
+                                ? "bg-danger-bg text-danger-fg hover:bg-danger-bg"
+                                : "bg-success-bg text-success-fg hover:bg-success-bg"
                             }`}
                           >
                             {t.status === "ACTIVE" ? (

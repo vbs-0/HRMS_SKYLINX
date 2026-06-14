@@ -110,7 +110,7 @@ export function ExpensesConsole() {
             </div>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[860px] border-collapse text-sm text-[var(--text-secondary)]">
-                <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase font-bold text-slate-500 border-b">
+                <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase font-bold text-text-secondary border-b">
                   <tr>
                     <th className="p-3">Employee</th>
                     <th className="p-3">Category</th>
@@ -135,7 +135,7 @@ export function ExpensesConsole() {
             </div>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[860px] border-collapse text-sm text-[var(--text-secondary)]">
-                <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase font-bold text-slate-500 border-b">
+                <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase font-bold text-text-secondary border-b">
                   <tr>
                     <th className="p-3">Employee</th>
                     <th className="p-3">Category</th>
@@ -160,7 +160,7 @@ export function ExpensesConsole() {
             </div>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[860px] border-collapse text-sm text-[var(--text-secondary)]">
-                <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase font-bold text-slate-500 border-b">
+                <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase font-bold text-text-secondary border-b">
                   <tr>
                     <th className="p-3">Employee</th>
                     <th className="p-3">Category</th>
@@ -185,7 +185,7 @@ export function ExpensesConsole() {
             </div>
             <div className="overflow-x-auto">
               <table className="w-full min-w-[860px] border-collapse text-sm text-[var(--text-secondary)]">
-                <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase font-bold text-slate-500 border-b">
+                <thead className="bg-[var(--surface-sunken)] text-left text-xs uppercase font-bold text-text-secondary border-b">
                   <tr>
                     <th className="p-3">Employee</th>
                     <th className="p-3">Category</th>

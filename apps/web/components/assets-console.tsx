@@ -47,11 +47,11 @@ function Modal({ isOpen, onClose, title, children }: ModalProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-xs p-4">
       <div className="relative w-full max-w-lg rounded-xl border border-[var(--border-default)] bg-white p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-200 text-left">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
-          <h3 className="text-lg font-bold text-slate-900">{title}</h3>
+        <div className="flex items-center justify-between border-b border-line pb-3 mb-4">
+          <h3 className="text-lg font-bold text-text-primary">{title}</h3>
           <button
             type="button"
-            className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
+            className="rounded-lg p-1 text-text-muted hover:bg-sunken hover:text-text-secondary transition-colors"
             onClick={onClose}
           >
             <X className="h-5 w-5" />
@@ -596,8 +596,8 @@ export function AssetsConsole() {
       {/* Delete Confirmation Modal */}
       <Modal isOpen={!!deleteTargetAsset} onClose={() => setDeleteTargetAsset(null)} title="Delete Asset from Inventory">
         <div className="grid gap-4">
-          <p className="text-sm text-slate-600">
-            Are you sure you want to permanently delete asset <span className="font-mono font-bold text-slate-900">{deleteTargetAsset}</span>? This action cannot be undone.
+          <p className="text-sm text-text-secondary">
+            Are you sure you want to permanently delete asset <span className="font-mono font-bold text-text-primary">{deleteTargetAsset}</span>? This action cannot be undone.
           </p>
           <div className="flex justify-end gap-2 border-t pt-3 mt-2">
             <button
@@ -689,7 +689,7 @@ export function AssetsConsole() {
                             </button>
                           ) : (
                              <button
-                               className="flex min-h-8 items-center gap-1 rounded-lg border border-[var(--border-default)] px-3 text-xs font-semibold hover:bg-slate-50"
+                               className="flex min-h-8 items-center gap-1 rounded-lg border border-[var(--border-default)] px-3 text-xs font-semibold hover:bg-sunken"
                                onClick={() => {
                                  setPanelAssetTag(row.assetTag);
                                  setReturnCondition(row.condition || "GOOD");
@@ -734,7 +734,7 @@ export function AssetsConsole() {
               <div className="flex items-center justify-between rounded-lg border border-[var(--border-default)] p-3 bg-[var(--surface-sunken)] text-sm" key={log.id}>
                 <div className="flex items-center gap-3">
                   <span className={`inline-block px-2.5 py-0.5 rounded text-xs font-semibold ${
-                    log.action === "asset.create" ? "bg-[var(--success-bg)] text-[var(--success-fg)]" : log.action === "asset.assign" ? "bg-blue-50 text-blue-600" : log.action === "asset.delete" ? "bg-red-50 text-red-600" : "bg-yellow-50 text-yellow-600"
+                    log.action === "asset.create" ? "bg-[var(--success-bg)] text-[var(--success-fg)]" : log.action === "asset.assign" ? "bg-info-bg text-info-fg" : log.action === "asset.delete" ? "bg-danger-bg text-danger-fg" : "bg-warning-bg text-warning-fg"
                   }`}>
                     {log.action.replace("asset.", "").toUpperCase()}
                   </span>

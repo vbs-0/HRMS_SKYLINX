@@ -418,14 +418,14 @@ export function SkyNexusConsole() {
       {(message || error) && (
         <div className="transition-all duration-300">
           {message && (
-            <div className="rounded-xl bg-emerald-50 p-4 text-sm text-emerald-800 border border-emerald-200 flex items-center gap-2">
-              <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0" />
+            <div className="rounded-xl bg-success-bg p-4 text-sm text-success-fg border border-success-border flex items-center gap-2">
+              <CheckCircle2 className="h-5 w-5 text-success-fg shrink-0" />
               <span>{message}</span>
             </div>
           )}
           {error && (
-            <div className="rounded-xl bg-rose-50 p-4 text-sm text-rose-800 border border-rose-200 flex items-center gap-2">
-              <AlertCircle className="h-5 w-5 text-rose-600 shrink-0" />
+            <div className="rounded-xl bg-danger-bg p-4 text-sm text-danger-fg border border-danger-border flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-danger-fg shrink-0" />
               <span>{error}</span>
             </div>
           )}
@@ -451,7 +451,7 @@ export function SkyNexusConsole() {
                     placeholder="Provide a title (optional)..."
                     value={postTitle}
                     onChange={(e) => setPostTitle(e.target.value)}
-                    className="w-full text-sm font-semibold outline-none border-b border-dashed border-[#e2e8f0] pb-1 text-slate-800 placeholder:text-slate-400"
+                    className="w-full text-sm font-semibold outline-none border-b border-dashed border-[#e2e8f0] pb-1 text-text-primary placeholder:text-text-muted"
                   />
                   <textarea
                     rows={3}
@@ -459,7 +459,7 @@ export function SkyNexusConsole() {
                     value={postBody}
                     onChange={(e) => setPostBody(e.target.value)}
                     required
-                    className="w-full text-sm outline-none resize-none text-slate-700 placeholder:text-slate-400 mt-1"
+                    className="w-full text-sm outline-none resize-none text-text-primary placeholder:text-text-muted mt-1"
                   />
                 </div>
               </div>
@@ -470,14 +470,14 @@ export function SkyNexusConsole() {
                 <div className="flex items-center gap-3">
 
                   {/* Pin check box */}
-                  <label className="flex items-center gap-1.5 cursor-pointer rounded-lg px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-100 transition select-none">
+                  <label className="flex items-center gap-1.5 cursor-pointer rounded-lg px-3 py-1.5 text-xs font-semibold text-text-secondary hover:bg-sunken transition select-none">
                     <input 
                       type="checkbox" 
                       checked={isPinned}
                       onChange={(e) => setIsPinned(e.target.checked)}
                       className="rounded border-[var(--border-strong)] text-brand focus:ring-brand h-3.5 w-3.5"
                     />
-                    <Pin className="h-3.5 w-3.5 text-amber-500" />
+                    <Pin className="h-3.5 w-3.5 text-warning-fg" />
                     <span>Pin notice</span>
                   </label>
                 </div>
@@ -487,7 +487,7 @@ export function SkyNexusConsole() {
                   <select
                     value={postType}
                     onChange={(e: any) => setPostType(e.target.value)}
-                    className="rounded-lg border border-[var(--border-strong)] bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-600 outline-none transition focus:border-brand"
+                    className="rounded-lg border border-[var(--border-strong)] bg-white px-2.5 py-1.5 text-xs font-semibold text-text-secondary outline-none transition focus:border-brand"
                   >
                     <option value="POST">General Post</option>
                     <option value="ANNOUNCEMENT">Announcement</option>
@@ -511,13 +511,13 @@ export function SkyNexusConsole() {
           <div className="grid gap-4">
             {loading ? (
               <Card>
-                <div className="py-12 text-center text-slate-400 font-semibold">
+                <div className="py-12 text-center text-text-muted font-semibold">
                   Compiling Skynexus database feed...
                 </div>
               </Card>
             ) : !filteredPosts.length ? (
               <Card>
-                <div className="py-12 text-center text-slate-400 font-semibold">
+                <div className="py-12 text-center text-text-muted font-semibold">
                   No social posts in this category. Be the first to publish!
                 </div>
               </Card>
@@ -535,24 +535,24 @@ export function SkyNexusConsole() {
                   <article 
                     key={post.id} 
                     className={`rounded-xl border bg-white p-5 shadow-sm transition hover:shadow-md ${
-                      post.pinned ? "border-amber-200 ring-1 ring-amber-100" : "border-[var(--border-subtle)]"
+                      post.pinned ? "border-warning-border ring-1 ring-warning-border" : "border-[var(--border-subtle)]"
                     }`}
                   >
                     {/* Post Header details */}
-                    <div className="flex items-start justify-between gap-4 border-b border-slate-50 pb-3 mb-3">
+                    <div className="flex items-start justify-between gap-4 border-b border-line pb-3 mb-3">
                       <div className="flex gap-3 items-center">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--surface-sunken)] text-xs font-bold text-slate-600 uppercase border">
+                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--surface-sunken)] text-xs font-bold text-text-secondary uppercase border">
                           {authorName.slice(0, 2)}
                         </div>
                         <div>
-                          <h3 className="font-semibold text-slate-800 text-sm leading-none">{authorName}</h3>
-                          <span className="text-[10px] text-slate-400">{authorDept} • {new Date(post.createdAt).toLocaleDateString()}</span>
+                          <h3 className="font-semibold text-text-primary text-sm leading-none">{authorName}</h3>
+                          <span className="text-[10px] text-text-muted">{authorDept} • {new Date(post.createdAt).toLocaleDateString()}</span>
                         </div>
                       </div>
 
                       <div className="flex items-center gap-1.5">
                         {post.pinned && (
-                          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-100 rounded-md px-1.5 py-0.5">
+                          <span className="inline-flex items-center gap-1 text-[10px] font-bold text-warning-fg bg-warning-bg border border-warning-border rounded-md px-1.5 py-0.5">
                             <Pin className="h-2.5 w-2.5" /> PINNED
                           </span>
                         )}
@@ -568,25 +568,25 @@ export function SkyNexusConsole() {
 
                     {/* Post Title */}
                     {post.title && (
-                      <h4 className="font-bold text-slate-800 text-base mb-2 leading-tight">
+                      <h4 className="font-bold text-text-primary text-base mb-2 leading-tight">
                         {post.title}
                       </h4>
                     )}
 
                     {/* Post Message Body */}
-                    <p className="text-slate-600 text-sm leading-relaxed whitespace-pre-line">
+                    <p className="text-text-secondary text-sm leading-relaxed whitespace-pre-line">
                       {post.body}
                     </p>
 
 
 
                     {/* Engagement Actions footer */}
-                    <div className="mt-4 flex items-center justify-between border-t border-slate-50 pt-3 text-slate-500 text-xs">
+                    <div className="mt-4 flex items-center justify-between border-t border-line pt-3 text-text-secondary text-xs">
                       <div className="flex gap-4">
                         <button 
                           onClick={() => handleToggleLike(post.id, hasLiked)}
-                          className={`flex items-center gap-1.5 font-bold transition hover:text-rose-600 ${
-                            hasLiked ? "text-rose-600" : ""
+                          className={`flex items-center gap-1.5 font-bold transition hover:text-danger-fg ${
+                            hasLiked ? "text-danger-fg" : ""
                           }`}
                         >
                           <Heart className={`h-4 w-4 ${hasLiked ? "fill-rose-600" : ""}`} />
@@ -595,19 +595,19 @@ export function SkyNexusConsole() {
 
                         <button 
                           onClick={() => setExpandedComments(curr => ({ ...curr, [post.id]: !curr[post.id] }))}
-                          className="flex items-center gap-1.5 font-semibold hover:text-slate-800 transition"
+                          className="flex items-center gap-1.5 font-semibold hover:text-text-primary transition"
                         >
                           <MessageCircle className="h-4 w-4" />
                           <span>{post.comments.length} Comments</span>
                         </button>
                       </div>
 
-                      <span className="text-[10px] text-slate-400">Company Access Only</span>
+                      <span className="text-[10px] text-text-muted">Company Access Only</span>
                     </div>
 
                     {/* Comments drawer */}
                     {expandedComments[post.id] && (
-                      <div className="mt-4 border-t border-slate-100 pt-3">
+                      <div className="mt-4 border-t border-line pt-3">
                         {post.comments.length > 0 ? (
                           <div className="grid gap-2 mb-3">
                             {post.comments.map((c) => {
@@ -615,10 +615,10 @@ export function SkyNexusConsole() {
                                 ? `${c.user.employee.firstName} ${c.user.employee.lastName}`
                                 : c.user?.email || "Anonymous";
                               return (
-                                <div key={c.id} className="rounded-lg bg-slate-50 p-2.5 text-xs text-slate-600 border border-slate-100">
-                                  <div className="flex justify-between font-semibold text-slate-700 mb-1">
+                                <div key={c.id} className="rounded-lg bg-sunken p-2.5 text-xs text-text-secondary border border-line">
+                                  <div className="flex justify-between font-semibold text-text-primary mb-1">
                                     <span>{cAuthor}</span>
-                                    <span className="text-[9px] font-normal text-slate-400">{new Date(c.createdAt).toLocaleDateString()}</span>
+                                    <span className="text-[9px] font-normal text-text-muted">{new Date(c.createdAt).toLocaleDateString()}</span>
                                   </div>
                                   <p>{c.body}</p>
                                 </div>
@@ -626,7 +626,7 @@ export function SkyNexusConsole() {
                             })}
                           </div>
                         ) : (
-                          <p className="text-[11px] text-slate-400 mb-3 italic">No comments yet. Write one below!</p>
+                          <p className="text-[11px] text-text-muted mb-3 italic">No comments yet. Write one below!</p>
                         )}
 
                         <form onSubmit={(e) => handlePostComment(e, post.id)} className="flex gap-2">
@@ -657,7 +657,7 @@ export function SkyNexusConsole() {
           <Card>
             <div className="flex items-center gap-2 border-b pb-2 mb-3">
               <Gift className="h-5 w-5 text-pink-500" />
-              <h3 className="font-bold text-slate-800 text-sm">Upcoming Birthdays</h3>
+              <h3 className="font-bold text-text-primary text-sm">Upcoming Birthdays</h3>
             </div>
             
             <div className="grid gap-3.5">
@@ -665,8 +665,8 @@ export function SkyNexusConsole() {
                 birthdayStaff.map((staff) => (
                   <div key={staff.id} className="flex justify-between items-center text-xs">
                     <div>
-                      <div className="font-semibold text-slate-800">{staff.firstName} {staff.lastName}</div>
-                      <div className="text-[10px] text-slate-400">{staff.departmentName || "Corporate"} • {staff.birthdateVirtual}</div>
+                      <div className="font-semibold text-text-primary">{staff.firstName} {staff.lastName}</div>
+                      <div className="text-[10px] text-text-muted">{staff.departmentName || "Corporate"} • {staff.birthdateVirtual}</div>
                     </div>
                     
                     <button 
@@ -678,7 +678,7 @@ export function SkyNexusConsole() {
                   </div>
                 ))
               ) : (
-                <p className="text-xs text-slate-400 italic">No birthdays scheduled.</p>
+                <p className="text-xs text-text-muted italic">No birthdays scheduled.</p>
               )}
             </div>
           </Card>
@@ -686,20 +686,20 @@ export function SkyNexusConsole() {
           {/* Sticky Notice board */}
           <Card>
             <div className="flex items-center gap-2 border-b pb-2 mb-3">
-              <Megaphone className="h-5 w-5 text-amber-500" />
-              <h3 className="font-bold text-slate-800 text-sm">Pinned Company Updates</h3>
+              <Megaphone className="h-5 w-5 text-warning-fg" />
+              <h3 className="font-bold text-text-primary text-sm">Pinned Company Updates</h3>
             </div>
 
             <div className="grid gap-3 text-xs">
               {pinnedAnnouncements.length > 0 ? (
                 pinnedAnnouncements.slice(0, 4).map((ann) => (
                   <div key={ann.id} className="border-l-2 border-amber-400 pl-2 py-0.5">
-                    <div className="font-semibold text-slate-800 truncate">{ann.title || "Announcement"}</div>
-                    <p className="text-[10px] text-slate-500 line-clamp-2 mt-0.5">{ann.body}</p>
+                    <div className="font-semibold text-text-primary truncate">{ann.title || "Announcement"}</div>
+                    <p className="text-[10px] text-text-secondary line-clamp-2 mt-0.5">{ann.body}</p>
                   </div>
                 ))
               ) : (
-                <p className="text-xs text-slate-400 italic">No pinned announcements.</p>
+                <p className="text-xs text-text-muted italic">No pinned announcements.</p>
               )}
             </div>
           </Card>
@@ -708,17 +708,17 @@ export function SkyNexusConsole() {
           <Card>
             <div className="flex items-center gap-2 border-b pb-2 mb-3">
               <Sparkles className="h-5 w-5 text-brand" />
-              <h3 className="font-bold text-slate-800 text-sm">Nexus Analytics</h3>
+              <h3 className="font-bold text-text-primary text-sm">Nexus Analytics</h3>
             </div>
 
             <div className="grid grid-cols-2 gap-2 text-center">
-              <div className="rounded-lg bg-slate-50 p-2.5 border">
-                <span className="text-[10px] font-bold text-slate-400 uppercase">Total Posts</span>
-                <p className="text-lg font-bold text-slate-800 mt-0.5">{posts.length}</p>
+              <div className="rounded-lg bg-sunken p-2.5 border">
+                <span className="text-[10px] font-bold text-text-muted uppercase">Total Posts</span>
+                <p className="text-lg font-bold text-text-primary mt-0.5">{posts.length}</p>
               </div>
-              <div className="rounded-lg bg-slate-50 p-2.5 border">
-                <span className="text-[10px] font-bold text-slate-400 uppercase">Likes Given</span>
-                <p className="text-lg font-bold text-slate-800 mt-0.5">
+              <div className="rounded-lg bg-sunken p-2.5 border">
+                <span className="text-[10px] font-bold text-text-muted uppercase">Likes Given</span>
+                <p className="text-lg font-bold text-text-primary mt-0.5">
                   {posts.reduce((sum, p) => sum + p.likes.length, 0)}
                 </p>
               </div>
@@ -734,15 +734,15 @@ export function SkyNexusConsole() {
           <div className="w-full max-w-lg rounded-xl border border-[var(--border-default)] bg-white p-6 shadow-2xl relative">
             <button
               onClick={() => setIsModalOpen(false)}
-              className="absolute right-4 top-4 text-slate-400 hover:text-slate-600 transition"
+              className="absolute right-4 top-4 text-text-muted hover:text-text-secondary transition"
               type="button"
             >
               <X className="h-5 w-5" />
             </button>
 
-            <h3 className="text-lg font-bold text-slate-800 mb-4 flex items-center gap-2">
-              {modalType === "ANNOUNCEMENT" && <Megaphone className="h-5 w-5 text-amber-500" />}
-              {modalType === "RECOGNITION" && <Trophy className="h-5 w-5 text-emerald-500" />}
+            <h3 className="text-lg font-bold text-text-primary mb-4 flex items-center gap-2">
+              {modalType === "ANNOUNCEMENT" && <Megaphone className="h-5 w-5 text-warning-fg" />}
+              {modalType === "RECOGNITION" && <Trophy className="h-5 w-5 text-success-fg" />}
               {modalType === "BIRTHDAY" && <Gift className="h-5 w-5 text-pink-500" />}
               <span>
                 {modalType === "ANNOUNCEMENT" && "Publish Announcement"}
@@ -755,7 +755,7 @@ export function SkyNexusConsole() {
               {/* Target Employee Dropdown for Birthday or Recognition */}
               {(modalType === "RECOGNITION" || modalType === "BIRTHDAY") && (
                 <div className="grid gap-1">
-                  <label className="text-xs font-semibold text-slate-500 uppercase">
+                  <label className="text-xs font-semibold text-text-secondary uppercase">
                     Select Employee
                   </label>
                   <select
@@ -776,7 +776,7 @@ export function SkyNexusConsole() {
 
               {/* Post Title */}
               <div className="grid gap-1">
-                <label className="text-xs font-semibold text-slate-500 uppercase">
+                <label className="text-xs font-semibold text-text-secondary uppercase">
                   Post Title
                 </label>
                 <input
@@ -784,13 +784,13 @@ export function SkyNexusConsole() {
                   placeholder="Enter a descriptive title..."
                   value={modalTitle}
                   onChange={(e) => setModalTitle(e.target.value)}
-                  className="min-h-10 rounded-lg border border-[var(--border-strong)] px-3 text-sm outline-none focus:border-brand text-slate-800"
+                  className="min-h-10 rounded-lg border border-[var(--border-strong)] px-3 text-sm outline-none focus:border-brand text-text-primary"
                 />
               </div>
 
               {/* Message Body */}
               <div className="grid gap-1">
-                <label className="text-xs font-semibold text-slate-500 uppercase">
+                <label className="text-xs font-semibold text-text-secondary uppercase">
                   Message
                 </label>
                 <textarea
@@ -799,17 +799,17 @@ export function SkyNexusConsole() {
                   value={modalBody}
                   onChange={(e) => setModalBody(e.target.value)}
                   required
-                  className="rounded-lg border border-[var(--border-strong)] p-3 text-sm outline-none focus:border-brand text-slate-800 resize-none"
+                  className="rounded-lg border border-[var(--border-strong)] p-3 text-sm outline-none focus:border-brand text-text-primary resize-none"
                 />
               </div>
 
 
 
               {/* Action row */}
-              <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-3">
+              <div className="flex flex-wrap items-center justify-between gap-3 border-t border-line pt-3">
                 <div className="flex items-center gap-3">
 
-                  <label className="flex items-center gap-1 cursor-pointer text-xs font-semibold text-slate-600 hover:text-brand select-none">
+                  <label className="flex items-center gap-1 cursor-pointer text-xs font-semibold text-text-secondary hover:text-brand select-none">
                     <input
                       type="checkbox"
                       checked={modalPinned}
@@ -824,7 +824,7 @@ export function SkyNexusConsole() {
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition"
+                    className="rounded-lg border border-line-strong px-4 py-2 text-sm font-semibold text-text-primary hover:bg-sunken transition"
                   >
                     Cancel
                   </button>

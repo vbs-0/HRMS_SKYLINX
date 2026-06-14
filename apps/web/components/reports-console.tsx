@@ -398,14 +398,14 @@ export function ReportsConsole() {
       {(message || error) && (
         <div>
           {message && (
-            <div className="rounded-xl bg-emerald-50 p-4 text-sm text-emerald-800 border border-emerald-200 flex items-center gap-2">
-              <CheckCircle2 className="h-5 w-5 text-emerald-600 shrink-0" />
+            <div className="rounded-xl bg-success-bg p-4 text-sm text-success-fg border border-success-border flex items-center gap-2">
+              <CheckCircle2 className="h-5 w-5 text-success-fg shrink-0" />
               <span>{message}</span>
             </div>
           )}
           {error && (
-            <div className="rounded-xl bg-rose-50 p-4 text-sm text-rose-800 border border-rose-200 flex items-center gap-2">
-              <AlertCircle className="h-5 w-5 text-rose-600 shrink-0" />
+            <div className="rounded-xl bg-danger-bg p-4 text-sm text-danger-fg border border-danger-border flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-danger-fg shrink-0" />
               <span>{error}</span>
             </div>
           )}
@@ -426,7 +426,7 @@ export function ReportsConsole() {
       <Card>
         <div className="mb-4 flex items-center justify-between">
           <div>
-            <h3 className="text-base font-semibold text-slate-800">Select Template File</h3>
+            <h3 className="text-base font-semibold text-text-primary">Select Template File</h3>
             <p className="text-xs text-muted">Click a template below to view and query its data fields.</p>
           </div>
           <button
@@ -444,18 +444,18 @@ export function ReportsConsole() {
               className={`rounded-xl border p-4 cursor-pointer transition-all ${
                 selectedReport?.type === c.key
                   ? "border-brand bg-brand-50/10 shadow-sm ring-1 ring-brand"
-                  : "border-[var(--border-subtle)] bg-white hover:bg-slate-50/70"
+                  : "border-[var(--border-subtle)] bg-white hover:bg-sunken"
               }`}
               onClick={() => loadReport(c.key)}
             >
               <FileSpreadsheet className="h-6 w-6 text-brand mb-2" />
-              <div className="font-bold text-slate-800 text-sm">{c.title}</div>
-              <p className="text-xs text-slate-400 mt-1 leading-relaxed">{c.note}</p>
+              <div className="font-bold text-text-primary text-sm">{c.title}</div>
+              <p className="text-xs text-text-muted mt-1 leading-relaxed">{c.note}</p>
               <div className="mt-4 flex gap-1.5">
-                <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-600">
+                <span className="rounded-md bg-sunken px-2 py-0.5 text-[10px] font-bold text-text-secondary">
                   {c.total} rows
                 </span>
-                <span className="rounded-md bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-700">
+                <span className="rounded-md bg-warning-bg px-2 py-0.5 text-[10px] font-bold text-warning-fg">
                   Excel/CSV
                 </span>
               </div>
@@ -469,15 +469,15 @@ export function ReportsConsole() {
         {/* Card Header with Title and Download/Print actions */}
         <div className="mb-6 flex flex-wrap items-center justify-between gap-4 border-b pb-4">
           <div>
-            <h3 className="text-base font-semibold text-slate-800 capitalize">
+            <h3 className="text-base font-semibold text-text-primary capitalize">
               {selectedReport?.type ? `${selectedReport.type} preview data` : "Loading Report..."}
             </h3>
-            <p className="text-xs text-slate-400 mt-1">{countFiltered} records showing in compile table</p>
+            <p className="text-xs text-text-muted mt-1">{countFiltered} records showing in compile table</p>
           </div>
 
           <div className="flex gap-2">
             <button
-              className="inline-flex min-h-10 items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-4 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition"
+              className="inline-flex min-h-10 items-center gap-1.5 rounded-lg border border-line-strong bg-white px-4 text-sm font-semibold text-text-primary hover:bg-sunken transition"
               onClick={handlePrintPDF}
             >
               Print PDF Report
@@ -494,7 +494,7 @@ export function ReportsConsole() {
         {/* Filter Controls Row */}
         <div className="mb-5 flex flex-wrap gap-3 items-center">
           <div className="relative w-64 max-sm:w-full">
-            <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+            <Search className="absolute left-3 top-3 h-4 w-4 text-text-muted" />
             <input
               type="text"
               placeholder="Search name or code..."
@@ -532,20 +532,20 @@ export function ReportsConsole() {
 
         <div className="overflow-x-auto">
           {loading ? (
-            <div className="py-12 text-center text-slate-400 font-semibold">
+            <div className="py-12 text-center text-text-muted font-semibold">
               Querying database and compiling data records...
             </div>
           ) : !filteredRows.length ? (
-            <div className="py-12 text-center text-slate-400 font-semibold">
+            <div className="py-12 text-center text-text-muted font-semibold">
               No matching records found.
             </div>
           ) : (
-            <table className="w-full border-collapse text-left text-sm text-slate-600">
+            <table className="w-full border-collapse text-left text-sm text-text-secondary">
               {/* Dynamic Columns based on active report type */}
               {selectedReport?.type === "employees" && (
                 <>
                   <thead>
-                    <tr className="bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500">
+                    <tr className="bg-sunken text-xs font-bold uppercase tracking-wider text-text-secondary">
                       <th className="border-b p-3">Code</th>
                       <th className="border-b p-3">Employee Name</th>
                       <th className="border-b p-3">Department</th>
@@ -556,9 +556,9 @@ export function ReportsConsole() {
                   </thead>
                   <tbody>
                     {filteredRows.map((r, i) => (
-                      <tr key={i} className="hover:bg-slate-50/50">
+                      <tr key={i} className="hover:bg-sunken">
                         <td className="border-b p-3 font-mono font-semibold text-xs">{r.code}</td>
-                        <td className="border-b p-3 font-semibold text-slate-800">{r.name}</td>
+                        <td className="border-b p-3 font-semibold text-text-primary">{r.name}</td>
                         <td className="border-b p-3">{r.department}</td>
                         <td className="border-b p-3">{r.designation}</td>
                         <td className="border-b p-3">{r.location}</td>
@@ -574,7 +574,7 @@ export function ReportsConsole() {
               {selectedReport?.type === "attendance" && (
                 <>
                   <thead>
-                    <tr className="bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500">
+                    <tr className="bg-sunken text-xs font-bold uppercase tracking-wider text-text-secondary">
                       <th className="border-b p-3">Employee Name</th>
                       <th className="border-b p-3">Date</th>
                       <th className="border-b p-3">Shift</th>
@@ -585,8 +585,8 @@ export function ReportsConsole() {
                   </thead>
                   <tbody>
                     {filteredRows.map((r, i) => (
-                      <tr key={i} className="hover:bg-slate-50/50">
-                        <td className="border-b p-3 font-semibold text-slate-800">{r.employee}</td>
+                      <tr key={i} className="hover:bg-sunken">
+                        <td className="border-b p-3 font-semibold text-text-primary">{r.employee}</td>
                         <td className="border-b p-3">{r.date ? r.date.slice(0, 10) : "-"}</td>
                         <td className="border-b p-3">{r.shift}</td>
                         <td className="border-b p-3 font-mono text-xs">{r.checkInAt ? r.checkInAt.slice(11, 19) : "-"}</td>
@@ -605,7 +605,7 @@ export function ReportsConsole() {
               {selectedReport?.type === "leave" && (
                 <>
                   <thead>
-                    <tr className="bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500">
+                    <tr className="bg-sunken text-xs font-bold uppercase tracking-wider text-text-secondary">
                       <th className="border-b p-3">Employee Name</th>
                       <th className="border-b p-3">Leave Type</th>
                       <th className="border-b p-3">From Date</th>
@@ -616,12 +616,12 @@ export function ReportsConsole() {
                   </thead>
                   <tbody>
                     {filteredRows.map((r, i) => (
-                      <tr key={i} className="hover:bg-slate-50/50">
-                        <td className="border-b p-3 font-semibold text-slate-800">{r.employee}</td>
+                      <tr key={i} className="hover:bg-sunken">
+                        <td className="border-b p-3 font-semibold text-text-primary">{r.employee}</td>
                         <td className="border-b p-3 font-semibold">{r.leaveType}</td>
                         <td className="border-b p-3">{r.fromDate ? r.fromDate.slice(0, 10) : "-"}</td>
                         <td className="border-b p-3">{r.toDate ? r.toDate.slice(0, 10) : "-"}</td>
-                        <td className="border-b p-3 text-center font-bold text-slate-700">{r.days}</td>
+                        <td className="border-b p-3 text-center font-bold text-text-primary">{r.days}</td>
                         <td className="border-b p-3 text-center">
                           <StatusPill tone={r.status === "APPROVED" ? "green" : "yellow"}>{r.status}</StatusPill>
                         </td>
@@ -634,7 +634,7 @@ export function ReportsConsole() {
               {selectedReport?.type === "payroll" && (
                 <>
                   <thead>
-                    <tr className="bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500">
+                    <tr className="bg-sunken text-xs font-bold uppercase tracking-wider text-text-secondary">
                       <th className="border-b p-3">Employee Name</th>
                       <th className="border-b p-3">Month/Year</th>
                       <th className="border-b p-3">Gross Salary</th>
@@ -645,11 +645,11 @@ export function ReportsConsole() {
                   </thead>
                   <tbody>
                     {filteredRows.map((r, i) => (
-                      <tr key={i} className="hover:bg-slate-50/50">
-                        <td className="border-b p-3 font-semibold text-slate-800">{r.employee}</td>
+                      <tr key={i} className="hover:bg-sunken">
+                        <td className="border-b p-3 font-semibold text-text-primary">{r.employee}</td>
                         <td className="border-b p-3 font-mono text-xs">{r.month}/{r.year}</td>
                         <td className="border-b p-3">₹{Number(r.grossPay).toLocaleString("en-IN")}</td>
-                        <td className="border-b p-3 text-rose-600">₹{Number(r.deductions).toLocaleString("en-IN")}</td>
+                        <td className="border-b p-3 text-danger-fg">₹{Number(r.deductions).toLocaleString("en-IN")}</td>
                         <td className="border-b p-3 font-semibold text-brand">₹{Number(r.netPay).toLocaleString("en-IN")}</td>
                         <td className="border-b p-3 text-center">
                           <StatusPill tone={r.status === "APPROVED" ? "green" : "yellow"}>{r.status}</StatusPill>
@@ -663,7 +663,7 @@ export function ReportsConsole() {
               {selectedReport?.type === "expenses" && (
                 <>
                   <thead>
-                    <tr className="bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500">
+                    <tr className="bg-sunken text-xs font-bold uppercase tracking-wider text-text-secondary">
                       <th className="border-b p-3">Employee Name</th>
                       <th className="border-b p-3">Expense Category</th>
                       <th className="border-b p-3">Claim Amount</th>
@@ -673,10 +673,10 @@ export function ReportsConsole() {
                   </thead>
                   <tbody>
                     {filteredRows.map((r, i) => (
-                      <tr key={i} className="hover:bg-slate-50/50">
-                        <td className="border-b p-3 font-semibold text-slate-800">{r.employee}</td>
+                      <tr key={i} className="hover:bg-sunken">
+                        <td className="border-b p-3 font-semibold text-text-primary">{r.employee}</td>
                         <td className="border-b p-3 font-semibold">{r.category}</td>
-                        <td className="border-b p-3 font-bold text-slate-800">₹{Number(r.amount).toLocaleString("en-IN")}</td>
+                        <td className="border-b p-3 font-bold text-text-primary">₹{Number(r.amount).toLocaleString("en-IN")}</td>
                         <td className="border-b p-3">{r.claimDate ? r.claimDate.slice(0, 10) : "-"}</td>
                         <td className="border-b p-3 text-center">
                           <StatusPill tone={r.status === "APPROVED" ? "green" : "yellow"}>{r.status}</StatusPill>
@@ -690,7 +690,7 @@ export function ReportsConsole() {
               {selectedReport?.type === "compliance" && (
                 <>
                   <thead>
-                    <tr className="bg-slate-50 text-xs font-bold uppercase tracking-wider text-slate-500">
+                    <tr className="bg-sunken text-xs font-bold uppercase tracking-wider text-text-secondary">
                       <th className="border-b p-3">Employee Name</th>
                       <th className="border-b p-3">Provident Fund (EPF)</th>
                       <th className="border-b p-3">ESI Deposit</th>
@@ -700,12 +700,12 @@ export function ReportsConsole() {
                   </thead>
                   <tbody>
                     {filteredRows.map((r, i) => (
-                      <tr key={i} className="hover:bg-slate-50/50">
-                        <td className="border-b p-3 font-semibold text-slate-800">{r.employee}</td>
-                        <td className="border-b p-3 text-rose-600 font-mono text-xs">₹{Number(r.employeePf).toLocaleString("en-IN")}</td>
-                        <td className="border-b p-3 text-rose-600 font-mono text-xs">₹{Number(r.esi).toLocaleString("en-IN")}</td>
-                        <td className="border-b p-3 text-rose-600 font-mono text-xs">₹{Number(r.professionalTax).toLocaleString("en-IN")}</td>
-                        <td className="border-b p-3 text-rose-600 font-mono font-bold text-xs">₹{Number(r.tds).toLocaleString("en-IN")}</td>
+                      <tr key={i} className="hover:bg-sunken">
+                        <td className="border-b p-3 font-semibold text-text-primary">{r.employee}</td>
+                        <td className="border-b p-3 text-danger-fg font-mono text-xs">₹{Number(r.employeePf).toLocaleString("en-IN")}</td>
+                        <td className="border-b p-3 text-danger-fg font-mono text-xs">₹{Number(r.esi).toLocaleString("en-IN")}</td>
+                        <td className="border-b p-3 text-danger-fg font-mono text-xs">₹{Number(r.professionalTax).toLocaleString("en-IN")}</td>
+                        <td className="border-b p-3 text-danger-fg font-mono font-bold text-xs">₹{Number(r.tds).toLocaleString("en-IN")}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -722,12 +722,12 @@ export function ReportsConsole() {
         <Card className="p-5 border border-[var(--border-subtle)] text-left">
           <div className="grid grid-cols-[300px_1fr] gap-6 max-xl:grid-cols-1">
             {/* Left panel: configurations */}
-            <div className="space-y-5 rounded-xl border border-slate-100 bg-[var(--surface-sunken)] p-4">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">Report Configurations</h4>
+            <div className="space-y-5 rounded-xl border border-line bg-[var(--surface-sunken)] p-4">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-text-secondary">Report Configurations</h4>
 
               {/* Model selector */}
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Select Dataset</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Select Dataset</label>
                 <select
                   className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
                   value={customModel}
@@ -741,7 +741,7 @@ export function ReportsConsole() {
 
               {/* Filters */}
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1">Status Filter (Optional)</label>
+                <label className="block text-xs font-semibold text-text-secondary mb-1">Status Filter (Optional)</label>
                 <select
                   className="w-full min-h-10 rounded-lg border border-[var(--border-default)] bg-white px-3 text-sm outline-none transition focus:border-brand"
                   value={customStatus}
@@ -756,13 +756,13 @@ export function ReportsConsole() {
 
               {/* Checkboxes for fields */}
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-2">Select Columns</label>
-                <div className="space-y-2 max-h-60 overflow-y-auto border border-slate-200 bg-white rounded-lg p-3">
+                <label className="block text-xs font-semibold text-text-secondary mb-2">Select Columns</label>
+                <div className="space-y-2 max-h-60 overflow-y-auto border border-line bg-white rounded-lg p-3">
                   {Object.entries(CUSTOM_MODELS.find(m => m.key === customModel)?.fields || {}).map(([key, label]) => (
-                    <label key={key} className="flex items-center gap-2 text-xs font-medium text-slate-700 cursor-pointer">
+                    <label key={key} className="flex items-center gap-2 text-xs font-medium text-text-primary cursor-pointer">
                       <input
                         type="checkbox"
-                        className="h-3.5 w-3.5 rounded border-slate-300 text-brand focus:ring-brand"
+                        className="h-3.5 w-3.5 rounded border-line-strong text-brand focus:ring-brand"
                         checked={customFields.includes(key)}
                         onChange={(e) => {
                           if (e.target.checked) {
@@ -791,8 +791,8 @@ export function ReportsConsole() {
             <div className="space-y-4">
               <div className="flex items-center justify-between border-b pb-3">
                 <div>
-                  <h4 className="text-sm font-bold text-slate-800">Preview Workspace</h4>
-                  <p className="text-[10px] text-slate-400">Showing first 10 matching records. Download full report as CSV.</p>
+                  <h4 className="text-sm font-bold text-text-primary">Preview Workspace</h4>
+                  <p className="text-[10px] text-text-muted">Showing first 10 matching records. Download full report as CSV.</p>
                 </div>
                 {customData && customData.rows.length > 0 && (
                   <button
@@ -805,20 +805,20 @@ export function ReportsConsole() {
               </div>
 
               {!customData ? (
-                <div className="border border-dashed border-slate-200 p-12 text-center text-slate-400 rounded-lg bg-slate-50/50 text-xs font-semibold">
+                <div className="border border-dashed border-line p-12 text-center text-text-muted rounded-lg bg-sunken text-xs font-semibold">
                   Select your dataset and column fields, then click "Generate Preview" to fetch data.
                 </div>
               ) : customData.rows.length === 0 ? (
-                <div className="border border-dashed border-slate-200 p-12 text-center text-slate-400 rounded-lg bg-slate-50/50 text-xs font-semibold">
+                <div className="border border-dashed border-line p-12 text-center text-text-muted rounded-lg bg-sunken text-xs font-semibold">
                   No matching records found in database.
                 </div>
               ) : (
                 <div className="overflow-x-auto border rounded-lg">
-                  <table className="w-full border-collapse text-left text-xs text-slate-600 bg-white">
+                  <table className="w-full border-collapse text-left text-xs text-text-secondary bg-white">
                     <thead>
-                      <tr className="bg-slate-50 border-b">
+                      <tr className="bg-sunken border-b">
                         {Object.keys(customData.headers).map((k) => (
-                          <th key={k} className="p-2.5 font-bold uppercase text-slate-500 text-[10px] tracking-wider border-r">
+                          <th key={k} className="p-2.5 font-bold uppercase text-text-secondary text-[10px] tracking-wider border-r">
                             {customData.headers[k]}
                           </th>
                         ))}
@@ -826,9 +826,9 @@ export function ReportsConsole() {
                     </thead>
                     <tbody>
                       {customData.rows.slice(0, 10).map((row: any, rIndex: number) => (
-                        <tr key={rIndex} className="border-b border-slate-100 hover:bg-slate-50 transition">
+                        <tr key={rIndex} className="border-b border-line hover:bg-sunken transition">
                           {Object.keys(customData.headers).map((k) => (
-                            <td key={k} className="p-2.5 border-r font-medium text-slate-800">
+                            <td key={k} className="p-2.5 border-r font-medium text-text-primary">
                               {row[k]?.toString() ?? "—"}
                             </td>
                           ))}

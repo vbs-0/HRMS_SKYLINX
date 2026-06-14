@@ -175,7 +175,7 @@ export function OrganizationSettingsConsole() {
   }
 
   function inputClass() {
-    return "min-h-10 w-full rounded-lg border border-slate-200 px-3 py-2 text-sm bg-white outline-none focus:border-brand";
+    return "min-h-10 w-full rounded-lg border border-line px-3 py-2 text-sm bg-white outline-none focus:border-brand";
   }
 
   return (
@@ -184,7 +184,7 @@ export function OrganizationSettingsConsole() {
       {error && <div className="rounded-lg bg-[var(--danger-bg)] p-3 text-sm text-[var(--danger-fg)] font-semibold">{error}</div>}
 
       {/* Sub-tab selection */}
-      <div className="flex border-b border-slate-200">
+      <div className="flex border-b border-line">
         {(["Departments", "Designations", "Locations"] as const).map((tab) => (
           <button
             key={tab}
@@ -196,7 +196,7 @@ export function OrganizationSettingsConsole() {
             className={`px-5 py-2.5 font-bold text-xs border-b-2 transition-all focus:outline-none ${
               activeTab === tab
                 ? "border-brand text-brand"
-                : "border-transparent text-slate-500 hover:text-slate-800"
+                : "border-transparent text-text-secondary hover:text-text-primary"
             }`}
           >
             {tab}
@@ -210,7 +210,7 @@ export function OrganizationSettingsConsole() {
             {activeTab === "Departments" && <Building2 className="h-5 w-5 text-brand" />}
             {activeTab === "Designations" && <Briefcase className="h-5 w-5 text-brand" />}
             {activeTab === "Locations" && <MapPin className="h-5 w-5 text-brand" />}
-            <h3 className="font-bold text-sm uppercase tracking-wider text-slate-800">{activeTab} List</h3>
+            <h3 className="font-bold text-sm uppercase tracking-wider text-text-primary">{activeTab} List</h3>
           </div>
           <button
             onClick={() => {
@@ -227,7 +227,7 @@ export function OrganizationSettingsConsole() {
         {(showAddModal || editingItem) && (
           <div className="mb-6 rounded-xl border border-brand/20 bg-brand/5 p-5 animate-in slide-in-from-top duration-200">
             <div className="flex justify-between items-center mb-4">
-              <h4 className="text-sm font-bold text-slate-800">
+              <h4 className="text-sm font-bold text-text-primary">
                 {editingItem ? `Edit ${activeTab.slice(0, -1)}` : `Add New ${activeTab.slice(0, -1)}`}
               </h4>
               <button
@@ -235,7 +235,7 @@ export function OrganizationSettingsConsole() {
                   setShowAddModal(false);
                   setEditingItem(null);
                 }}
-                className="text-slate-400 hover:text-slate-600"
+                className="text-text-muted hover:text-text-secondary"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -245,7 +245,7 @@ export function OrganizationSettingsConsole() {
               {activeTab === "Departments" && (
                 <>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-500 mb-1">Department Name</label>
+                    <label className="block text-xs font-semibold text-text-secondary mb-1">Department Name</label>
                     <input
                       className={inputClass()}
                       required
@@ -255,7 +255,7 @@ export function OrganizationSettingsConsole() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-500 mb-1">Code / Abbreviation</label>
+                    <label className="block text-xs font-semibold text-text-secondary mb-1">Code / Abbreviation</label>
                     <input
                       className={inputClass()}
                       required
@@ -265,7 +265,7 @@ export function OrganizationSettingsConsole() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-500 mb-1">Status</label>
+                    <label className="block text-xs font-semibold text-text-secondary mb-1">Status</label>
                     <select
                       className={inputClass()}
                       value={deptForm.status}
@@ -281,7 +281,7 @@ export function OrganizationSettingsConsole() {
               {activeTab === "Designations" && (
                 <>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-500 mb-1">Designation Title</label>
+                    <label className="block text-xs font-semibold text-text-secondary mb-1">Designation Title</label>
                     <input
                       className={inputClass()}
                       required
@@ -291,7 +291,7 @@ export function OrganizationSettingsConsole() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-500 mb-1">Grade Level (Optional)</label>
+                    <label className="block text-xs font-semibold text-text-secondary mb-1">Grade Level (Optional)</label>
                     <input
                       className={inputClass()}
                       placeholder="e.g. G5"
@@ -300,7 +300,7 @@ export function OrganizationSettingsConsole() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-500 mb-1">Status</label>
+                    <label className="block text-xs font-semibold text-text-secondary mb-1">Status</label>
                     <select
                       className={inputClass()}
                       value={desigForm.status}
@@ -316,7 +316,7 @@ export function OrganizationSettingsConsole() {
               {activeTab === "Locations" && (
                 <>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-500 mb-1">Location Name</label>
+                    <label className="block text-xs font-semibold text-text-secondary mb-1">Location Name</label>
                     <input
                       className={inputClass()}
                       required
@@ -326,7 +326,7 @@ export function OrganizationSettingsConsole() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-500 mb-1">City</label>
+                    <label className="block text-xs font-semibold text-text-secondary mb-1">City</label>
                     <input
                       className={inputClass()}
                       required
@@ -336,7 +336,7 @@ export function OrganizationSettingsConsole() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-500 mb-1">State</label>
+                    <label className="block text-xs font-semibold text-text-secondary mb-1">State</label>
                     <input
                       className={inputClass()}
                       required
@@ -346,7 +346,7 @@ export function OrganizationSettingsConsole() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-500 mb-1">Address (Optional)</label>
+                    <label className="block text-xs font-semibold text-text-secondary mb-1">Address (Optional)</label>
                     <input
                       className={inputClass()}
                       placeholder="Street address detail"
@@ -355,7 +355,7 @@ export function OrganizationSettingsConsole() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-500 mb-1">Country</label>
+                    <label className="block text-xs font-semibold text-text-secondary mb-1">Country</label>
                     <input
                       className={inputClass()}
                       placeholder="India"
@@ -364,7 +364,7 @@ export function OrganizationSettingsConsole() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-500 mb-1">Status</label>
+                    <label className="block text-xs font-semibold text-text-secondary mb-1">Status</label>
                     <select
                       className={inputClass()}
                       value={locForm.status}
@@ -384,7 +384,7 @@ export function OrganizationSettingsConsole() {
                     setShowAddModal(false);
                     setEditingItem(null);
                   }}
-                  className="min-h-10 rounded-lg border border-slate-200 px-4 text-xs font-bold text-slate-600 hover:bg-slate-50 transition"
+                  className="min-h-10 rounded-lg border border-line px-4 text-xs font-bold text-text-secondary hover:bg-sunken transition"
                 >
                   Cancel
                 </button>
@@ -403,51 +403,51 @@ export function OrganizationSettingsConsole() {
         {/* Data list tables */}
         <div className="overflow-auto">
           {loading && !showAddModal && !editingItem ? (
-            <div className="text-center text-xs text-slate-400 py-8">Loading lists from database...</div>
+            <div className="text-center text-xs text-text-muted py-8">Loading lists from database...</div>
           ) : (
             <table className="w-full text-xs text-left border-collapse">
-              <thead className="bg-[var(--surface-sunken)] uppercase text-slate-500 tracking-wider font-semibold">
+              <thead className="bg-[var(--surface-sunken)] uppercase text-text-secondary tracking-wider font-semibold">
                 {activeTab === "Departments" && (
                   <tr>
-                    <th className="p-3 border-b border-slate-100">Code</th>
-                    <th className="p-3 border-b border-slate-100">Name</th>
-                    <th className="p-3 border-b border-slate-100">Status</th>
-                    <th className="p-3 border-b border-slate-100 text-right">Actions</th>
+                    <th className="p-3 border-b border-line">Code</th>
+                    <th className="p-3 border-b border-line">Name</th>
+                    <th className="p-3 border-b border-line">Status</th>
+                    <th className="p-3 border-b border-line text-right">Actions</th>
                   </tr>
                 )}
                 {activeTab === "Designations" && (
                   <tr>
-                    <th className="p-3 border-b border-slate-100">Title</th>
-                    <th className="p-3 border-b border-slate-100">Grade</th>
-                    <th className="p-3 border-b border-slate-100">Status</th>
-                    <th className="p-3 border-b border-slate-100 text-right">Actions</th>
+                    <th className="p-3 border-b border-line">Title</th>
+                    <th className="p-3 border-b border-line">Grade</th>
+                    <th className="p-3 border-b border-line">Status</th>
+                    <th className="p-3 border-b border-line text-right">Actions</th>
                   </tr>
                 )}
                 {activeTab === "Locations" && (
                   <tr>
-                    <th className="p-3 border-b border-slate-100">Name</th>
-                    <th className="p-3 border-b border-slate-100">City / State</th>
-                    <th className="p-3 border-b border-slate-100">Country</th>
-                    <th className="p-3 border-b border-slate-100">Status</th>
-                    <th className="p-3 border-b border-slate-100 text-right">Actions</th>
+                    <th className="p-3 border-b border-line">Name</th>
+                    <th className="p-3 border-b border-line">City / State</th>
+                    <th className="p-3 border-b border-line">Country</th>
+                    <th className="p-3 border-b border-line">Status</th>
+                    <th className="p-3 border-b border-line text-right">Actions</th>
                   </tr>
                 )}
               </thead>
               <tbody>
                 {activeTab === "Departments" && (
                   departments.length === 0 ? (
-                    <tr><td colSpan={4} className="p-4 text-center text-slate-400 font-semibold">No departments found.</td></tr>
+                    <tr><td colSpan={4} className="p-4 text-center text-text-muted font-semibold">No departments found.</td></tr>
                   ) : (
                     departments.map((item) => (
-                      <tr key={item.id} className="hover:bg-slate-50 transition border-b border-slate-50">
-                        <td className="p-3 font-mono font-bold text-slate-700">{item.code}</td>
-                        <td className="p-3 font-semibold text-slate-800">{item.name}</td>
+                      <tr key={item.id} className="hover:bg-sunken transition border-b border-line">
+                        <td className="p-3 font-mono font-bold text-text-primary">{item.code}</td>
+                        <td className="p-3 font-semibold text-text-primary">{item.name}</td>
                         <td className="p-3">
-                          <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold ${item.status === "ACTIVE" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>{item.status}</span>
+                          <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold ${item.status === "ACTIVE" ? "bg-success-bg text-success-fg" : "bg-danger-bg text-danger-fg"}`}>{item.status}</span>
                         </td>
                         <td className="p-3 text-right space-x-1">
-                          <button onClick={() => startEdit(item)} className="p-1.5 border rounded-lg hover:border-brand/40 text-slate-600 hover:text-brand transition"><Edit3 className="h-3.5 w-3.5" /></button>
-                          <button onClick={() => handleDelete(item.id)} className="p-1.5 border rounded-lg hover:border-red-400 text-slate-600 hover:text-red-600 transition"><Trash2 className="h-3.5 w-3.5" /></button>
+                          <button onClick={() => startEdit(item)} className="p-1.5 border rounded-lg hover:border-brand/40 text-text-secondary hover:text-brand transition"><Edit3 className="h-3.5 w-3.5" /></button>
+                          <button onClick={() => handleDelete(item.id)} className="p-1.5 border rounded-lg hover:border-red-400 text-text-secondary hover:text-danger-fg transition"><Trash2 className="h-3.5 w-3.5" /></button>
                         </td>
                       </tr>
                     ))
@@ -456,18 +456,18 @@ export function OrganizationSettingsConsole() {
 
                 {activeTab === "Designations" && (
                   designations.length === 0 ? (
-                    <tr><td colSpan={4} className="p-4 text-center text-slate-400 font-semibold">No designations found.</td></tr>
+                    <tr><td colSpan={4} className="p-4 text-center text-text-muted font-semibold">No designations found.</td></tr>
                   ) : (
                     designations.map((item) => (
-                      <tr key={item.id} className="hover:bg-slate-50 transition border-b border-slate-50">
-                        <td className="p-3 font-semibold text-slate-800">{item.title}</td>
-                        <td className="p-3 font-mono text-slate-500 font-semibold">{item.grade || "-"}</td>
+                      <tr key={item.id} className="hover:bg-sunken transition border-b border-line">
+                        <td className="p-3 font-semibold text-text-primary">{item.title}</td>
+                        <td className="p-3 font-mono text-text-secondary font-semibold">{item.grade || "-"}</td>
                         <td className="p-3">
-                          <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold ${item.status === "ACTIVE" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>{item.status}</span>
+                          <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold ${item.status === "ACTIVE" ? "bg-success-bg text-success-fg" : "bg-danger-bg text-danger-fg"}`}>{item.status}</span>
                         </td>
                         <td className="p-3 text-right space-x-1">
-                          <button onClick={() => startEdit(item)} className="p-1.5 border rounded-lg hover:border-brand/40 text-slate-600 hover:text-brand transition"><Edit3 className="h-3.5 w-3.5" /></button>
-                          <button onClick={() => handleDelete(item.id)} className="p-1.5 border rounded-lg hover:border-red-400 text-slate-600 hover:text-red-600 transition"><Trash2 className="h-3.5 w-3.5" /></button>
+                          <button onClick={() => startEdit(item)} className="p-1.5 border rounded-lg hover:border-brand/40 text-text-secondary hover:text-brand transition"><Edit3 className="h-3.5 w-3.5" /></button>
+                          <button onClick={() => handleDelete(item.id)} className="p-1.5 border rounded-lg hover:border-red-400 text-text-secondary hover:text-danger-fg transition"><Trash2 className="h-3.5 w-3.5" /></button>
                         </td>
                       </tr>
                     ))
@@ -476,19 +476,19 @@ export function OrganizationSettingsConsole() {
 
                 {activeTab === "Locations" && (
                   locations.length === 0 ? (
-                    <tr><td colSpan={5} className="p-4 text-center text-slate-400 font-semibold">No locations found.</td></tr>
+                    <tr><td colSpan={5} className="p-4 text-center text-text-muted font-semibold">No locations found.</td></tr>
                   ) : (
                     locations.map((item) => (
-                      <tr key={item.id} className="hover:bg-slate-50 transition border-b border-slate-50">
-                        <td className="p-3 font-semibold text-slate-800">{item.name}</td>
-                        <td className="p-3 text-slate-600 font-semibold">{item.city}, {item.state}</td>
-                        <td className="p-3 text-slate-500">{item.country}</td>
+                      <tr key={item.id} className="hover:bg-sunken transition border-b border-line">
+                        <td className="p-3 font-semibold text-text-primary">{item.name}</td>
+                        <td className="p-3 text-text-secondary font-semibold">{item.city}, {item.state}</td>
+                        <td className="p-3 text-text-secondary">{item.country}</td>
                         <td className="p-3">
-                          <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold ${item.status === "ACTIVE" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>{item.status}</span>
+                          <span className={`px-2 py-0.5 rounded-full text-[9px] font-bold ${item.status === "ACTIVE" ? "bg-success-bg text-success-fg" : "bg-danger-bg text-danger-fg"}`}>{item.status}</span>
                         </td>
                         <td className="p-3 text-right space-x-1">
-                          <button onClick={() => startEdit(item)} className="p-1.5 border rounded-lg hover:border-brand/40 text-slate-600 hover:text-brand transition"><Edit3 className="h-3.5 w-3.5" /></button>
-                          <button onClick={() => handleDelete(item.id)} className="p-1.5 border rounded-lg hover:border-red-400 text-slate-600 hover:text-red-600 transition"><Trash2 className="h-3.5 w-3.5" /></button>
+                          <button onClick={() => startEdit(item)} className="p-1.5 border rounded-lg hover:border-brand/40 text-text-secondary hover:text-brand transition"><Edit3 className="h-3.5 w-3.5" /></button>
+                          <button onClick={() => handleDelete(item.id)} className="p-1.5 border rounded-lg hover:border-red-400 text-text-secondary hover:text-danger-fg transition"><Trash2 className="h-3.5 w-3.5" /></button>
                         </td>
                       </tr>
                     ))

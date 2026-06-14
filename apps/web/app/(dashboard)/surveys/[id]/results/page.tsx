@@ -54,7 +54,7 @@ export default function SurveyResultsPage() {
 
   if (!survey) {
     return (
-      <div className="py-20 text-center text-slate-400 font-semibold">
+      <div className="py-20 text-center text-text-muted font-semibold">
         {error || "Loading results…"}
       </div>
     );
@@ -67,15 +67,15 @@ export default function SurveyResultsPage() {
         <div className="flex items-center gap-3">
           <button
             onClick={() => router.push("/surveys")}
-            className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 transition"
+            className="rounded-lg p-2 text-text-muted hover:bg-sunken transition"
           >
             <ArrowLeft className="h-5 w-5" />
           </button>
           <div>
-            <h1 className="text-xl font-bold text-slate-900">{survey.title} — Results</h1>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <h1 className="text-xl font-bold text-text-primary">{survey.title} — Results</h1>
+            <p className="text-xs text-text-muted mt-0.5">
               {survey.responses?.length ?? 0} response{survey.responses?.length !== 1 ? "s" : ""} · Status:{" "}
-              <span className={survey.status === "ACTIVE" ? "text-emerald-600 font-bold" : "text-slate-500 font-bold"}>
+              <span className={survey.status === "ACTIVE" ? "text-success-fg font-bold" : "text-text-secondary font-bold"}>
                 {survey.status}
               </span>
             </p>
@@ -86,7 +86,7 @@ export default function SurveyResultsPage() {
           <button
             onClick={handleClose}
             disabled={closing}
-            className="inline-flex items-center gap-1.5 min-h-9 rounded-lg border border-rose-300 bg-rose-50 px-4 text-xs font-semibold text-rose-700 hover:bg-rose-100 transition disabled:opacity-60"
+            className="inline-flex items-center gap-1.5 min-h-9 rounded-lg border border-danger-border bg-danger-bg px-4 text-xs font-semibold text-danger-fg hover:bg-danger-bg transition disabled:opacity-60"
           >
             <XCircle className="h-4 w-4" />
             {closing ? "Closing…" : "Close Survey"}
@@ -95,12 +95,12 @@ export default function SurveyResultsPage() {
       </div>
 
       {message && (
-        <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-semibold text-emerald-800">
+        <div className="rounded-xl border border-success-border bg-success-bg p-4 text-sm font-semibold text-success-fg">
           {message}
         </div>
       )}
       {error && (
-        <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm font-semibold text-rose-800">
+        <div className="rounded-xl border border-danger-border bg-danger-bg p-4 text-sm font-semibold text-danger-fg">
           {error}
         </div>
       )}
@@ -116,15 +116,15 @@ export default function SurveyResultsPage() {
           : null;
 
         return (
-          <div key={q.id} className="rounded-xl border border-slate-200 bg-white p-5">
-            <p className="text-sm font-bold text-slate-800 mb-4">
+          <div key={q.id} className="rounded-xl border border-line bg-white p-5">
+            <p className="text-sm font-bold text-text-primary mb-4">
               {idx + 1}. {q.text}
             </p>
 
             {q.kind === "SCALE_0_10" && avg !== null && (
               <div className="mb-3 flex items-center gap-3">
                 <span className="text-3xl font-bold text-brand">{avg}</span>
-                <span className="text-xs text-slate-400">avg out of 10 ({scaleAnswers.length} responses)</span>
+                <span className="text-xs text-text-muted">avg out of 10 ({scaleAnswers.length} responses)</span>
               </div>
             )}
 
@@ -133,13 +133,13 @@ export default function SurveyResultsPage() {
                 const ans = r.answersJson?.[q.id];
                 if (ans === undefined) return null;
                 return (
-                  <div key={r.id ?? i} className="rounded-lg bg-slate-50 border border-slate-100 px-4 py-2 text-sm text-slate-700">
+                  <div key={r.id ?? i} className="rounded-lg bg-sunken border border-line px-4 py-2 text-sm text-text-primary">
                     {String(ans)}
                   </div>
                 );
               })}
               {survey.responses?.length === 0 && (
-                <p className="text-xs text-slate-400 italic">No responses yet.</p>
+                <p className="text-xs text-text-muted italic">No responses yet.</p>
               )}
             </div>
           </div>

@@ -108,14 +108,14 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col justify-center py-12 px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-slate-900 text-text-muted flex flex-col justify-center py-12 px-6 lg:px-8 relative overflow-hidden">
       {/* Background gradients for premium glassmorphism */}
       <div className="absolute top-[-20%] left-[-20%] w-[60%] h-[60%] rounded-full bg-indigo-500/10 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-[-20%] right-[-20%] w-[60%] h-[60%] rounded-full bg-emerald-500/10 blur-[120px] pointer-events-none" />
 
       <div className="sm:mx-auto sm:w-full sm:max-w-xl text-center z-10">
         <div className="flex justify-center items-center gap-2 mb-3">
-          <Sparkles className="h-8 w-8 text-indigo-400 animate-pulse" />
+          <Sparkles className="h-8 w-8 text-brand-700 animate-pulse" />
           <span className="text-2xl font-black tracking-wider bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
             PeopleOS
           </span>
@@ -123,7 +123,7 @@ export default function SignupPage() {
         <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
           Deploy Your Workspace
         </h2>
-        <p className="mt-2 text-sm text-slate-400">
+        <p className="mt-2 text-sm text-text-muted">
           Transform your company operations with multi-tenant cloud HRMS.
         </p>
 
@@ -141,9 +141,9 @@ export default function SignupPage() {
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-xl z-10">
-        <div className="bg-slate-800/80 backdrop-blur-md border border-slate-700/50 py-8 px-6 shadow-2xl rounded-2xl sm:px-10">
+        <div className="bg-slate-800/80 backdrop-blur-md border border-line-strong py-8 px-6 shadow-2xl rounded-2xl sm:px-10">
           {error && (
-            <div className="mb-6 p-4 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-300 text-sm">
+            <div className="mb-6 p-4 rounded-lg bg-rose-500/10 border border-rose-500/20 text-danger-fg text-sm">
               {error}
             </div>
           )}
@@ -160,12 +160,12 @@ export default function SignupPage() {
                     className={`p-5 rounded-xl border transition-all cursor-pointer flex justify-between items-center ${
                       plan === tier
                         ? "border-indigo-500 bg-indigo-500/5 shadow-[0_0_15px_rgba(99,102,241,0.15)]"
-                        : "border-slate-700 hover:border-slate-600 bg-slate-900/30"
+                        : "border-line-strong hover:border-line-strong bg-slate-900/30"
                     }`}
                   >
                     <div>
                       <span className="block font-bold text-white text-base">{tier} Plan</span>
-                      <span className="block text-xs text-slate-400 mt-1">
+                      <span className="block text-xs text-text-muted mt-1">
                         {tier === "Basic"
                           ? "Upto 5 users, web check-ins and core records."
                           : tier === "Standard"
@@ -174,7 +174,7 @@ export default function SignupPage() {
                       </span>
                     </div>
                     <div className="text-right">
-                      <span className="block text-indigo-400 font-extrabold text-sm">
+                      <span className="block text-brand-700 font-extrabold text-sm">
                         {planPrices[tier].text}
                       </span>
                     </div>
@@ -199,9 +199,9 @@ export default function SignupPage() {
 
               <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
                 <div>
-                  <label className="block text-xs font-bold uppercase text-slate-400 mb-1">Company Name</label>
+                  <label className="block text-xs font-bold uppercase text-text-muted mb-1">Company Name</label>
                   <div className="relative">
-                    <Building2 className="absolute left-3 top-3.5 h-4 w-4 text-slate-500" />
+                    <Building2 className="absolute left-3 top-3.5 h-4 w-4 text-text-secondary" />
                     <input
                       required
                       type="text"
@@ -213,31 +213,31 @@ export default function SignupPage() {
                           setCompanyCode(e.target.value.toLowerCase().replace(/[^a-z0-9]/g, ""));
                         }
                       }}
-                      className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-slate-700 bg-slate-900 text-sm outline-none focus:border-indigo-500"
+                      className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-line-strong bg-slate-900 text-sm outline-none focus:border-indigo-500"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold uppercase text-slate-400 mb-1">Legal Name</label>
+                  <label className="block text-xs font-bold uppercase text-text-muted mb-1">Legal Name</label>
                   <div className="relative">
-                    <Building className="absolute left-3 top-3.5 h-4 w-4 text-slate-500" />
+                    <Building className="absolute left-3 top-3.5 h-4 w-4 text-text-secondary" />
                     <input
                       required
                       type="text"
                       placeholder="e.g. PeopleOS Pvt Ltd"
                       value={companyLegalName}
                       onChange={(e) => setCompanyLegalName(e.target.value)}
-                      className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-slate-700 bg-slate-900 text-sm outline-none focus:border-indigo-500"
+                      className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-line-strong bg-slate-900 text-sm outline-none focus:border-indigo-500"
                     />
                   </div>
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase text-slate-400 mb-1">Workspace Code (Domain Slug)</label>
+                <label className="block text-xs font-bold uppercase text-text-muted mb-1">Workspace Code (Domain Slug)</label>
                 <div className="flex items-center">
-                  <span className="bg-slate-700 px-3 py-2.5 rounded-l-lg border border-r-0 border-slate-700 text-xs font-semibold text-slate-300">
+                  <span className="bg-slate-700 px-3 py-2.5 rounded-l-lg border border-r-0 border-line-strong text-xs font-semibold text-text-muted">
                     https://
                   </span>
                   <input
@@ -246,9 +246,9 @@ export default function SignupPage() {
                     placeholder="mycompany"
                     value={companyCode}
                     onChange={(e) => setCompanyCode(e.target.value.toLowerCase().replace(/[^a-z0-9]/g, ""))}
-                    className="flex-1 px-3 py-2.5 border border-slate-700 bg-slate-900 text-sm outline-none focus:border-indigo-500"
+                    className="flex-1 px-3 py-2.5 border border-line-strong bg-slate-900 text-sm outline-none focus:border-indigo-500"
                   />
-                  <span className="bg-slate-700 px-3 py-2.5 rounded-r-lg border border-l-0 border-slate-700 text-xs font-semibold text-slate-300">
+                  <span className="bg-slate-700 px-3 py-2.5 rounded-r-lg border border-l-0 border-line-strong text-xs font-semibold text-text-muted">
                     .peopleos.com
                   </span>
                 </div>
@@ -258,56 +258,56 @@ export default function SignupPage() {
 
               <div className="grid grid-cols-2 gap-4 max-sm:grid-cols-1">
                 <div>
-                  <label className="block text-xs font-bold uppercase text-slate-400 mb-1">First Name</label>
+                  <label className="block text-xs font-bold uppercase text-text-muted mb-1">First Name</label>
                   <input
                     required
                     type="text"
                     placeholder="Larry"
                     value={adminFirstName}
                     onChange={(e) => setAdminFirstName(e.target.value)}
-                    className="w-full px-3 py-2.5 rounded-lg border border-slate-700 bg-slate-900 text-sm outline-none focus:border-indigo-500"
+                    className="w-full px-3 py-2.5 rounded-lg border border-line-strong bg-slate-900 text-sm outline-none focus:border-indigo-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold uppercase text-slate-400 mb-1">Last Name</label>
+                  <label className="block text-xs font-bold uppercase text-text-muted mb-1">Last Name</label>
                   <input
                     required
                     type="text"
                     placeholder="Page"
                     value={adminLastName}
                     onChange={(e) => setAdminLastName(e.target.value)}
-                    className="w-full px-3 py-2.5 rounded-lg border border-slate-700 bg-slate-900 text-sm outline-none focus:border-indigo-500"
+                    className="w-full px-3 py-2.5 rounded-lg border border-line-strong bg-slate-900 text-sm outline-none focus:border-indigo-500"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase text-slate-400 mb-1">Admin Email</label>
+                <label className="block text-xs font-bold uppercase text-text-muted mb-1">Admin Email</label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-3.5 h-4 w-4 text-slate-500" />
+                  <Mail className="absolute left-3 top-3.5 h-4 w-4 text-text-secondary" />
                   <input
                     required
                     type="email"
                     placeholder="admin@company.com"
                     value={adminEmail}
                     onChange={(e) => setAdminEmail(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-slate-700 bg-slate-900 text-sm outline-none focus:border-indigo-500"
+                    className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-line-strong bg-slate-900 text-sm outline-none focus:border-indigo-500"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase text-slate-400 mb-1">Password</label>
+                <label className="block text-xs font-bold uppercase text-text-muted mb-1">Password</label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-3.5 h-4 w-4 text-slate-500" />
+                  <Lock className="absolute left-3 top-3.5 h-4 w-4 text-text-secondary" />
                   <input
                     required
                     type="password"
                     placeholder="••••••••"
                     value={adminPassword}
                     onChange={(e) => setAdminPassword(e.target.value)}
-                    className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-slate-700 bg-slate-900 text-sm outline-none focus:border-indigo-500"
+                    className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-line-strong bg-slate-900 text-sm outline-none focus:border-indigo-500"
                   />
                 </div>
               </div>
@@ -316,7 +316,7 @@ export default function SignupPage() {
                 <button
                   type="button"
                   onClick={() => setStep(1)}
-                  className="w-1/3 py-3 rounded-lg font-bold border border-slate-700 text-slate-300 hover:bg-slate-700/50 transition-colors cursor-pointer"
+                  className="w-1/3 py-3 rounded-lg font-bold border border-line-strong text-text-muted hover:bg-slate-700/50 transition-colors cursor-pointer"
                 >
                   Back
                 </button>
@@ -335,63 +335,63 @@ export default function SignupPage() {
             <form onSubmit={handleSignup} className="space-y-6">
               <div>
                 <h3 className="text-lg font-bold text-white mb-2">Secure Checkout</h3>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-text-muted">
                   Pay dynamically to launch your workspace. Transactions are secured with end-to-end encryption.
                 </p>
               </div>
 
-              <div className="rounded-lg border border-slate-700/60 bg-slate-900/40 p-4 space-y-2.5 text-sm">
+              <div className="rounded-lg border border-line-strong bg-slate-900/40 p-4 space-y-2.5 text-sm">
                 <div className="flex justify-between">
-                  <span className="text-slate-400">Selected Plan:</span>
+                  <span className="text-text-muted">Selected Plan:</span>
                   <span className="font-bold text-white">{plan} Plan</span>
                 </div>
-                <div className="flex justify-between border-t border-slate-800 pt-2.5">
-                  <span className="text-slate-400">Amount Due:</span>
-                  <span className="font-extrabold text-indigo-400">₹{planPrices[plan].price}</span>
+                <div className="flex justify-between border-t border-line-strong pt-2.5">
+                  <span className="text-text-muted">Amount Due:</span>
+                  <span className="font-extrabold text-brand-700">₹{planPrices[plan].price}</span>
                 </div>
               </div>
 
               {planPrices[plan].price > 0 ? (
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-xs font-bold uppercase text-slate-400 mb-1">Card Number</label>
+                    <label className="block text-xs font-bold uppercase text-text-muted mb-1">Card Number</label>
                     <div className="relative">
-                      <CreditCard className="absolute left-3 top-3.5 h-4 w-4 text-slate-500" />
+                      <CreditCard className="absolute left-3 top-3.5 h-4 w-4 text-text-secondary" />
                       <input
                         required
                         type="text"
                         value={cardNumber}
                         onChange={(e) => setCardNumber(e.target.value)}
-                        className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-slate-700 bg-slate-900 text-sm outline-none focus:border-indigo-500"
+                        className="w-full pl-9 pr-3 py-2.5 rounded-lg border border-line-strong bg-slate-900 text-sm outline-none focus:border-indigo-500"
                       />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-bold uppercase text-slate-400 mb-1">Expiry</label>
+                      <label className="block text-xs font-bold uppercase text-text-muted mb-1">Expiry</label>
                       <input
                         required
                         type="text"
                         value={cardExpiry}
                         onChange={(e) => setCardExpiry(e.target.value)}
-                        className="w-full px-3 py-2.5 rounded-lg border border-slate-700 bg-slate-900 text-sm outline-none focus:border-indigo-500"
+                        className="w-full px-3 py-2.5 rounded-lg border border-line-strong bg-slate-900 text-sm outline-none focus:border-indigo-500"
                       />
                     </div>
                     <div>
-                      <label className="block text-xs font-bold uppercase text-slate-400 mb-1">CVC</label>
+                      <label className="block text-xs font-bold uppercase text-text-muted mb-1">CVC</label>
                       <input
                         required
                         type="text"
                         value={cardCVC}
                         onChange={(e) => setCardCVC(e.target.value)}
-                        className="w-full px-3 py-2.5 rounded-lg border border-slate-700 bg-slate-900 text-sm outline-none focus:border-indigo-500"
+                        className="w-full px-3 py-2.5 rounded-lg border border-line-strong bg-slate-900 text-sm outline-none focus:border-indigo-500"
                       />
                     </div>
                   </div>
                 </div>
               ) : (
-                <div className="p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs text-center font-bold">
+                <div className="p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-success-fg text-xs text-center font-bold">
                   No payment required for the Free Basic plan.
                 </div>
               )}
@@ -401,7 +401,7 @@ export default function SignupPage() {
                   type="button"
                   disabled={loading}
                   onClick={() => setStep(2)}
-                  className="w-1/3 py-3 rounded-lg font-bold border border-slate-700 text-slate-300 hover:bg-slate-700/50 transition-colors disabled:opacity-50 cursor-pointer"
+                  className="w-1/3 py-3 rounded-lg font-bold border border-line-strong text-text-muted hover:bg-slate-700/50 transition-colors disabled:opacity-50 cursor-pointer"
                 >
                   Back
                 </button>
@@ -428,28 +428,28 @@ export default function SignupPage() {
           {step === 4 && (
             <div className="text-center space-y-6 py-4">
               <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-emerald-500/10 border-2 border-emerald-500">
-                <CheckCircle2 className="h-8 w-8 text-emerald-400" />
+                <CheckCircle2 className="h-8 w-8 text-success-fg" />
               </div>
               <div>
                 <h3 className="text-2xl font-extrabold text-white">Workspace Provisioned!</h3>
-                <p className="mt-2 text-sm text-slate-400 leading-relaxed">
+                <p className="mt-2 text-sm text-text-muted leading-relaxed">
                   Your tenant workspace for <strong className="text-white">{companyName}</strong> is fully active.
                   We have configured your default admin credentials.
                 </p>
               </div>
 
-              <div className="rounded-xl border border-slate-700 bg-slate-900/50 p-5 space-y-3 text-left text-sm max-w-sm mx-auto">
+              <div className="rounded-xl border border-line-strong bg-slate-900/50 p-5 space-y-3 text-left text-sm max-w-sm mx-auto">
                 <div className="flex justify-between items-center">
-                  <span className="text-slate-400 flex items-center gap-1.5"><Building className="h-4 w-4" /> Code</span>
-                  <code className="text-emerald-400 font-bold bg-slate-900 px-2 py-0.5 rounded border border-slate-700">{companyCode}</code>
+                  <span className="text-text-muted flex items-center gap-1.5"><Building className="h-4 w-4" /> Code</span>
+                  <code className="text-success-fg font-bold bg-slate-900 px-2 py-0.5 rounded border border-line-strong">{companyCode}</code>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-slate-400 flex items-center gap-1.5"><Mail className="h-4 w-4" /> Admin User</span>
+                  <span className="text-text-muted flex items-center gap-1.5"><Mail className="h-4 w-4" /> Admin User</span>
                   <span className="font-semibold text-white">{adminEmail}</span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-slate-400 flex items-center gap-1.5"><KeyRound className="h-4 w-4" /> Credentials</span>
-                  <span className="text-slate-300 font-medium">Bcrypt Encrypted</span>
+                  <span className="text-text-muted flex items-center gap-1.5"><KeyRound className="h-4 w-4" /> Credentials</span>
+                  <span className="text-text-muted font-medium">Bcrypt Encrypted</span>
                 </div>
               </div>
 

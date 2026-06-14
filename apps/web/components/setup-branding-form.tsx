@@ -190,7 +190,7 @@ export function SetupBrandingForm() {
           <div className="grid gap-4 lg:grid-cols-2">
             <label className="grid gap-2 text-sm font-semibold text-[var(--text-secondary)]">
               Company Logo
-              <span className="flex min-h-11 items-center gap-2 rounded-lg border border-dashed border-[var(--border-default)] bg-slate-50 px-3 font-normal text-muted select-none">
+              <span className="flex min-h-11 items-center gap-2 rounded-lg border border-dashed border-[var(--border-default)] bg-sunken px-3 font-normal text-muted select-none">
                 Logo upload disabled
               </span>
             </label>

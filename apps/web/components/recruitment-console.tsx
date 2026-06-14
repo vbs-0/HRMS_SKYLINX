@@ -591,12 +591,12 @@ export function RecruitmentConsole() {
       <ReferenceFlowStrip module="Recruitment" />
 
       {message && (
-        <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-sm font-semibold text-emerald-800 animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="mb-4 rounded-xl border border-success-border bg-success-bg p-4 text-sm font-semibold text-success-fg animate-in fade-in slide-in-from-top-2 duration-200">
           {message}
         </div>
       )}
       {error && (
-        <div className="mb-4 rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm font-semibold text-rose-800 animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="mb-4 rounded-xl border border-danger-border bg-danger-bg p-4 text-sm font-semibold text-danger-fg animate-in fade-in slide-in-from-top-2 duration-200">
           {error}
         </div>
       )}
@@ -605,34 +605,34 @@ export function RecruitmentConsole() {
       {activeTab === "Job Openings" && (
         <div className="grid gap-5">
           {showAddPosting && (
-            <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm animate-in zoom-in-95 duration-150">
-              <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-800">Create New Job Posting</h3>
+            <div className="rounded-xl border border-line bg-white p-5 shadow-sm animate-in zoom-in-95 duration-150">
+              <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary">Create New Job Posting</h3>
               <form onSubmit={handleAddPosting} className="grid grid-cols-3 gap-4 max-md:grid-cols-1">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Job Title</label>
-                  <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="title" placeholder="NodeJS Backend Engineer" required />
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Job Title</label>
+                  <input className="min-h-10 w-full rounded-lg border border-line px-3 text-sm" name="title" placeholder="NodeJS Backend Engineer" required />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Department</label>
-                  <select className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white" name="departmentId">
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Department</label>
+                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white" name="departmentId">
                     <option value="">Select Department</option>
                     {departmentsList.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Work Location</label>
-                  <select className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white" name="locationId">
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Work Location</label>
+                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white" name="locationId">
                     <option value="">Select Location</option>
                     {locationsList.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Open positions</label>
-                  <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="openings" type="number" defaultValue={1} min={1} required />
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Open positions</label>
+                  <input className="min-h-10 w-full rounded-lg border border-line px-3 text-sm" name="openings" type="number" defaultValue={1} min={1} required />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Linked Approved Requisition</label>
-                  <select className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white" name="requisitionId">
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Linked Approved Requisition</label>
+                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white" name="requisitionId">
                     <option value="">Select Requisition (Optional)</option>
                     {requisitions
                       .filter(r => r.status === "APPROVED")
@@ -644,7 +644,7 @@ export function RecruitmentConsole() {
                   </select>
                 </div>
                 <div className="col-span-full flex justify-end gap-2 mt-2">
-                  <button className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-slate-50" type="button" onClick={() => setShowAddPosting(false)}>Cancel</button>
+                  <button className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-sunken" type="button" onClick={() => setShowAddPosting(false)}>Cancel</button>
                   <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white hover:bg-brand-dark" type="submit" disabled={loading}>
                     {loading ? "Creating..." : "Post Job Vacancy"}
                   </button>
@@ -655,9 +655,9 @@ export function RecruitmentConsole() {
 
           <Card>
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-              <h2 className="text-lg font-semibold text-slate-800">Job Board Vacancies</h2>
+              <h2 className="text-lg font-semibold text-text-primary">Job Board Vacancies</h2>
               <div className="relative w-72">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                <Search className="absolute left-3 top-3 h-4 w-4 text-text-muted" />
                 <input
                   className="min-h-10 w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] pl-9 pr-3 text-sm outline-none transition focus:border-brand focus:bg-white"
                   placeholder="Search vacancies..."
@@ -668,7 +668,7 @@ export function RecruitmentConsole() {
             </div>
             <div className="overflow-auto">
               <table className="w-full min-w-[600px] border-collapse text-sm text-left">
-                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-text-secondary tracking-wider">
                   <tr>
                     <th className="border-b border-[var(--border-default)] p-3">Job ID</th>
                     <th className="border-b border-[var(--border-default)] p-3">Job Title</th>
@@ -681,18 +681,18 @@ export function RecruitmentConsole() {
                 <tbody>
                   {filteredPostings.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="p-8 text-center text-slate-400 font-semibold">
+                      <td colSpan={6} className="p-8 text-center text-text-muted font-semibold">
                         No job postings found. Create one to get started!
                       </td>
                     </tr>
                   ) : (
                     filteredPostings.map((p) => (
-                      <tr key={p.id} className="hover:bg-slate-50 transition cursor-pointer">
-                        <td className="border-b border-[var(--surface-sunken)] p-3 font-mono text-xs text-slate-500">{p.id.slice(-6).toUpperCase()}</td>
-                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-slate-800">{p.title}</td>
+                      <tr key={p.id} className="hover:bg-sunken transition cursor-pointer">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 font-mono text-xs text-text-secondary">{p.id.slice(-6).toUpperCase()}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-text-primary">{p.title}</td>
                         <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold">{p.openings}</td>
-                        <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-500 font-semibold">{p.applications?.length || 0} applicants</td>
-                        <td className="border-b border-[var(--surface-sunken)] p-3 text-xs text-slate-400">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-text-secondary font-semibold">{p.applications?.length || 0} applicants</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-xs text-text-muted">
                           {p.requisition ? `${p.requisition.title} (${p.requisition.id.slice(-4).toUpperCase()})` : "None"}
                         </td>
                         <td className="border-b border-[var(--surface-sunken)] p-3">
@@ -712,28 +712,28 @@ export function RecruitmentConsole() {
       {activeTab === "Candidates" && (
         <div className="grid gap-5">
           {showAddCandidate && (
-            <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm animate-in zoom-in-95 duration-150">
-              <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-800">Add Candidate Profile</h3>
+            <div className="rounded-xl border border-line bg-white p-5 shadow-sm animate-in zoom-in-95 duration-150">
+              <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary">Add Candidate Profile</h3>
               <form onSubmit={handleAddCandidate} className="grid grid-cols-3 gap-4 max-md:grid-cols-1">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Full Name</label>
-                  <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="fullName" placeholder="Rahul Sharma" required />
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Full Name</label>
+                  <input className="min-h-10 w-full rounded-lg border border-line px-3 text-sm" name="fullName" placeholder="Rahul Sharma" required />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Email Address</label>
-                  <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="email" type="email" placeholder="rahul@example.com" required />
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Email Address</label>
+                  <input className="min-h-10 w-full rounded-lg border border-line px-3 text-sm" name="email" type="email" placeholder="rahul@example.com" required />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Phone Number</label>
-                  <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="phone" placeholder="+91 99999 88888" />
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Phone Number</label>
+                  <input className="min-h-10 w-full rounded-lg border border-line px-3 text-sm" name="phone" placeholder="+91 99999 88888" />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Resume Link</label>
-                  <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="resumeUrl" placeholder="https://drive.google.com/resume.pdf" />
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Resume Link</label>
+                  <input className="min-h-10 w-full rounded-lg border border-line px-3 text-sm" name="resumeUrl" placeholder="https://drive.google.com/resume.pdf" />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Sourcing Channel</label>
-                  <select className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white" name="source">
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Sourcing Channel</label>
+                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white" name="source">
                     <option value="LinkedIn">LinkedIn</option>
                     <option value="Direct Referral">Direct Referral</option>
                     <option value="Company Website">Company Careers</option>
@@ -741,8 +741,8 @@ export function RecruitmentConsole() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Apply for Job Vacancy</label>
-                  <select className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white" name="postingId">
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Apply for Job Vacancy</label>
+                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white" name="postingId">
                     <option value="">Select open role...</option>
                     {jobPostings
                       .filter(p => p.status === "OPEN")
@@ -754,7 +754,7 @@ export function RecruitmentConsole() {
                   </select>
                 </div>
                 <div className="col-span-full flex justify-end gap-2 mt-2">
-                  <button className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-slate-50" type="button" onClick={() => setShowAddCandidate(false)}>Cancel</button>
+                  <button className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-sunken" type="button" onClick={() => setShowAddCandidate(false)}>Cancel</button>
                   <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white hover:bg-brand-dark" type="submit" disabled={loading}>
                     {loading ? "Saving..." : "Add to Applicant Roster"}
                   </button>
@@ -765,9 +765,9 @@ export function RecruitmentConsole() {
 
           <Card>
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-              <h2 className="text-lg font-semibold text-slate-800">Applicant Tracking Database</h2>
+              <h2 className="text-lg font-semibold text-text-primary">Applicant Tracking Database</h2>
               <div className="relative w-72">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                <Search className="absolute left-3 top-3 h-4 w-4 text-text-muted" />
                 <input
                   className="min-h-10 w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] pl-9 pr-3 text-sm outline-none transition focus:border-brand focus:bg-white"
                   placeholder="Search candidates..."
@@ -778,7 +778,7 @@ export function RecruitmentConsole() {
             </div>
             <div className="overflow-auto">
               <table className="w-full min-w-[700px] border-collapse text-sm text-left">
-                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-text-secondary tracking-wider">
                   <tr>
                     <th className="border-b border-[var(--border-default)] p-3">Applicant Name</th>
                     <th className="border-b border-[var(--border-default)] p-3">Applied Job</th>
@@ -791,7 +791,7 @@ export function RecruitmentConsole() {
                 <tbody>
                   {filteredCandidates.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="p-8 text-center text-slate-400 font-semibold">
+                      <td colSpan={6} className="p-8 text-center text-text-muted font-semibold">
                         No candidates found. Add one to track recruitment!
                       </td>
                     </tr>
@@ -801,20 +801,20 @@ export function RecruitmentConsole() {
                       return (
                         <tr
                           key={c.id}
-                          className="hover:bg-slate-50 transition cursor-pointer"
+                          className="hover:bg-sunken transition cursor-pointer"
                           onClick={() => setSelectedCandidateId(c.id)}
                         >
-                          <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-slate-800 flex items-center gap-2">
-                            <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-600">
+                          <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-text-primary flex items-center gap-2">
+                            <div className="h-8 w-8 rounded-full bg-sunken flex items-center justify-center text-xs font-bold text-text-secondary">
                               {c.fullName.split(" ").map(n => n[0]).join("")}
                             </div>
                             {c.fullName}
                           </td>
-                          <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-600 font-semibold">
+                          <td className="border-b border-[var(--surface-sunken)] p-3 text-text-secondary font-semibold">
                             {app?.jobPosting?.title || "Direct Pool"}
                           </td>
-                          <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-500">{c.email}</td>
-                          <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-500 font-semibold">{c.source || "Unknown"}</td>
+                          <td className="border-b border-[var(--surface-sunken)] p-3 text-text-secondary">{c.email}</td>
+                          <td className="border-b border-[var(--surface-sunken)] p-3 text-text-secondary font-semibold">{c.source || "Unknown"}</td>
                           <td className="border-b border-[var(--surface-sunken)] p-3">
                             <StatusPill
                               tone={
@@ -828,7 +828,7 @@ export function RecruitmentConsole() {
                               {c.currentStage}
                             </StatusPill>
                           </td>
-                          <td className="border-b border-[var(--surface-sunken)] p-3 text-xs text-slate-400">
+                          <td className="border-b border-[var(--surface-sunken)] p-3 text-xs text-text-muted">
                             {new Date(c.createdAt).toLocaleDateString("en-IN")}
                           </td>
                         </tr>
@@ -845,14 +845,14 @@ export function RecruitmentConsole() {
       {/* CANDIDATE INSPECTOR DRAWER */}
       {selectedCandidate && (
         <div className="fixed inset-0 z-50 flex items-center justify-end bg-black/40 backdrop-blur-xs p-4">
-          <div className="h-full w-full max-w-4xl rounded-2xl bg-white shadow-2xl animate-in slide-in-from-right duration-200 border border-slate-100 flex flex-col">
+          <div className="h-full w-full max-w-4xl rounded-2xl bg-white shadow-2xl animate-in slide-in-from-right duration-200 border border-line flex flex-col">
             <div className="flex items-center justify-between border-b p-5">
               <div>
-                <h3 className="text-lg font-bold text-slate-900">Applicant Scorecard Profile</h3>
-                <p className="text-xs text-slate-400">Track candidate interview lifecycle and submit hiring decisions.</p>
+                <h3 className="text-lg font-bold text-text-primary">Applicant Scorecard Profile</h3>
+                <p className="text-xs text-text-muted">Track candidate interview lifecycle and submit hiring decisions.</p>
               </div>
               <button
-                className="rounded-lg p-2 text-slate-400 hover:bg-slate-50 transition"
+                className="rounded-lg p-2 text-text-muted hover:bg-sunken transition"
                 onClick={() => {
                   setSelectedCandidateId(null);
                   setShowScheduleInterview(false);
@@ -865,16 +865,16 @@ export function RecruitmentConsole() {
 
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
               {/* Profile card summary */}
-              <div className="flex items-center gap-4 rounded-xl border border-slate-100 bg-[var(--surface-sunken)] p-5">
+              <div className="flex items-center gap-4 rounded-xl border border-line bg-[var(--surface-sunken)] p-5">
                 <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand/10 text-xl font-bold text-brand uppercase">
                   {selectedCandidate.fullName.split(" ").map(n => n[0]).join("")}
                 </div>
                 <div>
-                  <h4 className="text-xl font-bold text-slate-800">{selectedCandidate.fullName}</h4>
-                  <p className="text-sm text-slate-500 font-semibold">{selectedCandidate.email}</p>
+                  <h4 className="text-xl font-bold text-text-primary">{selectedCandidate.fullName}</h4>
+                  <p className="text-sm text-text-secondary font-semibold">{selectedCandidate.email}</p>
                   <div className="flex gap-2 items-center mt-1">
-                    <span className="text-xs text-slate-400">Phone: {selectedCandidate.phone || "Not provided"}</span>
-                    <span className="h-1 w-1 rounded-full bg-slate-300"></span>
+                    <span className="text-xs text-text-muted">Phone: {selectedCandidate.phone || "Not provided"}</span>
+                    <span className="h-1 w-1 rounded-full bg-surface-hover"></span>
                     <StatusPill tone={selectedCandidate.currentStage === "HIRED" ? "green" : selectedCandidate.currentStage === "REJECTED" ? "red" : "yellow"}>
                       {selectedCandidate.currentStage}
                     </StatusPill>
@@ -883,9 +883,9 @@ export function RecruitmentConsole() {
 
                 {selectedCandidate.applications?.[0] && (
                   <div className="ml-auto flex flex-col items-end gap-2">
-                    <span className="text-xs text-slate-400 font-semibold">Pipeline Actions:</span>
+                    <span className="text-xs text-text-muted font-semibold">Pipeline Actions:</span>
                     <select
-                      className="min-h-10 rounded-lg border border-slate-300 px-3 text-xs bg-white font-semibold"
+                      className="min-h-10 rounded-lg border border-line-strong px-3 text-xs bg-white font-semibold"
                       value={selectedCandidate.currentStage}
                       onChange={(e) => handleUpdateStage(selectedCandidate.applications![0].id, e.target.value)}
                     >
@@ -905,7 +905,7 @@ export function RecruitmentConsole() {
               {selectedCandidate.applications?.[0] && (
                 <div className="flex gap-3">
                   <button
-                    className="flex-1 min-h-10 rounded-lg border border-slate-200 text-slate-700 hover:bg-slate-50 transition text-sm font-semibold flex items-center justify-center gap-2"
+                    className="flex-1 min-h-10 rounded-lg border border-line text-text-primary hover:bg-sunken transition text-sm font-semibold flex items-center justify-center gap-2"
                     onClick={() => {
                       setShowScheduleInterview(!showScheduleInterview);
                       setShowCreateOffer(false);
@@ -932,22 +932,22 @@ export function RecruitmentConsole() {
 
               {/* Schedule Interview Form Panel */}
               {showScheduleInterview && selectedCandidate.applications?.[0] && (
-                <div className="rounded-xl border border-[var(--border-default)] bg-slate-50 p-5 space-y-4 animate-in zoom-in-95 duration-100">
-                  <h4 className="text-sm font-bold uppercase tracking-wider text-slate-800 flex items-center gap-2">
+                <div className="rounded-xl border border-[var(--border-default)] bg-sunken p-5 space-y-4 animate-in zoom-in-95 duration-100">
+                  <h4 className="text-sm font-bold uppercase tracking-wider text-text-primary flex items-center gap-2">
                     <Calendar className="h-4 w-4 text-brand" /> Schedule Interview details
                   </h4>
                   <form onSubmit={handleScheduleInterview} className="grid grid-cols-2 gap-4">
                     <input type="hidden" name="applicationId" value={selectedCandidate.applications[0].id} />
                     <div>
-                      <label className="block text-xs font-semibold text-slate-500 mb-1">Round Name</label>
+                      <label className="block text-xs font-semibold text-text-secondary mb-1">Round Name</label>
                       <input className="min-h-10 w-full rounded-lg border bg-white px-3 text-sm" name="roundName" placeholder="Technical Round 1" required />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-slate-500 mb-1">Scheduled At</label>
+                      <label className="block text-xs font-semibold text-text-secondary mb-1">Scheduled At</label>
                       <input className="min-h-10 w-full rounded-lg border bg-white px-3 text-sm" name="scheduledAt" type="datetime-local" required />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-slate-500 mb-1">Interview Mode</label>
+                      <label className="block text-xs font-semibold text-text-secondary mb-1">Interview Mode</label>
                       <select className="min-h-10 w-full rounded-lg border bg-white px-3 text-sm" name="mode">
                         <option value="ONLINE">Google Meet / Virtual</option>
                         <option value="IN_PERSON">In Office / Face to Face</option>
@@ -955,7 +955,7 @@ export function RecruitmentConsole() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-slate-500 mb-1">Select Interviewers (Ctrl + Click to multi-select)</label>
+                      <label className="block text-xs font-semibold text-text-secondary mb-1">Select Interviewers (Ctrl + Click to multi-select)</label>
                       <select className="min-h-20 w-full rounded-lg border bg-white px-3 py-1 text-sm" name="interviewerIds" multiple required>
                         {employees.map((emp) => (
                           <option key={emp.id} value={emp.id}>
@@ -965,7 +965,7 @@ export function RecruitmentConsole() {
                       </select>
                     </div>
                     <div className="col-span-2 flex justify-end gap-2 mt-1">
-                      <button className="min-h-10 rounded-lg border bg-white px-4 text-sm font-semibold hover:bg-slate-100" type="button" onClick={() => setShowScheduleInterview(false)}>Cancel</button>
+                      <button className="min-h-10 rounded-lg border bg-white px-4 text-sm font-semibold hover:bg-sunken" type="button" onClick={() => setShowScheduleInterview(false)}>Cancel</button>
                       <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white hover:bg-brand-dark" type="submit">Schedule Round</button>
                     </div>
                   </form>
@@ -974,25 +974,25 @@ export function RecruitmentConsole() {
 
               {/* Create Job Offer Form Panel */}
               {showCreateOffer && selectedCandidate.applications?.[0] && (
-                <div className="rounded-xl border border-[var(--border-default)] bg-slate-50 p-5 space-y-4 animate-in zoom-in-95 duration-100">
-                  <h4 className="text-sm font-bold uppercase tracking-wider text-slate-800 flex items-center gap-2">
+                <div className="rounded-xl border border-[var(--border-default)] bg-sunken p-5 space-y-4 animate-in zoom-in-95 duration-100">
+                  <h4 className="text-sm font-bold uppercase tracking-wider text-text-primary flex items-center gap-2">
                     <FileSignature className="h-4 w-4 text-brand" /> Generate Job Offer Letter
                   </h4>
                   <form onSubmit={handleCreateOffer} className="grid grid-cols-2 gap-4">
                     <input type="hidden" name="applicationId" value={selectedCandidate.applications[0].id} />
                     <div>
-                      <label className="block text-xs font-semibold text-slate-500 mb-1">Offered Annual CTC (INR)</label>
+                      <label className="block text-xs font-semibold text-text-secondary mb-1">Offered Annual CTC (INR)</label>
                       <input className="min-h-10 w-full rounded-lg border bg-white px-3 text-sm" name="offeredCtc" type="number" placeholder="1200000" required />
                     </div>
                     <div>
-                      <label className="block text-xs font-semibold text-slate-500 mb-1">Expected Joining Date</label>
+                      <label className="block text-xs font-semibold text-text-secondary mb-1">Expected Joining Date</label>
                       <input className="min-h-10 w-full rounded-lg border bg-white px-3 text-sm" name="joiningDate" type="date" required />
                     </div>
-                    <p className="col-span-2 text-xs text-slate-400">
+                    <p className="col-span-2 text-xs text-text-muted">
                       Standard corporate guidelines like 6-month probation and 90-day notice period will be automatically appended to the offer terms.
                     </p>
                     <div className="col-span-2 flex justify-end gap-2 mt-1">
-                      <button className="min-h-10 rounded-lg border bg-white px-4 text-sm font-semibold hover:bg-slate-100" type="button" onClick={() => setShowCreateOffer(false)}>Cancel</button>
+                      <button className="min-h-10 rounded-lg border bg-white px-4 text-sm font-semibold hover:bg-sunken" type="button" onClick={() => setShowCreateOffer(false)}>Cancel</button>
                       <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white hover:bg-brand-dark" type="submit">Issue Offer Letter</button>
                     </div>
                   </form>
@@ -1001,13 +1001,13 @@ export function RecruitmentConsole() {
 
               {/* Resume & Sourcing Metadata */}
               <div className="grid grid-cols-2 gap-5 max-md:grid-cols-1">
-                <div className="rounded-xl border border-slate-200 p-5 space-y-4">
+                <div className="rounded-xl border border-line p-5 space-y-4">
                   <div className="flex items-center gap-2 border-b pb-2">
                     <FileText className="h-4 w-4 text-brand" />
-                    <h4 className="text-sm font-bold uppercase tracking-wider text-slate-700">Application Documents</h4>
+                    <h4 className="text-sm font-bold uppercase tracking-wider text-text-primary">Application Documents</h4>
                   </div>
                   <div className="text-sm">
-                    <span className="text-slate-400 font-semibold block">Resume Profile:</span>
+                    <span className="text-text-muted font-semibold block">Resume Profile:</span>
                     {selectedCandidate.resumeUrl ? (
                       <a
                         href={selectedCandidate.resumeUrl}
@@ -1018,23 +1018,23 @@ export function RecruitmentConsole() {
                         <FileText className="h-4 w-4" /> Download Resume Document
                       </a>
                     ) : (
-                      <span className="text-slate-500 font-normal italic block mt-1">No resume file uploaded yet.</span>
+                      <span className="text-text-secondary font-normal italic block mt-1">No resume file uploaded yet.</span>
                     )}
                   </div>
                 </div>
 
-                <div className="rounded-xl border border-slate-200 p-5 space-y-4">
+                <div className="rounded-xl border border-line p-5 space-y-4">
                   <div className="flex items-center gap-2 border-b pb-2">
                     <TrendingUp className="h-4 w-4 text-brand" />
-                    <h4 className="text-sm font-bold uppercase tracking-wider text-slate-700">Interview Consensus</h4>
+                    <h4 className="text-sm font-bold uppercase tracking-wider text-text-primary">Interview Consensus</h4>
                   </div>
                   <div className="text-sm space-y-2">
                     <div className="flex justify-between">
-                      <span className="text-slate-400 font-semibold">Status:</span>
-                      <span className="font-semibold text-slate-800">{selectedCandidate.currentStage}</span>
+                      <span className="text-text-muted font-semibold">Status:</span>
+                      <span className="font-semibold text-text-primary">{selectedCandidate.currentStage}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span className="text-slate-400 font-semibold">Candidate Pool Sourcing:</span>
+                      <span className="text-text-muted font-semibold">Candidate Pool Sourcing:</span>
                       <span className="font-semibold text-brand bg-brand/5 px-2 py-0.5 rounded text-xs">{selectedCandidate.source || "Careers Inflow"}</span>
                     </div>
                   </div>
@@ -1062,33 +1062,33 @@ export function RecruitmentConsole() {
       {activeTab === "Requisitions" && (
         <div className="grid gap-5">
           {showRequestRequisition && (
-            <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm animate-in zoom-in-95 duration-150">
-              <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-800">Request Headcount Budget Approval</h3>
+            <div className="rounded-xl border border-line bg-white p-5 shadow-sm animate-in zoom-in-95 duration-150">
+              <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary">Request Headcount Budget Approval</h3>
               <form onSubmit={handleRequestRequisition} className="grid grid-cols-3 gap-4 max-md:grid-cols-1">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Vacancy Job Title</label>
-                  <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="title" placeholder="Lead Product Designer" required />
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Vacancy Job Title</label>
+                  <input className="min-h-10 w-full rounded-lg border border-line px-3 text-sm" name="title" placeholder="Lead Product Designer" required />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Target Department</label>
-                  <select className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white" name="departmentId" required>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Target Department</label>
+                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white" name="departmentId" required>
                     <option value="">Select Department</option>
                     {departmentsList.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Target Designation</label>
-                  <select className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white" name="designationId" required>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Target Designation</label>
+                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white" name="designationId" required>
                     <option value="">Select Designation</option>
                     {designationsList.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Number of Openings</label>
-                  <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="openings" type="number" defaultValue={1} min={1} required />
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Number of Openings</label>
+                  <input className="min-h-10 w-full rounded-lg border border-line px-3 text-sm" name="openings" type="number" defaultValue={1} min={1} required />
                 </div>
                 <div className="col-span-full flex justify-end gap-2 mt-2">
-                  <button className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-slate-50" type="button" onClick={() => setShowRequestRequisition(false)}>Cancel</button>
+                  <button className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-sunken" type="button" onClick={() => setShowRequestRequisition(false)}>Cancel</button>
                   <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white hover:bg-brand-dark" type="submit" disabled={loading}>
                     {loading ? "Submitting..." : "Request Budget"}
                   </button>
@@ -1099,9 +1099,9 @@ export function RecruitmentConsole() {
 
           <Card>
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-              <h2 className="text-lg font-semibold text-slate-800">Headcount Requisitions</h2>
+              <h2 className="text-lg font-semibold text-text-primary">Headcount Requisitions</h2>
               <div className="relative w-72">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                <Search className="absolute left-3 top-3 h-4 w-4 text-text-muted" />
                 <input
                   className="min-h-10 w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] pl-9 pr-3 text-sm outline-none transition focus:border-brand focus:bg-white"
                   placeholder="Search requisitions..."
@@ -1112,7 +1112,7 @@ export function RecruitmentConsole() {
             </div>
             <div className="overflow-auto">
               <table className="w-full min-w-[700px] border-collapse text-sm text-left">
-                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-text-secondary tracking-wider">
                   <tr>
                     <th className="border-b border-[var(--border-default)] p-3">Req ID</th>
                     <th className="border-b border-[var(--border-default)] p-3">Job Title Requested</th>
@@ -1126,18 +1126,18 @@ export function RecruitmentConsole() {
                 <tbody>
                   {filteredRequisitions.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="p-8 text-center text-slate-400 font-semibold">
+                      <td colSpan={7} className="p-8 text-center text-text-muted font-semibold">
                         No requisitions found. Request headcount to initiate hiring budgets.
                       </td>
                     </tr>
                   ) : (
                     filteredRequisitions.map((r) => (
-                      <tr key={r.id} className="hover:bg-slate-50 transition">
-                        <td className="border-b border-[var(--surface-sunken)] p-3 font-mono text-xs text-slate-500">{r.id.slice(-6).toUpperCase()}</td>
-                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-slate-800">{r.title}</td>
-                        <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-600 font-semibold">{r.department.name}</td>
+                      <tr key={r.id} className="hover:bg-sunken transition">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 font-mono text-xs text-text-secondary">{r.id.slice(-6).toUpperCase()}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-text-primary">{r.title}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-text-secondary font-semibold">{r.department.name}</td>
                         <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold">{r.openings}</td>
-                        <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-500">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-text-secondary">
                           {r.requestedBy.firstName} {r.requestedBy.lastName}
                         </td>
                         <td className="border-b border-[var(--surface-sunken)] p-3">
@@ -1188,9 +1188,9 @@ export function RecruitmentConsole() {
         <div className="grid gap-5">
           <Card>
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-              <h2 className="text-lg font-semibold text-slate-800">Scheduled Interview Rounds</h2>
+              <h2 className="text-lg font-semibold text-text-primary">Scheduled Interview Rounds</h2>
               <div className="relative w-72">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                <Search className="absolute left-3 top-3 h-4 w-4 text-text-muted" />
                 <input
                   className="min-h-10 w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] pl-9 pr-3 text-sm outline-none transition focus:border-brand focus:bg-white"
                   placeholder="Search interviews..."
@@ -1201,7 +1201,7 @@ export function RecruitmentConsole() {
             </div>
             <div className="overflow-auto">
               <table className="w-full min-w-[700px] border-collapse text-sm text-left">
-                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-text-secondary tracking-wider">
                   <tr>
                     <th className="border-b border-[var(--border-default)] p-3">Applicant Name</th>
                     <th className="border-b border-[var(--border-default)] p-3">Target Vacancy</th>
@@ -1216,27 +1216,27 @@ export function RecruitmentConsole() {
                 <tbody>
                   {filteredInterviews.length === 0 ? (
                     <tr>
-                      <td colSpan={8} className="p-8 text-center text-slate-400 font-semibold">
+                      <td colSpan={8} className="p-8 text-center text-text-muted font-semibold">
                         No scheduled interviews found. Schedule a round from the candidate drawer profile.
                       </td>
                     </tr>
                   ) : (
                     filteredInterviews.map((i) => (
-                      <tr key={i.id} className="hover:bg-slate-50 transition">
-                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-slate-800">
+                      <tr key={i.id} className="hover:bg-sunken transition">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-text-primary">
                           {i.application.candidate.fullName}
                         </td>
-                        <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-600 font-semibold">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-text-secondary font-semibold">
                           {i.application.jobPosting.title}
                         </td>
-                        <td className="border-b border-[var(--surface-sunken)] p-3 text-xs text-slate-500 font-semibold">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-xs text-text-secondary font-semibold">
                           {new Date(i.scheduledAt).toLocaleString("en-IN")}
                         </td>
-                        <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-500 font-semibold">{i.mode}</td>
-                        <td className="border-b border-[var(--surface-sunken)] p-3 text-xs text-slate-500">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-text-secondary font-semibold">{i.mode}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-xs text-text-secondary">
                           {i.interviewers.map(it => `${it.employee.firstName} ${it.employee.lastName}`).join(", ") || "None"}
                         </td>
-                        <td className="border-b border-[var(--surface-sunken)] p-3 text-xs text-slate-400 font-semibold">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-xs text-text-muted font-semibold">
                           {i.feedback || "Awaiting Scorecard"}
                         </td>
                         <td className="border-b border-[var(--surface-sunken)] p-3">
@@ -1266,16 +1266,16 @@ export function RecruitmentConsole() {
           {/* SUBMIT FEEDBACK SCORECARD FORM */}
           {showAddFeedback && selectedInterview && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 backdrop-blur-xs p-4">
-              <div className="w-full max-w-lg rounded-xl bg-white shadow-2xl border border-slate-100 p-5 space-y-4 animate-in zoom-in-95 duration-150">
+              <div className="w-full max-w-lg rounded-xl bg-white shadow-2xl border border-line p-5 space-y-4 animate-in zoom-in-95 duration-150">
                 <div className="flex items-center justify-between border-b pb-3">
-                  <h4 className="text-md font-bold text-slate-800">Submit Interview Scorecard</h4>
-                  <button className="p-1 hover:bg-slate-50 rounded" onClick={() => { setShowAddFeedback(false); setSelectedInterview(null); }}>
-                    <X className="h-5 w-5 text-slate-400" />
+                  <h4 className="text-md font-bold text-text-primary">Submit Interview Scorecard</h4>
+                  <button className="p-1 hover:bg-sunken rounded" onClick={() => { setShowAddFeedback(false); setSelectedInterview(null); }}>
+                    <X className="h-5 w-5 text-text-muted" />
                   </button>
                 </div>
                 <form onSubmit={handleAddFeedback} className="space-y-4">
                   <div>
-                    <label className="block text-xs font-semibold text-slate-500 mb-1">Rating (1 to 5 Stars)</label>
+                    <label className="block text-xs font-semibold text-text-secondary mb-1">Rating (1 to 5 Stars)</label>
                     <select className="min-h-10 w-full rounded-lg border px-3 text-sm bg-white" name="rating" required>
                       <option value="5">⭐⭐⭐⭐⭐ (Excellent)</option>
                       <option value="4">⭐⭐⭐⭐ (Good)</option>
@@ -1285,7 +1285,7 @@ export function RecruitmentConsole() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-500 mb-1">Hiring Recommendation</label>
+                    <label className="block text-xs font-semibold text-text-secondary mb-1">Hiring Recommendation</label>
                     <select className="min-h-10 w-full rounded-lg border px-3 text-sm bg-white" name="recommendation" required>
                       <option value="HIRE">HIRE (Recommended)</option>
                       <option value="HOLD">HOLD (Conditional)</option>
@@ -1293,7 +1293,7 @@ export function RecruitmentConsole() {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-slate-500 mb-1">Comments / Key observations</label>
+                    <label className="block text-xs font-semibold text-text-secondary mb-1">Comments / Key observations</label>
                     <textarea
                       className="w-full rounded-lg border p-3 text-sm outline-none focus:border-brand h-24"
                       name="comments"
@@ -1302,7 +1302,7 @@ export function RecruitmentConsole() {
                     ></textarea>
                   </div>
                   <div className="flex justify-end gap-2 border-t pt-3">
-                    <button className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-slate-50" type="button" onClick={() => { setShowAddFeedback(false); setSelectedInterview(null); }}>Cancel</button>
+                    <button className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-sunken" type="button" onClick={() => { setShowAddFeedback(false); setSelectedInterview(null); }}>Cancel</button>
                     <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white hover:bg-brand-dark" type="submit">Submit Scorecard</button>
                   </div>
                 </form>
@@ -1317,9 +1317,9 @@ export function RecruitmentConsole() {
         <div className="grid gap-5">
           <Card>
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
-              <h2 className="text-lg font-semibold text-slate-800">Issued Job Offers</h2>
+              <h2 className="text-lg font-semibold text-text-primary">Issued Job Offers</h2>
               <div className="relative w-72">
-                <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
+                <Search className="absolute left-3 top-3 h-4 w-4 text-text-muted" />
                 <input
                   className="min-h-10 w-full rounded-lg border border-[var(--border-default)] bg-[var(--surface-sunken)] pl-9 pr-3 text-sm outline-none transition focus:border-brand focus:bg-white"
                   placeholder="Search offers..."
@@ -1330,7 +1330,7 @@ export function RecruitmentConsole() {
             </div>
             <div className="overflow-auto">
               <table className="w-full min-w-[700px] border-collapse text-sm text-left">
-                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-text-secondary tracking-wider">
                   <tr>
                     <th className="border-b border-[var(--border-default)] p-3">Offer ID</th>
                     <th className="border-b border-[var(--border-default)] p-3">Candidate</th>
@@ -1344,18 +1344,18 @@ export function RecruitmentConsole() {
                 <tbody>
                   {filteredOffers.length === 0 ? (
                     <tr>
-                      <td colSpan={7} className="p-8 text-center text-slate-400 font-semibold">
+                      <td colSpan={7} className="p-8 text-center text-text-muted font-semibold">
                         No issued job offers found. Mark a candidate's stage as 'OFFER' to generate one.
                       </td>
                     </tr>
                   ) : (
                     filteredOffers.map((o) => (
-                      <tr key={o.id} className="hover:bg-slate-50 transition">
-                        <td className="border-b border-[var(--surface-sunken)] p-3 font-mono text-xs text-slate-500">{o.id.slice(-6).toUpperCase()}</td>
-                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-slate-800">{o.application.candidate.fullName}</td>
-                        <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-600 font-semibold">{o.application.jobPosting.title}</td>
+                      <tr key={o.id} className="hover:bg-sunken transition">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 font-mono text-xs text-text-secondary">{o.id.slice(-6).toUpperCase()}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-text-primary">{o.application.candidate.fullName}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-text-secondary font-semibold">{o.application.jobPosting.title}</td>
                         <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold">INR {o.offeredCtc.toLocaleString("en-IN")}</td>
-                        <td className="border-b border-[var(--surface-sunken)] p-3 text-xs text-slate-500 font-semibold">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-xs text-text-secondary font-semibold">
                           {new Date(o.joiningDate).toLocaleDateString("en-IN")}
                         </td>
                         <td className="border-b border-[var(--surface-sunken)] p-3">
@@ -1371,7 +1371,7 @@ export function RecruitmentConsole() {
                             {o.status}
                           </StatusPill>
                         </td>
-                        <td className="border-b border-[var(--surface-sunken)] p-3 text-xs text-slate-400">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-xs text-text-muted">
                           {new Date(o.createdAt).toLocaleDateString("en-IN")}
                         </td>
                       </tr>
@@ -1388,37 +1388,37 @@ export function RecruitmentConsole() {
       {activeTab === "Staffing Plans" && (
         <div className="grid gap-5">
           {showAddStaffingPlan && (
-            <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm animate-in zoom-in-95 duration-150">
-              <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-800">Create Staffing Plan</h3>
+            <div className="rounded-xl border border-line bg-white p-5 shadow-sm animate-in zoom-in-95 duration-150">
+              <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary">Create Staffing Plan</h3>
               <form onSubmit={handleAddStaffingPlan} className="grid grid-cols-3 gap-4 max-md:grid-cols-1">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Department</label>
-                  <select className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white" name="departmentId" required>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Department</label>
+                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white" name="departmentId" required>
                     <option value="">Select Department</option>
                     {departmentsList.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Designation</label>
-                  <select className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white" name="designationId" required>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Designation</label>
+                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white" name="designationId" required>
                     <option value="">Select Designation</option>
                     {designationsList.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Budgeted Headcount</label>
-                  <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="budgetedHeadcount" type="number" defaultValue={1} min={1} required />
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Budgeted Headcount</label>
+                  <input className="min-h-10 w-full rounded-lg border border-line px-3 text-sm" name="budgetedHeadcount" type="number" defaultValue={1} min={1} required />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Start Date</label>
-                  <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="startDate" type="date" required />
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Start Date</label>
+                  <input className="min-h-10 w-full rounded-lg border border-line px-3 text-sm" name="startDate" type="date" required />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">End Date</label>
-                  <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="endDate" type="date" required />
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">End Date</label>
+                  <input className="min-h-10 w-full rounded-lg border border-line px-3 text-sm" name="endDate" type="date" required />
                 </div>
                 <div className="col-span-full flex justify-end gap-2 mt-2">
-                  <button className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-slate-50" type="button" onClick={() => setShowAddStaffingPlan(false)}>Cancel</button>
+                  <button className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-sunken" type="button" onClick={() => setShowAddStaffingPlan(false)}>Cancel</button>
                   <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white hover:bg-brand-dark" type="submit" disabled={loading}>
                     {loading ? "Creating..." : "Save Staffing Plan"}
                   </button>
@@ -1430,8 +1430,8 @@ export function RecruitmentConsole() {
           <Card>
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
               <div>
-                <h2 className="text-lg font-semibold text-slate-800">Active Staffing Headcount Budgets</h2>
-                <p className="text-xs text-slate-400 mt-1">Track vacancy opening counts linked to budgeted staff limits.</p>
+                <h2 className="text-lg font-semibold text-text-primary">Active Staffing Headcount Budgets</h2>
+                <p className="text-xs text-text-muted mt-1">Track vacancy opening counts linked to budgeted staff limits.</p>
               </div>
               <div className="flex gap-2">
                 <button
@@ -1444,7 +1444,7 @@ export function RecruitmentConsole() {
             </div>
             <div className="overflow-auto">
               <table className="w-full min-w-[700px] border-collapse text-sm text-left">
-                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-text-secondary tracking-wider">
                   <tr>
                     <th className="border-b border-[var(--border-default)] p-3">Department</th>
                     <th className="border-b border-[var(--border-default)] p-3">Designation</th>
@@ -1457,23 +1457,23 @@ export function RecruitmentConsole() {
                 <tbody>
                   {staffingPlans.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="p-8 text-center text-slate-400 font-semibold">
+                      <td colSpan={6} className="p-8 text-center text-text-muted font-semibold">
                         No staffing plans active. Create one to monitor departments.
                       </td>
                     </tr>
                   ) : (
                     staffingPlans.map((sp) => (
-                      <tr key={sp.id} className="hover:bg-slate-50 transition">
-                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-slate-800">{sp.department?.name || "Global"}</td>
-                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-slate-600">{sp.designation?.title || "Staff"}</td>
+                      <tr key={sp.id} className="hover:bg-sunken transition">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-text-primary">{sp.department?.name || "Global"}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold text-text-secondary">{sp.designation?.title || "Staff"}</td>
                         <td className="border-b border-[var(--surface-sunken)] p-3 font-bold">{sp.budgetedHeadcount}</td>
-                        <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-500 font-semibold">{sp.currentHeadcount}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-text-secondary font-semibold">{sp.currentHeadcount}</td>
                         <td className="border-b border-[var(--surface-sunken)] p-3">
                           <StatusPill tone={sp.currentHeadcount >= sp.budgetedHeadcount ? "red" : "green"}>
                             {sp.budgetedHeadcount - sp.currentHeadcount} vacancies left
                           </StatusPill>
                         </td>
-                        <td className="border-b border-[var(--surface-sunken)] p-3 text-xs text-slate-500">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-xs text-text-secondary">
                           {new Date(sp.startDate).toLocaleDateString("en-IN")} to {new Date(sp.endDate).toLocaleDateString("en-IN")}
                         </td>
                       </tr>
@@ -1490,34 +1490,34 @@ export function RecruitmentConsole() {
       {activeTab === "Referrals" && (
         <div className="grid gap-5">
           {showAddReferral && (
-            <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm animate-in zoom-in-95 duration-150">
-              <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-slate-800">Submit Employee Referral</h3>
+            <div className="rounded-xl border border-line bg-white p-5 shadow-sm animate-in zoom-in-95 duration-150">
+              <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-text-primary">Submit Employee Referral</h3>
               <form onSubmit={handleAddReferral} className="grid grid-cols-3 gap-4 max-md:grid-cols-1">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Candidate Name</label>
-                  <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="candidateName" placeholder="Sneha Patil" required />
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Candidate Name</label>
+                  <input className="min-h-10 w-full rounded-lg border border-line px-3 text-sm" name="candidateName" placeholder="Sneha Patil" required />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Candidate Email</label>
-                  <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="candidateEmail" type="email" placeholder="sneha@example.com" required />
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Candidate Email</label>
+                  <input className="min-h-10 w-full rounded-lg border border-line px-3 text-sm" name="candidateEmail" type="email" placeholder="sneha@example.com" required />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Candidate Phone</label>
-                  <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="candidatePhone" placeholder="+91 98765 43210" />
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Candidate Phone</label>
+                  <input className="min-h-10 w-full rounded-lg border border-line px-3 text-sm" name="candidatePhone" placeholder="+91 98765 43210" />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Target Job Vacancy</label>
-                  <select className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm bg-white" name="jobPostingId" required>
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Target Job Vacancy</label>
+                  <select className="min-h-10 w-full rounded-lg border border-line px-3 text-sm bg-white" name="jobPostingId" required>
                     <option value="">Select Job Vacancy</option>
                     {jobPostings.map(p => <option key={p.id} value={p.id}>{p.title}</option>)}
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 mb-1">Referral Bonus Amount (INR)</label>
-                  <input className="min-h-10 w-full rounded-lg border border-slate-200 px-3 text-sm" name="bonusAmount" type="number" defaultValue={25000} min={0} required />
+                  <label className="block text-xs font-semibold text-text-secondary mb-1">Referral Bonus Amount (INR)</label>
+                  <input className="min-h-10 w-full rounded-lg border border-line px-3 text-sm" name="bonusAmount" type="number" defaultValue={25000} min={0} required />
                 </div>
                 <div className="col-span-full flex justify-end gap-2 mt-2">
-                  <button className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-slate-50" type="button" onClick={() => setShowAddReferral(false)}>Cancel</button>
+                  <button className="min-h-10 rounded-lg border px-4 text-sm font-semibold hover:bg-sunken" type="button" onClick={() => setShowAddReferral(false)}>Cancel</button>
                   <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white hover:bg-brand-dark" type="submit" disabled={loading}>
                     {loading ? "Submitting..." : "Submit Referral"}
                   </button>
@@ -1529,8 +1529,8 @@ export function RecruitmentConsole() {
           <Card>
             <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
               <div>
-                <h2 className="text-lg font-semibold text-slate-800">Employee Referral Program</h2>
-                <p className="text-xs text-slate-400 mt-1">Submit candidates for open roles and track bonus eligibility.</p>
+                <h2 className="text-lg font-semibold text-text-primary">Employee Referral Program</h2>
+                <p className="text-xs text-text-muted mt-1">Submit candidates for open roles and track bonus eligibility.</p>
               </div>
               <div className="flex gap-2">
                 <button
@@ -1543,7 +1543,7 @@ export function RecruitmentConsole() {
             </div>
             <div className="overflow-auto">
               <table className="w-full min-w-[700px] border-collapse text-sm text-left">
-                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-slate-500 tracking-wider">
+                <thead className="bg-[var(--surface-sunken)] text-xs uppercase text-text-secondary tracking-wider">
                   <tr>
                     <th className="border-b border-[var(--border-default)] p-3">Candidate</th>
                     <th className="border-b border-[var(--border-default)] p-3">Job Posting</th>
@@ -1556,19 +1556,19 @@ export function RecruitmentConsole() {
                 <tbody>
                   {referrals.length === 0 ? (
                     <tr>
-                      <td colSpan={6} className="p-8 text-center text-slate-400 font-semibold">
+                      <td colSpan={6} className="p-8 text-center text-text-muted font-semibold">
                         No referrals submitted yet. Start referring!
                       </td>
                     </tr>
                   ) : (
                     referrals.map((ref) => (
-                      <tr key={ref.id} className="hover:bg-slate-50 transition">
+                      <tr key={ref.id} className="hover:bg-sunken transition">
                         <td className="border-b border-[var(--surface-sunken)] p-3">
-                          <div className="font-semibold text-slate-800">{ref.candidateName}</div>
-                          <div className="text-xs text-slate-400">{ref.candidateEmail}</div>
+                          <div className="font-semibold text-text-primary">{ref.candidateName}</div>
+                          <div className="text-xs text-text-muted">{ref.candidateEmail}</div>
                         </td>
-                        <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-600 font-semibold">{ref.jobPosting?.title || "Unknown Position"}</td>
-                        <td className="border-b border-[var(--surface-sunken)] p-3 text-slate-500">
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-text-secondary font-semibold">{ref.jobPosting?.title || "Unknown Position"}</td>
+                        <td className="border-b border-[var(--surface-sunken)] p-3 text-text-secondary">
                           {ref.referrer?.firstName} {ref.referrer?.lastName}
                         </td>
                         <td className="border-b border-[var(--surface-sunken)] p-3 font-semibold">INR {ref.bonusAmount.toLocaleString("en-IN")}</td>

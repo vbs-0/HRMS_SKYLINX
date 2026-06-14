@@ -254,7 +254,7 @@ export function ExpenseClaimPanel() {
       <input className={inputClass()} name="receiptUrl" placeholder="Receipt URL" type="url" />
       <button className="min-h-10 rounded-lg bg-brand px-4 text-sm font-semibold text-white">Submit Claim</button>
       {warning && (
-        <div className="col-span-full rounded-lg bg-amber-50 border border-amber-200 p-2.5 text-xs text-amber-800 font-semibold">
+        <div className="col-span-full rounded-lg bg-warning-bg border border-warning-border p-2.5 text-xs text-warning-fg font-semibold">
           {warning}
         </div>
       )}

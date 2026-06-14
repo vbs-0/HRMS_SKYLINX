@@ -132,11 +132,11 @@ export function PoliciesConsole() {
   };
 
   const categoryBadgeColor: Record<string, string> = {
-    Leave: "bg-blue-100 text-blue-700",
-    Conduct: "bg-purple-100 text-purple-700",
-    IT: "bg-orange-100 text-orange-700",
+    Leave: "bg-info-bg text-info-fg",
+    Conduct: "bg-brand-50 text-brand-700",
+    IT: "bg-warning-bg text-warning-fg",
     POSH: "bg-pink-100 text-pink-700",
-    HR: "bg-teal-100 text-teal-700",
+    HR: "bg-success-bg text-success-fg",
   };
 
   const active = policies.filter((p) => p.status === "ACTIVE");
@@ -180,9 +180,9 @@ export function PoliciesConsole() {
           {/* Policy list */}
           <div className="space-y-3">
             {loading ? (
-              <div className="text-sm text-slate-500 text-center py-8">Loading policies…</div>
+              <div className="text-sm text-text-secondary text-center py-8">Loading policies…</div>
             ) : active.length === 0 ? (
-              <div className="text-sm text-slate-500 text-center py-8">No active policies found.</div>
+              <div className="text-sm text-text-secondary text-center py-8">No active policies found.</div>
             ) : (
               active.map((policy) => (
                 <Card
@@ -200,23 +200,23 @@ export function PoliciesConsole() {
                       <div className="flex items-center gap-2 mb-1 flex-wrap">
                         <span
                           className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                            categoryBadgeColor[policy.category] || "bg-gray-100 text-gray-700"
+                            categoryBadgeColor[policy.category] || "bg-sunken text-text-primary"
                           }`}
                         >
                           {policy.category}
                         </span>
-                        <span className="text-[10px] text-slate-400">v{policy.version}</span>
+                        <span className="text-[10px] text-text-muted">v{policy.version}</span>
                       </div>
-                      <h3 className="text-sm font-semibold text-slate-800 truncate">{policy.title}</h3>
+                      <h3 className="text-sm font-semibold text-text-primary truncate">{policy.title}</h3>
                       {policy.description && (
-                        <p className="text-xs text-slate-500 mt-0.5 line-clamp-2">{policy.description}</p>
+                        <p className="text-xs text-text-secondary mt-0.5 line-clamp-2">{policy.description}</p>
                       )}
                     </div>
                     <div className="flex-shrink-0">
                       {policy.acknowledged ? (
-                        <CheckCircle className="h-5 w-5 text-green-500" />
+                        <CheckCircle className="h-5 w-5 text-success-fg" />
                       ) : policy.requiresAcknowledgment ? (
-                        <div className="h-5 w-5 rounded-full border-2 border-orange-400 bg-orange-50" title="Needs acknowledgment" />
+                        <div className="h-5 w-5 rounded-full border-2 border-orange-400 bg-warning-bg" title="Needs acknowledgment" />
                       ) : null}
                     </div>
                   </div>
@@ -233,13 +233,13 @@ export function PoliciesConsole() {
                   <div>
                     <span
                       className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                        categoryBadgeColor[selectedPolicy.category] || "bg-gray-100 text-gray-700"
+                        categoryBadgeColor[selectedPolicy.category] || "bg-sunken text-text-primary"
                       }`}
                     >
                       {selectedPolicy.category}
                     </span>
-                    <h2 className="text-base font-bold text-slate-800 mt-1">{selectedPolicy.title}</h2>
-                    <p className="text-xs text-slate-400 mt-0.5">
+                    <h2 className="text-base font-bold text-text-primary mt-1">{selectedPolicy.title}</h2>
+                    <p className="text-xs text-text-muted mt-0.5">
                       Version {selectedPolicy.version} · Effective{" "}
                       {new Date(selectedPolicy.effectiveDate).toLocaleDateString("en-IN")}
                     </p>
@@ -257,7 +257,7 @@ export function PoliciesConsole() {
                     <button
                       id={`archive-policy-${selectedPolicy.id}`}
                       onClick={() => handleArchive(selectedPolicy.id)}
-                      className="flex items-center gap-1 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition"
+                      className="flex items-center gap-1 rounded-lg border border-line px-3 py-1.5 text-xs font-semibold text-text-secondary hover:bg-sunken transition"
                     >
                       <Archive className="h-3.5 w-3.5" /> Archive
                     </button>
@@ -266,33 +266,33 @@ export function PoliciesConsole() {
 
                 {selectedPolicy.contentHtml ? (
                   <div
-                    className="prose prose-sm max-w-none text-slate-700 mb-5"
+                    className="prose prose-sm max-w-none text-text-primary mb-5"
                     dangerouslySetInnerHTML={{ __html: selectedPolicy.contentHtml }}
                   />
                 ) : selectedPolicy.description ? (
-                  <p className="text-sm text-slate-600 mb-5">{selectedPolicy.description}</p>
+                  <p className="text-sm text-text-secondary mb-5">{selectedPolicy.description}</p>
                 ) : null}
 
                 {/* Acknowledgments report */}
-                <div className="mt-4 border-t border-slate-100 pt-4">
-                  <h4 className="text-xs font-bold text-slate-600 mb-2 flex items-center gap-1">
+                <div className="mt-4 border-t border-line pt-4">
+                  <h4 className="text-xs font-bold text-text-secondary mb-2 flex items-center gap-1">
                     <Users className="h-3.5 w-3.5" /> Acknowledgment Tracker
                   </h4>
                   {acksLoading ? (
-                    <p className="text-xs text-slate-400">Loading…</p>
+                    <p className="text-xs text-text-muted">Loading…</p>
                   ) : acks.length === 0 ? (
-                    <p className="text-xs text-slate-400">No acknowledgments recorded yet.</p>
+                    <p className="text-xs text-text-muted">No acknowledgments recorded yet.</p>
                   ) : (
                     <div className="space-y-1.5 max-h-40 overflow-y-auto">
                       {acks.map((ack) => (
                         <div
                           key={ack.id}
-                          className="flex items-center justify-between text-xs text-slate-600 bg-slate-50 rounded px-2 py-1"
+                          className="flex items-center justify-between text-xs text-text-secondary bg-sunken rounded px-2 py-1"
                         >
                           <span className="font-semibold">
                             {ack.employee.firstName} {ack.employee.lastName}
                           </span>
-                          <span className="text-slate-400">
+                          <span className="text-text-muted">
                             {new Date(ack.acknowledgedAt).toLocaleDateString("en-IN")}
                           </span>
                         </div>
@@ -302,9 +302,9 @@ export function PoliciesConsole() {
                 </div>
               </Card>
             ) : (
-              <Card className="p-10 border border-dashed border-slate-200 flex flex-col items-center justify-center text-center h-full min-h-[300px]">
-                <FileCheck2 className="h-10 w-10 text-slate-200 mb-3" />
-                <p className="text-sm text-slate-400">Select a policy to view details and acknowledgment status.</p>
+              <Card className="p-10 border border-dashed border-line flex flex-col items-center justify-center text-center h-full min-h-[300px]">
+                <FileCheck2 className="h-10 w-10 text-text-muted mb-3" />
+                <p className="text-sm text-text-muted">Select a policy to view details and acknowledgment status.</p>
               </Card>
             )}
           </div>
@@ -315,17 +315,17 @@ export function PoliciesConsole() {
         <div className="space-y-3">
           {pending.length === 0 ? (
             <Card className="p-10 text-center">
-              <CheckCircle className="h-10 w-10 text-green-400 mx-auto mb-3" />
-              <p className="text-sm font-semibold text-slate-600">All policies acknowledged!</p>
-              <p className="text-xs text-slate-400 mt-1">No pending acknowledgments for your account.</p>
+              <CheckCircle className="h-10 w-10 text-success-fg mx-auto mb-3" />
+              <p className="text-sm font-semibold text-text-secondary">All policies acknowledged!</p>
+              <p className="text-xs text-text-muted mt-1">No pending acknowledgments for your account.</p>
             </Card>
           ) : (
             pending.map((policy) => (
-              <Card key={policy.id} className="p-4 border border-orange-200 bg-orange-50/30">
+              <Card key={policy.id} className="p-4 border border-warning-border bg-warning-bg">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <h3 className="text-sm font-bold text-slate-800">{policy.title}</h3>
-                    <p className="text-xs text-slate-500 mt-0.5">{policy.description}</p>
+                    <h3 className="text-sm font-bold text-text-primary">{policy.title}</h3>
+                    <p className="text-xs text-text-secondary mt-0.5">{policy.description}</p>
                   </div>
                   <button
                     id={`ack-pending-${policy.id}`}
@@ -344,15 +344,15 @@ export function PoliciesConsole() {
       {activeTab === "Archived" && (
         <div className="space-y-3">
           {archived.length === 0 ? (
-            <div className="text-sm text-slate-400 text-center py-8">No archived policies.</div>
+            <div className="text-sm text-text-muted text-center py-8">No archived policies.</div>
           ) : (
             archived.map((policy) => (
-              <Card key={policy.id} className="p-4 border border-slate-200 opacity-70">
+              <Card key={policy.id} className="p-4 border border-line opacity-70">
                 <div className="flex items-center gap-2">
-                  <Archive className="h-4 w-4 text-slate-400" />
+                  <Archive className="h-4 w-4 text-text-muted" />
                   <div>
-                    <h3 className="text-sm font-semibold text-slate-600">{policy.title}</h3>
-                    <p className="text-xs text-slate-400">
+                    <h3 className="text-sm font-semibold text-text-secondary">{policy.title}</h3>
+                    <p className="text-xs text-text-muted">
                       {policy.category} · v{policy.version}
                     </p>
                   </div>
@@ -365,11 +365,11 @@ export function PoliciesConsole() {
 
       {activeTab === "Upload Policy" && (
         <Card className="p-6 max-w-2xl border border-[var(--border-subtle)]">
-          <h3 className="text-base font-bold text-slate-800 mb-5 border-b pb-2">Create New Policy</h3>
+          <h3 className="text-base font-bold text-text-primary mb-5 border-b pb-2">Create New Policy</h3>
           <form onSubmit={handleCreate} className="grid gap-4">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1" htmlFor="policy-title">
+                <label className="block text-xs font-semibold text-text-secondary mb-1" htmlFor="policy-title">
                   Title *
                 </label>
                 <input
@@ -378,12 +378,12 @@ export function PoliciesConsole() {
                   required
                   value={formTitle}
                   onChange={(e) => setFormTitle(e.target.value)}
-                  className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                  className="w-full rounded-lg border border-line px-3 py-2 text-sm"
                   placeholder="e.g. Remote Work Policy"
                 />
               </div>
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1" htmlFor="policy-category">
+                <label className="block text-xs font-semibold text-text-secondary mb-1" htmlFor="policy-category">
                   Category *
                 </label>
                 <select
@@ -391,7 +391,7 @@ export function PoliciesConsole() {
                   name="policy-category"
                   value={formCategory}
                   onChange={(e) => setFormCategory(e.target.value)}
-                  className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                  className="w-full rounded-lg border border-line px-3 py-2 text-sm"
                 >
                   {["Leave", "Conduct", "IT", "POSH", "HR", "Finance", "Safety"].map((c) => (
                     <option key={c} value={c}>{c}</option>
@@ -402,7 +402,7 @@ export function PoliciesConsole() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 mb-1" htmlFor="policy-version">
+                <label className="block text-xs font-semibold text-text-secondary mb-1" htmlFor="policy-version">
                   Version
                 </label>
                 <input
@@ -410,7 +410,7 @@ export function PoliciesConsole() {
                   name="policy-version"
                   value={formVersion}
                   onChange={(e) => setFormVersion(e.target.value)}
-                  className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                  className="w-full rounded-lg border border-line px-3 py-2 text-sm"
                   placeholder="1.0"
                 />
               </div>
@@ -423,14 +423,14 @@ export function PoliciesConsole() {
                   onChange={(e) => setFormRequiresAck(e.target.checked)}
                   className="h-4 w-4 rounded"
                 />
-                <label htmlFor="policy-requires-ack" className="text-sm text-slate-600 font-medium">
+                <label htmlFor="policy-requires-ack" className="text-sm text-text-secondary font-medium">
                   Requires acknowledgment from employees
                 </label>
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-500 mb-1" htmlFor="policy-description">
+              <label className="block text-xs font-semibold text-text-secondary mb-1" htmlFor="policy-description">
                 Short Description
               </label>
               <input
@@ -438,13 +438,13 @@ export function PoliciesConsole() {
                 name="policy-description"
                 value={formDescription}
                 onChange={(e) => setFormDescription(e.target.value)}
-                className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm"
+                className="w-full rounded-lg border border-line px-3 py-2 text-sm"
                 placeholder="Brief summary of this policy"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-500 mb-1" htmlFor="policy-content">
+              <label className="block text-xs font-semibold text-text-secondary mb-1" htmlFor="policy-content">
                 Policy Content (HTML or plain text)
               </label>
               <textarea
@@ -453,7 +453,7 @@ export function PoliciesConsole() {
                 rows={8}
                 value={formContent}
                 onChange={(e) => setFormContent(e.target.value)}
-                className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm font-mono"
+                className="w-full rounded-lg border border-line px-3 py-2 text-sm font-mono"
                 placeholder="<p>Enter the full policy text here…</p>"
               />
             </div>

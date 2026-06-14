@@ -137,3 +137,5 @@ approvalFlow, sandwichLeave, carryForward, compOffAllowed, leaveYear (rbac-setti
 - **Settings key home (#25):** `documents.expiryReminderDays` belongs to §03 Documents, not the §04 header (it's a `documents.*` key).
 - **`attendance.ipAllowlist` (98 §F-B4):** the NEW IP-restriction key must be registered in the §08 Attendance settings row (not in rbac B1 today).
 - **OT body (#2):** include required `employeeId` in the OT request shape.
+
+> **Schema scaffold (COVERAGE_AUDIT §4):** `ShiftSchedule` + `ShiftScheduleAssignment` (recurring roster schedules) **already exist in `schema.prisma`** with no API/UI; today only per-day `ShiftAssignment` is used. The §A6 recurring-schedule planner is a backed NEW feature.

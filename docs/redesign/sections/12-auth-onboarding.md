@@ -63,3 +63,5 @@ Steps (writes `company` + `rules`; rbac-settings B): 1 Company & logo (branding)
 - A11y (§11): OTPInput keyboard/paste, focus to first field, error focus, `autocomplete` on email/password/new-password.
 - Mobile: single-column login/wizard; OTP autofill from SMS where supported.
 - **Backend backlog (highest security priority, platform.md §12)**: real OTP + forgot/reset; refresh-token rotation + server logout/revocation; signup grants HR_ADMIN not SUPER_ADMIN; check Company.status on login; failed-login audit + lockout/rate-limit; real payment gateway (or honest no-charge); verify JWT in TenantMiddleware + stop trusting `x-tenant-id` (§08); set-password token instead of plaintext temp password; MFA/TOTP + SSO.
+
+> **Schema scaffold (COVERAGE_AUDIT §4):** the `OtpToken` model **exists in `schema.prisma`** but the auth OTP endpoints are echo stubs that persist nothing (platform.md §1). §B OTP login wires real generate/verify against this existing model.

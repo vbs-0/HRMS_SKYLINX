@@ -153,3 +153,5 @@ Tenant-scope `EmployeeDocument`/`EmployeeBankDetail`/exit-promotion-transfer-loa
 - **Employees export perm (#12):** the export endpoint uses `employees.read` (avoid a seed change) or add `employees.export` to HR_ADMIN grants; the slash-notation was ambiguous.
 - **Custom-fields dual alias (#16):** routes exist under **both** `settings/custom-fields…` and `custom-fields/definitions…` (values under `/employees/:id/custom-values` and `/custom-fields/values/:id`); `permission-map.json` must gate both aliases. Self-service value edit needs `employees.update` (today `employees.configure`).
 - **`/me` + `/employees/[id]`** are NEW routes (no current route); add per §01 redirect rule.
+
+> **Schema scaffold (COVERAGE_AUDIT §4):** `SignedLetter` {generatedLetterId, employeeId, signedAt, signatureName} **already exists in `schema.prisma`** (no API/UI) — the backing model for letter e-signature (SignaturePad, §8 here / §07 D). Build service+controller+UI only.

@@ -100,3 +100,5 @@ Offer builder (CtcCalculator + joining date; **NEW**: editable terms — today h
 - **Scoring model (T-12):** weight **self + 360** into `finalScore` (today `finalScore = managerScore` only, talent.md §1.4) — make the weights cycle-configurable; surface the computed weighted score in §A5 HR-Finalize.
 - **TrainingEvent (T-1):** see §C inline — status field exists (`@default("SCHEDULED")`); the gaps are free-string status + no lifecycle PATCH.
 - **HR grant gaps (T-2/T-9):** see §A5/§D inline — HR_ADMIN needs `performance.create`/`approve` and `travel.approve` re-granted (rbac A7).
+
+> **Schema scaffold (COVERAGE_AUDIT §4):** the data models `CompensationCycle` + `CompensationRevision` (cycle → per-employee currentCtc/appraisalScore/proposedPercent/approvedPercent/newCtc) **already exist in `schema.prisma`** with no API/UI. The §A7 salary-revision/increment-cycle screen is therefore a backed NEW feature (build service+controller+UI only), not a from-scratch gap.

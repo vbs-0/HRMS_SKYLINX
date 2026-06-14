@@ -1,0 +1,40 @@
+/* PeopleOS UI v2 — design tokens (sections/02). Light + dark (data-theme) + density (data-density). */
+:root {
+  /* brand: indigo */
+  --color-brand-50:#eef0ff;--color-brand-100:#e0e3ff;--color-brand-300:#a9b0f5;--color-brand-500:#6366f1;
+  --color-brand-600:#4f46e5;--color-brand-700:#4338ca;--color-brand-900:#312e81;
+  /* neutral ramp: warm graphite */
+  --surface-canvas:#f7f8fa;--surface-raised:#ffffff;--surface-sunken:#f1f3f6;--surface-hover:#f3f4f7;--surface-selected:#eef0ff;
+  --border-subtle:#ebedf1;--border-default:#dde1e7;--border-strong:#c5cbd4;
+  --text-primary:#161a20;--text-secondary:#4b5563;--text-muted:#6b7280;--text-disabled:#9aa2ae;--text-on-brand:#ffffff;
+  /* semantic */
+  --success-fg:#0f7a4d;--success-bg:#e6f6ee;--success-border:#a7e0c2;
+  --warning-fg:#9a6700;--warning-bg:#fbf1d9;--warning-border:#ebd08a;
+  --danger-fg:#b42318;--danger-bg:#fce9e7;--danger-border:#f0b3ae;
+  --info-fg:#1357c4;--info-bg:#e7f0fe;--info-border:#aecbf5;
+  --neutral-fg:#4b5563;--neutral-bg:#f1f3f6;--neutral-border:#dde1e7;
+  /* viz */
+  --viz-1:#4f46e5;--viz-2:#0ea5a4;--viz-3:#f59e0b;--viz-4:#8b5cf6;--viz-5:#ec4899;--viz-6:#64748b;
+  /* radius / elevation / motion */
+  --radius-control:8px;--radius-card:12px;--radius-overlay:16px;--radius-pill:999px;
+  --elev-1:0 1px 2px rgba(16,20,30,.06);--elev-2:0 4px 12px rgba(16,20,30,.08);--elev-3:0 12px 32px rgba(16,20,30,.12);
+  --ease:cubic-bezier(.2,.6,.2,1);--dur-fast:120ms;--dur-base:180ms;
+  --row-h:48px;--control-h:40px;--sidebar-w:260px;--topbar-h:64px;
+  /* type (loaded via stylesheet link in layout) */
+  --font-sans:"Inter",ui-sans-serif,system-ui,"Segoe UI",Roboto,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
+}
+[data-theme="dark"] {
+  --surface-canvas:#0e1116;--surface-raised:#171b22;--surface-sunken:#0a0d11;--surface-hover:#1e232b;--surface-selected:#1b2030;
+  --border-subtle:#232932;--border-default:#2c333d;--border-strong:#3a424e;
+  --text-primary:#e8ebf0;--text-secondary:#aeb6c2;--text-muted:#8b95a3;--text-disabled:#5a6472;
+  --color-brand-50:#1b2030;
+  --success-fg:#56c98a;--success-bg:#10271c;--success-border:#1e4332;
+  --warning-fg:#e0b341;--warning-bg:#2a2210;--warning-border:#4a3c16;
+  --danger-fg:#f0817a;--danger-bg:#2b1614;--danger-border:#52211c;
+  --info-fg:#6ba6f5;--info-bg:#11203a;--info-border:#1e3a63;
+  --neutral-fg:#aeb6c2;--neutral-bg:#0a0d11;--neutral-border:#2c333d;
+  --elev-1:0 1px 2px rgba(0,0,0,.4);--elev-2:0 4px 12px rgba(0,0,0,.5);--elev-3:0 12px 32px rgba(0,0,0,.6);
+}
+[data-density="compact"] { --row-h:36px;--control-h:34px; }
+@media (prefers-reduced-motion: reduce) { :root { --dur-fast:1ms;--dur-base:1ms; } }

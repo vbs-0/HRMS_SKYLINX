@@ -1,45 +1,41 @@
+@import "./tokens.css";
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
+
+html { color-scheme: light; }
+html[data-theme="dark"] { color-scheme: dark; }
 
 body {
   margin: 0;
-  background: #f5f7fb;
-  color: #172033;
+  background: var(--surface-canvas);
+  color: var(--text-primary);
+  font-family: var(--font-sans, ui-sans-serif, system-ui, sans-serif);
+  -webkit-font-smoothing: antialiased;
+  transition: background-color var(--dur-base) var(--ease), color var(--dur-base) var(--ease);
 }
 
+/* tabular numerals everywhere money/ids/dates live (money screens) */
+.tabular { font-variant-numeric: tabular-nums; }
+
+/* focus ring (a11y §11) */
+:focus-visible { outline: none; box-shadow: 0 0 0 2px var(--surface-raised), 0 0 0 4px var(--color-brand-500); border-radius: 8px; }
+
+::selection { background: var(--color-brand-100); color: var(--text-primary); }
+
+/* thin scrollbars (reference §2) */
+* { scrollbar-width: thin; scrollbar-color: rgba(146,148,156,.4) transparent; }
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-thumb { background: rgba(146,148,156,.35); border-radius: 4px; }
+*::-webkit-scrollbar-thumb:hover { background: rgba(128,130,137,.6); }
+
 @media print {
-  body {
-    background: #ffffff;
-  }
-
-  body * {
-    visibility: hidden;
-  }
-
-  .print-area,
-  .print-area * {
-    visibility: visible;
-  }
-
-  .print-area {
-    position: absolute;
-    inset: 0 auto auto 0;
-    width: 100%;
-    border: 0 !important;
-    box-shadow: none !important;
-  }
-
-  .print-hide,
-  .print-hide * {
-    display: none !important;
-  }
-
-  @page {
-    margin: 16mm;
-  }
+  body { background: #fff; color: #000; }
+  body * { visibility: hidden; }
+  .print-area, .print-area * { visibility: visible; }
+  .print-area { position: absolute; inset: 0 auto auto 0; width: 100%; border: 0 !important; box-shadow: none !important; }
+  .print-hide, .print-hide * { display: none !important; }
+  @page { margin: 16mm; }
 }

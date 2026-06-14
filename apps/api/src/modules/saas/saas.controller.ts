@@ -39,9 +39,9 @@ export class SaasController {
       data: {
         coupons: rules["coupons"] || [],
         quoteAddOns: rules["quoteAddOns"] || [],
-        supportEmail: branding.supportEmail || "support@skylinx.com",
-        clientDisplayName: branding.clientDisplayName || "SkyLinx HRMS",
-        supportPhone: branding.supportPhone || "+91-800-SKYLINX"
+        supportEmail: branding.supportEmail || "support@example.com",
+        clientDisplayName: branding.clientDisplayName || "PeopleOS HRMS",
+        supportPhone: branding.supportPhone || "+91-800-000-0000"
       }
     };
   }

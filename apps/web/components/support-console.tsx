@@ -827,7 +827,7 @@ export function SupportConsole() {
               </button>
               <a
                 className="inline-flex min-h-10 items-center justify-center rounded-lg border border-[#dce2eb] bg-white px-4 text-sm font-semibold text-[#172033] hover:bg-[#f8fafc] transition-colors"
-                download="skylinx-support-report.csv"
+                download="peopleos-support-report.csv"
                 href={`data:text/csv;charset=utf-8,${supportReport}`}
               >
                 Download Support Report

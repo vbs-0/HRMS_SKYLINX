@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 
 export type UserRole = "hr" | "admin";
 
-export const ROLE_CHANGE_EVENT = "skylinx:role-change";
+export const ROLE_CHANGE_EVENT = "peopleos:role-change";
 
 export function getActiveRole(): UserRole {
   if (typeof window !== "undefined") {
-    const stored = localStorage.getItem("skylinx_role");
+    const stored = localStorage.getItem("peopleos_role");
     return stored === "admin" ? "admin" : "hr";
   }
   return "hr";
@@ -16,7 +16,7 @@ export function getActiveRole(): UserRole {
 
 export function setActiveRole(role: UserRole) {
   if (typeof window !== "undefined") {
-    localStorage.setItem("skylinx_role", role);
+    localStorage.setItem("peopleos_role", role);
     window.dispatchEvent(new CustomEvent(ROLE_CHANGE_EVENT, { detail: { role } }));
   }
 }

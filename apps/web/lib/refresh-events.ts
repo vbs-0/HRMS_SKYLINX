@@ -1,6 +1,6 @@
 "use client";
 
-export const DATA_REFRESH_EVENT = "skylinx:data-refresh";
+export const DATA_REFRESH_EVENT = "peopleos:data-refresh";
 
 export function requestDataRefresh(scope: string) {
   window.dispatchEvent(new CustomEvent(DATA_REFRESH_EVENT, { detail: { scope } }));

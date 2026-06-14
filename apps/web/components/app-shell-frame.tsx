@@ -48,7 +48,7 @@ export function AppShellFrame({
     showPoweredBy: false,
   });
   const [companyName, setCompanyName] = React.useState("");
-  const [logoUrl, setLogoUrl] = React.useState("/skylinx-logo-display.png");
+  const [logoUrl, setLogoUrl] = React.useState("/company-logo.png");
   const [currentDateStr, setCurrentDateStr] = React.useState("");
 
 
@@ -134,7 +134,7 @@ export function AppShellFrame({
               src={displayLogo}
               alt={displayBrand}
               className="h-10 max-w-[130px] object-contain"
-              onError={(e) => { (e.target as HTMLImageElement).src = "/skylinx-logo-display.png"; }}
+              onError={(e) => { (e.target as HTMLImageElement).src = "/company-logo.png"; }}
             />
           </Link>
           <button aria-label="Close menu" className="flex h-9 w-9 items-center justify-center rounded-lg hover:bg-[#eef5ff]" onClick={() => setOpen(false)} type="button">
@@ -191,7 +191,7 @@ export function AppShellFrame({
               src={displayLogo}
               alt={displayBrand}
               className="h-10 max-w-[130px] object-contain brightness-0 invert"
-              onError={(e) => { (e.target as HTMLImageElement).src = "/skylinx-logo-display.png"; }}
+              onError={(e) => { (e.target as HTMLImageElement).src = "/company-logo.png"; }}
             />
           </Link>
           <div className="text-xl font-semibold max-xl:hidden">Hi, {displayName}!</div>

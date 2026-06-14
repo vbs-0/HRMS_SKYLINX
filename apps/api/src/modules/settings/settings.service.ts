@@ -41,7 +41,7 @@ const DEFAULT_RULES: Required<UpdateClientRulesDto> = {
     showPoweredBy: true,
     primaryColor: "#078ced",
     supportEmail: "support@example.com",
-    supportPhone: "+91-800-SKYLINX",
+    supportPhone: "+91-800-000-0000",
   },
   attendance: {
     workWeek: "Monday to Saturday",

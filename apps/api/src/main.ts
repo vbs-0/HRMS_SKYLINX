@@ -40,7 +40,7 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle("SKYLINX PeopleOS API")
+    .setTitle("PeopleOS API")
     .setDescription("HRMS, payroll, attendance, leave, ATS and admin APIs")
     .setVersion("0.1.0")
     .addBearerAuth()

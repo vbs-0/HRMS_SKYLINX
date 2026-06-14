@@ -142,7 +142,7 @@ export const fallbackRewards = {
 export const fallbackCompanySettings = {
   name: "PeopleOS",
   legalName: "Your Company Private Limited",
-  logoUrl: "/skylinx-logo.png",
+  logoUrl: "/company-logo.png",
   address: "Mumbai, Maharashtra",
   taxId: "GSTIN-PENDING",
   workWeek: "Monday to Saturday",
@@ -174,7 +174,7 @@ export const fallbackModuleSettings = [
 ].map((module) => ({ module, enabled: true }));
 
 export const fallbackAuditLogs = [
-  { id: "audit_seed", module: "seed", action: "create", entityType: "database", entityId: "company_skylinx", actor: "System", createdAt: "2026-05-25" },
+  { id: "audit_seed", module: "seed", action: "create", entityType: "database", entityId: "company_default", actor: "System", createdAt: "2026-05-25" },
   { id: "audit_payroll", module: "payroll", action: "run.calculate", entityType: "payroll_run", entityId: "payroll_may", actor: "Aarav Mehta", createdAt: "2026-05-25" },
   { id: "audit_documents", module: "employees", action: "documents.verify", entityType: "employee_document", entityId: "doc_pan", actor: "Aarav Mehta", createdAt: "2026-05-25" },
 ];
@@ -338,7 +338,7 @@ export const fallbackSaas = {
     grandTotal: 24765.84,
   },
   companies: [
-    { id: "company_skylinx", name: "PeopleOS", legalName: "Your Company Private Limited", status: "ACTIVE", timezone: "Asia/Kolkata", createdAt: "2026-05-25T00:00:00.000Z" },
+    { id: "company_default", name: "PeopleOS", legalName: "Your Company Private Limited", status: "ACTIVE", timezone: "Asia/Kolkata", createdAt: "2026-05-25T00:00:00.000Z" },
   ],
   entitlements: [
     { id: "ent_employees", module: "employees", enabled: true },

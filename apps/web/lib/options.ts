@@ -63,8 +63,8 @@ export function useEmployeeOptions() {
         load();
       }
     };
-    window.addEventListener("skylinx:data-refresh", handler);
-    return () => window.removeEventListener("skylinx:data-refresh", handler);
+    window.addEventListener("peopleos:data-refresh", handler);
+    return () => window.removeEventListener("peopleos:data-refresh", handler);
   }, []);
 
   return options;
@@ -144,8 +144,8 @@ function useOrgOptions<T>(path: string, scope: string, toOption: (item: T) => Se
         load();
       }
     };
-    window.addEventListener("skylinx:data-refresh", handler);
-    return () => window.removeEventListener("skylinx:data-refresh", handler);
+    window.addEventListener("peopleos:data-refresh", handler);
+    return () => window.removeEventListener("peopleos:data-refresh", handler);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [path, scope]);
 

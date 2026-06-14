@@ -83,7 +83,7 @@ export class MailService implements OnModuleInit {
 
     const rulesRes = await this.settingsService.rules();
     const branding = (rulesRes.data as any).branding || {};
-    const brandName = branding.platformBrand || "SKYLINX PeopleOS";
+    const brandName = branding.platformBrand || "PeopleOS";
 
     const from = `"${brandName} Support" <${this.config.get<string>("EMAIL_FROM") || this.config.get<string>("SMTP_USER")}>`;
 
@@ -142,7 +142,7 @@ export class MailService implements OnModuleInit {
   }): Promise<boolean> {
     const rulesRes = await this.settingsService.rules();
     const branding = (rulesRes.data as any).branding || {};
-    const brandName = branding.platformBrand || "SKYLINX PeopleOS";
+    const brandName = branding.platformBrand || "PeopleOS";
     const recipient = branding.supportEmail || this.config.get<string>("SUPPORT_EMAIL") || "support@example.com";
     const timestamp = params.createdAt.toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
 
@@ -198,7 +198,7 @@ export class MailService implements OnModuleInit {
           </div>
         </div>
         <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 12px 12px; padding: 16px 30px;">
-          <p style="margin: 0; font-size: 11px; color: #94a3b8;">Sent via SKYLINX PeopleOS Support Desk · ${timestamp}</p>
+          <p style="margin: 0; font-size: 11px; color: #94a3b8;">Sent via ${brandName} Support Desk · ${timestamp}</p>
         </div>
       </div>
     `;
@@ -222,7 +222,7 @@ export class MailService implements OnModuleInit {
   }): Promise<boolean> {
     const rulesRes = await this.settingsService.rules();
     const branding = (rulesRes.data as any).branding || {};
-    const brandName = branding.platformBrand || "SKYLINX PeopleOS";
+    const brandName = branding.platformBrand || "PeopleOS";
     const recipient = this.config.get<string>("SUPPORT_EMAIL") || "support@example.com";
     const timestamp = new Date().toLocaleString("en-IN", { timeZone: "Asia/Kolkata" });
 
@@ -252,7 +252,7 @@ export class MailService implements OnModuleInit {
           </div>
         </div>
         <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 12px 12px; padding: 16px 30px;">
-          <p style="margin: 0; font-size: 11px; color: #94a3b8;">Sent via SKYLINX PeopleOS Support Desk · ${timestamp}</p>
+          <p style="margin: 0; font-size: 11px; color: #94a3b8;">Sent via ${brandName} Support Desk · ${timestamp}</p>
         </div>
       </div>
     `;

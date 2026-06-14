@@ -255,7 +255,7 @@ export function CardGenerator() {
                 {side === "front" ? (
                   <>
                     <div className="relative h-[150px]" style={{ background: template === "minimal" ? "#ffffff" : `linear-gradient(135deg, ${color}, #4733d6)` }}>
-                      <img src="/skylinx-logo-display.png" alt="Acme Corp" className="absolute right-5 top-5 h-10 w-16 rounded-2xl bg-white/15 object-contain p-2" />
+                      <img src="/company-logo.png" alt="Acme Corp" className="absolute right-5 top-5 h-10 w-16 rounded-2xl bg-white/15 object-contain p-2" />
                       <div className="absolute -bottom-14 left-1/2 flex h-28 w-28 -translate-x-1/2 items-center justify-center rounded-full border-[6px] border-white bg-[#dff7ff] text-3xl font-semibold shadow-lg" style={{ color }}>
                         {initials(employee.name)}
                       </div>
@@ -278,7 +278,7 @@ export function CardGenerator() {
                 ) : (
                   <div className="flex h-full flex-col justify-between p-7">
                     <div>
-                      <img src="/skylinx-logo-display.png" alt="Acme Corp" className="h-14 w-36 object-contain" />
+                      <img src="/company-logo.png" alt="Acme Corp" className="h-14 w-36 object-contain" />
                       <div className="mt-8 grid gap-3 text-sm">
                         <div><span className="text-xs font-bold uppercase text-[#9aabc4]">Department</span><div className="font-semibold">{employee.department}</div></div>
                         <div><span className="text-xs font-bold uppercase text-[#9aabc4]">Contact</span><div className="font-semibold">{employee.phone}</div></div>
@@ -296,7 +296,7 @@ export function CardGenerator() {
             ) : (
               <div className="grid w-[560px] max-w-full grid-cols-[1fr_160px] overflow-hidden rounded-[18px] bg-white shadow-xl print:shadow-none" style={{ aspectRatio: "1.75 / 1" }}>
                 <div className="p-7">
-                  <img src="/skylinx-logo-display.png" alt="Acme Corp" className="h-14 w-44 object-contain" />
+                  <img src="/company-logo.png" alt="Acme Corp" className="h-14 w-44 object-contain" />
                   <div className="mt-8 text-2xl font-bold">{employee.name}</div>
                   <div className="mt-1 text-sm font-bold uppercase" style={{ color }}>{employee.designation}</div>
                   <div className="mt-5 grid gap-2 text-sm text-[#172033]">

@@ -188,6 +188,8 @@ export class AttendanceService {
           requestedCheckInAt: data.requestedCheckInAt ? new Date(data.requestedCheckInAt) : undefined,
           requestedCheckOutAt: data.requestedCheckOutAt ? new Date(data.requestedCheckOutAt) : undefined,
           reason: data.reason,
+          type: data.type ?? "exact_time",
+          leaveTypeId: data.leaveTypeId,
           status: ApprovalStatus.PENDING,
         },
         include: {
@@ -213,22 +215,24 @@ export class AttendanceService {
     }
 
     const result = await this.prisma.$transaction(async (tx) => {
+      const regType = regularization.type ?? "exact_time";
+
+      // Resolve the reference date: prefer requestedCheckInAt, fall back to today
+      const refDate = regularization.requestedCheckInAt
+        ? this.startOfDay(regularization.requestedCheckInAt)
+        : this.startOfDay(new Date());
+
       let attendanceLogId = regularization.attendanceLogId;
       if (!attendanceLogId) {
-        if (!regularization.requestedCheckInAt) {
-          throw new BadRequestException("Requested check-in is required when attendance log is missing");
+        if (regType === "exact_time" && !regularization.requestedCheckInAt) {
+          throw new BadRequestException("Requested check-in time is required for exact-time regularization");
         }
         const created = await tx.attendanceLog.upsert({
-          where: {
-            employeeId_date: {
-              employeeId: regularization.employeeId,
-              date: this.startOfDay(regularization.requestedCheckInAt),
-            },
-          },
+          where: { employeeId_date: { employeeId: regularization.employeeId, date: refDate } },
           update: {},
           create: {
             employeeId: regularization.employeeId,
-            date: this.startOfDay(regularization.requestedCheckInAt),
+            date: refDate,
             status: AttendanceStatus.PRESENT,
             source: "REGULARIZATION",
           },
@@ -236,12 +240,31 @@ export class AttendanceService {
         attendanceLogId = created.id;
       }
 
+      // Determine the target attendance status and times based on regularization type
+      let targetStatus: AttendanceStatus;
+      let checkInAt: Date | undefined;
+      let checkOutAt: Date | undefined;
+
+      if (regType === "mark_present") {
+        targetStatus = AttendanceStatus.PRESENT;
+      } else if (regType === "exact_time") {
+        targetStatus = AttendanceStatus.PRESENT;
+        checkInAt = regularization.requestedCheckInAt ?? undefined;
+        checkOutAt = regularization.requestedCheckOutAt ?? undefined;
+      } else if (regType === "mark_leave") {
+        // Leave is tracked via the leave module; attendance record shows ABSENT for the day
+        targetStatus = AttendanceStatus.ABSENT;
+      } else {
+        // mark_lop — Loss of Pay, treated as absent
+        targetStatus = AttendanceStatus.ABSENT;
+      }
+
       const updatedLog = await tx.attendanceLog.update({
         where: { id: attendanceLogId },
         data: {
-          checkInAt: regularization.requestedCheckInAt || undefined,
-          checkOutAt: regularization.requestedCheckOutAt || undefined,
-          status: AttendanceStatus.PRESENT,
+          checkInAt,
+          checkOutAt,
+          status: targetStatus,
           approvedBy: data.decidedByUserId,
         },
       });

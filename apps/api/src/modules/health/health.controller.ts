@@ -8,7 +8,7 @@ export class HealthController {
   check() {
     return {
       status: "ok",
-      product: "SKYLINX PeopleOS",
+      product: "PeopleOS",
       timestamp: new Date().toISOString(),
     };
   }

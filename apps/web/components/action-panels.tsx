@@ -182,8 +182,8 @@ export function ExpenseClaimPanel() {
         load();
       }
     };
-    window.addEventListener("skylinx:data-refresh", handler);
-    return () => window.removeEventListener("skylinx:data-refresh", handler);
+    window.addEventListener("peopleos:data-refresh", handler);
+    return () => window.removeEventListener("peopleos:data-refresh", handler);
   }, [selectedEmployeeId]);
 
   useEffect(() => {

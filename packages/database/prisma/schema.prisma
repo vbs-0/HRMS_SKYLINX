@@ -458,6 +458,8 @@ model AttendanceRegularization {
   requestedCheckOutAt DateTime?
   reason              String
   status              ApprovalStatus @default(PENDING)
+  type                String?        // mark_present | exact_time | mark_leave | mark_lop
+  leaveTypeId         String?
   decidedBy           String?
   decidedAt           DateTime?
   createdAt           DateTime       @default(now())

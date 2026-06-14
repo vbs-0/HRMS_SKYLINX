@@ -1,4 +1,4 @@
-import { IsArray, IsDateString, IsNumber, IsOptional, IsString, Min } from "class-validator";
+import { IsArray, IsDateString, IsEnum, IsNumber, IsOptional, IsString, Min } from "class-validator";
 
 export class CheckInDto {
   @IsString()
@@ -46,6 +46,8 @@ export class CheckOutDto {
   accuracy?: number;
 }
 
+export type RegularizationType = "mark_present" | "mark_leave" | "exact_time" | "mark_lop";
+
 export class RegularizationDto {
   @IsString()
   employeeId!: string;
@@ -64,6 +66,16 @@ export class RegularizationDto {
 
   @IsString()
   reason!: string;
+
+  // Kredily-parity: 4 regularization modes
+  @IsOptional()
+  @IsEnum(["mark_present", "mark_leave", "exact_time", "mark_lop"])
+  type?: RegularizationType;
+
+  // Used when type = "mark_leave" or "mark_lop"
+  @IsOptional()
+  @IsString()
+  leaveTypeId?: string;
 }
 
 export class DecideAttendanceDto {

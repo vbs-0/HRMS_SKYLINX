@@ -309,7 +309,7 @@ export class SaasService {
         module: "saas",
         action,
         entityType: "subscription",
-        entityId: `skylinx_${plan.toLowerCase()}_${Date.now()}`,
+        entityId: `peopleos_${plan.toLowerCase()}_${Date.now()}`,
         newValueJson: {
           plan,
           status,
